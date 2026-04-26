@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Solcraft — Gestión de Taller",
-  description: "Software de gestión para talleres mecánicos",
+  title: "FIXA CORE — Trabaja sin interrupciones",
+  description: "Herramienta digital para talleres mecánicos. Responde a tus clientes sin tocar el teléfono.",
 };
 
 export default function RootLayout({

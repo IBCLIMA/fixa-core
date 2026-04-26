@@ -2,17 +2,15 @@
 
 import { useState } from "react";
 import { clientesMock, plantillasWhatsApp, type Cliente } from "@/lib/data";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Search, MessageSquare, Phone, Car } from "lucide-react";
+import { Search, MessageSquare, Phone, Car, User } from "lucide-react";
 
 export default function ClientesPage() {
   const [busqueda, setBusqueda] = useState("");
@@ -26,17 +24,19 @@ export default function ClientesPage() {
   );
 
   function enviarWhatsApp(telefono: string, nombre: string, mensaje: string) {
-    const textoFinal = mensaje.replace(/\{\{nombre\}\}/g, nombre.split(" ")[0]);
-    const url = `https://wa.me/${telefono}?text=${encodeURIComponent(textoFinal)}`;
-    window.open(url, "_blank");
+    const texto = mensaje.replace(/\{\{nombre\}\}/g, nombre.split(" ")[0]);
+    window.open(
+      `https://wa.me/${telefono}?text=${encodeURIComponent(texto)}`,
+      "_blank"
+    );
   }
 
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-xl font-bold">Clientes</h1>
+        <h1 className="text-xl font-extrabold">Clientes</h1>
         <p className="text-sm text-muted-foreground">
-          Selecciona un cliente para enviar mensaje
+          {clientesMock.length} clientes · Toca para enviar mensaje
         </p>
       </div>
 
@@ -44,71 +44,57 @@ export default function ClientesPage() {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          placeholder="Buscar por nombre, matrícula o teléfono..."
+          placeholder="Buscar nombre, matrícula..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
           className="pl-9"
         />
       </div>
 
-      {/* Lista de clientes */}
-      <div className="space-y-2">
+      {/* Lista simple */}
+      <div className="divide-y divide-border rounded-lg border border-border">
         {clientesFiltrados.map((cliente) => (
-          <Card
+          <button
             key={cliente.id}
-            className="cursor-pointer transition-colors hover:bg-accent"
+            className="flex w-full items-center gap-3 p-3 text-left transition-colors active:bg-accent hover:bg-accent"
             onClick={() => setClienteSeleccionado(cliente)}
           >
-            <CardContent className="flex items-center justify-between p-4">
-              <div className="space-y-1">
-                <p className="font-medium">{cliente.nombre}</p>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-500/10">
+              <User className="h-4 w-4 text-amber-500" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium truncate">{cliente.nombre}</p>
+              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
                   <Car className="h-3 w-3" />
-                  {cliente.vehiculo}
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  {cliente.vehiculo.split("—")[1]?.trim()}
+                </span>
+                <span className="flex items-center gap-1">
                   <Phone className="h-3 w-3" />
-                  +{cliente.telefono}
-                </div>
+                  +{cliente.telefono.slice(-9)}
+                </span>
               </div>
-              <div className="flex flex-col items-end gap-2">
-                {cliente.ultimaVisita && (
-                  <Badge variant="secondary" className="text-xs">
-                    {new Date(cliente.ultimaVisita).toLocaleDateString("es-ES")}
-                  </Badge>
-                )}
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="text-green-500 hover:text-green-400"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setClienteSeleccionado(cliente);
-                  }}
-                >
-                  <MessageSquare className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+            <MessageSquare className="h-5 w-5 shrink-0 text-green-500" />
+          </button>
         ))}
 
         {clientesFiltrados.length === 0 && (
-          <p className="py-8 text-center text-sm text-muted-foreground">
+          <p className="p-6 text-center text-sm text-muted-foreground">
             No se encontraron clientes
           </p>
         )}
       </div>
 
-      {/* Modal de mensajes rápidos */}
+      {/* Modal mensajes rápidos */}
       <Dialog
         open={!!clienteSeleccionado}
         onOpenChange={(open) => !open && setClienteSeleccionado(null)}
       >
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>
-              Enviar mensaje a {clienteSeleccionado?.nombre}
+            <DialogTitle className="text-base">
+              Mensaje a {clienteSeleccionado?.nombre}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-2">
@@ -116,7 +102,7 @@ export default function ClientesPage() {
               <Button
                 key={plantilla.id}
                 variant="outline"
-                className="h-auto w-full justify-start gap-3 p-3 text-left"
+                className="h-auto w-full justify-start gap-3 p-3 text-left active:bg-accent"
                 onClick={() => {
                   if (clienteSeleccionado) {
                     enviarWhatsApp(
@@ -128,16 +114,15 @@ export default function ClientesPage() {
                 }}
               >
                 <span className="text-lg">{plantilla.emoji}</span>
-                <div>
-                  <p className="font-medium">{plantilla.label}</p>
-                  <p className="text-xs text-muted-foreground">
+                <div className="min-w-0">
+                  <p className="font-medium text-sm">{plantilla.label}</p>
+                  <p className="text-xs text-muted-foreground truncate">
                     {plantilla.mensaje
                       .replace(
                         /\{\{nombre\}\}/g,
                         clienteSeleccionado?.nombre.split(" ")[0] || ""
                       )
-                      .substring(0, 60)}
-                    ...
+                      .substring(0, 50)}...
                   </p>
                 </div>
               </Button>
