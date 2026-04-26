@@ -60,26 +60,20 @@ export const plantillasWhatsApp = [
   },
   {
     id: "presupuesto",
-    label: "Presupuesto preparado",
+    label: "Presupuesto listo",
     emoji: "📋",
-    mensaje: "Hola {{nombre}}, ya tenemos el presupuesto preparado para tu vehículo. Llámanos o pásate por el taller para revisarlo. ¡Gracias!",
+    mensaje: "Hola {{nombre}}, ya tenemos el presupuesto preparado. Pásate o llámanos para revisarlo. ¡Gracias!",
   },
   {
-    id: "recordatorio_cita",
-    label: "Recordatorio cita",
+    id: "pide_cita",
+    label: "Pide cita aquí",
     emoji: "📅",
-    mensaje: "Hola {{nombre}}, te recordamos que tienes cita en el taller mañana. Te esperamos. ¡Un saludo!",
-  },
-  {
-    id: "itv",
-    label: "Aviso ITV",
-    emoji: "🔔",
-    mensaje: "Hola {{nombre}}, te avisamos de que la ITV de tu vehículo caduca pronto. Si quieres, podemos hacer la revisión previa. ¡Llámanos!",
+    mensaje: "Hola {{nombre}}, puedes pedir cita en nuestro taller cuando quieras. ¿Qué día te viene mejor? ¡Un saludo!",
   },
   {
     id: "revision",
-    label: "Toca revisión",
+    label: "Te toca revisión",
     emoji: "🔧",
-    mensaje: "Hola {{nombre}}, según nuestros registros, a tu vehículo le toca revisión. ¿Quieres que te reservemos cita? ¡Un saludo!",
+    mensaje: "Hola {{nombre}}, a tu vehículo le toca revisión. ¿Reservamos cita? ¡Un saludo!",
   },
 ];
