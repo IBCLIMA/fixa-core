@@ -23,6 +23,7 @@ import {
   Zap,
   Star,
   ShieldCheck,
+  AlertCircle,
 } from "lucide-react";
 
 const interrupciones = [
@@ -147,80 +148,40 @@ export default function HoyPage() {
 
   return (
     <div className="space-y-8">
+
       {/* ═══ HERO ═══ */}
-      <div className="space-y-4">
-        <div className="rounded-xl bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/20 p-5">
-          <div className="flex items-start gap-3">
-            <PhoneOff className="mt-1 h-7 w-7 shrink-0 text-amber-500" />
+      <div className="rounded-xl bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/20 p-5">
+        <div className="flex items-start gap-3">
+          <PhoneOff className="mt-1 h-7 w-7 shrink-0 text-amber-500" />
+          <div className="space-y-2">
+            <h1 className="text-xl font-extrabold tracking-tight leading-tight">
+              Si no paras de coger el teléfono en el taller, esto es para ti
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              FIXA responde a tus clientes por ti y te deja trabajar sin interrupciones
+            </p>
+            <p className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-2.5 py-1 text-xs font-semibold text-green-400">
+              <Zap className="h-3 w-3" />
+              En menos de 7 días funcionando
+            </p>
             <div>
-              <h1 className="text-xl font-extrabold tracking-tight leading-tight">
-                Pierdes horas cada semana atendiendo el teléfono del taller
-              </h1>
-              <p className="mt-2 text-sm text-muted-foreground">
-                FIXA responde por ti y organiza tus citas sin llamadas
-              </p>
-              <p className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-2.5 py-1 text-xs font-semibold text-green-400">
-                <Zap className="h-3 w-3" />
-                En menos de 7 días funcionando
-              </p>
               <Button
                 onClick={scrollToDemo}
-                className="mt-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-black font-semibold"
+                className="mt-2 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-black font-semibold"
                 size="lg"
               >
                 <ArrowDown className="mr-2 h-4 w-4" />
-                Ver cómo funciona
+                Quiero verlo
               </Button>
             </div>
           </div>
         </div>
-
-        {/* Contador visual */}
-        <div className="rounded-lg bg-red-950/20 border border-red-900/20 px-4 py-3 text-center">
-          <p className="text-2xl font-extrabold text-red-400">15 llamadas</p>
-          <p className="text-xs text-muted-foreground">
-            podrías evitar hoy con FIXA
-          </p>
-        </div>
       </div>
 
-      {/* ═══ LO QUE GANAS ═══ */}
-      <div className="space-y-3">
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          Lo que ganas con FIXA
-        </h2>
-        <div className="grid grid-cols-2 gap-2">
-          <Card>
-            <CardContent className="flex items-center gap-3 p-3">
-              <PhoneCall className="h-5 w-5 shrink-0 text-green-500" />
-              <p className="text-xs font-medium">Menos llamadas cada día</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="flex items-center gap-3 p-3">
-              <Timer className="h-5 w-5 shrink-0 text-amber-500" />
-              <p className="text-xs font-medium">Menos interrupciones trabajando</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="flex items-center gap-3 p-3">
-              <Users className="h-5 w-5 shrink-0 text-blue-500" />
-              <p className="text-xs font-medium">Clientes atendidos sin perder tiempo</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="flex items-center gap-3 p-3">
-              <BarChart3 className="h-5 w-5 shrink-0 text-purple-500" />
-              <p className="text-xs font-medium">Más control sin complicarte</p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      {/* ═══ DEMO: ASÍ FUNCIONA ═══ */}
+      {/* ═══ DEMO — SUBIDA ARRIBA ═══ */}
       <div id="demo" className="space-y-3">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          Así funciona en 10 segundos
+          Así funciona en menos de 10 segundos
         </h2>
         <p className="text-sm text-muted-foreground">
           El cliente pregunta → tú pulsas un botón → WhatsApp listo
@@ -276,6 +237,63 @@ export default function HoyPage() {
             </Card>
           );
         })}
+      </div>
+
+      {/* ═══ ¿CUÁNTO TIEMPO PIERDES? ═══ */}
+      <div className="space-y-3">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          ¿Cuánto tiempo pierdes?
+        </h2>
+        <Card className="border-red-900/30 bg-red-950/10">
+          <CardContent className="p-4 space-y-3">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-400" />
+              <div className="space-y-2">
+                <p className="text-sm font-medium">¿Cuántas llamadas atiendes al día?</p>
+                <p className="text-sm font-medium">¿Cuántas veces te interrumpen mientras trabajas?</p>
+                <p className="text-sm font-medium">¿Cuánto tiempo pierdes respondiendo siempre lo mismo?</p>
+              </div>
+            </div>
+            <div className="border-t border-red-900/20 pt-3">
+              <p className="text-center text-sm font-extrabold text-amber-500">
+                FIXA hace eso por ti
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* ═══ LO QUE GANAS ═══ */}
+      <div className="space-y-3">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          Lo que ganas con FIXA
+        </h2>
+        <div className="grid grid-cols-2 gap-2">
+          <Card>
+            <CardContent className="flex items-center gap-3 p-3">
+              <PhoneCall className="h-5 w-5 shrink-0 text-green-500" />
+              <p className="text-xs font-medium">Menos llamadas cada día</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="flex items-center gap-3 p-3">
+              <Timer className="h-5 w-5 shrink-0 text-amber-500" />
+              <p className="text-xs font-medium">Menos interrupciones trabajando</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="flex items-center gap-3 p-3">
+              <Users className="h-5 w-5 shrink-0 text-blue-500" />
+              <p className="text-xs font-medium">Clientes atendidos sin perder tiempo</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="flex items-center gap-3 p-3">
+              <BarChart3 className="h-5 w-5 shrink-0 text-purple-500" />
+              <p className="text-xs font-medium">Más control sin complicarte</p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {/* ═══ CITAS DE HOY ═══ */}
@@ -382,9 +400,7 @@ export default function HoyPage() {
             <p className="text-sm italic text-foreground/80">
               "Antes no paraba el teléfono. Ahora muchas respuestas salen solas. Mis mecánicos trabajan sin que nadie les interrumpa."
             </p>
-            <p className="text-xs text-muted-foreground">
-              Taller mecánico · 3 operarios
-            </p>
+            <p className="text-xs text-muted-foreground">Taller mecánico · 3 operarios</p>
           </CardContent>
         </Card>
 
@@ -398,9 +414,7 @@ export default function HoyPage() {
             <p className="text-sm italic text-foreground/80">
               "Nos ahorra tiempo todos los días. Los clientes reciben los avisos sin que tengamos que llamar uno por uno."
             </p>
-            <p className="text-xs text-muted-foreground">
-              Taller pequeño · 2 operarios
-            </p>
+            <p className="text-xs text-muted-foreground">Taller pequeño · 2 operarios</p>
           </CardContent>
         </Card>
 
@@ -414,9 +428,7 @@ export default function HoyPage() {
             <p className="text-sm italic text-foreground/80">
               "Lo mejor es que no tuve que aprender nada. Me lo dejaron montado y funciona desde el móvil."
             </p>
-            <p className="text-xs text-muted-foreground">
-              Taller multimarca · 1 operario
-            </p>
+            <p className="text-xs text-muted-foreground">Taller multimarca · 1 operario</p>
           </CardContent>
         </Card>
       </div>
@@ -461,6 +473,9 @@ export default function HoyPage() {
           <MessageSquare className="mr-2 h-4 w-4" />
           Quiero dejar de perder tiempo
         </Button>
+        <p className="text-[11px] text-muted-foreground">
+          Estamos activando los primeros talleres ahora
+        </p>
       </div>
     </div>
   );
