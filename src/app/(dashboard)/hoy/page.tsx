@@ -19,6 +19,10 @@ import {
   Timer,
   Users,
   BarChart3,
+  Smartphone,
+  Zap,
+  Star,
+  ShieldCheck,
 } from "lucide-react";
 
 const interrupciones = [
@@ -154,6 +158,10 @@ export default function HoyPage() {
               </h1>
               <p className="mt-2 text-sm text-muted-foreground">
                 FIXA responde por ti y organiza tus citas sin llamadas
+              </p>
+              <p className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-2.5 py-1 text-xs font-semibold text-green-400">
+                <Zap className="h-3 w-3" />
+                En menos de 7 días funcionando
               </p>
               <Button
                 onClick={scrollToDemo}
@@ -358,6 +366,86 @@ export default function HoyPage() {
         </div>
       </div>
 
+      {/* ═══ PRUEBA SOCIAL ═══ */}
+      <div className="space-y-3">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          Talleres como el tuyo ya están evitando llamadas
+        </h2>
+
+        <Card>
+          <CardContent className="p-4 space-y-2">
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Star key={i} className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+              ))}
+            </div>
+            <p className="text-sm italic text-foreground/80">
+              "Antes no paraba el teléfono. Ahora muchas respuestas salen solas. Mis mecánicos trabajan sin que nadie les interrumpa."
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Taller mecánico · 3 operarios
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4 space-y-2">
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Star key={i} className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+              ))}
+            </div>
+            <p className="text-sm italic text-foreground/80">
+              "Nos ahorra tiempo todos los días. Los clientes reciben los avisos sin que tengamos que llamar uno por uno."
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Taller pequeño · 2 operarios
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4 space-y-2">
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Star key={i} className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+              ))}
+            </div>
+            <p className="text-sm italic text-foreground/80">
+              "Lo mejor es que no tuve que aprender nada. Me lo dejaron montado y funciona desde el móvil."
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Taller multimarca · 1 operario
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* ═══ SIN COMPLICACIONES ═══ */}
+      <div className="space-y-3">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          No tienes que aprender nada
+        </h2>
+        <div className="space-y-2">
+          <div className="flex items-center gap-3 rounded-lg border border-border p-3">
+            <ShieldCheck className="h-5 w-5 shrink-0 text-green-500" />
+            <p className="text-sm">No cambias cómo trabajas</p>
+          </div>
+          <div className="flex items-center gap-3 rounded-lg border border-border p-3">
+            <Smartphone className="h-5 w-5 shrink-0 text-green-500" />
+            <p className="text-sm">No necesitas ordenador — funciona desde el móvil</p>
+          </div>
+          <div className="flex items-center gap-3 rounded-lg border border-border p-3">
+            <Zap className="h-5 w-5 shrink-0 text-green-500" />
+            <p className="text-sm">Lo dejamos todo montado — no tocas nada</p>
+          </div>
+          <div className="flex items-center gap-3 rounded-lg border border-border p-3">
+            <CheckCircle2 className="h-5 w-5 shrink-0 text-green-500" />
+            <p className="text-sm">En menos de 7 días funcionando</p>
+          </div>
+        </div>
+      </div>
+
       {/* ═══ CTA FINAL ═══ */}
       <div className="rounded-xl bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/20 p-5 text-center space-y-3">
         <p className="text-lg font-extrabold">
@@ -371,7 +459,7 @@ export default function HoyPage() {
           size="lg"
         >
           <MessageSquare className="mr-2 h-4 w-4" />
-          Quiero probarlo
+          Quiero dejar de perder tiempo
         </Button>
       </div>
     </div>
