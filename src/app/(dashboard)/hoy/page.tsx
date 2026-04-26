@@ -3,27 +3,54 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Car,
   Clock,
   CheckCircle2,
   FileText,
   CalendarDays,
-  Bell,
   Wrench,
   Send,
   MessageSquare,
   PhoneOff,
   Check,
+  ArrowDown,
+  PhoneCall,
+  Timer,
+  Users,
+  BarChart3,
 } from "lucide-react";
+
+const interrupciones = [
+  {
+    id: "1",
+    cliente: "Laura Sánchez",
+    pregunta: "¿Está listo mi coche?",
+    telefono: "34645678901",
+    mensaje: "Hola Laura, tu coche ya está listo para recoger. Puedes pasar cuando quieras. ¡Un saludo!",
+  },
+  {
+    id: "2",
+    cliente: "Carlos Ruiz",
+    pregunta: "¿Tenéis cita para la semana que viene?",
+    telefono: "34656789012",
+    mensaje: "Hola Carlos, claro que sí. ¿Qué día te viene mejor? ¡Un saludo!",
+  },
+  {
+    id: "3",
+    cliente: "Ana Fernández",
+    pregunta: "¿Cuándo me toca revisión?",
+    telefono: "34667890123",
+    mensaje: "Hola Ana, a tu vehículo le toca revisión. ¿Reservamos cita? ¡Un saludo!",
+  },
+];
 
 const citasHoy = [
   {
     id: "1",
     hora: "09:30",
     nombre: "Antonio García",
-    vehiculo: "Seat León — 4532 HBK",
+    vehiculo: "4532 HBK",
     motivo: "Revisión de frenos",
     estado: "en_taller" as const,
     telefono: "34612345678",
@@ -32,7 +59,7 @@ const citasHoy = [
     id: "2",
     hora: "11:00",
     nombre: "María López",
-    vehiculo: "Renault Clio — 7891 JNM",
+    vehiculo: "7891 JNM",
     motivo: "Cambio aceite y filtros",
     estado: "listo" as const,
     telefono: "34623456789",
@@ -41,43 +68,10 @@ const citasHoy = [
     id: "3",
     hora: "16:30",
     nombre: "Pedro Martínez",
-    vehiculo: "VW Golf — 2345 FGT",
+    vehiculo: "2345 FGT",
     motivo: "Ruido en suspensión",
     estado: "pendiente" as const,
     telefono: "34634567890",
-  },
-];
-
-const interrupciones = [
-  {
-    id: "1",
-    cliente: "Laura Sánchez",
-    pregunta: "¿Está listo mi coche?",
-    respuesta: "Respuesta automática disponible",
-    boton: "Coche listo",
-    color: "text-green-500",
-    telefono: "34645678901",
-    mensaje: "Hola Laura, tu coche ya está listo para recoger. Puedes pasar cuando quieras. ¡Un saludo!",
-  },
-  {
-    id: "2",
-    cliente: "Carlos Ruiz",
-    pregunta: "¿Tenéis cita para la semana que viene?",
-    respuesta: "Link de cita listo para enviar",
-    boton: "Enviar cita",
-    color: "text-amber-500",
-    telefono: "34656789012",
-    mensaje: "Hola Carlos, claro que sí. Puedes reservar tu cita aquí. ¿Qué día te viene mejor? ¡Un saludo!",
-  },
-  {
-    id: "3",
-    cliente: "Ana Fernández",
-    pregunta: "¿Cuándo me toca revisión?",
-    respuesta: "Aviso automático preparado",
-    boton: "Enviar aviso",
-    color: "text-purple-500",
-    telefono: "34667890123",
-    mensaje: "Hola Ana, según nuestros registros, a tu vehículo le toca revisión. ¿Reservamos cita? ¡Un saludo!",
   },
 ];
 
@@ -130,10 +124,7 @@ export default function HoyPage() {
     const texto = mensaje.replace(/\{\{nombre\}\}/g, nombre.split(" ")[0]);
     setEnviados((prev) => new Set(prev).add(id));
     setTimeout(() => {
-      window.open(
-        `https://wa.me/${telefono}?text=${encodeURIComponent(texto)}`,
-        "_blank"
-      );
+      window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(texto)}`, "_blank");
     }, 400);
   }
 
@@ -141,70 +132,124 @@ export default function HoyPage() {
     setAccionEnviada(id);
     const texto = mensaje.replace(/\{\{nombre\}\}/g, "Antonio");
     setTimeout(() => {
-      window.open(
-        `https://wa.me/${citasHoy[0].telefono}?text=${encodeURIComponent(texto)}`,
-        "_blank"
-      );
+      window.open(`https://wa.me/${citasHoy[0].telefono}?text=${encodeURIComponent(texto)}`, "_blank");
     }, 600);
     setTimeout(() => setAccionEnviada(null), 2000);
   }
 
+  function scrollToDemo() {
+    document.getElementById("demo")?.scrollIntoView({ behavior: "smooth" });
+  }
+
   return (
-    <div className="space-y-6">
-      {/* Hero — impacto inmediato */}
-      <div className="rounded-xl bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/20 p-4">
-        <div className="flex items-start gap-3">
-          <PhoneOff className="mt-0.5 h-6 w-6 shrink-0 text-amber-500" />
-          <div>
-            <h1 className="text-xl font-extrabold tracking-tight">
-              Deja de coger el teléfono 50 veces al día
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              FIXA responde a tus clientes por ti
-            </p>
+    <div className="space-y-8">
+      {/* ═══ HERO ═══ */}
+      <div className="space-y-4">
+        <div className="rounded-xl bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/20 p-5">
+          <div className="flex items-start gap-3">
+            <PhoneOff className="mt-1 h-7 w-7 shrink-0 text-amber-500" />
+            <div>
+              <h1 className="text-xl font-extrabold tracking-tight leading-tight">
+                Pierdes horas cada semana atendiendo el teléfono del taller
+              </h1>
+              <p className="mt-2 text-sm text-muted-foreground">
+                FIXA responde por ti y organiza tus citas sin llamadas
+              </p>
+              <Button
+                onClick={scrollToDemo}
+                className="mt-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-black font-semibold"
+                size="lg"
+              >
+                <ArrowDown className="mr-2 h-4 w-4" />
+                Ver cómo funciona
+              </Button>
+            </div>
           </div>
+        </div>
+
+        {/* Contador visual */}
+        <div className="rounded-lg bg-red-950/20 border border-red-900/20 px-4 py-3 text-center">
+          <p className="text-2xl font-extrabold text-red-400">15 llamadas</p>
+          <p className="text-xs text-muted-foreground">
+            podrías evitar hoy con FIXA
+          </p>
         </div>
       </div>
 
-      {/* Simulación real — LO QUE ESTÁ PASANDO AHORA */}
-      <div className="space-y-2">
+      {/* ═══ LO QUE GANAS ═══ */}
+      <div className="space-y-3">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          Lo que está pasando ahora
+          Lo que ganas con FIXA
         </h2>
+        <div className="grid grid-cols-2 gap-2">
+          <Card>
+            <CardContent className="flex items-center gap-3 p-3">
+              <PhoneCall className="h-5 w-5 shrink-0 text-green-500" />
+              <p className="text-xs font-medium">Menos llamadas cada día</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="flex items-center gap-3 p-3">
+              <Timer className="h-5 w-5 shrink-0 text-amber-500" />
+              <p className="text-xs font-medium">Menos interrupciones trabajando</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="flex items-center gap-3 p-3">
+              <Users className="h-5 w-5 shrink-0 text-blue-500" />
+              <p className="text-xs font-medium">Clientes atendidos sin perder tiempo</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="flex items-center gap-3 p-3">
+              <BarChart3 className="h-5 w-5 shrink-0 text-purple-500" />
+              <p className="text-xs font-medium">Más control sin complicarte</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* ═══ DEMO: ASÍ FUNCIONA ═══ */}
+      <div id="demo" className="space-y-3">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          Así funciona en 10 segundos
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          El cliente pregunta → tú pulsas un botón → WhatsApp listo
+        </p>
 
         {interrupciones.map((item) => {
           const yaEnviado = enviados.has(item.id);
           return (
             <Card key={item.id} className="overflow-hidden">
               <CardContent className="p-0">
-                {/* Pregunta del cliente */}
-                <div className="border-b border-border bg-muted/30 px-3 py-2">
+                <div className="border-b border-border bg-muted/30 px-3 py-2.5">
                   <div className="flex items-center gap-2">
                     <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
-                    <span className="text-xs text-muted-foreground">{item.cliente} pregunta:</span>
+                    <span className="text-xs text-muted-foreground">{item.cliente}:</span>
                   </div>
                   <p className="mt-0.5 font-medium text-sm">"{item.pregunta}"</p>
                 </div>
-
-                {/* Respuesta FIXA */}
                 <div className="flex items-center justify-between px-3 py-2.5">
-                  <div className="flex items-center gap-2">
-                    {yaEnviado ? (
+                  {yaEnviado ? (
+                    <div className="flex items-center gap-2">
                       <Check className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <Send className={`h-4 w-4 ${item.color}`} />
-                    )}
-                    <span className={`text-xs ${yaEnviado ? "text-green-500 font-medium" : "text-muted-foreground"}`}>
-                      {yaEnviado ? "Mensaje preparado · WhatsApp listo" : item.respuesta}
-                    </span>
-                  </div>
+                      <div>
+                        <p className="text-xs font-medium text-green-500">Mensaje listo</p>
+                        <p className="text-[10px] text-green-500/70">WhatsApp preparado</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">Respuesta lista para enviar</span>
+                  )}
                   <Button
                     size="sm"
-                    variant={yaEnviado ? "ghost" : "default"}
-                    className={`text-xs ${yaEnviado ? "text-green-500" : "bg-green-600 hover:bg-green-700"}`}
-                    onClick={() =>
-                      enviarWhatsApp(item.id, item.telefono, item.cliente, item.mensaje)
-                    }
+                    className={`text-xs ${
+                      yaEnviado
+                        ? "bg-green-600/20 text-green-500 hover:bg-green-600/30"
+                        : "bg-green-600 hover:bg-green-700"
+                    }`}
+                    onClick={() => enviarWhatsApp(item.id, item.telefono, item.cliente, item.mensaje)}
                   >
                     {yaEnviado ? (
                       <>
@@ -213,6 +258,7 @@ export default function HoyPage() {
                       </>
                     ) : (
                       <>
+                        <Send className="mr-1 h-3 w-3" />
                         Responder
                       </>
                     )}
@@ -224,15 +270,13 @@ export default function HoyPage() {
         })}
       </div>
 
-      {/* Citas de hoy */}
+      {/* ═══ CITAS DE HOY ═══ */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Citas de hoy
           </h2>
-          <span className="text-xs text-muted-foreground">
-            {citasHoy.length} vehículos
-          </span>
+          <span className="text-xs text-muted-foreground">{citasHoy.length} vehículos</span>
         </div>
 
         {citasHoy.map((cita) => {
@@ -252,12 +296,11 @@ export default function HoyPage() {
                     </span>
                     <span className="flex items-center gap-1">
                       <Car className="h-3 w-3" />
-                      {cita.vehiculo.split("—")[1]?.trim()}
+                      {cita.vehiculo}
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground">{cita.motivo}</p>
                 </div>
-
                 {cita.estado === "listo" && (
                   <Button
                     size="sm"
@@ -267,7 +310,7 @@ export default function HoyPage() {
                         `cita-${cita.id}`,
                         cita.telefono,
                         cita.nombre,
-                        "Hola {{nombre}}, tu coche ya está listo. Puedes pasar a recogerlo cuando quieras. ¡Un saludo!"
+                        "Hola {{nombre}}, tu coche ya está listo. Puedes pasar a recogerlo. ¡Un saludo!"
                       )
                     }
                   >
@@ -281,7 +324,7 @@ export default function HoyPage() {
         })}
       </div>
 
-      {/* Acciones rápidas */}
+      {/* ═══ ACCIONES RÁPIDAS ═══ */}
       <div className="space-y-2">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
           Responde en 1 clic
@@ -293,9 +336,7 @@ export default function HoyPage() {
               <Button
                 key={accion.id}
                 className={`h-20 flex-col gap-0.5 text-white transition-all ${
-                  enviado
-                    ? "bg-green-600 scale-95"
-                    : accion.color
+                  enviado ? "bg-green-600 scale-95" : accion.color
                 }`}
                 onClick={() => enviarAccion(accion.id, accion.mensaje)}
               >
@@ -317,11 +358,21 @@ export default function HoyPage() {
         </div>
       </div>
 
-      {/* Footer de valor */}
-      <div className="rounded-lg bg-muted/30 border border-border p-3 text-center">
-        <p className="text-xs text-muted-foreground">
+      {/* ═══ CTA FINAL ═══ */}
+      <div className="rounded-xl bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/20 p-5 text-center space-y-3">
+        <p className="text-lg font-extrabold">
+          Te lo enseño en 10 minutos y lo tienes funcionando en días
+        </p>
+        <p className="text-sm text-muted-foreground">
           Menos llamadas · Menos interrupciones · Trabaja sin parar
         </p>
+        <Button
+          className="bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-black font-semibold"
+          size="lg"
+        >
+          <MessageSquare className="mr-2 h-4 w-4" />
+          Quiero probarlo
+        </Button>
       </div>
     </div>
   );
