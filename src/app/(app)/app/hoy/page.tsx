@@ -123,15 +123,15 @@ export default function HoyPage() {
       {/* Estado vacío */}
       {sinDatos && (
         <div className="rounded-2xl border border-border/60 bg-card p-8 text-center space-y-4">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
-            <Users className="h-6 w-6 text-primary" />
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/10">
+            <Users className="h-6 w-6 text-amber-600" />
           </div>
           <div className="space-y-1">
             <p className="font-bold">Empieza añadiendo tu primer cliente</p>
             <p className="text-sm text-muted-foreground">Después podrás enviar mensajes y crear citas.</p>
           </div>
           <Link href="/app/clientes">
-            <Button size="lg" className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
+            <Button size="lg" className="rounded-full bg-primary text-white hover:bg-primary/90 font-semibold">
               <Plus className="mr-2 h-4 w-4" />
               Añadir cliente
             </Button>
@@ -248,7 +248,7 @@ export default function HoyPage() {
           <div className="max-h-72 space-y-1 overflow-y-auto">
             {clientes.map((c) => (
               <button key={c.id} className="flex w-full items-center gap-3 rounded-xl p-3 text-left active:bg-accent hover:bg-accent transition-colors" onClick={() => enviarMensaje(c.id)}>
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10"><User className="h-4 w-4 text-primary" /></div>
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-500/10"><User className="h-4 w-4 text-amber-600" /></div>
                 <div className="min-w-0">
                   <p className="text-sm font-semibold truncate">{c.nombre}</p>
                   {c.vehiculo && <p className="text-xs text-muted-foreground truncate">{c.vehiculo}</p>}

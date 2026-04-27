@@ -18,8 +18,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-[100dvh] flex-col bg-background antialiased">
       <header className="border-b border-border/40 bg-card/70 backdrop-blur-lg px-5 py-3.5">
         <div className="mx-auto flex max-w-lg items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-            <Wrench className="h-3.5 w-3.5 text-primary-foreground" />
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500">
+            <Wrench className="h-3.5 w-3.5 text-amber-600-foreground" />
           </div>
           <span className="text-base font-extrabold tracking-tight">FIXA</span>
         </div>
@@ -40,7 +40,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 className={cn(
                   "flex flex-1 flex-col items-center gap-1 py-3.5 text-xs font-semibold transition-colors",
                   isActive
-                    ? "text-primary"
+                    ? "text-amber-600"
                     : "text-muted-foreground active:text-foreground"
                 )}
               >

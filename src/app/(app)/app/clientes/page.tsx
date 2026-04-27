@@ -94,8 +94,8 @@ export default function ClientesPage() {
         <div className="rounded-2xl border border-border/60 bg-card divide-y divide-border/40">
           {filtrados.map((c) => (
             <div key={c.id} className="flex items-center gap-3 p-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                <User className="h-4 w-4 text-primary" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-500/10">
+                <User className="h-4 w-4 text-amber-600" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold truncate">{c.nombre}</p>

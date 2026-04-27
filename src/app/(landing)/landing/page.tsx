@@ -48,7 +48,7 @@ function SectionHeader({
 }) {
   return (
     <div className="mx-auto max-w-2xl text-center space-y-4 mb-14">
-      <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+      <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent-foreground">
         {tag}
       </p>
       <h2 className="text-3xl font-extrabold tracking-tight leading-tight lg:text-[2.5rem]">
@@ -76,7 +76,7 @@ export default function LandingPage() {
             <span className="text-lg font-extrabold tracking-tight">FIXA</span>
           </div>
           <Link href="/app/hoy">
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold rounded-full px-5">
+            <Button className="bg-primary text-white hover:bg-primary/90 font-semibold rounded-full px-5">
               Probar ahora
               <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
             </Button>
@@ -86,22 +86,22 @@ export default function LandingPage() {
 
       {/* ── HERO ── */}
       <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute -top-60 left-1/2 h-[600px] w-[800px] -translate-x-1/2 rounded-full bg-primary/4 blur-[150px]" />
-        <div className="pointer-events-none absolute top-40 -right-60 h-[400px] w-[400px] rounded-full bg-primary/6 blur-[120px]" />
+        <div className="pointer-events-none absolute -top-60 left-1/2 h-[600px] w-[800px] -translate-x-1/2 rounded-full bg-accent/10 blur-[150px]" />
+        <div className="pointer-events-none absolute top-40 -right-60 h-[400px] w-[400px] rounded-full bg-accent/8 blur-[120px]" />
 
         <div className="mx-auto max-w-5xl px-6 pb-24 pt-20 lg:pt-32 lg:pb-32">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div className="space-y-8">
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2">
+              <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-2">
                 <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-xs font-semibold text-primary">
+                <span className="text-xs font-semibold text-accent-foreground">
                   Creado por un mecánico para mecánicos
                 </span>
               </div>
 
               <h1 className="text-[2.5rem] font-extrabold tracking-tight leading-[1.08] lg:text-[3.2rem]">
                 Tu taller no necesita más llamadas.{" "}
-                <span className="text-primary">Necesita FIXA.</span>
+                <span className="text-amber-600">Necesita FIXA.</span>
               </h1>
 
               <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
@@ -113,7 +113,7 @@ export default function LandingPage() {
                 <Link href="/app/hoy">
                   <Button
                     size="lg"
-                    className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold h-13 px-7 text-base rounded-full"
+                    className="bg-primary text-white hover:bg-primary/90 font-semibold h-13 px-7 text-base rounded-full"
                   >
                     Ver cómo funciona
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -127,7 +127,7 @@ export default function LandingPage() {
 
             {/* Mockup del producto */}
             <div className="relative hidden lg:block">
-              <div className="rounded-2xl border border-border/60 bg-card p-3 shadow-2xl shadow-black/20">
+              <div className="rounded-2xl border border-border bg-card p-3 shadow-2xl shadow-black/5">
                 <div className="rounded-xl bg-background p-5 space-y-4">
                   <div className="flex items-center gap-2 text-sm font-bold">
                     <Wrench className="h-4 w-4 text-primary" />
@@ -170,7 +170,7 @@ export default function LandingPage() {
                   </div>
                 </div>
               </div>
-              <div className="absolute -bottom-4 -right-4 -z-10 h-full w-full rounded-2xl bg-primary/10 blur-sm" />
+              <div className="absolute -bottom-4 -right-4 -z-10 h-full w-full rounded-2xl bg-accent/15 blur-sm" />
             </div>
           </div>
         </div>
@@ -189,7 +189,7 @@ export default function LandingPage() {
               key={stat.label}
               className={`px-6 py-8 text-center ${i < 3 ? "border-r border-border/40" : ""} ${i < 2 ? "border-b border-border/40 lg:border-b-0" : ""}`}
             >
-              <p className="text-3xl font-extrabold text-primary lg:text-4xl">
+              <p className="text-3xl font-extrabold text-amber-600 lg:text-4xl">
                 {stat.value}
               </p>
               <p className="mt-2 text-xs text-muted-foreground">
@@ -204,7 +204,7 @@ export default function LandingPage() {
       <Section>
         <div className="mb-14 grid gap-10 lg:grid-cols-2 lg:items-center">
           <div className="space-y-4">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent-foreground">
               El problema
             </p>
             <h2 className="text-3xl font-extrabold tracking-tight leading-tight lg:text-[2.5rem]">
@@ -222,7 +222,7 @@ export default function LandingPage() {
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
           </div>
         </div>
         <div className="grid gap-5 sm:grid-cols-3">
@@ -277,8 +277,8 @@ export default function LandingPage() {
             },
             {
               icon: CalendarDays,
-              color: "bg-primary/10 text-primary group-hover:bg-primary/15",
-              border: "hover:border-primary/20",
+              color: "bg-amber-500/10 text-amber-600 group-hover:bg-amber-500/15",
+              border: "hover:border-amber-500/30",
               title: "Citas organizadas",
               desc: "Crea citas con fecha, hora y motivo. Ve las de hoy y las próximas de un vistazo.",
             },
@@ -340,7 +340,7 @@ export default function LandingPage() {
             },
           ].map((item) => (
             <div key={item.step} className="space-y-4">
-              <span className="text-6xl font-extrabold text-primary/15 leading-none">
+              <span className="text-6xl font-extrabold text-amber-500/20 leading-none">
                 {item.step}
               </span>
               <h3 className="text-xl font-bold">{item.title}</h3>
@@ -394,7 +394,7 @@ export default function LandingPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
           </div>
           <div className="space-y-6 order-1 lg:order-2">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent-foreground">
               Quién está detrás
             </p>
             <h2 className="text-3xl font-extrabold tracking-tight lg:text-[2.5rem]">
@@ -417,12 +417,12 @@ export default function LandingPage() {
 
       {/* ── CTA ── */}
       <section className="relative overflow-hidden border-t border-border/40">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/3 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent" />
         <div className="mx-auto max-w-5xl px-6 py-24 lg:py-32">
           <div className="mx-auto max-w-2xl text-center space-y-8">
             <h2 className="text-3xl font-extrabold tracking-tight lg:text-[2.5rem] leading-tight">
               Deja de perder tiempo.{" "}
-              <span className="text-primary">Empieza a usar FIXA.</span>
+              <span className="text-amber-600">Empieza a usar FIXA.</span>
             </h2>
             <p className="text-lg text-muted-foreground">
               Te lo enseñamos en 10 minutos y lo tienes funcionando en tu taller
@@ -431,7 +431,7 @@ export default function LandingPage() {
             <Link href="/app/hoy">
               <Button
                 size="lg"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold h-13 px-8 text-base rounded-full"
+                className="bg-primary text-white hover:bg-primary/90 font-semibold h-13 px-8 text-base rounded-full"
               >
                 Quiero dejar de perder tiempo
                 <ArrowRight className="ml-2 h-4 w-4" />
