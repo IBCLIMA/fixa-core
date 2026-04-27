@@ -160,10 +160,6 @@ export default function HoyPage() {
             <p className="text-sm text-muted-foreground">
               FIXA responde a tus clientes por ti y te deja trabajar sin interrupciones
             </p>
-            <p className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-2.5 py-1 text-xs font-semibold text-green-400">
-              <Zap className="h-3 w-3" />
-              En menos de 7 días funcionando
-            </p>
             <div>
               <Button
                 onClick={scrollToDemo}
@@ -174,12 +170,19 @@ export default function HoyPage() {
                 Quiero verlo
               </Button>
             </div>
+            <p className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-2.5 py-1 text-xs font-semibold text-green-400">
+              <Zap className="h-3 w-3" />
+              En menos de 7 días funcionando
+            </p>
           </div>
         </div>
       </div>
 
       {/* ═══ DEMO — SUBIDA ARRIBA ═══ */}
       <div id="demo" className="space-y-3">
+        <p className="text-[11px] text-muted-foreground italic">
+          Esto es exactamente lo que verá tu cliente
+        </p>
         <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
           Así funciona en menos de 10 segundos
         </h2>
@@ -474,7 +477,7 @@ export default function HoyPage() {
           Quiero dejar de perder tiempo
         </Button>
         <p className="text-[11px] text-muted-foreground">
-          Estamos activando los primeros talleres ahora
+          Estamos activando los primeros talleres ahora · Sin permanencia
         </p>
       </div>
     </div>
