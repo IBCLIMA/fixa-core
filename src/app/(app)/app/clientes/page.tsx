@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
-import { plantillas, enviarWhatsApp, type Cliente } from "@/lib/data";
+import { plantillas, abrirWhatsApp, type Cliente, type RegistroMensaje } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,15 +13,32 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Search, User, MessageSquare, Trash2, Phone, Car } from "lucide-react";
+import {
+  Plus,
+  Search,
+  User,
+  MessageSquare,
+  Trash2,
+  Phone,
+  Car,
+  Pencil,
+} from "lucide-react";
 import { toast } from "sonner";
 
 export default function ClientesPage() {
-  const [clientes, setClientes, loaded] = useLocalStorage<Cliente[]>("fixa-clientes", []);
+  const [clientes, setClientes, loaded] = useLocalStorage<Cliente[]>(
+    "fixa-clientes",
+    []
+  );
+  const [registro, setRegistro] = useLocalStorage<RegistroMensaje[]>(
+    "fixa-registro",
+    []
+  );
   const [busqueda, setBusqueda] = useState("");
   const [mostrarForm, setMostrarForm] = useState(false);
+  const [editando, setEditando] = useState<Cliente | null>(null);
   const [clienteMsg, setClienteMsg] = useState<Cliente | null>(null);
-  const [nuevo, setNuevo] = useState({ nombre: "", telefono: "", vehiculo: "" });
+  const [form, setForm] = useState({ nombre: "", telefono: "", vehiculo: "" });
 
   const filtrados = clientes.filter(
     (c) =>
@@ -30,86 +47,91 @@ export default function ClientesPage() {
       c.telefono.includes(busqueda)
   );
 
-  function agregar() {
-    if (!nuevo.nombre || !nuevo.telefono) return;
-    const cliente: Cliente = {
-      id: Date.now().toString(),
-      nombre: nuevo.nombre,
-      telefono: nuevo.telefono.replace(/\s/g, "").replace(/^\+/, ""),
-      vehiculo: nuevo.vehiculo,
-    };
-    setClientes([...clientes, cliente]);
-    setNuevo({ nombre: "", telefono: "", vehiculo: "" });
+  function abrirNuevo() {
+    setForm({ nombre: "", telefono: "", vehiculo: "" });
+    setEditando(null);
+    setMostrarForm(true);
+  }
+
+  function abrirEdicion(c: Cliente) {
+    setForm({ nombre: c.nombre, telefono: c.telefono, vehiculo: c.vehiculo });
+    setEditando(c);
+    setMostrarForm(true);
+  }
+
+  function guardar() {
+    const nombre = form.nombre.trim();
+    const telefono = form.telefono.replace(/\s/g, "").replace(/^\+/, "");
+    if (!nombre || !telefono) return;
+
+    if (editando) {
+      setClientes((prev) =>
+        prev.map((c) =>
+          c.id === editando.id
+            ? { ...c, nombre, telefono, vehiculo: form.vehiculo.trim() }
+            : c
+        )
+      );
+      toast.success("Cliente actualizado");
+    } else {
+      setClientes((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          nombre,
+          telefono,
+          vehiculo: form.vehiculo.trim(),
+        },
+      ]);
+      toast.success("Cliente añadido");
+    }
+
+    setForm({ nombre: "", telefono: "", vehiculo: "" });
+    setEditando(null);
     setMostrarForm(false);
-    toast.success("Cliente añadido");
   }
 
   function eliminar(id: string) {
-    setClientes(clientes.filter((c) => c.id !== id));
+    setClientes((prev) => prev.filter((c) => c.id !== id));
+    toast("Cliente eliminado");
+  }
+
+  function enviarMsg(cliente: Cliente, plantillaId: string) {
+    const p = plantillas.find((t) => t.id === plantillaId);
+    if (!p) return;
+    abrirWhatsApp(cliente.telefono, cliente.nombre, p.mensaje);
+    setRegistro((prev) => [
+      {
+        id: Date.now().toString(),
+        clienteNombre: cliente.nombre,
+        plantilla: p.label,
+        fecha: new Date().toISOString(),
+      },
+      ...prev.slice(0, 19),
+    ]);
+    toast.success(`Mensaje preparado para ${cliente.nombre.split(" ")[0]}`);
+    setClienteMsg(null);
   }
 
   if (!loaded) return null;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pb-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-extrabold">Clientes</h1>
-          <p className="text-xs text-muted-foreground">{clientes.length} clientes</p>
+          <p className="text-xs text-muted-foreground">
+            {clientes.length} cliente{clientes.length !== 1 ? "s" : ""}
+          </p>
         </div>
-        <Button size="sm" onClick={() => setMostrarForm(true)}>
+        <Button size="sm" onClick={abrirNuevo}>
           <Plus className="mr-1 h-4 w-4" />
           Nuevo
         </Button>
       </div>
 
-      {/* Formulario nuevo cliente */}
-      {mostrarForm && (
-        <Card>
-          <CardContent className="space-y-3 p-4">
-            <div className="space-y-1">
-              <Label htmlFor="nombre" className="text-xs">Nombre</Label>
-              <Input
-                id="nombre"
-                placeholder="Antonio García"
-                value={nuevo.nombre}
-                onChange={(e) => setNuevo({ ...nuevo, nombre: e.target.value })}
-                className="h-11"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="tel" className="text-xs">Teléfono (con prefijo 34)</Label>
-              <Input
-                id="tel"
-                placeholder="34612345678"
-                value={nuevo.telefono}
-                onChange={(e) => setNuevo({ ...nuevo, telefono: e.target.value })}
-                className="h-11"
-                type="tel"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="vehiculo" className="text-xs">Vehículo</Label>
-              <Input
-                id="vehiculo"
-                placeholder="Seat León — 4532 HBK"
-                value={nuevo.vehiculo}
-                onChange={(e) => setNuevo({ ...nuevo, vehiculo: e.target.value })}
-                className="h-11"
-              />
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={agregar} className="flex-1 h-11">Guardar</Button>
-              <Button variant="ghost" onClick={() => setMostrarForm(false)} className="h-11">
-                Cancelar
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Buscador */}
-      {clientes.length > 0 && (
+      {clientes.length > 3 && (
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -123,23 +145,28 @@ export default function ClientesPage() {
 
       {/* Lista */}
       {clientes.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border p-8 text-center">
-          <User className="mx-auto h-8 w-8 text-muted-foreground" />
-          <p className="mt-2 text-sm font-medium">No hay clientes todavía</p>
-          <p className="text-xs text-muted-foreground">Pulsa "Nuevo" para añadir el primero</p>
-        </div>
+        <Card className="border-dashed">
+          <CardContent className="p-6 text-center space-y-3">
+            <User className="mx-auto h-8 w-8 text-muted-foreground" />
+            <p className="text-sm font-medium">Aún no hay clientes</p>
+            <p className="text-xs text-muted-foreground">
+              Añade el primero para empezar a usar FIXA
+            </p>
+            <Button onClick={abrirNuevo}>
+              <Plus className="mr-1 h-4 w-4" />
+              Añadir cliente
+            </Button>
+          </CardContent>
+        </Card>
       ) : (
         <div className="divide-y divide-border rounded-lg border border-border">
           {filtrados.map((c) => (
-            <div
-              key={c.id}
-              className="flex items-center gap-3 p-3"
-            >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-500/10">
-                <User className="h-4 w-4 text-amber-500" />
+            <div key={c.id} className="flex items-center gap-2 p-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted">
+                <User className="h-4 w-4 text-muted-foreground" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm truncate">{c.nombre}</p>
+                <p className="text-sm font-medium truncate">{c.nombre}</p>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                   {c.vehiculo && (
                     <span className="flex items-center gap-1 truncate">
@@ -149,38 +176,94 @@ export default function ClientesPage() {
                   )}
                   <span className="flex items-center gap-1 shrink-0">
                     <Phone className="h-3 w-3" />
-                    +{c.telefono.slice(-9)}
+                    {c.telefono.slice(-9)}
                   </span>
                 </div>
               </div>
               <Button
                 size="icon"
                 variant="ghost"
-                className="shrink-0 text-green-500"
-                onClick={() => setClienteMsg(c)}
+                className="shrink-0 h-9 w-9"
+                onClick={() => abrirEdicion(c)}
               >
-                <MessageSquare className="h-5 w-5" />
+                <Pencil className="h-4 w-4 text-muted-foreground" />
               </Button>
               <Button
                 size="icon"
                 variant="ghost"
-                className="shrink-0 text-muted-foreground hover:text-destructive"
+                className="shrink-0 h-9 w-9 text-green-500"
+                onClick={() => setClienteMsg(c)}
+              >
+                <MessageSquare className="h-4 w-4" />
+              </Button>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="shrink-0 h-9 w-9 text-muted-foreground hover:text-destructive"
                 onClick={() => eliminar(c.id)}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
           ))}
-          {filtrados.length === 0 && (
+          {filtrados.length === 0 && busqueda && (
             <p className="p-4 text-center text-sm text-muted-foreground">
-              Sin resultados
+              Sin resultados para "{busqueda}"
             </p>
           )}
         </div>
       )}
 
-      {/* Modal mensajes */}
-      <Dialog open={!!clienteMsg} onOpenChange={(open) => !open && setClienteMsg(null)}>
+      {/* Modal: añadir / editar */}
+      <Dialog open={mostrarForm} onOpenChange={setMostrarForm}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-base">
+              {editando ? "Editar cliente" : "Nuevo cliente"}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <Label className="text-xs">Nombre</Label>
+              <Input
+                placeholder="Antonio García"
+                value={form.nombre}
+                onChange={(e) => setForm({ ...form, nombre: e.target.value })}
+                className="h-11"
+                autoFocus
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Teléfono (con prefijo 34)</Label>
+              <Input
+                placeholder="34612345678"
+                value={form.telefono}
+                onChange={(e) => setForm({ ...form, telefono: e.target.value })}
+                className="h-11"
+                type="tel"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Vehículo</Label>
+              <Input
+                placeholder="Seat León — 4532 HBK"
+                value={form.vehiculo}
+                onChange={(e) => setForm({ ...form, vehiculo: e.target.value })}
+                className="h-11"
+              />
+            </div>
+            <Button onClick={guardar} className="w-full h-11">
+              {editando ? "Guardar cambios" : "Añadir cliente"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal: mensaje rápido */}
+      <Dialog
+        open={!!clienteMsg}
+        onOpenChange={(o) => !o && setClienteMsg(null)}
+      >
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle className="text-base">
@@ -193,11 +276,7 @@ export default function ClientesPage() {
                 key={p.id}
                 variant="outline"
                 className="h-auto w-full justify-start gap-3 p-3 text-left active:bg-accent"
-                onClick={() => {
-                  if (clienteMsg) {
-                    enviarWhatsApp(clienteMsg.telefono, clienteMsg.nombre, p.mensaje);
-                  }
-                }}
+                onClick={() => clienteMsg && enviarMsg(clienteMsg, p.id)}
               >
                 <span className="text-lg">{p.emoji}</span>
                 <span className="text-sm font-medium">{p.label}</span>

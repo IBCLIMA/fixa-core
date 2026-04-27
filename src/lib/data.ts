@@ -11,7 +11,15 @@ export interface Cita {
   nombre: string;
   telefono: string;
   fecha: string;
+  hora: string;
   motivo: string;
+}
+
+export interface RegistroMensaje {
+  id: string;
+  clienteNombre: string;
+  plantilla: string;
+  fecha: string;
 }
 
 export const plantillas = [
@@ -19,29 +27,40 @@ export const plantillas = [
     id: "coche_listo",
     label: "Coche listo",
     emoji: "✅",
-    mensaje: "Hola {{nombre}}, tu coche ya está listo para recoger. Puedes pasar cuando quieras. ¡Un saludo!",
+    mensaje:
+      "Hola {{nombre}}, tu coche ya está listo para recoger. Puedes pasar cuando quieras. ¡Un saludo!",
   },
   {
     id: "presupuesto",
     label: "Presupuesto listo",
     emoji: "📋",
-    mensaje: "Hola {{nombre}}, ya tenemos el presupuesto preparado. Pásate o llámanos para revisarlo. ¡Gracias!",
+    mensaje:
+      "Hola {{nombre}}, ya tenemos el presupuesto preparado. Pásate o llámanos para revisarlo. ¡Gracias!",
   },
   {
     id: "pide_cita",
-    label: "Pide cita aquí",
+    label: "Pide cita",
     emoji: "📅",
-    mensaje: "Hola {{nombre}}, puedes pedir cita en nuestro taller cuando quieras. ¿Qué día te viene mejor? ¡Un saludo!",
+    mensaje:
+      "Hola {{nombre}}, puedes pedir cita en nuestro taller cuando quieras. ¿Qué día te viene mejor? ¡Un saludo!",
   },
   {
     id: "revision",
     label: "Te toca revisión",
     emoji: "🔧",
-    mensaje: "Hola {{nombre}}, a tu vehículo le toca revisión. ¿Reservamos cita? ¡Un saludo!",
+    mensaje:
+      "Hola {{nombre}}, a tu vehículo le toca revisión. ¿Reservamos cita? ¡Un saludo!",
   },
 ];
 
-export function enviarWhatsApp(telefono: string, nombre: string, mensaje: string) {
+export function abrirWhatsApp(
+  telefono: string,
+  nombre: string,
+  mensaje: string
+) {
   const texto = mensaje.replace(/\{\{nombre\}\}/g, nombre.split(" ")[0]);
-  window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(texto)}`, "_blank");
+  window.open(
+    `https://wa.me/${telefono}?text=${encodeURIComponent(texto)}`,
+    "_blank"
+  );
 }

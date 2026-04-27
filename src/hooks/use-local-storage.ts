@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export function useLocalStorage<T>(key: string, initialValue: T) {
   const [value, setValue] = useState<T>(initialValue);
@@ -9,20 +9,26 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
   useEffect(() => {
     try {
       const stored = localStorage.getItem(key);
-      if (stored) {
-        setValue(JSON.parse(stored));
-      }
+      if (stored) setValue(JSON.parse(stored));
     } catch {}
     setLoaded(true);
   }, [key]);
 
-  useEffect(() => {
-    if (loaded) {
-      try {
-        localStorage.setItem(key, JSON.stringify(value));
-      } catch {}
-    }
-  }, [key, value, loaded]);
+  const set = useCallback(
+    (newValue: T | ((prev: T) => T)) => {
+      setValue((prev) => {
+        const resolved =
+          typeof newValue === "function"
+            ? (newValue as (prev: T) => T)(prev)
+            : newValue;
+        try {
+          localStorage.setItem(key, JSON.stringify(resolved));
+        } catch {}
+        return resolved;
+      });
+    },
+    [key]
+  );
 
-  return [value, setValue, loaded] as const;
+  return [value, set, loaded] as const;
 }

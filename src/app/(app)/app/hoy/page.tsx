@@ -3,12 +3,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useLocalStorage } from "@/hooks/use-local-storage";
-import { plantillas, enviarWhatsApp, type Cita, type Cliente } from "@/lib/data";
+import {
+  plantillas,
+  abrirWhatsApp,
+  type Cita,
+  type Cliente,
+  type RegistroMensaje,
+} from "@/lib/data";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -35,40 +40,40 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-const accionesRapidas = [
+const acciones = [
   {
     id: "coche_listo",
     label: "Coche listo",
     icon: CheckCircle2,
     color: "bg-green-600 hover:bg-green-700 active:bg-green-800",
-    plantillaId: "coche_listo",
   },
   {
     id: "presupuesto",
     label: "Presupuesto listo",
     icon: FileText,
     color: "bg-blue-600 hover:bg-blue-700 active:bg-blue-800",
-    plantillaId: "presupuesto",
   },
   {
     id: "pide_cita",
     label: "Pide cita",
     icon: CalendarDays,
     color: "bg-amber-600 hover:bg-amber-700 active:bg-amber-800",
-    plantillaId: "pide_cita",
   },
   {
     id: "revision",
     label: "Toca revisión",
     icon: Wrench,
     color: "bg-purple-600 hover:bg-purple-700 active:bg-purple-800",
-    plantillaId: "revision",
   },
 ];
 
 export default function HoyPage() {
   const [clientes] = useLocalStorage<Cliente[]>("fixa-clientes", []);
-  const [citas, setCitas, citasLoaded] = useLocalStorage<Cita[]>("fixa-citas", []);
+  const [citas, setCitas, loaded] = useLocalStorage<Cita[]>("fixa-citas", []);
+  const [registro, setRegistro] = useLocalStorage<RegistroMensaje[]>(
+    "fixa-registro",
+    []
+  );
   const [accionActiva, setAccionActiva] = useState<string | null>(null);
   const [mostrarFormCita, setMostrarFormCita] = useState(false);
   const [nuevaCita, setNuevaCita] = useState({
@@ -76,55 +81,91 @@ export default function HoyPage() {
     nombreManual: "",
     telefonoManual: "",
     fecha: new Date().toISOString().split("T")[0],
+    hora: "",
     motivo: "",
   });
 
   const hoy = new Date().toISOString().split("T")[0];
-  const citasHoy = citas.filter((c) => c.fecha === hoy);
-  const citasFuturas = citas
+  const citasHoy = citas
+    .filter((c) => c.fecha === hoy)
+    .sort((a, b) => (a.hora || "").localeCompare(b.hora || ""));
+  const citasProximas = citas
     .filter((c) => c.fecha > hoy)
     .sort((a, b) => a.fecha.localeCompare(b.fecha))
-    .slice(0, 3);
+    .slice(0, 5);
 
-  function handleAccion(plantillaId: string) {
-    if (clientes.length === 0) return;
-    setAccionActiva(plantillaId);
-  }
-
-  function enviarAccionACliente(clienteId: string) {
+  function enviarMensaje(clienteId: string) {
     const cliente = clientes.find((c) => c.id === clienteId);
     const plantilla = plantillas.find((p) => p.id === accionActiva);
-    if (cliente && plantilla) {
-      enviarWhatsApp(cliente.telefono, cliente.nombre, plantilla.mensaje);
-      toast.success("Mensaje preparado en WhatsApp");
-    }
+    if (!cliente || !plantilla) return;
+
+    abrirWhatsApp(cliente.telefono, cliente.nombre, plantilla.mensaje);
+
+    setRegistro((prev) => [
+      {
+        id: Date.now().toString(),
+        clienteNombre: cliente.nombre,
+        plantilla: plantilla.label,
+        fecha: new Date().toISOString(),
+      },
+      ...prev.slice(0, 19),
+    ]);
+
+    toast.success(`Mensaje preparado para ${cliente.nombre.split(" ")[0]}`);
     setAccionActiva(null);
   }
 
+  function enviarDesdesCita(cita: Cita) {
+    if (!cita.telefono) return;
+    abrirWhatsApp(
+      cita.telefono,
+      cita.nombre,
+      "Hola {{nombre}}, tu coche ya está listo. Puedes pasar a recogerlo. ¡Un saludo!"
+    );
+    setRegistro((prev) => [
+      {
+        id: Date.now().toString(),
+        clienteNombre: cita.nombre,
+        plantilla: "Coche listo",
+        fecha: new Date().toISOString(),
+      },
+      ...prev.slice(0, 19),
+    ]);
+    toast.success(`Mensaje preparado para ${cita.nombre.split(" ")[0]}`);
+  }
+
   function guardarCita() {
-    const clienteExistente = clientes.find((c) => c.id === nuevaCita.clienteId);
-    const nombre = clienteExistente ? clienteExistente.nombre : nuevaCita.nombreManual;
+    const clienteExistente = clientes.find(
+      (c) => c.id === nuevaCita.clienteId
+    );
+    const nombre = clienteExistente
+      ? clienteExistente.nombre
+      : nuevaCita.nombreManual.trim();
     const telefono = clienteExistente
       ? clienteExistente.telefono
       : nuevaCita.telefonoManual.replace(/\s/g, "").replace(/^\+/, "");
 
     if (!nombre || !nuevaCita.fecha) return;
 
-    const cita: Cita = {
-      id: Date.now().toString(),
-      clienteId: nuevaCita.clienteId || "",
-      nombre,
-      telefono,
-      fecha: nuevaCita.fecha,
-      motivo: nuevaCita.motivo,
-    };
+    setCitas((prev) => [
+      ...prev,
+      {
+        id: Date.now().toString(),
+        clienteId: nuevaCita.clienteId || "",
+        nombre,
+        telefono,
+        fecha: nuevaCita.fecha,
+        hora: nuevaCita.hora,
+        motivo: nuevaCita.motivo,
+      },
+    ]);
 
-    setCitas([...citas, cita]);
     setNuevaCita({
       clienteId: "",
       nombreManual: "",
       telefonoManual: "",
-      fecha: new Date().toISOString().split("T")[0],
+      fecha: hoy,
+      hora: "",
       motivo: "",
     });
     setMostrarFormCita(false);
@@ -132,33 +173,29 @@ export default function HoyPage() {
   }
 
   function eliminarCita(id: string) {
-    setCitas(citas.filter((c) => c.id !== id));
-    toast("Cita eliminada");
+    setCitas((prev) => prev.filter((c) => c.id !== id));
   }
 
-  function enviarYToast(telefono: string, nombre: string, mensaje: string) {
-    enviarWhatsApp(telefono, nombre, mensaje);
-    toast.success("Mensaje preparado en WhatsApp");
-  }
+  if (!loaded) return null;
 
-  if (!citasLoaded) return null;
+  const sinDatos = clientes.length === 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-4">
       <h1 className="text-xl font-extrabold">Hoy</h1>
 
-      {/* Estado vacío total */}
-      {clientes.length === 0 && citas.length === 0 && (
-        <Card className="border-amber-500/20 bg-amber-500/5">
-          <CardContent className="p-5 text-center space-y-3">
-            <Users className="mx-auto h-8 w-8 text-amber-500" />
-            <p className="font-semibold">Empieza añadiendo tu primer cliente</p>
-            <p className="text-xs text-muted-foreground">
-              Después podrás enviar mensajes y crear citas
+      {/* ── Estado vacío: sin clientes ── */}
+      {sinDatos && (
+        <Card className="border-border">
+          <CardContent className="p-5 space-y-3 text-center">
+            <Users className="mx-auto h-8 w-8 text-muted-foreground" />
+            <p className="text-sm font-medium">
+              Empieza añadiendo tu primer cliente para usar los mensajes rápidos
+              y organizar tus citas.
             </p>
             <Link href="/app/clientes">
-              <Button className="bg-amber-500 hover:bg-amber-600 text-black font-semibold">
-                <Plus className="mr-1 h-4 w-4" />
+              <Button size="lg" className="w-full">
+                <Plus className="mr-2 h-4 w-4" />
                 Añadir cliente
               </Button>
             </Link>
@@ -166,69 +203,87 @@ export default function HoyPage() {
         </Card>
       )}
 
-      {/* Acciones rápidas — solo si hay clientes */}
-      {clientes.length > 0 && (
+      {/* ── Acciones rápidas ── */}
+      {!sinDatos && (
         <div className="space-y-2">
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Acciones rápidas
-          </h2>
-          <div className="grid grid-cols-2 gap-2">
-            {accionesRapidas.map((accion) => (
+          </p>
+          <div className="grid grid-cols-2 gap-2.5">
+            {acciones.map((a) => (
               <Button
-                key={accion.id}
-                className={`h-20 flex-col gap-1 text-white ${accion.color}`}
-                onClick={() => handleAccion(accion.plantillaId)}
+                key={a.id}
+                className={`h-[72px] flex-col gap-1.5 text-white ${a.color}`}
+                onClick={() => setAccionActiva(a.id)}
               >
-                <accion.icon className="h-6 w-6" />
-                <span className="text-xs font-semibold">{accion.label}</span>
+                <a.icon className="h-6 w-6" />
+                <span className="text-xs font-semibold">{a.label}</span>
               </Button>
             ))}
           </div>
         </div>
       )}
 
-      {/* Citas de hoy */}
+      {/* ── Citas de hoy ── */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Citas de hoy
-          </h2>
-          <Button size="sm" variant="ghost" onClick={() => setMostrarFormCita(true)}>
+          </p>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8 text-xs"
+            onClick={() => setMostrarFormCita(true)}
+          >
             <Plus className="mr-1 h-3 w-3" />
             Nueva cita
           </Button>
         </div>
 
         {citasHoy.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border p-6 text-center space-y-2">
-            <CalendarDays className="mx-auto h-6 w-6 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">No tienes citas para hoy</p>
-            <Button size="sm" variant="outline" onClick={() => setMostrarFormCita(true)}>
-              Crear cita
-            </Button>
-          </div>
+          <Card className="border-dashed">
+            <CardContent className="p-5 text-center space-y-2">
+              <CalendarDays className="mx-auto h-6 w-6 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">
+                No tienes citas para hoy
+              </p>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setMostrarFormCita(true)}
+              >
+                Crear cita
+              </Button>
+            </CardContent>
+          </Card>
         ) : (
           citasHoy.map((cita) => (
             <Card key={cita.id}>
-              <CardContent className="flex items-center justify-between p-3">
-                <div className="space-y-0.5 min-w-0">
-                  <p className="font-medium text-sm truncate">{cita.nombre}</p>
+              <CardContent className="flex items-center justify-between p-3 gap-2">
+                <div className="min-w-0 space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    {cita.hora && (
+                      <span className="text-xs font-mono text-muted-foreground">
+                        {cita.hora}
+                      </span>
+                    )}
+                    <span className="text-sm font-medium truncate">
+                      {cita.nombre}
+                    </span>
+                  </div>
                   {cita.motivo && (
-                    <p className="text-xs text-muted-foreground truncate">{cita.motivo}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {cita.motivo}
+                    </p>
                   )}
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   {cita.telefono && (
                     <Button
                       size="sm"
-                      className="bg-green-600 hover:bg-green-700 text-xs"
-                      onClick={() =>
-                        enviarYToast(
-                          cita.telefono,
-                          cita.nombre,
-                          "Hola {{nombre}}, tu coche ya está listo. Puedes pasar a recogerlo. ¡Un saludo!"
-                        )
-                      }
+                      className="bg-green-600 hover:bg-green-700 text-xs h-8"
+                      onClick={() => enviarDesdesCita(cita)}
                     >
                       <Send className="mr-1 h-3 w-3" />
                       Avisar
@@ -249,27 +304,33 @@ export default function HoyPage() {
         )}
       </div>
 
-      {/* Próximas citas */}
-      {citasFuturas.length > 0 && (
+      {/* ── Próximas citas ── */}
+      {citasProximas.length > 0 && (
         <div className="space-y-2">
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Próximas citas
-          </h2>
-          {citasFuturas.map((cita) => (
+          </p>
+          {citasProximas.map((cita) => (
             <Card key={cita.id}>
-              <CardContent className="flex items-center justify-between p-3">
-                <div className="space-y-0.5 min-w-0">
-                  <p className="font-medium text-sm truncate">{cita.nombre}</p>
+              <CardContent className="flex items-center justify-between p-3 gap-2">
+                <div className="min-w-0 space-y-0.5">
+                  <span className="text-sm font-medium truncate block">
+                    {cita.nombre}
+                  </span>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3" />
-                    {new Date(cita.fecha).toLocaleDateString("es-ES", {
-                      weekday: "short",
-                      day: "numeric",
-                      month: "short",
-                    })}
+                    <Clock className="h-3 w-3 shrink-0" />
+                    <span>
+                      {new Date(cita.fecha + "T12:00:00").toLocaleDateString(
+                        "es-ES",
+                        { weekday: "short", day: "numeric", month: "short" }
+                      )}
+                      {cita.hora ? ` · ${cita.hora}` : ""}
+                    </span>
                   </div>
                   {cita.motivo && (
-                    <p className="text-xs text-muted-foreground truncate">{cita.motivo}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {cita.motivo}
+                    </p>
                   )}
                 </div>
                 <Button
@@ -286,24 +347,54 @@ export default function HoyPage() {
         </div>
       )}
 
-      {/* Modal selección cliente para acción rápida */}
-      <Dialog open={!!accionActiva} onOpenChange={(open) => !open && setAccionActiva(null)}>
+      {/* ── Últimos mensajes ── */}
+      {registro.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            Últimos mensajes preparados
+          </p>
+          <div className="divide-y divide-border rounded-lg border border-border">
+            {registro.slice(0, 5).map((r) => (
+              <div key={r.id} className="flex items-center justify-between px-3 py-2">
+                <div className="min-w-0">
+                  <p className="text-sm truncate">{r.clienteNombre}</p>
+                  <p className="text-xs text-muted-foreground">{r.plantilla}</p>
+                </div>
+                <span className="text-[11px] text-muted-foreground shrink-0">
+                  {new Date(r.fecha).toLocaleTimeString("es-ES", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal: seleccionar cliente para acción ── */}
+      <Dialog
+        open={!!accionActiva}
+        onOpenChange={(o) => !o && setAccionActiva(null)}
+      >
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle className="text-base">¿A quién?</DialogTitle>
           </DialogHeader>
-          <div className="max-h-64 space-y-1 overflow-y-auto">
+          <div className="max-h-72 space-y-1 overflow-y-auto -mx-1 px-1">
             {clientes.map((c) => (
               <button
                 key={c.id}
-                className="flex w-full items-center gap-3 rounded-lg p-3 text-left transition-colors active:bg-accent hover:bg-accent"
-                onClick={() => enviarAccionACliente(c.id)}
+                className="flex w-full items-center gap-3 rounded-lg p-3 text-left active:bg-accent hover:bg-accent"
+                onClick={() => enviarMensaje(c.id)}
               >
-                <User className="h-4 w-4 text-amber-500" />
+                <User className="h-4 w-4 shrink-0 text-amber-500" />
                 <div className="min-w-0">
                   <p className="text-sm font-medium truncate">{c.nombre}</p>
                   {c.vehiculo && (
-                    <p className="text-xs text-muted-foreground truncate">{c.vehiculo}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {c.vehiculo}
+                    </p>
                   )}
                 </div>
               </button>
@@ -312,7 +403,7 @@ export default function HoyPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Modal nueva cita */}
+      {/* ── Modal: nueva cita ── */}
       <Dialog open={mostrarFormCita} onOpenChange={setMostrarFormCita}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
@@ -321,11 +412,16 @@ export default function HoyPage() {
           <div className="space-y-3">
             {clientes.length > 0 && (
               <div className="space-y-1">
-                <Label className="text-xs">Cliente existente</Label>
+                <Label className="text-xs">Cliente</Label>
                 <Select
                   value={nuevaCita.clienteId}
                   onValueChange={(v) =>
-                    setNuevaCita({ ...nuevaCita, clienteId: v, nombreManual: "", telefonoManual: "" })
+                    setNuevaCita({
+                      ...nuevaCita,
+                      clienteId: v,
+                      nombreManual: "",
+                      telefonoManual: "",
+                    })
                   }
                 >
                   <SelectTrigger className="h-11">
@@ -334,7 +430,8 @@ export default function HoyPage() {
                   <SelectContent>
                     {clientes.map((c) => (
                       <SelectItem key={c.id} value={c.id}>
-                        {c.nombre} {c.vehiculo ? `— ${c.vehiculo}` : ""}
+                        {c.nombre}
+                        {c.vehiculo ? ` — ${c.vehiculo}` : ""}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -351,7 +448,12 @@ export default function HoyPage() {
                   <Input
                     placeholder="Nombre del cliente"
                     value={nuevaCita.nombreManual}
-                    onChange={(e) => setNuevaCita({ ...nuevaCita, nombreManual: e.target.value })}
+                    onChange={(e) =>
+                      setNuevaCita({
+                        ...nuevaCita,
+                        nombreManual: e.target.value,
+                      })
+                    }
                     className="h-11"
                   />
                 </div>
@@ -360,7 +462,12 @@ export default function HoyPage() {
                   <Input
                     placeholder="34612345678"
                     value={nuevaCita.telefonoManual}
-                    onChange={(e) => setNuevaCita({ ...nuevaCita, telefonoManual: e.target.value })}
+                    onChange={(e) =>
+                      setNuevaCita({
+                        ...nuevaCita,
+                        telefonoManual: e.target.value,
+                      })
+                    }
                     className="h-11"
                     type="tel"
                   />
@@ -368,24 +475,43 @@ export default function HoyPage() {
               </>
             )}
 
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="text-xs">Fecha</Label>
+                <Input
+                  type="date"
+                  value={nuevaCita.fecha}
+                  onChange={(e) =>
+                    setNuevaCita({ ...nuevaCita, fecha: e.target.value })
+                  }
+                  className="h-11"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Hora</Label>
+                <Input
+                  type="time"
+                  value={nuevaCita.hora}
+                  onChange={(e) =>
+                    setNuevaCita({ ...nuevaCita, hora: e.target.value })
+                  }
+                  className="h-11"
+                />
+              </div>
+            </div>
+
             <div className="space-y-1">
-              <Label className="text-xs">Fecha</Label>
+              <Label className="text-xs">Motivo</Label>
               <Input
-                type="date"
-                value={nuevaCita.fecha}
-                onChange={(e) => setNuevaCita({ ...nuevaCita, fecha: e.target.value })}
+                placeholder="Revisión frenos, cambio aceite..."
+                value={nuevaCita.motivo}
+                onChange={(e) =>
+                  setNuevaCita({ ...nuevaCita, motivo: e.target.value })
+                }
                 className="h-11"
               />
             </div>
-            <div className="space-y-1">
-              <Label className="text-xs">Motivo</Label>
-              <Textarea
-                placeholder="Revisión de frenos, cambio aceite..."
-                value={nuevaCita.motivo}
-                onChange={(e) => setNuevaCita({ ...nuevaCita, motivo: e.target.value })}
-                rows={2}
-              />
-            </div>
+
             <Button onClick={guardarCita} className="w-full h-11">
               Guardar cita
             </Button>
