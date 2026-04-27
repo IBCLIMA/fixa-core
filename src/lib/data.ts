@@ -3,55 +3,18 @@ export interface Cliente {
   nombre: string;
   telefono: string;
   vehiculo: string;
-  ultimaVisita?: string;
 }
 
 export interface Cita {
   id: string;
+  clienteId: string;
   nombre: string;
   telefono: string;
   fecha: string;
-  comentario?: string;
+  motivo: string;
 }
 
-export const clientesMock: Cliente[] = [
-  {
-    id: "1",
-    nombre: "Antonio García",
-    telefono: "34612345678",
-    vehiculo: "Seat León 2019 — 4532 HBK",
-    ultimaVisita: "2026-04-10",
-  },
-  {
-    id: "2",
-    nombre: "María López",
-    telefono: "34623456789",
-    vehiculo: "Renault Clio 2020 — 7891 JNM",
-    ultimaVisita: "2026-03-28",
-  },
-  {
-    id: "3",
-    nombre: "Pedro Martínez",
-    telefono: "34634567890",
-    vehiculo: "Volkswagen Golf 2018 — 2345 FGT",
-    ultimaVisita: "2026-04-15",
-  },
-  {
-    id: "4",
-    nombre: "Laura Sánchez",
-    telefono: "34645678901",
-    vehiculo: "Ford Focus 2021 — 8901 KLP",
-  },
-  {
-    id: "5",
-    nombre: "Carlos Ruiz",
-    telefono: "34656789012",
-    vehiculo: "Toyota Yaris 2017 — 3456 BMN",
-    ultimaVisita: "2026-02-20",
-  },
-];
-
-export const plantillasWhatsApp = [
+export const plantillas = [
   {
     id: "coche_listo",
     label: "Coche listo",
@@ -77,3 +40,8 @@ export const plantillasWhatsApp = [
     mensaje: "Hola {{nombre}}, a tu vehículo le toca revisión. ¿Reservamos cita? ¡Un saludo!",
   },
 ];
+
+export function enviarWhatsApp(telefono: string, nombre: string, mensaje: string) {
+  const texto = mensaje.replace(/\{\{nombre\}\}/g, nombre.split(" ")[0]);
+  window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(texto)}`, "_blank");
+}
