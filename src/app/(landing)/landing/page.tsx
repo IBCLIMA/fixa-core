@@ -85,118 +85,118 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute -top-60 left-1/2 h-[600px] w-[800px] -translate-x-1/2 rounded-full bg-accent/10 blur-[150px]" />
-        <div className="pointer-events-none absolute top-40 -right-60 h-[400px] w-[400px] rounded-full bg-accent/8 blur-[120px]" />
+      <section className="relative overflow-hidden border-b border-border/40">
+        <div className="pointer-events-none absolute -top-40 left-1/4 h-[500px] w-[600px] rounded-full bg-amber-100/40 blur-[120px]" />
 
-        <div className="mx-auto max-w-5xl px-6 pb-24 pt-20 lg:pt-32 lg:pb-32">
-          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-            <div className="space-y-8">
-              <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-2">
-                <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-xs font-semibold text-accent-foreground">
-                  Creado por un mecánico para mecánicos
-                </span>
-              </div>
+        <div className="mx-auto max-w-5xl px-6 pb-20 pt-16 lg:pt-24 lg:pb-28">
+          <div className="grid gap-16 lg:grid-cols-[1fr,0.9fr] lg:items-center">
+            {/* Copy */}
+            <div className="space-y-7">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-700">
+                Soluciones digitales para talleres
+              </p>
 
-              <h1 className="text-[2.5rem] font-extrabold tracking-tight leading-[1.08] lg:text-[3.2rem]">
-                Tu taller no necesita más llamadas.{" "}
-                <span className="text-amber-600">Necesita FIXA.</span>
+              <h1 className="text-[2.5rem] font-extrabold tracking-tight leading-[1.06] lg:text-[3.4rem]">
+                Menos interrupciones.
+                <br />
+                <span className="text-amber-600">Más taller.</span>
               </h1>
 
-              <p className="text-lg text-muted-foreground leading-relaxed max-w-lg">
-                Prepara respuestas de WhatsApp en un toque, organiza citas sin
-                coger el teléfono, y deja de perder horas repitiendo lo mismo.
+              <p className="text-lg text-muted-foreground leading-relaxed max-w-md">
+                FIXA te permite responder a tus clientes por WhatsApp en
+                segundos y organizar citas sin coger el teléfono. Desde el
+                móvil, sin complicaciones.
               </p>
 
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <Link href="/app/hoy">
                   <Button
                     size="lg"
-                    className="bg-primary text-white hover:bg-primary/90 font-semibold h-13 px-7 text-base rounded-full"
+                    className="bg-foreground text-background hover:bg-foreground/90 font-semibold h-13 px-8 text-base rounded-full shadow-lg shadow-foreground/10"
                   >
-                    Ver cómo funciona
+                    Solicitar demo gratuita
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
-                <span className="text-sm text-muted-foreground">
-                  Sin permanencia · Funcionando en 7 días
+              </div>
+
+              <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  Sin permanencia
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  Listo en 7 días
                 </span>
               </div>
             </div>
 
-            {/* Mockup del producto */}
+            {/* Mockup — producto real, sobrio */}
             <div className="relative hidden lg:block">
-              <div className="rounded-2xl border border-border bg-card p-3 shadow-2xl shadow-black/5">
-                <div className="rounded-xl bg-background p-5 space-y-4">
-                  <div className="flex items-center gap-2 text-sm font-bold">
-                    <Wrench className="h-4 w-4 text-primary" />
-                    FIXA
+              <div className="rounded-2xl border border-border bg-white p-4 shadow-xl shadow-black/[0.03]">
+                {/* App header */}
+                <div className="flex items-center gap-2 border-b border-border/60 pb-3 mb-4">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-amber-500">
+                    <Wrench className="h-3 w-3 text-white" />
                   </div>
-                  <p className="text-xs text-muted-foreground font-semibold uppercase tracking-widest">
-                    Acciones rápidas
-                  </p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="flex flex-col items-center gap-1.5 rounded-xl bg-green-600 p-4">
-                      <CheckCircle2 className="h-5 w-5 text-white" />
-                      <span className="text-xs text-white font-semibold">
-                        Coche listo
-                      </span>
+                  <span className="text-xs font-extrabold tracking-tight">FIXA</span>
+                </div>
+
+                {/* Cita simulada */}
+                <div className="space-y-3">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">Citas de hoy</p>
+                  <div className="rounded-xl border border-border/60 p-3 flex items-center justify-between">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">09:30</span>
+                        <span className="text-xs font-semibold">Antonio García</span>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">Revisión de frenos</p>
                     </div>
-                    <div className="flex flex-col items-center gap-1.5 rounded-xl bg-blue-600 p-4">
-                      <BarChart3 className="h-5 w-5 text-white" />
-                      <span className="text-xs text-white font-semibold">
-                        Presupuesto
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center gap-1.5 rounded-xl bg-amber-600 p-4">
-                      <CalendarDays className="h-5 w-5 text-white" />
-                      <span className="text-xs text-white font-semibold">
-                        Pide cita
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center gap-1.5 rounded-xl bg-purple-600 p-4">
-                      <Wrench className="h-5 w-5 text-white" />
-                      <span className="text-xs text-white font-semibold">
-                        Revisión
-                      </span>
+                    <div className="flex h-7 items-center gap-1 rounded-full bg-green-600 px-2.5">
+                      <Send className="h-2.5 w-2.5 text-white" />
+                      <span className="text-[10px] text-white font-semibold">Avisar</span>
                     </div>
                   </div>
-                  <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-3 flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    <span className="text-xs text-green-500 font-medium">
+                  <div className="rounded-xl border border-border/60 p-3 flex items-center justify-between">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">11:00</span>
+                        <span className="text-xs font-semibold">María López</span>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">Cambio aceite y filtros</p>
+                    </div>
+                    <span className="h-2 w-2 rounded-full bg-amber-500" />
+                  </div>
+
+                  {/* Confirmación */}
+                  <div className="rounded-xl border border-green-200 bg-green-50 p-3 flex items-center gap-2">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-green-600" />
+                    <span className="text-[10px] text-green-700 font-medium">
                       Mensaje preparado para Antonio
                     </span>
                   </div>
                 </div>
+
+                {/* Bottom nav simulado */}
+                <div className="mt-4 flex border-t border-border/60 pt-3">
+                  <div className="flex flex-1 flex-col items-center gap-0.5">
+                    <CalendarDays className="h-3.5 w-3.5 text-amber-600" />
+                    <span className="text-[9px] font-semibold text-amber-600">Hoy</span>
+                  </div>
+                  <div className="flex flex-1 flex-col items-center gap-0.5">
+                    <Users className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="text-[9px] text-muted-foreground">Clientes</span>
+                  </div>
+                  <div className="flex flex-1 flex-col items-center gap-0.5">
+                    <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="text-[9px] text-muted-foreground">Mensajes</span>
+                  </div>
+                </div>
               </div>
-              <div className="absolute -bottom-4 -right-4 -z-10 h-full w-full rounded-2xl bg-accent/15 blur-sm" />
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ── STATS ── */}
-      <section className="border-y border-border/40 bg-card/40">
-        <div className="mx-auto grid max-w-5xl grid-cols-2 lg:grid-cols-4">
-          {[
-            { value: "10s", label: "para responder a un cliente" },
-            { value: "0", label: "llamadas innecesarias" },
-            { value: "100%", label: "desde el móvil" },
-            { value: "<7 días", label: "para tenerlo funcionando" },
-          ].map((stat, i) => (
-            <div
-              key={stat.label}
-              className={`px-6 py-8 text-center ${i < 3 ? "border-r border-border/40" : ""} ${i < 2 ? "border-b border-border/40 lg:border-b-0" : ""}`}
-            >
-              <p className="text-3xl font-extrabold text-amber-600 lg:text-4xl">
-                {stat.value}
-              </p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                {stat.label}
-              </p>
-            </div>
-          ))}
         </div>
       </section>
 
