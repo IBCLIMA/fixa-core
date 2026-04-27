@@ -30,8 +30,8 @@ export default function LandingPage() {
           Si no paras de coger el teléfono en el taller, esto es para ti
         </h1>
         <p className="text-muted-foreground">
-          FIXA responde a tus clientes por ti y te deja trabajar sin
-          interrupciones. Desde el móvil. Sin complicaciones.
+          FIXA te prepara respuestas en un clic y te ayuda a organizar
+          citas sin llamadas. Desde el móvil. Sin complicaciones.
         </p>
         <div className="flex items-center gap-2">
           <Link href="/app/hoy">

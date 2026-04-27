@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Send, User } from "lucide-react";
+import { toast } from "sonner";
 
 export default function MensajesPage() {
   const [clientes] = useLocalStorage<Cliente[]>("fixa-clientes", []);
@@ -34,6 +35,7 @@ export default function MensajesPage() {
   function enviar() {
     if (!cliente || !mensaje) return;
     enviarWhatsApp(cliente.telefono, cliente.nombre, mensaje);
+    toast.success("Mensaje preparado en WhatsApp");
   }
 
   return (

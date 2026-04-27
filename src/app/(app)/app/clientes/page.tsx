@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Plus, Search, User, MessageSquare, Trash2, Phone, Car } from "lucide-react";
+import { toast } from "sonner";
 
 export default function ClientesPage() {
   const [clientes, setClientes, loaded] = useLocalStorage<Cliente[]>("fixa-clientes", []);
@@ -40,6 +41,7 @@ export default function ClientesPage() {
     setClientes([...clientes, cliente]);
     setNuevo({ nombre: "", telefono: "", vehiculo: "" });
     setMostrarForm(false);
+    toast.success("Cliente añadido");
   }
 
   function eliminar(id: string) {
