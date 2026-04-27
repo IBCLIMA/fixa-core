@@ -103,8 +103,8 @@ export default function LandingPage() {
                 3
               </div>
               <div>
-                <p className="text-sm font-medium">WhatsApp enviado</p>
-                <p className="text-xs text-muted-foreground">El cliente recibe la respuesta al instante</p>
+                <p className="text-sm font-medium">WhatsApp listo para enviar</p>
+                <p className="text-xs text-muted-foreground">Se abre con el mensaje escrito — tú solo pulsas enviar</p>
               </div>
             </CardContent>
           </Card>
@@ -127,7 +127,7 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-3 rounded-lg border border-border p-3">
             <Send className="h-5 w-5 shrink-0 text-green-500" />
-            <p className="text-sm">Avisos de ITV y revisión que generan trabajo</p>
+            <p className="text-sm">Avisos de ITV y revisión listos para enviar</p>
           </div>
         </div>
       </div>

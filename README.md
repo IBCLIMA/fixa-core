@@ -4,7 +4,7 @@ Herramienta digital para talleres mecánicos. Menos llamadas, menos interrupcion
 
 ## Qué es
 
-FIXA CORE es una app mobile-first que permite a un taller mecánico responder a sus clientes por WhatsApp en 1 clic, sin escribir mensajes, sin llamar, sin perder tiempo.
+FIXA CORE es una app mobile-first que permite a un taller mecánico preparar mensajes de WhatsApp para sus clientes en segundos. Sin escribir, sin llamar, sin perder tiempo. Eliges cliente, pulsas un botón, WhatsApp se abre con el mensaje listo.
 
 ## Qué hace esta versión
 
