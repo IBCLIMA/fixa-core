@@ -1,6 +1,6 @@
-# FIXA CORE
+# FIXA CORE — Herramienta digital para talleres mecánicos
 
-Herramienta digital para talleres mecánicos. Prepara mensajes de WhatsApp para tus clientes en segundos y organiza citas sin llamadas.
+Prepara mensajes de WhatsApp para tus clientes en segundos y organiza citas sin llamadas.
 
 ## Qué problema resuelve
 
