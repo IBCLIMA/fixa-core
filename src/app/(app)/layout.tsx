@@ -16,18 +16,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-[100dvh] flex-col bg-background antialiased">
-      <header className="border-b border-border/60 bg-white/80 backdrop-blur-xl px-5 py-3.5">
-        <div className="mx-auto flex max-w-lg items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500">
+      <header className="border-b border-border/60 bg-white/80 backdrop-blur-xl px-5 py-3">
+        <div className="mx-auto flex max-w-lg items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary shadow-sm">
             <Wrench className="h-3.5 w-3.5 text-white" />
           </div>
           <span className="text-base font-extrabold tracking-tight">FIXA</span>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-lg flex-1 px-5 py-6">
-        {children}
-      </main>
+      <main className="mx-auto w-full max-w-lg flex-1 px-4 py-5">{children}</main>
 
       <nav className="sticky bottom-0 border-t border-border/60 bg-white/80 backdrop-blur-xl safe-bottom">
         <div className="mx-auto flex max-w-lg">
@@ -38,10 +36,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 key={tab.name}
                 href={tab.href}
                 className={cn(
-                  "flex flex-1 flex-col items-center gap-1 py-3.5 text-xs font-semibold transition-colors",
-                  isActive
-                    ? "text-amber-600"
-                    : "text-muted-foreground/60 active:text-foreground"
+                  "flex flex-1 flex-col items-center gap-0.5 py-3 text-[11px] font-semibold transition-colors duration-200",
+                  isActive ? "text-primary" : "text-muted-foreground active:text-foreground"
                 )}
               >
                 <tab.icon className={cn("h-5 w-5", isActive && "stroke-[2.5px]")} />
