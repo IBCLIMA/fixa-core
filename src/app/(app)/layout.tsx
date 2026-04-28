@@ -15,11 +15,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <div className="flex min-h-[100dvh] flex-col bg-background antialiased">
-      <header className="border-b border-border/60 bg-white/80 backdrop-blur-xl px-5 py-3">
+    <div className="flex min-h-[100dvh] flex-col bg-muted/30 antialiased">
+      <header className="border-b border-border/50 bg-white/80 backdrop-blur-xl px-5 py-3">
         <div className="mx-auto flex max-w-lg items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary shadow-sm">
-            <Wrench className="h-3.5 w-3.5 text-white" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary shadow-md shadow-primary/20">
+            <Wrench className="h-4 w-4 text-white" />
           </div>
           <span className="text-base font-extrabold tracking-tight">FIXA</span>
         </div>
@@ -27,7 +27,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       <main className="mx-auto w-full max-w-lg flex-1 px-4 py-5">{children}</main>
 
-      <nav className="sticky bottom-0 border-t border-border/60 bg-white/80 backdrop-blur-xl safe-bottom">
+      <nav className="sticky bottom-0 border-t border-border/50 bg-white/80 backdrop-blur-xl safe-bottom">
         <div className="mx-auto flex max-w-lg">
           {tabs.map((tab) => {
             const isActive = pathname === tab.href;

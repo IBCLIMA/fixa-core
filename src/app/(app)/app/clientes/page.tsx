@@ -48,9 +48,9 @@ export default function ClientesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Clientes</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{clientes.length} cliente{clientes.length !== 1 ? "s" : ""} guardado{clientes.length !== 1 ? "s" : ""}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">{clientes.length} cliente{clientes.length !== 1 ? "s" : ""}</p>
         </div>
-        <Button className="rounded-full bg-foreground text-background hover:bg-foreground/90 font-semibold shadow-sm" onClick={abrirNuevo}>
+        <Button className="rounded-full bg-accent text-white hover:bg-accent/90 font-semibold shadow-md shadow-accent/10" onClick={abrirNuevo}>
           <Plus className="mr-1.5 h-4 w-4" />Nuevo
         </Button>
       </div>
@@ -58,24 +58,23 @@ export default function ClientesPage() {
       {clientes.length > 3 && (
         <div className="relative">
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
-          <Input placeholder="Buscar nombre, matrícula..." value={busqueda} onChange={(e) => setBusqueda(e.target.value)} className="pl-10 h-11 rounded-xl bg-white border-border" />
+          <Input placeholder="Buscar nombre, matrícula..." value={busqueda} onChange={(e) => setBusqueda(e.target.value)} className="pl-10 h-11 rounded-xl bg-white border-border/50 shadow-sm" />
         </div>
       )}
 
       {clientes.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-white p-8 text-center space-y-4">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-muted/60">
-            <User className="h-6 w-6 text-muted-foreground/60" />
-          </div>
-          <div className="space-y-1"><p className="font-bold">Aún no hay clientes</p><p className="text-sm text-muted-foreground">Añade el primero para empezar a usar FIXA</p></div>
-          <Button className="rounded-full bg-foreground text-background hover:bg-foreground/90 font-semibold" onClick={abrirNuevo}><Plus className="mr-1.5 h-4 w-4" />Añadir cliente</Button>
+        <div className="rounded-3xl bg-white border border-dashed border-border p-8 text-center space-y-4 shadow-sm">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-muted"><User className="h-6 w-6 text-muted-foreground/50" /></div>
+          <p className="font-bold">Aún no hay clientes</p>
+          <p className="text-sm text-muted-foreground">Añade el primero para empezar a usar FIXA</p>
+          <Button className="rounded-full bg-accent text-white hover:bg-accent/90 font-semibold shadow-md shadow-accent/10" onClick={abrirNuevo}><Plus className="mr-1.5 h-4 w-4" />Añadir cliente</Button>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {filtrados.map((c) => (
-            <div key={c.id} className="flex items-center gap-3 rounded-2xl border border-border bg-white p-4">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-50">
-                <User className="h-5 w-5 text-amber-600" />
+            <div key={c.id} className="flex items-center gap-3 rounded-2xl bg-white border border-border/50 p-4 shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                <User className="h-5 w-5 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold truncate">{c.nombre}</p>
@@ -85,13 +84,13 @@ export default function ClientesPage() {
                 </div>
               </div>
               <div className="flex items-center shrink-0">
-                <button className="h-9 w-9 rounded-full flex items-center justify-center text-muted-foreground/60 hover:text-foreground hover:bg-muted transition-colors" onClick={() => abrirEdicion(c)}><Pencil className="h-3.5 w-3.5" /></button>
-                <button className="h-9 w-9 rounded-full flex items-center justify-center text-green-600 hover:bg-green-50 transition-colors" onClick={() => setClienteMsg(c)}><MessageSquare className="h-4 w-4" /></button>
-                <button className="h-9 w-9 rounded-full flex items-center justify-center text-muted-foreground/40 hover:text-red-500 hover:bg-red-50 transition-colors" onClick={() => eliminar(c.id)}><Trash2 className="h-3.5 w-3.5" /></button>
+                <button className="h-9 w-9 rounded-full flex items-center justify-center text-muted-foreground/50 hover:text-foreground hover:bg-muted transition-colors" onClick={() => abrirEdicion(c)}><Pencil className="h-3.5 w-3.5" /></button>
+                <button className="h-9 w-9 rounded-full flex items-center justify-center text-emerald-600 hover:bg-emerald-50 transition-colors" onClick={() => setClienteMsg(c)}><MessageSquare className="h-4 w-4" /></button>
+                <button className="h-9 w-9 rounded-full flex items-center justify-center text-muted-foreground/30 hover:text-red-500 hover:bg-red-50 transition-colors" onClick={() => eliminar(c.id)}><Trash2 className="h-3.5 w-3.5" /></button>
               </div>
             </div>
           ))}
-          {filtrados.length === 0 && busqueda && <p className="rounded-2xl border border-dashed border-border bg-white p-6 text-center text-sm text-muted-foreground">Sin resultados para &ldquo;{busqueda}&rdquo;</p>}
+          {filtrados.length === 0 && busqueda && <div className="rounded-2xl bg-white border border-dashed border-border p-6 text-center text-sm text-muted-foreground shadow-sm">Sin resultados para &ldquo;{busqueda}&rdquo;</div>}
         </div>
       )}
 
@@ -110,7 +109,7 @@ export default function ClientesPage() {
         <DialogContent className="max-w-sm"><DialogHeader><DialogTitle>Mensaje a {clienteMsg?.nombre}</DialogTitle></DialogHeader>
           <div className="space-y-2">
             {plantillas.map((p) => (
-              <button key={p.id} className="flex w-full items-center gap-3 rounded-xl border border-border p-3.5 text-left active:bg-muted hover:bg-muted transition-colors" onClick={() => clienteMsg && enviarMsg(clienteMsg, p.id)}>
+              <button key={p.id} className="flex w-full items-center gap-3 rounded-2xl border border-border/50 bg-white p-4 text-left active:bg-muted hover:bg-muted/60 hover:shadow-sm transition-all duration-200" onClick={() => clienteMsg && enviarMsg(clienteMsg, p.id)}>
                 <span className="text-xl">{p.emoji}</span><span className="text-sm font-semibold">{p.label}</span>
               </button>
             ))}
