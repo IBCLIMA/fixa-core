@@ -9,14 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle2, FileText, CalendarDays, Wrench, Send, Clock, Plus, User, Users, MessageSquare, ChevronRight } from "lucide-react";
+import { CheckCircle2, FileText, CalendarDays, Wrench, Send, Clock, Plus, User, Users, MessageSquare, ChevronRight, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 const acciones = [
-  { id: "coche_listo", label: "Coche listo", desc: "Avisar recogida", icon: CheckCircle2, color: "bg-emerald-500 shadow-emerald-500/20" },
-  { id: "presupuesto", label: "Presupuesto", desc: "Enviar presupuesto", icon: FileText, color: "bg-blue-500 shadow-blue-500/20" },
-  { id: "pide_cita", label: "Pide cita", desc: "Proponer cita", icon: CalendarDays, color: "bg-primary shadow-primary/20" },
-  { id: "revision", label: "Revisión", desc: "Aviso revisión", icon: Wrench, color: "bg-violet-500 shadow-violet-500/20" },
+  { id: "coche_listo", label: "Coche listo", icon: CheckCircle2, gradient: "from-emerald-500 to-emerald-600", shadow: "shadow-emerald-500/30" },
+  { id: "presupuesto", label: "Presupuesto", icon: FileText, gradient: "from-blue-500 to-blue-600", shadow: "shadow-blue-500/30" },
+  { id: "pide_cita", label: "Pide cita", icon: CalendarDays, gradient: "from-orange-500 to-orange-600", shadow: "shadow-orange-500/30" },
+  { id: "revision", label: "Revisión", icon: Wrench, gradient: "from-violet-500 to-violet-600", shadow: "shadow-violet-500/30" },
 ];
 
 export default function HoyPage() {
@@ -61,48 +61,48 @@ export default function HoyPage() {
 
   if (!loaded) return null;
   const sinDatos = clientes.length === 0;
+  const hoyFormateado = new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
 
   return (
-    <div className="space-y-5 pb-4">
-      <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Hoy</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Gestiona clientes, citas y mensajes sin perder tiempo</p>
+    <div className="space-y-5">
+      {/* Header */}
+      <div className="pt-1">
+        <p className="text-[11px] font-semibold text-stone-400 uppercase tracking-widest">{hoyFormateado}</p>
+        <h1 className="text-[28px] font-extrabold tracking-tight text-stone-900 leading-tight mt-1">Tu taller hoy</h1>
       </div>
 
-      {/* Resumen */}
+      {/* Resumen KPIs */}
       {!sinDatos && (
-        <div className="grid grid-cols-3 gap-2.5">
-          {[
-            { value: clientes.length, label: "Clientes", href: "/app/clientes" },
-            { value: citasHoy.length, label: "Citas hoy", action: () => setMostrarFormCita(true) },
-            { value: registro.length, label: "Mensajes", href: "/app/mensajes" },
-          ].map((s) => (
-            s.href ? (
-              <Link key={s.label} href={s.href} className="rounded-2xl bg-white border border-border/50 p-3.5 text-center shadow-sm hover:shadow-md transition-all duration-300">
-                <p className="text-2xl font-extrabold">{s.value}</p>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.15em] mt-0.5">{s.label}</p>
-              </Link>
-            ) : (
-              <button key={s.label} onClick={s.action} className="rounded-2xl bg-white border border-border/50 p-3.5 text-center shadow-sm hover:shadow-md transition-all duration-300">
-                <p className="text-2xl font-extrabold">{s.value}</p>
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.15em] mt-0.5">{s.label}</p>
-              </button>
-            )
-          ))}
+        <div className="grid grid-cols-3 gap-2">
+          <Link href="/app/clientes" className="group relative overflow-hidden rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] border border-stone-200/60 hover:shadow-md transition-all duration-300">
+            <p className="text-[28px] font-extrabold text-stone-900 leading-none">{clientes.length}</p>
+            <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mt-1">Clientes</p>
+            <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-orange-500/[0.04]" />
+          </Link>
+          <button onClick={() => setMostrarFormCita(true)} className="group relative overflow-hidden rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] border border-stone-200/60 hover:shadow-md transition-all duration-300 text-left">
+            <p className="text-[28px] font-extrabold text-stone-900 leading-none">{citasHoy.length}</p>
+            <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mt-1">Citas hoy</p>
+            <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-blue-500/[0.04]" />
+          </button>
+          <Link href="/app/mensajes" className="group relative overflow-hidden rounded-2xl bg-white p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] border border-stone-200/60 hover:shadow-md transition-all duration-300">
+            <p className="text-[28px] font-extrabold text-stone-900 leading-none">{registro.length}</p>
+            <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider mt-1">Mensajes</p>
+            <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-emerald-500/[0.04]" />
+          </Link>
         </div>
       )}
 
       {/* Estado vacío */}
       {sinDatos && (
-        <div className="rounded-3xl bg-white border border-border/50 p-8 text-center space-y-4 shadow-sm">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
-            <Users className="h-6 w-6 text-primary" />
+        <div className="rounded-3xl bg-white p-8 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] border border-stone-200/60">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/25 mb-5">
+            <Sparkles className="h-7 w-7 text-white" />
           </div>
-          <p className="font-bold">Empieza añadiendo tu primer cliente</p>
-          <p className="text-sm text-muted-foreground">Después podrás enviar mensajes y crear citas.</p>
+          <h2 className="text-lg font-extrabold text-stone-900 mb-1">Empieza añadiendo clientes</h2>
+          <p className="text-sm text-stone-500 mb-5">Después podrás enviar mensajes y organizar citas.</p>
           <Link href="/app/clientes">
-            <Button size="lg" className="rounded-full bg-accent text-white hover:bg-accent/90 font-semibold shadow-md shadow-accent/10">
-              <Plus className="mr-2 h-4 w-4" />Añadir cliente
+            <Button size="lg" className="rounded-full bg-stone-900 text-white hover:bg-stone-800 font-bold shadow-lg shadow-stone-900/10 h-12 px-6">
+              <Plus className="mr-2 h-4 w-4" />Añadir primer cliente
             </Button>
           </Link>
         </div>
@@ -110,16 +110,22 @@ export default function HoyPage() {
 
       {/* Acciones rápidas */}
       {!sinDatos && (
-        <div className="space-y-2.5">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Acciones rápidas</p>
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-[13px] font-extrabold text-stone-900">Acciones rápidas</h2>
+          </div>
           <div className="grid grid-cols-2 gap-2.5">
             {acciones.map((a) => (
-              <button key={a.id} className={`flex items-center gap-3 rounded-2xl p-4 text-white text-left transition-all duration-200 active:scale-[0.97] shadow-lg ${a.color}`} onClick={() => setAccionActiva(a.id)}>
-                <a.icon className="h-6 w-6 shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-sm font-bold leading-tight">{a.label}</p>
-                  <p className="text-[10px] text-white/70">{a.desc}</p>
+              <button
+                key={a.id}
+                className={`group relative overflow-hidden flex items-center gap-3 rounded-2xl bg-gradient-to-br ${a.gradient} p-4 text-white text-left transition-all duration-200 active:scale-[0.97] shadow-lg ${a.shadow}`}
+                onClick={() => setAccionActiva(a.id)}
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                  <a.icon className="h-5 w-5" />
                 </div>
+                <span className="text-[13px] font-bold leading-tight">{a.label}</span>
+                <div className="absolute -top-6 -right-6 h-20 w-20 rounded-full bg-white/[0.08]" />
               </button>
             ))}
           </div>
@@ -127,37 +133,46 @@ export default function HoyPage() {
       )}
 
       {/* Citas de hoy */}
-      <div className="space-y-2.5">
-        <div className="flex items-center justify-between">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Citas de hoy</p>
-          <button onClick={() => setMostrarFormCita(true)} className="text-[10px] font-bold text-primary flex items-center gap-0.5 hover:underline">
-            <Plus className="h-3 w-3" />Nueva
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-[13px] font-extrabold text-stone-900">Citas de hoy</h2>
+          <button onClick={() => setMostrarFormCita(true)} className="flex items-center gap-1 text-[11px] font-bold text-orange-600 hover:text-orange-700 transition-colors">
+            <Plus className="h-3.5 w-3.5" />Nueva
           </button>
         </div>
         {citasHoy.length === 0 ? (
-          <div className="rounded-2xl bg-white border border-dashed border-border p-6 text-center shadow-sm space-y-2">
-            <CalendarDays className="mx-auto h-5 w-5 text-muted-foreground/40" />
-            <p className="text-sm text-muted-foreground">No tienes citas para hoy</p>
-            <button onClick={() => setMostrarFormCita(true)} className="text-xs font-bold text-primary hover:underline">Crear cita</button>
+          <div className="rounded-2xl bg-white border border-dashed border-stone-200 p-8 text-center shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+            <CalendarDays className="mx-auto h-6 w-6 text-stone-300 mb-2" />
+            <p className="text-[13px] font-semibold text-stone-400">Sin citas para hoy</p>
+            <button onClick={() => setMostrarFormCita(true)} className="text-[12px] font-bold text-orange-600 hover:text-orange-700 mt-1 transition-colors">Crear primera cita</button>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] border border-stone-200/60 divide-y divide-stone-100">
             {citasHoy.map((cita) => (
-              <div key={cita.id} className="flex items-center justify-between rounded-2xl bg-white border border-border/50 p-4 gap-3 shadow-sm">
-                <div className="min-w-0 space-y-0.5">
-                  <div className="flex items-center gap-2">
-                    {cita.hora && <span className="text-[10px] font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded-md">{cita.hora}</span>}
-                    <span className="text-sm font-semibold truncate">{cita.nombre}</span>
+              <div key={cita.id} className="flex items-center justify-between p-4 gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-xl bg-stone-50">
+                    {cita.hora ? (
+                      <>
+                        <span className="text-[11px] font-extrabold text-stone-900 leading-none">{cita.hora.split(":")[0]}</span>
+                        <span className="text-[8px] font-bold text-stone-400 leading-none">:{cita.hora.split(":")[1]}</span>
+                      </>
+                    ) : (
+                      <Clock className="h-4 w-4 text-stone-300" />
+                    )}
                   </div>
-                  {cita.motivo && <p className="text-xs text-muted-foreground truncate">{cita.motivo}</p>}
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-bold text-stone-900 truncate">{cita.nombre}</p>
+                    {cita.motivo && <p className="text-[11px] text-stone-400 truncate">{cita.motivo}</p>}
+                  </div>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
                   {cita.telefono && (
-                    <button className="flex h-8 items-center gap-1 rounded-full bg-emerald-500 px-3 text-white shadow-sm hover:bg-emerald-400 transition-colors" onClick={() => enviarDesdeCita(cita)}>
+                    <button className="flex h-8 items-center gap-1 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 px-3 text-white shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all active:scale-95" onClick={() => enviarDesdeCita(cita)}>
                       <Send className="h-3 w-3" /><span className="text-[10px] font-bold">Avisar</span>
                     </button>
                   )}
-                  <button className="h-7 w-7 rounded-full text-muted-foreground/40 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-colors text-sm" onClick={() => setCitas((p) => p.filter((c) => c.id !== cita.id))}>×</button>
+                  <button className="h-7 w-7 rounded-full text-stone-300 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-all text-[14px]" onClick={() => setCitas((p) => p.filter((c) => c.id !== cita.id))}>×</button>
                 </div>
               </div>
             ))}
@@ -167,20 +182,24 @@ export default function HoyPage() {
 
       {/* Próximas */}
       {citasProximas.length > 0 && (
-        <div className="space-y-2.5">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Próximas</p>
-          <div className="space-y-2">
+        <div>
+          <h2 className="text-[13px] font-extrabold text-stone-900 mb-3">Próximas citas</h2>
+          <div className="rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] border border-stone-200/60 divide-y divide-stone-100">
             {citasProximas.map((cita) => (
-              <div key={cita.id} className="flex items-center justify-between rounded-2xl bg-white border border-border/50 p-4 gap-3 shadow-sm">
-                <div className="min-w-0 space-y-0.5">
-                  <span className="text-sm font-semibold truncate block">{cita.nombre}</span>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3 shrink-0" />
-                    {new Date(cita.fecha + "T12:00:00").toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })}
-                    {cita.hora ? ` · ${cita.hora}` : ""}
+              <div key={cita.id} className="flex items-center justify-between p-4 gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50">
+                    <CalendarDays className="h-4 w-4 text-orange-500" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-bold text-stone-900 truncate">{cita.nombre}</p>
+                    <p className="text-[11px] text-stone-400">
+                      {new Date(cita.fecha + "T12:00:00").toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })}
+                      {cita.hora ? ` · ${cita.hora}` : ""}
+                    </p>
                   </div>
                 </div>
-                <button className="h-7 w-7 rounded-full text-muted-foreground/40 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-colors text-sm shrink-0" onClick={() => setCitas((p) => p.filter((c) => c.id !== cita.id))}>×</button>
+                <button className="h-7 w-7 rounded-full text-stone-300 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-all text-[14px] shrink-0" onClick={() => setCitas((p) => p.filter((c) => c.id !== cita.id))}>×</button>
               </div>
             ))}
           </div>
@@ -189,61 +208,66 @@ export default function HoyPage() {
 
       {/* Actividad */}
       {registro.length > 0 && (
-        <div className="space-y-2.5">
-          <div className="flex items-center justify-between">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Actividad reciente</p>
-            <Link href="/app/mensajes" className="text-[10px] font-bold text-primary flex items-center gap-0.5 hover:underline">Ver todo<ChevronRight className="h-3 w-3" /></Link>
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-[13px] font-extrabold text-stone-900">Actividad reciente</h2>
+            <Link href="/app/mensajes" className="flex items-center gap-0.5 text-[11px] font-bold text-orange-600 hover:text-orange-700 transition-colors">Ver todo<ChevronRight className="h-3 w-3" /></Link>
           </div>
-          <div className="rounded-2xl bg-white border border-border/50 divide-y divide-border/40 shadow-sm">
+          <div className="rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] border border-stone-200/60 divide-y divide-stone-100">
             {registro.slice(0, 3).map((r) => (
-              <div key={r.id} className="flex items-center justify-between px-4 py-3">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-50"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /></div>
-                  <div className="min-w-0"><p className="text-sm font-medium truncate">{r.clienteNombre}</p><p className="text-[10px] text-muted-foreground">{r.plantilla}</p></div>
+              <div key={r.id} className="flex items-center justify-between p-4">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-semibold text-stone-900 truncate">{r.clienteNombre}</p>
+                    <p className="text-[10px] text-stone-400">{r.plantilla}</p>
+                  </div>
                 </div>
-                <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">{new Date(r.fecha).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}</span>
+                <span className="text-[10px] font-medium text-stone-300 shrink-0 tabular-nums">{new Date(r.fecha).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}</span>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Modal: seleccionar cliente */}
+      {/* Modales */}
       <Dialog open={!!accionActiva} onOpenChange={(o) => !o && setAccionActiva(null)}>
-        <DialogContent className="max-w-sm"><DialogHeader><DialogTitle>¿A quién?</DialogTitle></DialogHeader>
+        <DialogContent className="max-w-sm"><DialogHeader><DialogTitle className="text-[15px]">¿A quién?</DialogTitle></DialogHeader>
           <div className="max-h-72 space-y-1 overflow-y-auto">
             {clientes.map((c) => (
-              <button key={c.id} className="flex w-full items-center gap-3 rounded-2xl p-3 text-left active:bg-muted hover:bg-muted transition-colors" onClick={() => enviarMensaje(c.id)}>
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10"><User className="h-4 w-4 text-primary" /></div>
-                <div className="min-w-0"><p className="text-sm font-semibold truncate">{c.nombre}</p>{c.vehiculo && <p className="text-xs text-muted-foreground truncate">{c.vehiculo}</p>}</div>
+              <button key={c.id} className="flex w-full items-center gap-3 rounded-2xl p-3 text-left active:bg-stone-50 hover:bg-stone-50 transition-colors" onClick={() => enviarMensaje(c.id)}>
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50"><User className="h-4 w-4 text-orange-500" /></div>
+                <div className="min-w-0"><p className="text-[13px] font-bold text-stone-900 truncate">{c.nombre}</p>{c.vehiculo && <p className="text-[11px] text-stone-400 truncate">{c.vehiculo}</p>}</div>
+                <ChevronRight className="h-4 w-4 text-stone-300 shrink-0 ml-auto" />
               </button>
             ))}
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Modal: nueva cita */}
       <Dialog open={mostrarFormCita} onOpenChange={setMostrarFormCita}>
-        <DialogContent className="max-w-sm"><DialogHeader><DialogTitle>Nueva cita</DialogTitle></DialogHeader>
+        <DialogContent className="max-w-sm"><DialogHeader><DialogTitle className="text-[15px]">Nueva cita</DialogTitle></DialogHeader>
           <div className="space-y-3">
             {clientes.length > 0 && (
-              <div className="space-y-1"><Label className="text-xs">Cliente</Label>
+              <div className="space-y-1.5"><Label className="text-[11px] font-bold text-stone-500">Cliente</Label>
                 <Select value={nuevaCita.clienteId} onValueChange={(v) => setNuevaCita({ ...nuevaCita, clienteId: v, nombreManual: "", telefonoManual: "" })}>
-                  <SelectTrigger className="h-11 rounded-xl"><SelectValue placeholder="Seleccionar..." /></SelectTrigger>
+                  <SelectTrigger className="h-11 rounded-xl border-stone-200"><SelectValue placeholder="Seleccionar..." /></SelectTrigger>
                   <SelectContent>{clientes.map((c) => (<SelectItem key={c.id} value={c.id}>{c.nombre}{c.vehiculo ? ` — ${c.vehiculo}` : ""}</SelectItem>))}</SelectContent>
                 </Select>
               </div>
             )}
             {!nuevaCita.clienteId && (<>
-              <div className="space-y-1"><Label className="text-xs">{clientes.length > 0 ? "O nombre manual" : "Nombre"}</Label><Input placeholder="Nombre" value={nuevaCita.nombreManual} onChange={(e) => setNuevaCita({ ...nuevaCita, nombreManual: e.target.value })} className="h-11 rounded-xl" /></div>
-              <div className="space-y-1"><Label className="text-xs">Teléfono</Label><Input placeholder="34612345678" value={nuevaCita.telefonoManual} onChange={(e) => setNuevaCita({ ...nuevaCita, telefonoManual: e.target.value })} className="h-11 rounded-xl" type="tel" /></div>
+              <div className="space-y-1.5"><Label className="text-[11px] font-bold text-stone-500">{clientes.length > 0 ? "O nombre manual" : "Nombre"}</Label><Input placeholder="Nombre" value={nuevaCita.nombreManual} onChange={(e) => setNuevaCita({ ...nuevaCita, nombreManual: e.target.value })} className="h-11 rounded-xl border-stone-200" /></div>
+              <div className="space-y-1.5"><Label className="text-[11px] font-bold text-stone-500">Teléfono</Label><Input placeholder="34612345678" value={nuevaCita.telefonoManual} onChange={(e) => setNuevaCita({ ...nuevaCita, telefonoManual: e.target.value })} className="h-11 rounded-xl border-stone-200" type="tel" /></div>
             </>)}
             <div className="grid grid-cols-2 gap-2">
-              <div className="space-y-1"><Label className="text-xs">Fecha</Label><Input type="date" value={nuevaCita.fecha} onChange={(e) => setNuevaCita({ ...nuevaCita, fecha: e.target.value })} className="h-11 rounded-xl" /></div>
-              <div className="space-y-1"><Label className="text-xs">Hora</Label><Input type="time" value={nuevaCita.hora} onChange={(e) => setNuevaCita({ ...nuevaCita, hora: e.target.value })} className="h-11 rounded-xl" /></div>
+              <div className="space-y-1.5"><Label className="text-[11px] font-bold text-stone-500">Fecha</Label><Input type="date" value={nuevaCita.fecha} onChange={(e) => setNuevaCita({ ...nuevaCita, fecha: e.target.value })} className="h-11 rounded-xl border-stone-200" /></div>
+              <div className="space-y-1.5"><Label className="text-[11px] font-bold text-stone-500">Hora</Label><Input type="time" value={nuevaCita.hora} onChange={(e) => setNuevaCita({ ...nuevaCita, hora: e.target.value })} className="h-11 rounded-xl border-stone-200" /></div>
             </div>
-            <div className="space-y-1"><Label className="text-xs">Motivo</Label><Input placeholder="Revisión frenos, cambio aceite..." value={nuevaCita.motivo} onChange={(e) => setNuevaCita({ ...nuevaCita, motivo: e.target.value })} className="h-11 rounded-xl" /></div>
-            <Button onClick={guardarCita} className="w-full h-11 rounded-xl">Guardar cita</Button>
+            <div className="space-y-1.5"><Label className="text-[11px] font-bold text-stone-500">Motivo</Label><Input placeholder="Revisión frenos, cambio aceite..." value={nuevaCita.motivo} onChange={(e) => setNuevaCita({ ...nuevaCita, motivo: e.target.value })} className="h-11 rounded-xl border-stone-200" /></div>
+            <Button onClick={guardarCita} className="w-full h-11 rounded-xl bg-stone-900 text-white hover:bg-stone-800">Guardar cita</Button>
           </div>
         </DialogContent>
       </Dialog>

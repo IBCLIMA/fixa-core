@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Search, User, MessageSquare, Trash2, Phone, Car, Pencil } from "lucide-react";
+import { Plus, Search, User, MessageSquare, Trash2, Phone, Car, Pencil, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ClientesPage() {
@@ -44,73 +44,75 @@ export default function ClientesPage() {
   if (!loaded) return null;
 
   return (
-    <div className="space-y-5 pb-4">
+    <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">Clientes</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{clientes.length} cliente{clientes.length !== 1 ? "s" : ""}</p>
+          <h1 className="text-[28px] font-extrabold tracking-tight text-stone-900">Clientes</h1>
+          <p className="text-[12px] text-stone-400 font-medium mt-0.5">{clientes.length} cliente{clientes.length !== 1 ? "s" : ""} guardado{clientes.length !== 1 ? "s" : ""}</p>
         </div>
-        <Button className="rounded-full bg-accent text-white hover:bg-accent/90 font-semibold shadow-md shadow-accent/10" onClick={abrirNuevo}>
+        <Button className="rounded-full bg-stone-900 text-white hover:bg-stone-800 font-bold shadow-lg shadow-stone-900/10 h-10 px-5 text-[13px]" onClick={abrirNuevo}>
           <Plus className="mr-1.5 h-4 w-4" />Nuevo
         </Button>
       </div>
 
       {clientes.length > 3 && (
         <div className="relative">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
-          <Input placeholder="Buscar nombre, matrícula..." value={busqueda} onChange={(e) => setBusqueda(e.target.value)} className="pl-10 h-11 rounded-xl bg-white border-border/50 shadow-sm" />
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-300" />
+          <Input placeholder="Buscar nombre, matrícula..." value={busqueda} onChange={(e) => setBusqueda(e.target.value)} className="pl-10 h-11 rounded-xl bg-white border-stone-200/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] text-[13px]" />
         </div>
       )}
 
       {clientes.length === 0 ? (
-        <div className="rounded-3xl bg-white border border-dashed border-border p-8 text-center space-y-4 shadow-sm">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-muted"><User className="h-6 w-6 text-muted-foreground/50" /></div>
-          <p className="font-bold">Aún no hay clientes</p>
-          <p className="text-sm text-muted-foreground">Añade el primero para empezar a usar FIXA</p>
-          <Button className="rounded-full bg-accent text-white hover:bg-accent/90 font-semibold shadow-md shadow-accent/10" onClick={abrirNuevo}><Plus className="mr-1.5 h-4 w-4" />Añadir cliente</Button>
+        <div className="rounded-3xl bg-white p-10 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] border border-stone-200/60">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-stone-100 mb-4"><User className="h-7 w-7 text-stone-300" /></div>
+          <h2 className="text-lg font-extrabold text-stone-900 mb-1">Sin clientes aún</h2>
+          <p className="text-[13px] text-stone-400 mb-5">Añade el primero para empezar</p>
+          <Button className="rounded-full bg-stone-900 text-white hover:bg-stone-800 font-bold shadow-lg shadow-stone-900/10" onClick={abrirNuevo}><Plus className="mr-1.5 h-4 w-4" />Añadir cliente</Button>
         </div>
       ) : (
-        <div className="space-y-2.5">
+        <div className="rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] border border-stone-200/60 divide-y divide-stone-100">
           {filtrados.map((c) => (
-            <div key={c.id} className="flex items-center gap-3 rounded-2xl bg-white border border-border/50 p-4 shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                <User className="h-5 w-5 text-primary" />
+            <div key={c.id} className="flex items-center gap-3 p-4 hover:bg-stone-50/50 transition-colors">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-orange-50 to-orange-100">
+                <span className="text-[14px] font-extrabold text-orange-500">{c.nombre.charAt(0)}</span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold truncate">{c.nombre}</p>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
-                  {c.vehiculo && <span className="flex items-center gap-1 truncate"><Car className="h-3 w-3 shrink-0" />{c.vehiculo}</span>}
-                  <span className="flex items-center gap-1 shrink-0"><Phone className="h-3 w-3" />{c.telefono.slice(-9)}</span>
+                <p className="text-[13px] font-bold text-stone-900 truncate">{c.nombre}</p>
+                <div className="flex items-center gap-2.5 text-[11px] text-stone-400 mt-0.5">
+                  {c.vehiculo && <span className="flex items-center gap-1 truncate"><Car className="h-3 w-3 shrink-0 text-stone-300" />{c.vehiculo}</span>}
+                  <span className="flex items-center gap-1 shrink-0"><Phone className="h-3 w-3 text-stone-300" />{c.telefono.slice(-9)}</span>
                 </div>
               </div>
-              <div className="flex items-center shrink-0">
-                <button className="h-9 w-9 rounded-full flex items-center justify-center text-muted-foreground/50 hover:text-foreground hover:bg-muted transition-colors" onClick={() => abrirEdicion(c)}><Pencil className="h-3.5 w-3.5" /></button>
-                <button className="h-9 w-9 rounded-full flex items-center justify-center text-emerald-600 hover:bg-emerald-50 transition-colors" onClick={() => setClienteMsg(c)}><MessageSquare className="h-4 w-4" /></button>
-                <button className="h-9 w-9 rounded-full flex items-center justify-center text-muted-foreground/30 hover:text-red-500 hover:bg-red-50 transition-colors" onClick={() => eliminar(c.id)}><Trash2 className="h-3.5 w-3.5" /></button>
+              <div className="flex items-center gap-0.5 shrink-0">
+                <button className="h-8 w-8 rounded-full flex items-center justify-center text-stone-300 hover:text-stone-600 hover:bg-stone-100 transition-all" onClick={() => abrirEdicion(c)}><Pencil className="h-3.5 w-3.5" /></button>
+                <button className="h-8 w-8 rounded-full flex items-center justify-center text-emerald-500 hover:bg-emerald-50 transition-all" onClick={() => setClienteMsg(c)}><MessageSquare className="h-4 w-4" /></button>
+                <button className="h-8 w-8 rounded-full flex items-center justify-center text-stone-200 hover:text-red-500 hover:bg-red-50 transition-all" onClick={() => eliminar(c.id)}><Trash2 className="h-3.5 w-3.5" /></button>
               </div>
             </div>
           ))}
-          {filtrados.length === 0 && busqueda && <div className="rounded-2xl bg-white border border-dashed border-border p-6 text-center text-sm text-muted-foreground shadow-sm">Sin resultados para &ldquo;{busqueda}&rdquo;</div>}
+          {filtrados.length === 0 && busqueda && <div className="p-6 text-center text-[13px] text-stone-400">Sin resultados para &ldquo;{busqueda}&rdquo;</div>}
         </div>
       )}
 
       <Dialog open={mostrarForm} onOpenChange={setMostrarForm}>
-        <DialogContent className="max-w-sm"><DialogHeader><DialogTitle>{editando ? "Editar cliente" : "Nuevo cliente"}</DialogTitle></DialogHeader>
+        <DialogContent className="max-w-sm"><DialogHeader><DialogTitle className="text-[15px]">{editando ? "Editar cliente" : "Nuevo cliente"}</DialogTitle></DialogHeader>
           <div className="space-y-3">
-            <div className="space-y-1"><Label className="text-xs">Nombre</Label><Input placeholder="Antonio García" value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} className="h-11 rounded-xl" autoFocus /></div>
-            <div className="space-y-1"><Label className="text-xs">Teléfono (con 34)</Label><Input placeholder="34612345678" value={form.telefono} onChange={(e) => setForm({ ...form, telefono: e.target.value })} className="h-11 rounded-xl" type="tel" /></div>
-            <div className="space-y-1"><Label className="text-xs">Vehículo</Label><Input placeholder="Seat León — 4532 HBK" value={form.vehiculo} onChange={(e) => setForm({ ...form, vehiculo: e.target.value })} className="h-11 rounded-xl" /></div>
-            <Button onClick={guardar} className="w-full h-11 rounded-xl">{editando ? "Guardar cambios" : "Añadir cliente"}</Button>
+            <div className="space-y-1.5"><Label className="text-[11px] font-bold text-stone-500">Nombre</Label><Input placeholder="Antonio García" value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} className="h-11 rounded-xl border-stone-200" autoFocus /></div>
+            <div className="space-y-1.5"><Label className="text-[11px] font-bold text-stone-500">Teléfono (con 34)</Label><Input placeholder="34612345678" value={form.telefono} onChange={(e) => setForm({ ...form, telefono: e.target.value })} className="h-11 rounded-xl border-stone-200" type="tel" /></div>
+            <div className="space-y-1.5"><Label className="text-[11px] font-bold text-stone-500">Vehículo</Label><Input placeholder="Seat León — 4532 HBK" value={form.vehiculo} onChange={(e) => setForm({ ...form, vehiculo: e.target.value })} className="h-11 rounded-xl border-stone-200" /></div>
+            <Button onClick={guardar} className="w-full h-11 rounded-xl bg-stone-900 text-white hover:bg-stone-800 font-bold">{editando ? "Guardar cambios" : "Añadir cliente"}</Button>
           </div>
         </DialogContent>
       </Dialog>
 
       <Dialog open={!!clienteMsg} onOpenChange={(o) => !o && setClienteMsg(null)}>
-        <DialogContent className="max-w-sm"><DialogHeader><DialogTitle>Mensaje a {clienteMsg?.nombre}</DialogTitle></DialogHeader>
+        <DialogContent className="max-w-sm"><DialogHeader><DialogTitle className="text-[15px]">Mensaje a {clienteMsg?.nombre}</DialogTitle></DialogHeader>
           <div className="space-y-2">
             {plantillas.map((p) => (
-              <button key={p.id} className="flex w-full items-center gap-3 rounded-2xl border border-border/50 bg-white p-4 text-left active:bg-muted hover:bg-muted/60 hover:shadow-sm transition-all duration-200" onClick={() => clienteMsg && enviarMsg(clienteMsg, p.id)}>
-                <span className="text-xl">{p.emoji}</span><span className="text-sm font-semibold">{p.label}</span>
+              <button key={p.id} className="flex w-full items-center gap-3 rounded-2xl p-4 text-left active:bg-stone-50 hover:bg-stone-50 transition-colors border border-stone-100" onClick={() => clienteMsg && enviarMsg(clienteMsg, p.id)}>
+                <span className="text-xl">{p.emoji}</span>
+                <span className="text-[13px] font-bold text-stone-900 flex-1">{p.label}</span>
+                <ChevronRight className="h-4 w-4 text-stone-300" />
               </button>
             ))}
           </div>
