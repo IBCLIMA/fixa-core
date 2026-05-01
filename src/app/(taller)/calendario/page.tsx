@@ -1,29 +1,46 @@
-import { Plus, CalendarDays } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { CalendarDays } from "lucide-react";
+import { getCitasSemana } from "../actions/citas";
+import { CalendarioView } from "./calendario-view";
 
-export default function CalendarioPage() {
+function getWeekDates() {
+  const now = new Date();
+  const day = now.getDay();
+  const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(now.setDate(diff));
+  monday.setHours(0, 0, 0, 0);
+
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    days.push(d);
+  }
+
+  return {
+    days,
+    start: days[0].toISOString().split("T")[0],
+    end: days[6].toISOString().split("T")[0],
+  };
+}
+
+export default async function CalendarioPage() {
+  const week = getWeekDates();
+  const citas = await getCitasSemana(week.start, week.end);
+
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Calendario</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Agenda de citas del taller</p>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            Semana del{" "}
+            {week.days[0].toLocaleDateString("es-ES", { day: "numeric", month: "long" })} al{" "}
+            {week.days[6].toLocaleDateString("es-ES", { day: "numeric", month: "long" })}
+          </p>
         </div>
-        <Button className="rounded-full">
-          <Plus className="mr-1.5 h-4 w-4" />Nueva cita
-        </Button>
       </div>
 
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-16 text-center">
-        <CalendarDays className="h-12 w-12 text-muted-foreground/30 mb-4" />
-        <h3 className="text-lg font-bold">Sin citas programadas</h3>
-        <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-          Programa citas para organizar las entradas de vehículos al taller
-        </p>
-        <Button className="mt-4 rounded-full">
-          <Plus className="mr-1.5 h-4 w-4" />Crear primera cita
-        </Button>
-      </div>
+      <CalendarioView days={week.days.map((d) => d.toISOString())} citas={citas} />
     </div>
   );
 }

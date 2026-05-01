@@ -15,6 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { getCliente } from "../../actions/clientes";
+import { NuevoVehiculoDialog } from "./nuevo-vehiculo-dialog";
 
 const estadoColors: Record<string, string> = {
   recibido: "bg-zinc-500",
@@ -94,10 +95,7 @@ export default async function ClienteDetallePage({
             <Car className="h-5 w-5 text-muted-foreground" />
             Vehículos
           </h2>
-          <Button size="sm" variant="outline" className="rounded-full">
-            <Plus className="mr-1 h-3 w-3" />
-            Añadir vehículo
-          </Button>
+          <NuevoVehiculoDialog clienteId={id} />
         </div>
 
         {!cliente.vehiculos || cliente.vehiculos.length === 0 ? (
