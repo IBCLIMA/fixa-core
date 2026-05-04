@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import {
   LayoutDashboard, ClipboardList, CalendarDays, Users, MoreHorizontal,
-  Wrench, FileText, Receipt, Bell, Settings, Megaphone,
+  Wrench, FileText, Receipt, Bell, Settings, Megaphone, BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -25,6 +25,7 @@ const moreTabs = [
   { name: "Facturación", href: "/facturacion", icon: Receipt },
   { name: "Avisos", href: "/avisos", icon: Bell },
   { name: "Ofertas", href: "/ofertas", icon: Megaphone },
+  { name: "Primeros pasos", href: "/primeros-pasos", icon: BookOpen },
   { name: "Configuración", href: "/configuracion", icon: Settings },
 ];
 

@@ -181,3 +181,29 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Tour guiado styles */
+.driver-popover {
+  border-radius: 16px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+.driver-popover-title {
+  font-size: 16px !important;
+  font-weight: 800 !important;
+}
+.driver-popover-description {
+  font-size: 14px !important;
+  color: #57534e !important;
+  line-height: 1.5 !important;
+}
+.driver-popover-progress-text {
+  font-size: 11px !important;
+  color: #a8a29e !important;
+}
+.driver-popover-navigation-btns button {
+  border-radius: 9999px !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  padding: 6px 16px !important;
+}

@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { EntradaRapida } from "./entrada-rapida";
+import { TourGuiado } from "./tour-guiado";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
 import { ordenesTrabajo, clientes, citas, vehiculos } from "@/db/schema";
@@ -109,8 +110,9 @@ export default async function PanelDelDia() {
           <p className="text-sm font-medium text-muted-foreground capitalize">{fechaHoy}</p>
           <h1 className="text-2xl font-extrabold tracking-tight mt-0.5">Panel del día</h1>
         </div>
-        <div className="flex gap-2">
-          <EntradaRapida />
+        <div className="flex items-center gap-2">
+          <TourGuiado />
+          <div id="btn-entrada-rapida"><EntradaRapida /></div>
           <Link href="/ordenes/nueva">
             <Button size="sm" variant="outline" className="rounded-full"><Plus className="mr-1.5 h-4 w-4" />Manual</Button>
           </Link>
@@ -119,7 +121,7 @@ export default async function PanelDelDia() {
 
       {/* KPIs */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <div className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div id="kpi-en-taller" className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-sm shadow-blue-500/20">
               <Car className="h-5 w-5 text-white" />
@@ -131,7 +133,7 @@ export default async function PanelDelDia() {
           </div>
           <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-blue-500/[0.04]" />
         </div>
-        <div className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div id="kpi-citas" className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-sm shadow-orange-500/20">
               <CalendarDays className="h-5 w-5 text-white" />
@@ -202,7 +204,7 @@ export default async function PanelDelDia() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Coches en taller */}
-        <Card>
+        <Card id="coches-en-taller">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base flex items-center gap-2"><ClipboardList className="h-4 w-4 text-muted-foreground" />Coches en taller</CardTitle>
@@ -239,7 +241,7 @@ export default async function PanelDelDia() {
         </Card>
 
         {/* Citas de hoy */}
-        <Card>
+        <Card id="citas-hoy">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base flex items-center gap-2"><CalendarDays className="h-4 w-4 text-muted-foreground" />Citas de hoy</CardTitle>
