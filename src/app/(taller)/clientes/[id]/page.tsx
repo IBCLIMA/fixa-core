@@ -11,6 +11,7 @@ import { clientes, vehiculos, ordenesTrabajo } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { NuevoVehiculoDialog } from "./nuevo-vehiculo-dialog";
 import { EditarClienteDialog } from "./editar-cliente-dialog";
+import { EditarVehiculoDialog } from "./editar-vehiculo-dialog";
 
 const estadoColors: Record<string, string> = {
   recibido: "bg-zinc-100 text-zinc-600",
@@ -119,8 +120,11 @@ export default async function ClienteDetallePage({ params }: { params: Promise<{
                 <Card key={v.id}>
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <div>
+                      <div className="flex items-center gap-2">
                         <p className="font-bold text-lg tracking-wider">{v.matricula}</p>
+                        <EditarVehiculoDialog vehiculo={v} />
+                      </div>
+                      <div>
                         <p className="text-sm text-muted-foreground">
                           {[v.marca, v.modelo, v.anio].filter(Boolean).join(" · ")}
                           {v.color ? ` · ${v.color}` : ""}

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Car, User, Clock, Hash, FileText, MessageSquare, Phone } from "lucide-react";
+import { ArrowLeft, Car, User, Clock, Hash, FileText, MessageSquare, Phone, Share2, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,8 @@ import { Separator } from "@/components/ui/separator";
 import { getOrden } from "../../actions/ordenes";
 import { CambiarEstadoButtons } from "./cambiar-estado";
 import { AgregarLineaForm } from "./agregar-linea";
+import { EditarDiagnostico } from "./editar-diagnostico";
+import { CrearPresupuestoBtn } from "./crear-presupuesto-btn";
 
 const estadoLabels: Record<string, string> = {
   recibido: "Recibido",
@@ -181,29 +183,22 @@ export default async function OrdenDetallePage({
         </Card>
       </div>
 
-      {/* Descripción */}
-      {(orden.descripcionCliente || orden.diagnostico) && (
-        <Card>
-          <CardContent className="p-4 space-y-3">
-            {orden.descripcionCliente && (
-              <div>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
-                  Descripción del cliente
-                </p>
-                <p className="text-sm">{orden.descripcionCliente}</p>
-              </div>
-            )}
-            {orden.diagnostico && (
-              <div>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
-                  Diagnóstico
-                </p>
-                <p className="text-sm">{orden.diagnostico}</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
+      {/* Descripción y diagnóstico */}
+      <EditarDiagnostico
+        ordenId={orden.id}
+        diagnosticoActual={orden.diagnostico}
+        descripcionActual={orden.descripcionCliente}
+      />
+
+      {/* Acciones */}
+      <div className="flex flex-wrap gap-2">
+        <CrearPresupuestoBtn ordenId={orden.id} />
+        <a href={`/api/ordenes/${orden.id}/resumen`} target="_blank">
+          <Button variant="outline" className="rounded-full">
+            <Printer className="mr-1.5 h-4 w-4" />Imprimir / Compartir
+          </Button>
+        </a>
+      </div>
 
       {/* Líneas de trabajo */}
       <Card>

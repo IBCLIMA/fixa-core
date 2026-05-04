@@ -75,8 +75,8 @@ export function CalendarioView({ days, citas }: CalendarioViewProps) {
 
   return (
     <>
-      {/* Vista semanal */}
-      <div className="grid grid-cols-7 gap-2">
+      {/* Vista semanal — desktop */}
+      <div className="hidden md:grid grid-cols-7 gap-2">
         {days.map((dayIso, i) => {
           const date = new Date(dayIso);
           const dateStr = date.toISOString().split("T")[0];
@@ -136,7 +136,7 @@ export function CalendarioView({ days, citas }: CalendarioViewProps) {
       </div>
 
       {/* Mobile: lista de citas */}
-      <div className="lg:hidden space-y-2 mt-4">
+      <div className="md:hidden space-y-2 mt-4">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold">Citas de la semana</h2>
           <Button size="sm" variant="outline" className="rounded-full" onClick={() => openNewCita(hoy)}>

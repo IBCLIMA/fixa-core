@@ -49,11 +49,11 @@ export function BusquedaGlobal() {
   }, []);
 
   return (
-    <div ref={ref} className="relative hidden sm:block">
+    <div ref={ref} className="relative flex-1 max-w-xs sm:max-w-sm">
       <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       <Input
         placeholder="Buscar matrícula, cliente, nº orden..."
-        className="pl-9 pr-8 h-9 w-64 rounded-full bg-muted border-0 text-sm"
+        className="pl-9 pr-8 h-9 w-full rounded-full bg-muted border-0 text-sm"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => resultados.length > 0 && setOpen(true)}
