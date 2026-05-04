@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { EntradaRapida } from "./entrada-rapida";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
 import { ordenesTrabajo, clientes, citas, vehiculos } from "@/db/schema";
@@ -108,9 +109,12 @@ export default async function PanelDelDia() {
           <p className="text-sm font-medium text-muted-foreground capitalize">{fechaHoy}</p>
           <h1 className="text-2xl font-extrabold tracking-tight mt-0.5">Panel del día</h1>
         </div>
-        <Link href="/ordenes/nueva">
-          <Button size="sm" className="rounded-full"><Plus className="mr-1.5 h-4 w-4" />Nueva orden</Button>
-        </Link>
+        <div className="flex gap-2">
+          <EntradaRapida />
+          <Link href="/ordenes/nueva">
+            <Button size="sm" variant="outline" className="rounded-full"><Plus className="mr-1.5 h-4 w-4" />Manual</Button>
+          </Link>
+        </div>
       </div>
 
       {/* KPIs */}
