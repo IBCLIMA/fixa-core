@@ -115,10 +115,54 @@ export default async function PanelDelDia() {
 
       {/* KPIs */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50"><Car className="h-5 w-5 text-blue-600" /></div><div><p className="text-2xl font-extrabold leading-none">{ordenesActivas.length}</p><p className="text-xs text-muted-foreground mt-0.5">En taller</p></div></div></CardContent></Card>
-        <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10"><CalendarDays className="h-5 w-5 text-brand" /></div><div><p className="text-2xl font-extrabold leading-none">{citasHoy.length}</p><p className="text-xs text-muted-foreground mt-0.5">Citas hoy</p></div></div></CardContent></Card>
-        <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50"><Receipt className="h-5 w-5 text-violet-600" /></div><div><p className="text-2xl font-extrabold leading-none">{totalClientes}</p><p className="text-xs text-muted-foreground mt-0.5">Clientes</p></div></div></CardContent></Card>
-        <Card><CardContent className="p-4"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50"><ClipboardList className="h-5 w-5 text-emerald-600" /></div><div><p className="text-2xl font-extrabold leading-none">{cochesListos.length}</p><p className="text-xs text-muted-foreground mt-0.5">Listos</p></div></div></CardContent></Card>
+        <div className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-sm shadow-blue-500/20">
+              <Car className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className="text-2xl font-extrabold leading-none text-stone-900">{ordenesActivas.length}</p>
+              <p className="text-xs text-stone-400 font-medium mt-0.5">En taller</p>
+            </div>
+          </div>
+          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-blue-500/[0.04]" />
+        </div>
+        <div className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-sm shadow-orange-500/20">
+              <CalendarDays className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className="text-2xl font-extrabold leading-none text-stone-900">{citasHoy.length}</p>
+              <p className="text-xs text-stone-400 font-medium mt-0.5">Citas hoy</p>
+            </div>
+          </div>
+          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-orange-500/[0.04]" />
+        </div>
+        <div className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-violet-600 shadow-sm shadow-violet-500/20">
+              <Receipt className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className="text-2xl font-extrabold leading-none text-stone-900">{totalClientes}</p>
+              <p className="text-xs text-stone-400 font-medium mt-0.5">Clientes</p>
+            </div>
+          </div>
+          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-violet-500/[0.04]" />
+        </div>
+        <div className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-sm shadow-emerald-500/20">
+              <ClipboardList className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className="text-2xl font-extrabold leading-none text-stone-900">{cochesListos.length}</p>
+              <p className="text-xs text-stone-400 font-medium mt-0.5">Listos</p>
+            </div>
+          </div>
+          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-emerald-500/[0.04]" />
+        </div>
       </div>
 
       {/* Coches listos para entregar */}

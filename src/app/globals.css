@@ -94,10 +94,10 @@
 :root {
   /* Brand — naranja FIXA */
   --brand: oklch(66.5% 0.1804 47.04);
-  --brand-foreground: oklch(75.77% 0.159 55.91);
+  --brand-foreground: oklch(98% 0 0);
 
-  --background: oklch(97.65% 0.001 17.18);
-  --foreground: oklch(0.141 0.005 285.823);
+  --background: oklch(97.5% 0.003 80);
+  --foreground: oklch(0.16 0.01 260);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
