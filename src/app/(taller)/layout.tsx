@@ -22,6 +22,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { BusquedaGlobal } from "./busqueda-global";
 
 const mainTabs = [
   { name: "Hoy", href: "/", icon: LayoutDashboard },
@@ -62,6 +63,7 @@ export default function TallerLayout({
               FIXA
             </span>
           </div>
+          <BusquedaGlobal />
           <UserButton
             appearance={{
               elements: {

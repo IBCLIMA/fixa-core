@@ -88,13 +88,25 @@ export default async function OrdenDetallePage({
         </div>
       </div>
 
-      {/* Estado */}
+      {/* Estado + Portal */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Cambiar estado</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base">Cambiar estado</CardTitle>
+            <a
+              href={`/estado/${orden.id}`}
+              target="_blank"
+              className="text-xs font-semibold text-brand hover:underline"
+            >
+              Ver portal del cliente →
+            </a>
+          </div>
         </CardHeader>
         <CardContent>
           <CambiarEstadoButtons ordenId={orden.id} estadoActual={orden.estado} />
+          <p className="text-xs text-muted-foreground mt-3">
+            Comparte con el cliente: {typeof window !== "undefined" ? window.location.origin : ""}/estado/{orden.id}
+          </p>
         </CardContent>
       </Card>
 
