@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Car, User, Clock, Hash, FileText } from "lucide-react";
+import { ArrowLeft, Car, User, Clock, Hash, FileText, MessageSquare, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -146,6 +146,23 @@ export default async function OrdenDetallePage({
               )}
               {orden.cliente?.email && (
                 <p className="text-muted-foreground">{orden.cliente.email}</p>
+              )}
+              {orden.cliente?.telefono && (
+                <div className="flex gap-2 mt-2">
+                  <a
+                    href={`https://wa.me/34${orden.cliente.telefono.replace(/\s/g, "")}?text=${encodeURIComponent(`Hola ${orden.cliente.nombre.split(" ")[0]}, te escribimos desde el taller sobre tu vehículo ${orden.vehiculo?.matricula || ""}.`)}`}
+                    target="_blank"
+                    className="flex h-8 items-center gap-1.5 rounded-full bg-emerald-600 px-3 text-white text-xs font-bold hover:bg-emerald-500 transition-colors"
+                  >
+                    <MessageSquare className="h-3 w-3" />WhatsApp
+                  </a>
+                  <a
+                    href={`tel:${orden.cliente.telefono}`}
+                    className="flex h-8 items-center gap-1.5 rounded-full bg-muted px-3 text-xs font-bold hover:bg-muted/80 transition-colors"
+                  >
+                    <Phone className="h-3 w-3" />Llamar
+                  </a>
+                </div>
               )}
             </div>
           </CardContent>
