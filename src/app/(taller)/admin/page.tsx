@@ -59,6 +59,9 @@ export default async function AdminPage() {
   const talleresTrialActivo = talleresList.filter((t) => t.plan === "trial" && t.trialEndsAt && new Date(t.trialEndsAt) > new Date());
   const talleresTrialExpirado = talleresList.filter((t) => t.plan === "trial" && t.trialEndsAt && new Date(t.trialEndsAt) <= new Date());
 
+  const hace48h = new Date(Date.now() - 48 * 60 * 60 * 1000);
+  const nuevosRegistros = talleresList.filter((t) => new Date(t.createdAt) > hace48h);
+
   const mrr = talleresPagando.reduce((sum, t) => {
     if (t.plan === "basico") return sum + 29;
     if (t.plan === "taller") return sum + 49;
@@ -97,6 +100,9 @@ export default async function AdminPage() {
         <div className="rounded-xl bg-red-50 border border-red-200 p-3 text-center"><p className="text-xl font-extrabold text-red-700">{talleresTrialExpirado.length}</p><p className="text-xs text-red-600 font-medium">Trial expirado</p></div>
         <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-center"><p className="text-xl font-extrabold text-emerald-700">{talleresPagando.length}</p><p className="text-xs text-emerald-600 font-medium">Pagando</p></div>
         <div className="rounded-xl bg-stone-50 border border-stone-200 p-3 text-center"><p className="text-xl font-extrabold text-stone-700">{talleresList.filter((t) => t.activo).length}</p><p className="text-xs text-stone-600 font-medium">Activos</p></div>
+        {nuevosRegistros.length > 0 && (
+          <div className="rounded-xl bg-blue-50 border border-blue-200 p-3 text-center"><p className="text-xl font-extrabold text-blue-700">{nuevosRegistros.length}</p><p className="text-xs text-blue-600 font-medium">Nuevos (48h)</p></div>
+        )}
       </div>
 
       {/* Talleres */}
@@ -109,6 +115,7 @@ export default async function AdminPage() {
             {talleresList.map((t) => {
               const trialDaysLeft = t.trialEndsAt ? Math.max(0, Math.ceil((new Date(t.trialEndsAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : 0;
               const trialExpired = t.plan === "trial" && trialDaysLeft === 0 && t.trialEndsAt;
+              const esNuevo = new Date(t.createdAt) > hace48h;
 
               return (
                 <div key={t.id} className={`rounded-xl border p-4 ${trialExpired ? "border-red-200 bg-red-50/30" : "border-stone-200"}`}>
@@ -117,6 +124,7 @@ export default async function AdminPage() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <p className="font-bold">{t.nombre}</p>
                         <Badge className={`text-[10px] ${planColors[t.plan]}`}>{planLabels[t.plan]}</Badge>
+                        {esNuevo && <Badge className="text-[10px] bg-blue-500 text-white animate-pulse">NUEVO</Badge>}
                         {!t.activo && <Badge variant="outline" className="text-[10px] text-red-500 border-red-200">Desactivado</Badge>}
                         {trialExpired && <Badge className="text-[10px] bg-red-100 text-red-700">Expirado</Badge>}
                       </div>

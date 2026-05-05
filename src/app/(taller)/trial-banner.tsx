@@ -1,22 +1,39 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Clock, AlertTriangle, X, Zap } from "lucide-react";
+
+const exemptRoutes = ["/trial-expirado", "/configuracion", "/ayuda", "/admin", "/bienvenida"];
 
 export function TrialBanner() {
   const [trialInfo, setTrialInfo] = useState<{ daysLeft: number; plan: string } | null>(null);
   const [dismissed, setDismissed] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     fetch("/api/trial-status")
       .then((r) => r.json())
       .then((data) => {
-        if (data.plan === "trial") {
-          setTrialInfo(data);
+        setTrialInfo(data);
+
+        // Bloquear acceso si trial expirado y no es ruta exenta
+        if (data.plan === "trial" && data.daysLeft <= 0) {
+          if (!exemptRoutes.some((r) => pathname.startsWith(r))) {
+            router.replace("/trial-expirado");
+          }
+        }
+
+        // Bloquear si plan cancelado
+        if (data.plan === "cancelado") {
+          if (!exemptRoutes.some((r) => pathname.startsWith(r))) {
+            router.replace("/trial-expirado");
+          }
         }
       })
       .catch(() => {});
-  }, []);
+  }, [pathname, router]);
 
   if (!trialInfo || dismissed) return null;
   if (trialInfo.plan !== "trial") return null;
@@ -24,23 +41,19 @@ export function TrialBanner() {
   const { daysLeft } = trialInfo;
   const isExpired = daysLeft <= 0;
 
+  if (isExpired) return null; // Ya redirigido
+
   let bgColor: string;
   let textColor: string;
   let icon: typeof Clock;
   let message: string;
   let canDismiss: boolean;
 
-  if (isExpired) {
-    bgColor = "bg-red-600";
-    textColor = "text-white";
-    icon = AlertTriangle;
-    message = "Tu período de prueba ha terminado. Contacta con nosotros para activar tu plan.";
-    canDismiss = false;
-  } else if (daysLeft === 1) {
+  if (daysLeft === 1) {
     bgColor = "bg-orange-500";
     textColor = "text-white";
     icon = AlertTriangle;
-    message = "Tu prueba termina mañana. ¡Activa tu plan para no perder el acceso!";
+    message = "Tu prueba termina mañana. ¡Contacta para activar tu plan!";
     canDismiss = false;
   } else if (daysLeft <= 5) {
     bgColor = "bg-amber-400";
@@ -52,7 +65,7 @@ export function TrialBanner() {
     bgColor = "bg-blue-50 border-b border-blue-200";
     textColor = "text-blue-700";
     icon = Zap;
-    message = `Estás en período de prueba gratuita. Te quedan ${daysLeft} días.`;
+    message = `Prueba gratuita — ${daysLeft} días restantes`;
     canDismiss = true;
   }
 
@@ -63,15 +76,6 @@ export function TrialBanner() {
       <div className="flex items-center justify-center gap-2">
         <Icon className="h-4 w-4 shrink-0" />
         <span>{message}</span>
-        {isExpired && (
-          <a
-            href="https://wa.me/34611433218?text=Hola%2C%20quiero%20activar%20mi%20plan%20de%20FIXA"
-            target="_blank"
-            className="ml-2 inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors"
-          >
-            Activar plan
-          </a>
-        )}
       </div>
       {canDismiss && (
         <button onClick={() => setDismissed(true)} className="absolute right-3 top-1/2 -translate-y-1/2">

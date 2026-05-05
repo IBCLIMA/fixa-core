@@ -1,13 +1,20 @@
 import { NextResponse } from "next/server";
-import { getTallerIdFromAuth } from "@/lib/auth";
+import { auth } from "@clerk/nextjs/server";
 import { getDb } from "@/db";
-import { talleres } from "@/db/schema";
+import { talleres, usuarios } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export async function GET() {
   try {
-    const { tallerId } = await getTallerIdFromAuth();
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ plan: "none", daysLeft: 0 });
+
     const db = getDb();
+
+    const usuario = await db.query.usuarios.findFirst({
+      where: eq(usuarios.clerkUserId, userId),
+    });
+    if (!usuario) return NextResponse.json({ plan: "trial", daysLeft: 14 });
 
     const [taller] = await db
       .select({
@@ -16,12 +23,21 @@ export async function GET() {
         activo: talleres.activo,
       })
       .from(talleres)
-      .where(eq(talleres.id, tallerId));
+      .where(eq(talleres.id, usuario.tallerId));
 
-    if (!taller) {
-      return NextResponse.json({ plan: "trial", daysLeft: 14 });
+    if (!taller) return NextResponse.json({ plan: "trial", daysLeft: 14 });
+
+    // Plan activo — no hay restricción
+    if (["basico", "taller", "pro"].includes(taller.plan)) {
+      return NextResponse.json({ plan: taller.plan, daysLeft: 999, activo: true });
     }
 
+    // Cancelado
+    if (taller.plan === "cancelado" || !taller.activo) {
+      return NextResponse.json({ plan: taller.plan, daysLeft: 0, activo: false });
+    }
+
+    // Trial
     let daysLeft = 14;
     if (taller.trialEndsAt) {
       daysLeft = Math.max(0, Math.ceil(
@@ -29,11 +45,7 @@ export async function GET() {
       ));
     }
 
-    return NextResponse.json({
-      plan: taller.plan,
-      daysLeft,
-      activo: taller.activo,
-    });
+    return NextResponse.json({ plan: "trial", daysLeft, activo: daysLeft > 0 });
   } catch {
     return NextResponse.json({ plan: "trial", daysLeft: 14 });
   }
