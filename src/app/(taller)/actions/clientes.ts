@@ -5,6 +5,7 @@ import { clientes, vehiculos, ordenesTrabajo } from "@/db/schema";
 import { eq, and, ilike, or, desc } from "drizzle-orm";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { sanitize } from "@/lib/validation";
 
 export async function getClientes(busqueda?: string) {
   const { tallerId } = await getTallerIdFromAuth();
@@ -63,9 +64,21 @@ export async function crearCliente(data: {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
 
+  // Sanitizar inputs
+  const cleanData = {
+    nombre: sanitize(data.nombre),
+    telefono: data.telefono ? sanitize(data.telefono) : undefined,
+    email: data.email ? sanitize(data.email) : undefined,
+    nif: data.nif ? sanitize(data.nif) : undefined,
+    direccion: data.direccion ? sanitize(data.direccion) : undefined,
+    notas: data.notas ? sanitize(data.notas) : undefined,
+  };
+
+  if (!cleanData.nombre) throw new Error("El nombre es obligatorio");
+
   const [cliente] = await db
     .insert(clientes)
-    .values({ ...data, tallerId })
+    .values({ ...cleanData, tallerId })
     .returning();
 
   revalidatePath("/clientes");

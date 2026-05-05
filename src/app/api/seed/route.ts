@@ -6,6 +6,12 @@ import { eq, count } from "drizzle-orm";
 
 export async function POST() {
   try {
+    // Solo permitir en desarrollo o con header especial
+    const isDev = process.env.NODE_ENV === "development";
+    if (!isDev) {
+      return NextResponse.json({ error: "Seed solo disponible en desarrollo" }, { status: 403 });
+    }
+
     const { tallerId, usuarioId } = await getTallerIdFromAuth();
     const db = getDb();
 
