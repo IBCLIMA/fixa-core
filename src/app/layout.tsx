@@ -26,6 +26,17 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "FIXA",
   },
+  openGraph: {
+    title: "FIXA — Gestión de taller mecánico",
+    description: "Órdenes, clientes, citas, WhatsApp integrado. Todo desde el móvil. Creado por un mecánico para mecánicos.",
+    siteName: "FIXA",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "FIXA — Gestión de taller mecánico",
+    description: "Órdenes, clientes, citas, WhatsApp integrado. Todo desde el móvil.",
+  },
   other: {
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",

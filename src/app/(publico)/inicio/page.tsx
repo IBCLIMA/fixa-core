@@ -262,6 +262,7 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-4 text-xs text-stone-400">
             <Link href="/privacidad" className="hover:text-stone-700 transition-colors">Privacidad</Link>
+            <Link href="/terminos" className="hover:text-stone-700 transition-colors">Términos</Link>
             <span>© 2026 FIXA by Ibañez Clima</span>
           </div>
         </div>
