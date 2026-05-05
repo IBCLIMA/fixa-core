@@ -79,7 +79,7 @@ export const rolUsuarioEnum = pgEnum("rol_usuario", [
 
 // ═══ TABLAS ═══
 
-export const planEnum = pgEnum("plan", ["trial", "basico", "taller", "pro", "cancelado"]);
+export const planEnum = pgEnum("plan", ["pendiente", "trial", "basico", "taller", "pro", "cancelado"]);
 
 export const talleres = pgTable("talleres", {
   id: uuid("id").defaultRandom().primaryKey(),

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Clock, AlertTriangle, X, Zap } from "lucide-react";
 
-const exemptRoutes = ["/trial-expirado", "/configuracion", "/ayuda", "/admin", "/bienvenida"];
+const exemptRoutes = ["/trial-expirado", "/pendiente-aprobacion", "/configuracion", "/ayuda", "/admin", "/bienvenida"];
 
 export function TrialBanner() {
   const [trialInfo, setTrialInfo] = useState<{ daysLeft: number; plan: string } | null>(null);
@@ -18,7 +18,14 @@ export function TrialBanner() {
       .then((data) => {
         setTrialInfo(data);
 
-        // Bloquear acceso si trial expirado y no es ruta exenta
+        // Bloquear si pendiente de aprobación
+        if (data.plan === "pendiente") {
+          if (!exemptRoutes.some((r) => pathname.startsWith(r))) {
+            router.replace("/pendiente-aprobacion");
+          }
+        }
+
+        // Bloquear acceso si trial expirado
         if (data.plan === "trial" && data.daysLeft <= 0) {
           if (!exemptRoutes.some((r) => pathname.startsWith(r))) {
             router.replace("/trial-expirado");

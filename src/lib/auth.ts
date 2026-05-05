@@ -25,16 +25,12 @@ export async function getTallerIdFromAuth() {
     return { tallerId: usuario.tallerId, usuarioId: usuario.id };
   }
 
-  // Crear taller con trial
-  const trialEnd = new Date();
-  trialEnd.setDate(trialEnd.getDate() + TRIAL_DAYS);
-
+  // Crear taller como PENDIENTE — necesita aprobación del admin
   const [taller] = await db
     .insert(talleres)
     .values({
       nombre: "Mi Taller",
-      plan: "trial",
-      trialEndsAt: trialEnd,
+      plan: "pendiente",
       ultimoAcceso: new Date(),
     })
     .returning();
@@ -48,6 +44,16 @@ export async function getTallerIdFromAuth() {
       nombre: "Administrador",
     })
     .returning();
+
+  // Notificar al admin del nuevo registro
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000";
+    fetch(`${baseUrl}/api/notificar-registro`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tallerId: taller.id, userId }),
+    }).catch(() => {});
+  } catch {}
 
   return { tallerId: taller.id, usuarioId: nuevoUsuario.id };
 }
@@ -78,6 +84,11 @@ export async function checkTrialStatus(): Promise<{
   // Si tiene plan activo, no bloquear
   if (["basico", "taller", "pro"].includes(taller.plan)) {
     return { activo: true, plan: taller.plan, daysLeft: 999, bloqueado: false };
+  }
+
+  // Si está pendiente de aprobación, bloquear
+  if (taller.plan === "pendiente") {
+    return { activo: false, plan: "pendiente", daysLeft: 0, bloqueado: true };
   }
 
   // Si está cancelado, bloquear

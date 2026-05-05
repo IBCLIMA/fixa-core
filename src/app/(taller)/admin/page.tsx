@@ -9,6 +9,7 @@ import { count, desc, sql } from "drizzle-orm";
 import { AdminTallerActions } from "./admin-actions";
 
 const planColors: Record<string, string> = {
+  pendiente: "bg-orange-100 text-orange-700",
   trial: "bg-amber-100 text-amber-700",
   basico: "bg-blue-100 text-blue-700",
   taller: "bg-emerald-100 text-emerald-700",
@@ -17,6 +18,7 @@ const planColors: Record<string, string> = {
 };
 
 const planLabels: Record<string, string> = {
+  pendiente: "⏳ Pendiente",
   trial: "Trial",
   basico: "Básico 29€/mes",
   taller: "Taller 49€/mes",
@@ -55,6 +57,7 @@ export default async function AdminPage() {
   const [totalClientes] = await db.select({ count: count() }).from(clientes);
   const [totalOrdenes] = await db.select({ count: count() }).from(ordenesTrabajo);
 
+  const talleresPendientes = talleresList.filter((t) => t.plan === "pendiente");
   const talleresPagando = talleresList.filter((t) => ["basico", "taller", "pro"].includes(t.plan));
   const talleresTrialActivo = talleresList.filter((t) => t.plan === "trial" && t.trialEndsAt && new Date(t.trialEndsAt) > new Date());
   const talleresTrialExpirado = talleresList.filter((t) => t.plan === "trial" && t.trialEndsAt && new Date(t.trialEndsAt) <= new Date());
@@ -96,6 +99,9 @@ export default async function AdminPage() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {talleresPendientes.length > 0 && (
+          <div className="rounded-xl bg-orange-50 border-2 border-orange-300 p-3 text-center animate-pulse"><p className="text-xl font-extrabold text-orange-700">{talleresPendientes.length}</p><p className="text-xs text-orange-600 font-bold">PENDIENTES</p></div>
+        )}
         <div className="rounded-xl bg-amber-50 border border-amber-200 p-3 text-center"><p className="text-xl font-extrabold text-amber-700">{talleresTrialActivo.length}</p><p className="text-xs text-amber-600 font-medium">Trial activo</p></div>
         <div className="rounded-xl bg-red-50 border border-red-200 p-3 text-center"><p className="text-xl font-extrabold text-red-700">{talleresTrialExpirado.length}</p><p className="text-xs text-red-600 font-medium">Trial expirado</p></div>
         <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-center"><p className="text-xl font-extrabold text-emerald-700">{talleresPagando.length}</p><p className="text-xs text-emerald-600 font-medium">Pagando</p></div>
@@ -124,7 +130,8 @@ export default async function AdminPage() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <p className="font-bold">{t.nombre}</p>
                         <Badge className={`text-[10px] ${planColors[t.plan]}`}>{planLabels[t.plan]}</Badge>
-                        {esNuevo && <Badge className="text-[10px] bg-blue-500 text-white animate-pulse">NUEVO</Badge>}
+                        {t.plan === "pendiente" && <Badge className="text-[10px] bg-orange-500 text-white animate-pulse">⏳ PENDIENTE APROBACIÓN</Badge>}
+                        {esNuevo && t.plan !== "pendiente" && <Badge className="text-[10px] bg-blue-500 text-white">NUEVO</Badge>}
                         {!t.activo && <Badge variant="outline" className="text-[10px] text-red-500 border-red-200">Desactivado</Badge>}
                         {trialExpired && <Badge className="text-[10px] bg-red-100 text-red-700">Expirado</Badge>}
                       </div>
