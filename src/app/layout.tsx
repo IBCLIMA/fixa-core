@@ -20,6 +20,17 @@ export const metadata: Metadata = {
   title: "FIXA — Gestión de taller mecánico",
   description:
     "Sistema de gestión para talleres mecánicos. Órdenes de trabajo, clientes, citas, presupuestos y facturación.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "FIXA",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-status-bar-style": "default",
+  },
 };
 
 export default function RootLayout({
@@ -33,6 +44,10 @@ export default function RootLayout({
         lang="es"
         className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       >
+        <head>
+          <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+          <meta name="theme-color" content="#f97316" />
+        </head>
         <body className="min-h-full flex flex-col">
           <TooltipProvider>{children}</TooltipProvider>
           <Toaster />

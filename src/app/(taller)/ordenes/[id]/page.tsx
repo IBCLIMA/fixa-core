@@ -10,6 +10,7 @@ import { CambiarEstadoButtons } from "./cambiar-estado";
 import { AgregarLineaForm } from "./agregar-linea";
 import { EditarDiagnostico } from "./editar-diagnostico";
 import { CrearPresupuestoBtn } from "./crear-presupuesto-btn";
+import { FotosOrden } from "./fotos-orden";
 
 const estadoLabels: Record<string, string> = {
   recibido: "Recibido",
@@ -189,6 +190,13 @@ export default async function OrdenDetallePage({
         diagnosticoActual={orden.diagnostico}
         descripcionActual={orden.descripcionCliente}
       />
+
+      {/* Fotos */}
+      <Card>
+        <CardContent className="p-4">
+          <FotosOrden ordenId={orden.id} fotos={orden.fotos || []} />
+        </CardContent>
+      </Card>
 
       {/* Acciones */}
       <div className="flex flex-wrap gap-2">
