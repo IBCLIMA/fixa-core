@@ -245,7 +245,7 @@ export default function LandingPage() {
           <p className="text-stone-400 mt-4 max-w-md mx-auto">Te lo dejamos montado en menos de una semana. Importa tus clientes y empieza a trabajar.</p>
           <div className="flex flex-col items-center gap-4 mt-8 sm:flex-row sm:justify-center">
             <Link href="/sign-up"><Button size="lg" className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-14 px-10 text-base shadow-xl shadow-orange-500/20">Probar gratis<ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
-            <a href="https://wa.me/34612345678?text=Hola%2C%20quiero%20información%20sobre%20FIXA" target="_blank">
+            <a href="https://wa.me/34611433218?text=Hola%2C%20quiero%20información%20sobre%20FIXA" target="_blank">
               <Button size="lg" variant="outline" className="rounded-full h-14 px-8 text-base font-semibold border-white/20 text-white hover:bg-white/10"><Phone className="mr-2 h-4 w-4" />Contactar por WhatsApp</Button>
             </a>
           </div>
