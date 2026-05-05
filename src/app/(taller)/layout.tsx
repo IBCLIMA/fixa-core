@@ -26,6 +26,7 @@ const moreTabs = [
   { name: "Facturación", href: "/facturacion", icon: Receipt },
   { name: "Avisos", href: "/avisos", icon: Bell },
   { name: "Ofertas", href: "/ofertas", icon: Megaphone },
+  { name: "Equipo", href: "/equipo", icon: Users },
   { name: "Importar datos", href: "/importar", icon: Upload },
   { name: "Primeros pasos", href: "/primeros-pasos", icon: BookOpen },
   { name: "Admin", href: "/admin", icon: Shield },
