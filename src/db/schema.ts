@@ -79,6 +79,8 @@ export const rolUsuarioEnum = pgEnum("rol_usuario", [
 
 // ═══ TABLAS ═══
 
+export const planEnum = pgEnum("plan", ["trial", "basico", "taller", "pro", "cancelado"]);
+
 export const talleres = pgTable("talleres", {
   id: uuid("id").defaultRandom().primaryKey(),
   nombre: text("nombre").notNull(),
@@ -87,6 +89,14 @@ export const talleres = pgTable("talleres", {
   telefono: text("telefono"),
   email: text("email"),
   clerkOrgId: text("clerk_org_id").unique(),
+  // Suscripción
+  plan: planEnum("plan").default("trial").notNull(),
+  trialEndsAt: timestamp("trial_ends_at"),
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  suscripcionActiva: boolean("suscripcion_activa").default(false),
+  ultimoAcceso: timestamp("ultimo_acceso"),
+  activo: boolean("activo").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

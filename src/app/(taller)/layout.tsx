@@ -5,13 +5,14 @@ import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import {
   LayoutDashboard, ClipboardList, CalendarDays, Users, MoreHorizontal,
-  Wrench, FileText, Receipt, Bell, Settings, Megaphone, BookOpen, Upload, HelpCircle,
+  Wrench, FileText, Receipt, Bell, Settings, Megaphone, BookOpen, Upload, HelpCircle, Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { BusquedaGlobal } from "./busqueda-global";
+import { TrialBanner } from "./trial-banner";
 
 const mainTabs = [
   { name: "Panel", href: "/", icon: LayoutDashboard },
@@ -27,6 +28,7 @@ const moreTabs = [
   { name: "Ofertas", href: "/ofertas", icon: Megaphone },
   { name: "Importar datos", href: "/importar", icon: Upload },
   { name: "Primeros pasos", href: "/primeros-pasos", icon: BookOpen },
+  { name: "Admin", href: "/admin", icon: Shield },
   { name: "Ayuda", href: "/ayuda", icon: HelpCircle },
   { name: "Configuración", href: "/configuracion", icon: Settings },
 ];
@@ -40,6 +42,8 @@ export default function TallerLayout({ children }: { children: React.ReactNode }
 
   return (
     <div className="flex min-h-[100dvh] flex-col antialiased" style={{ background: "linear-gradient(180deg, #faf9f7 0%, #f5f3f0 100%)" }}>
+      <TrialBanner />
+
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-stone-200/60">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 h-14">
