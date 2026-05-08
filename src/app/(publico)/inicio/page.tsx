@@ -64,19 +64,20 @@ export default function LandingPage() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-2 mb-6">
-              <Zap className="h-3.5 w-3.5 text-orange-600" /><span className="text-xs font-semibold text-orange-700">Creado por un mecánico para mecánicos</span>
+              <Zap className="h-3.5 w-3.5 text-orange-600" /><span className="text-xs font-semibold text-orange-700">Tecnología de taller grande, a precio de taller pequeño</span>
             </div>
             <h1 className="text-4xl font-extrabold tracking-tight text-stone-900 md:text-5xl lg:text-6xl leading-[1.05]">
-              Tu taller,<br /><span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">bajo control total</span>
+              ¿Gestionas tu taller con papel y WhatsApp?<br /><span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">Eso se acabó.</span>
             </h1>
-            <p className="text-lg text-stone-500 mt-6 leading-relaxed max-w-md">Órdenes, clientes, citas, presupuestos y WhatsApp integrado. Todo desde el móvil.</p>
+            <p className="text-lg text-stone-500 mt-6 leading-relaxed max-w-md">Las mismas herramientas que usan los talleres grandes — órdenes, citas, avisos, presupuestos — por 29€/mes. Desde el móvil. Sin complicaciones.</p>
             <div className="flex flex-col gap-3 mt-8 sm:flex-row">
               <Link href="/sign-up"><Button size="lg" className="rounded-full bg-stone-900 text-white hover:bg-stone-800 font-bold h-14 px-8 text-base shadow-xl shadow-stone-900/10">Empezar gratis<ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
               <a href="#precios"><Button size="lg" variant="outline" className="rounded-full h-14 px-8 text-base font-semibold border-stone-200">Ver precios</Button></a>
             </div>
-            <div className="flex items-center gap-5 mt-6 text-sm text-stone-400">
+            <div className="flex items-center gap-5 mt-6 text-sm text-stone-400 flex-wrap">
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-emerald-500" />Desde 29€/mes</span>
               <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-emerald-500" />Sin permanencia</span>
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-emerald-500" />Listo en 7 días</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-emerald-500" />Creado por un mecánico</span>
             </div>
           </div>
 
@@ -124,14 +125,15 @@ export default function LandingPage() {
       <section className="bg-white border-y border-stone-200/60">
         <div className="mx-auto max-w-6xl px-6 py-16 lg:py-24">
           <div className="text-center mb-12">
-            <p className="text-sm font-bold text-red-600 mb-2">El problema</p>
-            <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-4xl">¿Tu día a día te suena así?</h2>
+            <p className="text-sm font-bold text-red-600 mb-2">Esto te pasa cada día</p>
+            <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-4xl">El software de los grandes cuesta una pasta. El papel ya no funciona.</h2>
+            <p className="text-stone-500 mt-3 max-w-lg mx-auto">Los talleres pequeños se quedan en medio: demasiado grandes para el papel, demasiado pequeños para pagar 200€/mes por un ERP.</p>
           </div>
           <div className="grid gap-4 md:grid-cols-3">
             {[
-              { icon: PhoneOff, color: "text-red-500 bg-red-50", title: "El teléfono no para", desc: '"¿Está listo mi coche?" — la misma pregunta 20 veces al día.' },
-              { icon: Timer, color: "text-amber-600 bg-amber-50", title: "Pierdes horas en admin", desc: "Presupuestos en Excel, citas en papel. Tiempo que no facturas." },
-              { icon: Clock, color: "text-blue-500 bg-blue-50", title: "Clientes que no vuelven", desc: "No les avisas de la ITV ni la revisión. Pierdes trabajo recurrente." },
+              { icon: PhoneOff, color: "text-red-500 bg-red-50", title: "El teléfono no para", desc: '"¿Está listo mi coche?" — la misma pregunta 20 veces al día. Te saca de debajo del coche constantemente.' },
+              { icon: Timer, color: "text-amber-600 bg-amber-50", title: "Excel, papel y WhatsApp", desc: "Presupuestos a mano, citas en la cabeza, facturas al final del día. Horas que no cobras." },
+              { icon: Clock, color: "text-blue-500 bg-blue-50", title: "Clientes que desaparecen", desc: "No les avisas de la ITV, no les recuerdas la revisión. Se van al taller de al lado." },
             ].map((p) => (
               <Card key={p.title} className="border-0 shadow-none bg-stone-50"><CardContent className="p-6"><div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${p.color} mb-4`}><p.icon className="h-6 w-6" /></div><h3 className="font-bold text-stone-900 mb-2">{p.title}</h3><p className="text-sm text-stone-500 leading-relaxed">{p.desc}</p></CardContent></Card>
             ))}
@@ -142,9 +144,9 @@ export default function LandingPage() {
       {/* FEATURES */}
       <section className="mx-auto max-w-6xl px-6 py-16 lg:py-24">
         <div className="text-center mb-12">
-          <p className="text-sm font-bold text-orange-600 mb-2">La solución</p>
-          <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-4xl">12 herramientas en una sola app</h2>
-          <p className="text-stone-500 mt-3 max-w-lg mx-auto">Todo lo que necesita tu taller para trabajar mejor y no perder clientes.</p>
+          <p className="text-sm font-bold text-orange-600 mb-2">FIXA es tu solución</p>
+          <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-4xl">Las herramientas de los grandes, al precio del pequeño</h2>
+          <p className="text-stone-500 mt-3 max-w-lg mx-auto">Todo lo que necesita tu taller por menos de lo que cuesta un cambio de aceite al mes.</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((f) => (
@@ -209,13 +211,15 @@ export default function LandingPage() {
       <section className="bg-white border-y border-stone-200/60">
         <div className="mx-auto max-w-6xl px-6 py-16 lg:py-24">
           <div className="max-w-2xl mx-auto text-center">
-            <p className="text-sm font-bold text-orange-600 mb-2">Quién está detrás</p>
-            <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-4xl mb-6">Creado desde dentro de un taller</h2>
-            <div className="rounded-2xl bg-stone-50 p-8 text-left">
-              <p className="text-stone-600 leading-relaxed">FIXA no lo ha creado una empresa de informáticos. Lo ha creado alguien que lleva años gestionando un taller real, con clientes reales, y que estaba harto del teléfono, el papel y el Excel.</p>
-              <div className="flex items-center gap-3 mt-6">
+            <p className="text-sm font-bold text-orange-600 mb-2">El partner del taller pequeño</p>
+            <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-4xl mb-6">No somos una multinacional. Somos mecánicos como tú.</h2>
+            <div className="rounded-2xl bg-stone-50 p-8 text-left space-y-4">
+              <p className="text-stone-600 leading-relaxed">FIXA nace de un taller real. Sabemos lo que es atender el teléfono con las manos llenas de grasa, hacer presupuestos a las 9 de la noche, y perder clientes porque no les avisaste de la ITV.</p>
+              <p className="text-stone-600 leading-relaxed">Por eso hemos creado el software que nos hubiera gustado tener. <strong className="text-stone-900">Simple, barato, y que funciona desde el móvil.</strong> Sin formación. Sin contratos. Sin letra pequeña.</p>
+              <p className="text-stone-900 font-bold text-lg">Ponemos la tecnología al alcance del taller de barrio.</p>
+              <div className="flex items-center gap-3 mt-2 pt-4 border-t border-stone-200">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100"><Wrench className="h-5 w-5 text-orange-600" /></div>
-                <div><p className="font-bold text-stone-900">Ibañez Clima</p><p className="text-sm text-stone-500">Taller mecánico · Automoción</p></div>
+                <div><p className="font-bold text-stone-900">Ibañez Clima</p><p className="text-sm text-stone-500">Taller mecánico · Automoción · Desde 2010</p></div>
               </div>
             </div>
           </div>
@@ -241,15 +245,15 @@ export default function LandingPage() {
       {/* CTA */}
       <section className="bg-stone-900 text-white">
         <div className="mx-auto max-w-6xl px-6 py-16 lg:py-24 text-center">
-          <h2 className="text-3xl font-extrabold tracking-tight md:text-5xl leading-tight">Deja de perder tiempo.<br /><span className="text-orange-400">Empieza a usar FIXA.</span></h2>
-          <p className="text-stone-400 mt-4 max-w-md mx-auto">Te lo dejamos montado en menos de una semana. Importa tus clientes y empieza a trabajar.</p>
+          <h2 className="text-3xl font-extrabold tracking-tight md:text-5xl leading-tight">Tu taller merece las mismas herramientas<br /><span className="text-orange-400">que los grandes. Por 29€/mes.</span></h2>
+          <p className="text-stone-400 mt-4 max-w-md mx-auto">14 días gratis. Te lo dejamos montado. Importa tus clientes y empieza a trabajar sin papel.</p>
           <div className="flex flex-col items-center gap-4 mt-8 sm:flex-row sm:justify-center">
             <Link href="/sign-up"><Button size="lg" className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-14 px-10 text-base shadow-xl shadow-orange-500/20">Probar gratis<ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
             <a href="https://wa.me/34611433218?text=Hola%2C%20quiero%20información%20sobre%20FIXA" target="_blank">
               <Button size="lg" variant="outline" className="rounded-full h-14 px-8 text-base font-semibold border-white/20 text-white hover:bg-white/10"><Phone className="mr-2 h-4 w-4" />Contactar por WhatsApp</Button>
             </a>
           </div>
-          <p className="text-xs text-stone-500 mt-6">Sin permanencia · Creado por un mecánico para mecánicos</p>
+          <p className="text-xs text-stone-500 mt-6">Sin permanencia · Sin letra pequeña · El partner del taller pequeño</p>
         </div>
       </section>
 
