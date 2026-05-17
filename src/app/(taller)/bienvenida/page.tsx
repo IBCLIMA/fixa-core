@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Wrench, ArrowRight, CheckCircle2, Settings, Users, Car, ClipboardList, Upload } from "lucide-react";
+import { ArrowRight, CheckCircle2, Settings, Users, Car, ClipboardList, Upload, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FixaLogo } from "@/components/ui/fixa-logo";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -65,8 +66,8 @@ export default function BienvenidaPage() {
         {/* Paso 0: Bienvenida */}
         {paso === 0 && (
           <div className="text-center space-y-6">
-            <div className="flex h-20 w-20 mx-auto items-center justify-center rounded-3xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-xl shadow-orange-500/20">
-              <Wrench className="h-10 w-10 text-white" />
+            <div className="mx-auto">
+              <FixaLogo size="xl" variant="icon" />
             </div>
             <div>
               <h1 className="text-3xl font-extrabold tracking-tight">Bienvenido a FIXA</h1>

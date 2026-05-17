@@ -1,13 +1,14 @@
 import Link from "next/link";
-import { Wrench, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { FixaLogo } from "@/components/ui/fixa-logo";
 import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="text-center space-y-6 max-w-sm">
-        <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-2xl bg-stone-100">
-          <Wrench className="h-8 w-8 text-stone-300" />
+        <div className="mx-auto opacity-30">
+          <FixaLogo size="lg" variant="icon" />
         </div>
         <div>
           <h1 className="text-6xl font-extrabold text-stone-200">404</h1>

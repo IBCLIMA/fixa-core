@@ -5,8 +5,9 @@ import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import {
   LayoutDashboard, ClipboardList, CalendarDays, Users, MoreHorizontal,
-  Wrench, FileText, Receipt, Bell, Settings, Megaphone, BookOpen, Upload, HelpCircle, Shield,
+  FileText, Receipt, Bell, Settings, Megaphone, BookOpen, Upload, HelpCircle, Shield,
 } from "lucide-react";
+import { FixaLogo } from "@/components/ui/fixa-logo";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
@@ -48,12 +49,9 @@ export default function TallerLayout({ children }: { children: React.ReactNode }
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-stone-200/60">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 h-14">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-md shadow-orange-500/20">
-              <Wrench className="h-4 w-4 text-white" />
-            </div>
-            <span className="text-base font-extrabold tracking-tight text-stone-900">FIXA</span>
-          </div>
+          <Link href="/">
+            <FixaLogo size="sm" />
+          </Link>
           <BusquedaGlobal />
           <UserButton appearance={{ elements: { avatarBox: "h-8 w-8 rounded-xl" } }} />
         </div>

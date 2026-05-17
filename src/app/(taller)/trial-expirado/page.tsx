@@ -1,4 +1,5 @@
-import { AlertTriangle, Phone, MessageSquare, Wrench } from "lucide-react";
+import { AlertTriangle, Phone, MessageSquare } from "lucide-react";
+import { FixaLogo } from "@/components/ui/fixa-logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { UserButton } from "@clerk/nextjs";
@@ -53,7 +54,7 @@ export default function TrialExpiradoPage() {
         </div>
 
         <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-          <Wrench className="h-3 w-3" />
+          <FixaLogo size="xs" variant="icon" />
           <span>FIXA by Ibañez Clima</span>
           <span>·</span>
           <UserButton />

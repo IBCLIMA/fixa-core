@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { Wrench, Car, Clock, CheckCircle2 } from "lucide-react";
+import { Car, Clock, CheckCircle2 } from "lucide-react";
+import { FixaLogo } from "@/components/ui/fixa-logo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getDb } from "@/db";
@@ -76,10 +77,7 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
       {/* Header */}
       <header className="border-b border-border bg-card px-6 py-4">
         <div className="mx-auto max-w-lg flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand shadow-sm">
-            <Wrench className="h-4 w-4 text-white" />
-          </div>
-          <span className="font-extrabold">FIXA</span>
+          <FixaLogo size="sm" />
           <span className="text-xs text-muted-foreground ml-1">Estado de tu vehículo</span>
         </div>
       </header>

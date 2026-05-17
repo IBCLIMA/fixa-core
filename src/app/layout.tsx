@@ -17,9 +17,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FIXA — Gestión de taller mecánico",
+  title: {
+    default: "FIXA — Software de gestión para talleres mecánicos",
+    template: "%s | FIXA",
+  },
   description:
-    "Sistema de gestión para talleres mecánicos. Órdenes de trabajo, clientes, citas, presupuestos y facturación.",
+    "Gestiona tu taller desde el móvil: órdenes de trabajo, citas, avisos ITV, WhatsApp integrado, presupuestos y portal del cliente. Desde 29€/mes. 14 días gratis.",
+  metadataBase: new URL("https://fixa.es"),
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -27,15 +31,29 @@ export const metadata: Metadata = {
     title: "FIXA",
   },
   openGraph: {
-    title: "FIXA — Gestión de taller mecánico",
-    description: "Órdenes, clientes, citas, WhatsApp integrado. Todo desde el móvil. Creado por un mecánico para mecánicos.",
+    title: "FIXA — El software que tu taller necesita",
+    description: "Órdenes, citas, WhatsApp, presupuestos y avisos ITV. Todo desde el móvil por 29€/mes. Creado por mecánicos.",
     siteName: "FIXA",
     type: "website",
+    locale: "es_ES",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
-    card: "summary",
-    title: "FIXA — Gestión de taller mecánico",
-    description: "Órdenes, clientes, citas, WhatsApp integrado. Todo desde el móvil.",
+    card: "summary_large_image",
+    title: "FIXA — Software de gestión para talleres mecánicos",
+    description: "Gestiona tu taller desde el móvil por 29€/mes. 14 días gratis.",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   other: {
     "mobile-web-app-capable": "yes",

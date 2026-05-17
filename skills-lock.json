@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "agent-tools": {
+      "source": "inference-sh/skills",
+      "sourceType": "github",
+      "skillPath": "tools/agent-tools/SKILL.md",
+      "computedHash": "325fe11662350af20d05bc3d607e81c1246ceaa2eb45cf60f2b2819ce99325a8"
+    },
+    "nano-banana-2": {
+      "source": "inference-sh/skills",
+      "sourceType": "github",
+      "skillPath": "tools/image/nano-banana-2/SKILL.md",
+      "computedHash": "999180c6dad2e4f9e28197f32a35122ea95fda984db9ae882767fdaab7a99ec0"
+    }
+  }
+}

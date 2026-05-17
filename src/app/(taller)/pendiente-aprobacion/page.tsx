@@ -1,4 +1,5 @@
-import { Clock, MessageSquare, Phone, Wrench, CheckCircle2 } from "lucide-react";
+import { Clock, MessageSquare, Phone, CheckCircle2 } from "lucide-react";
+import { FixaLogo } from "@/components/ui/fixa-logo";
 import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
 
@@ -50,7 +51,7 @@ export default function PendienteAprobacionPage() {
         </div>
 
         <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground pt-4">
-          <Wrench className="h-3 w-3" />
+          <FixaLogo size="xs" variant="icon" />
           <span>FIXA by Ibañez Clima</span>
           <span>·</span>
           <UserButton />

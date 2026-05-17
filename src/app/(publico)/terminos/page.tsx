@@ -1,15 +1,12 @@
-import { Wrench } from "lucide-react";
 import Link from "next/link";
+import { FixaLogo } from "@/components/ui/fixa-logo";
 
 export default function TerminosPage() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card px-6 py-4">
         <div className="mx-auto max-w-3xl flex items-center gap-2">
-          <Link href="/inicio" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand"><Wrench className="h-4 w-4 text-white" /></div>
-            <span className="font-extrabold">FIXA</span>
-          </Link>
+          <Link href="/inicio"><FixaLogo size="sm" /></Link>
         </div>
       </header>
 
