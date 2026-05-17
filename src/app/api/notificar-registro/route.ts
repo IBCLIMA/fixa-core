@@ -1,8 +1,15 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { auth } from "@clerk/nextjs/server";
 
 export async function POST(request: Request) {
   try {
+    // Auth check - only authenticated users can trigger notifications
+    const { userId: authUserId } = await auth();
+    if (!authUserId) {
+      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    }
+
     const { tallerId, userId } = await request.json();
 
     // Enviar email a Sergi

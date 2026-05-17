@@ -2,8 +2,11 @@ import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
-import { fotosOrden } from "@/db/schema";
+import { fotosOrden, ordenesTrabajo } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+
+const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
 
 export async function POST(request: Request) {
   try {
@@ -19,9 +22,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Faltan datos" }, { status: 400 });
     }
 
-    // Validar tipo de archivo
-    if (!file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "Solo se permiten imágenes" }, { status: 400 });
+    // Validar tipo de archivo (whitelist estricta, no confiar en client MIME)
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      return NextResponse.json({ error: "Solo se permiten imágenes (JPEG, PNG, WebP, HEIC)" }, { status: 400 });
     }
 
     // Limitar tamaño a 10MB
@@ -29,15 +32,26 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Imagen demasiado grande (máx 10MB)" }, { status: 400 });
     }
 
-    // Subir a Vercel Blob
-    const filename = `fixa/${tallerId}/${ordenId}/${Date.now()}-${file.name}`;
+    // Verificar que la orden pertenece al taller autenticado
+    const db = getDb();
+    const [orden] = await db
+      .select({ id: ordenesTrabajo.id })
+      .from(ordenesTrabajo)
+      .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
+
+    if (!orden) {
+      return NextResponse.json({ error: "Orden no encontrada" }, { status: 404 });
+    }
+
+    // Sanitizar filename - eliminar caracteres peligrosos y path traversal
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").replace(/\.{2,}/g, "_");
+    const filename = `fixa/${tallerId}/${ordenId}/${Date.now()}-${safeName}`;
     const blob = await put(filename, file, {
       access: "public",
-      addRandomSuffix: false,
+      addRandomSuffix: true,
     });
 
     // Guardar referencia en DB
-    const db = getDb();
     const [foto] = await db
       .insert(fotosOrden)
       .values({

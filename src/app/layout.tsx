@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { esES } from "@clerk/localizations/es-ES";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { CookieBanner } from "@/components/cookie-banner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -80,6 +81,7 @@ export default function RootLayout({
         <body className="min-h-full flex flex-col">
           <TooltipProvider>{children}</TooltipProvider>
           <Toaster />
+          <CookieBanner />
         </body>
       </html>
     </ClerkProvider>

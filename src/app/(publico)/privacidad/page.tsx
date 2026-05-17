@@ -69,12 +69,17 @@ export default function PrivacidadPage() {
           <li><strong>Vercel:</strong> alojamiento de la aplicación (UE/US)</li>
           <li><strong>Neon:</strong> base de datos PostgreSQL (UE)</li>
           <li><strong>Clerk:</strong> autenticación de usuarios (US, con DPA firmado)</li>
+          <li><strong>Resend:</strong> envío de emails transaccionales (US)</li>
+          <li><strong>Vercel Blob:</strong> almacenamiento de archivos/fotos (UE/US)</li>
         </ul>
 
         <h2>9. Transferencias internacionales</h2>
         <p>Algunos datos pueden transferirse fuera del EEE a proveedores con cláusulas contractuales tipo aprobadas por la Comisión Europea.</p>
 
-        <h2>10. Contacto</h2>
+        <h2>10. Cookies</h2>
+        <p>Para información detallada sobre las cookies que utilizamos, consulte nuestra <Link href="/cookies">Política de Cookies</Link>.</p>
+
+        <h2>11. Contacto</h2>
         <p>Para cualquier consulta sobre privacidad: <strong>sergi@ibclima.com</strong></p>
         <p>Autoridad de control: Agencia Española de Protección de Datos (AEPD) — <a href="https://www.aepd.es" target="_blank">www.aepd.es</a></p>
       </main>

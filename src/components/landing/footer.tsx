@@ -9,9 +9,15 @@ export function Footer() {
           <FixaLogo size="sm" />
           <span className="text-xs text-stone-400">Soluciones digitales para talleres</span>
         </div>
-        <div className="flex items-center gap-4 text-xs text-stone-400">
+        <div className="flex items-center gap-4 text-xs text-stone-400 flex-wrap justify-center sm:justify-end">
+          <Link href="/aviso-legal" className="hover:text-stone-700 transition-colors">
+            Aviso Legal
+          </Link>
           <Link href="/privacidad" className="hover:text-stone-700 transition-colors">
             Privacidad
+          </Link>
+          <Link href="/cookies" className="hover:text-stone-700 transition-colors">
+            Cookies
           </Link>
           <Link href="/terminos" className="hover:text-stone-700 transition-colors">
             Términos
