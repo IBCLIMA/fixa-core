@@ -4,6 +4,7 @@ import { AboutSection } from "@/components/landing/about-section";
 import { TestimonialsSection } from "@/components/landing/testimonials-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { Footer } from "@/components/landing/footer";
+import { WebServicesBanner } from "@/components/web-services-banner";
 
 export const metadata: Metadata = {
   title: "Sobre nosotros — FIXA | Creado por mecánicos para mecánicos",
@@ -37,6 +38,7 @@ export default function NosotrosPage() {
       <TestimonialsSection />
       <CtaSection />
       <Footer />
+      <WebServicesBanner />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { BeforeAfterSection } from "@/components/landing/before-after-section";
 import { ComparisonSection } from "@/components/landing/comparison-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { Footer } from "@/components/landing/footer";
+import { WebServicesBanner } from "@/components/web-services-banner";
 
 export const metadata: Metadata = {
   title: "Funciones — FIXA | Órdenes, WhatsApp, ITV, Presupuestos y más",
@@ -28,6 +29,7 @@ export default function FuncionesPage() {
       <ComparisonSection />
       <CtaSection />
       <Footer />
+      <WebServicesBanner />
     </div>
   );
 }

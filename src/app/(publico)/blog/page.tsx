@@ -5,6 +5,7 @@ import { ArrowRight, Calendar } from "lucide-react";
 import { AnimatedSection } from "@/components/landing/animated-section";
 import { Navbar } from "@/components/landing/navbar";
 import { Footer } from "@/components/landing/footer";
+import { WebServicesBanner } from "@/components/web-services-banner";
 
 export const metadata: Metadata = {
   title: "Blog — Gestión de talleres mecánicos",
@@ -51,6 +52,7 @@ export default function BlogPage() {
       </div>
     </div>
     <Footer />
+    <WebServicesBanner />
     </div>
   );
 }

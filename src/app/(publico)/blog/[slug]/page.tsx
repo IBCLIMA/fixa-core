@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, Calendar, Tag } from "lucide-react";
 import { getAllPosts, getPostBySlug } from "@/lib/content";
 import { MDXContent } from "@/components/mdx-content";
+import { WebServicesBanner } from "@/components/web-services-banner";
 
 export async function generateStaticParams() {
   return getAllPosts().map((post) => ({ slug: post.slug }));
@@ -81,6 +82,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           Probar FIXA gratis
         </Link>
       </div>
+      <WebServicesBanner />
     </article>
   );
 }
