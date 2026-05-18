@@ -10,27 +10,20 @@ export function WebServicesBanner() {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    // Don't show if already dismissed this session
-    if (sessionStorage.getItem("web-banner-dismissed")) return;
+    if (sessionStorage.getItem("web-banner-dismissed")) {
+      setDismissed(true);
+      return;
+    }
 
     const handleScroll = () => {
-      const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-      if (scrollPercent > 0.55) {
+      if (window.scrollY > 600) {
         setVisible(true);
         window.removeEventListener("scroll", handleScroll);
       }
     };
 
-    // Also show after 25 seconds as fallback
-    const timer = setTimeout(() => {
-      if (!sessionStorage.getItem("web-banner-dismissed")) setVisible(true);
-    }, 25000);
-
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      clearTimeout(timer);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const dismiss = () => {
