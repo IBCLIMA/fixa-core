@@ -54,7 +54,7 @@ export function CtaSection() {
               <Button
                 size="lg"
                 variant="outline"
-                className="rounded-full h-14 px-8 text-base font-semibold border-white/15 text-white hover:bg-white/5 cursor-pointer"
+                className="rounded-full h-14 px-8 text-base font-semibold border-white/30 text-white hover:bg-white/10 cursor-pointer"
               >
                 <Phone className="mr-2 h-4 w-4" />
                 Hablar por WhatsApp
