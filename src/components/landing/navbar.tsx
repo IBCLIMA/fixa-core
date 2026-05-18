@@ -38,17 +38,18 @@ export function Navbar() {
           {/* Desktop nav */}
           <nav className="hidden sm:flex items-center gap-1">
             {[
-              { label: "Funciones", href: "#funciones" },
-              { label: "Precios", href: "#precios" },
-              { label: "FAQ", href: "#faq" },
+              { label: "Funciones", href: "/funciones" },
+              { label: "Precios", href: "/precios" },
+              { label: "Blog", href: "/blog" },
+              { label: "Nosotros", href: "/nosotros" },
             ].map((item) => (
-              <a
+              <Link
                 key={item.href}
                 href={item.href}
                 className="text-sm font-medium text-stone-500 hover:text-stone-900 transition-colors px-4 py-2 rounded-xl hover:bg-stone-100/50"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
             <div className="w-px h-6 bg-stone-200 mx-2" />
             <Link
@@ -88,19 +89,20 @@ export function Navbar() {
           >
             <nav className="flex flex-col p-3">
               {[
-                { label: "Funciones", href: "#funciones" },
-                { label: "Precios", href: "#precios" },
-                { label: "FAQ", href: "#faq" },
+                { label: "Funciones", href: "/funciones" },
+                { label: "Precios", href: "/precios" },
+                { label: "Blog", href: "/blog" },
+                { label: "Nosotros", href: "/nosotros" },
                 { label: "Acceder", href: "/sign-in" },
               ].map((item) => (
-                <a
+                <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
                   className="flex items-center px-4 py-3 text-sm font-medium text-stone-700 hover:bg-stone-50 rounded-xl transition-colors"
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
               <div className="p-2 pt-1">
                 <Link href="/sign-up" onClick={() => setMobileOpen(false)}>

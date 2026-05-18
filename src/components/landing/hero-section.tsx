@@ -91,7 +91,7 @@ export function HeroSection() {
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
                 </Button>
               </Link>
-              <a href="#funciones">
+              <a href="/funciones">
                 <Button
                   size="lg"
                   variant="outline"
