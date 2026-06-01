@@ -9,14 +9,18 @@ import { clientes, vehiculos } from "@/db/schema";
 import { eq, and, ilike, or, desc, count, sql } from "drizzle-orm";
 import { NuevoClienteDialog } from "./nuevo-cliente-dialog";
 
+const PER_PAGE = 20;
+
 export default async function ClientesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; page?: string }>;
 }) {
   const params = await searchParams;
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
+  const page = Math.max(1, parseInt(params.page || "1", 10));
+  const offset = (page - 1) * PER_PAGE;
 
   let whereCondition = eq(clientes.tallerId, tallerId);
   if (params.q && params.q.trim()) {
@@ -31,6 +35,13 @@ export default async function ClientesPage({
     )!;
   }
 
+  const [{ total }] = await db
+    .select({ total: sql<number>`count(*)` })
+    .from(clientes)
+    .where(whereCondition);
+
+  const totalPages = Math.max(1, Math.ceil(Number(total) / PER_PAGE));
+
   // Clientes con conteo de vehículos
   const clientesList = await db
     .select({
@@ -43,14 +54,16 @@ export default async function ClientesPage({
     })
     .from(clientes)
     .where(whereCondition)
-    .orderBy(desc(clientes.createdAt));
+    .orderBy(desc(clientes.createdAt))
+    .limit(PER_PAGE)
+    .offset(offset);
 
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Clientes</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{clientesList.length} cliente{clientesList.length !== 1 ? "s" : ""}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">{Number(total)} cliente{Number(total) !== 1 ? "s" : ""}</p>
         </div>
         <NuevoClienteDialog />
       </div>
@@ -91,6 +104,39 @@ export default async function ClientesPage({
               </div>
             </Link>
           ))}
+        </div>
+      )}
+
+      {/* Paginación */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3 pt-2">
+          {page > 1 ? (
+            <Link
+              href={`/clientes?${params.q ? `q=${encodeURIComponent(params.q)}&` : ""}page=${page - 1}`}
+              className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+            >
+              Anterior
+            </Link>
+          ) : (
+            <span className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground/40">
+              Anterior
+            </span>
+          )}
+          <span className="text-sm text-muted-foreground">
+            Página {page} de {totalPages}
+          </span>
+          {page < totalPages ? (
+            <Link
+              href={`/clientes?${params.q ? `q=${encodeURIComponent(params.q)}&` : ""}page=${page + 1}`}
+              className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+            >
+              Siguiente
+            </Link>
+          ) : (
+            <span className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground/40">
+              Siguiente
+            </span>
+          )}
         </div>
       )}
     </div>

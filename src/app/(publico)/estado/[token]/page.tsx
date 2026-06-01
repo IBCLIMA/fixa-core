@@ -6,30 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { getDb } from "@/db";
 import { ordenesTrabajo, vehiculos, clientes, talleres, historialEstados } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
-
-const estadoLabels: Record<string, string> = {
-  recibido: "Tu vehículo ha sido recibido en el taller",
-  diagnostico: "Estamos diagnosticando tu vehículo",
-  presupuestado: "Presupuesto preparado",
-  aprobado: "Reparación aprobada",
-  en_reparacion: "Tu vehículo está siendo reparado",
-  esperando_recambio: "Esperando recambio para continuar",
-  listo: "¡Tu vehículo está listo para recoger!",
-  entregado: "Vehículo entregado",
-  cancelado: "Orden cancelada",
-};
-
-const estadoColors: Record<string, string> = {
-  recibido: "bg-zinc-100 text-zinc-700",
-  diagnostico: "bg-blue-100 text-blue-700",
-  presupuestado: "bg-amber-100 text-amber-700",
-  aprobado: "bg-emerald-100 text-emerald-700",
-  en_reparacion: "bg-orange-100 text-orange-700",
-  esperando_recambio: "bg-red-100 text-red-700",
-  listo: "bg-emerald-200 text-emerald-800",
-  entregado: "bg-zinc-100 text-zinc-400",
-  cancelado: "bg-zinc-100 text-zinc-300",
-};
+import { estadoLabelsCliente as estadoLabels, estadoColors } from "@/lib/constants";
 
 const estadoSteps = ["recibido", "diagnostico", "presupuestado", "aprobado", "en_reparacion", "listo", "entregado"];
 

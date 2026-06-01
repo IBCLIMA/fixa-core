@@ -4,6 +4,7 @@ import { getDb } from "@/db";
 import { clientes } from "@/db/schema";
 import { eq, and, isNotNull } from "drizzle-orm";
 import { requireRole } from "@/lib/auth";
+import { formatWhatsAppUrl } from "@/lib/utils";
 
 export async function getClientesConTelefono() {
   const { tallerId } = await requireRole(["admin", "recepcion"]);
@@ -30,8 +31,6 @@ export async function generarLinksOferta(mensaje: string) {
     id: c.id,
     nombre: c.nombre,
     telefono: c.telefono!,
-    url: `https://wa.me/34${c.telefono!.replace(/\s/g, "")}?text=${encodeURIComponent(
-      mensaje.replace(/\{\{nombre\}\}/g, c.nombre.split(" ")[0])
-    )}`,
+    url: formatWhatsAppUrl(c.telefono!, mensaje.replace(/\{\{nombre\}\}/g, c.nombre.split(" ")[0])),
   }));
 }

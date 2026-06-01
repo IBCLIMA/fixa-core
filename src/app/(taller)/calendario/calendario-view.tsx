@@ -65,6 +65,7 @@ export function CalendarioView({ days, citas }: CalendarioViewProps) {
   }
 
   async function handleEliminar(id: string) {
+    if (!window.confirm("¿Eliminar esta cita?")) return;
     try {
       await eliminarCita(id);
       toast.success("Cita eliminada");

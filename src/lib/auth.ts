@@ -16,12 +16,6 @@ export async function getTallerIdFromAuth() {
   });
 
   if (usuario) {
-    // Actualizar último acceso
-    await db
-      .update(talleres)
-      .set({ ultimoAcceso: new Date() })
-      .where(eq(talleres.id, usuario.tallerId));
-
     return { tallerId: usuario.tallerId, usuarioId: usuario.id, clerkUserId: userId, rol: usuario.rol };
   }
 

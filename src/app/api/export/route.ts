@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
 import { talleres, clientes, vehiculos, ordenesTrabajo, lineasOrden, citas, avisos } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, inArray } from "drizzle-orm";
 import { logAudit } from "@/lib/audit";
 
 export async function GET() {
@@ -16,13 +16,11 @@ export async function GET() {
     const vehiculosList = await db.select().from(vehiculos).where(eq(vehiculos.tallerId, tallerId));
     const ordenesList = await db.select().from(ordenesTrabajo).where(eq(ordenesTrabajo.tallerId, tallerId)).orderBy(desc(ordenesTrabajo.createdAt));
 
-    // Líneas de todas las órdenes
+    // Líneas de todas las órdenes (single query)
     const ordenIds = ordenesList.map((o) => o.id);
-    let lineasList: any[] = [];
-    for (const oid of ordenIds) {
-      const lineas = await db.select().from(lineasOrden).where(eq(lineasOrden.ordenId, oid));
-      lineasList = [...lineasList, ...lineas];
-    }
+    const lineasList = ordenIds.length > 0
+      ? await db.select().from(lineasOrden).where(inArray(lineasOrden.ordenId, ordenIds))
+      : [];
 
     const citasList = await db.select().from(citas).where(eq(citas.tallerId, tallerId));
     const avisosList = await db.select().from(avisos).where(eq(avisos.tallerId, tallerId));

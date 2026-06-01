@@ -2,7 +2,7 @@
 
 import { getDb } from "@/db";
 import { clientes, vehiculos, ordenesTrabajo } from "@/db/schema";
-import { eq, and, ilike, or, desc } from "drizzle-orm";
+import { eq, and, ilike, or, desc, sql } from "drizzle-orm";
 import { getTallerIdFromAuth, requireRole } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { sanitize } from "@/lib/validation";
@@ -110,9 +110,15 @@ export async function actualizarCliente(
   const { tallerId, clerkUserId } = await requireRole(["admin", "recepcion"]);
   const db = getDb();
 
+  // Sanitizar inputs
+  const cleanData: Record<string, string | undefined> = {};
+  for (const [key, value] of Object.entries(data)) {
+    cleanData[key] = value ? sanitize(value) : undefined;
+  }
+
   const [cliente] = await db
     .update(clientes)
-    .set(data)
+    .set(cleanData)
     .where(and(eq(clientes.id, id), eq(clientes.tallerId, tallerId)))
     .returning();
 
@@ -122,7 +128,7 @@ export async function actualizarCliente(
     action: "update",
     entityType: "cliente",
     entityId: id,
-    details: { camposModificados: Object.keys(data) },
+    details: { camposModificados: Object.keys(cleanData) },
   });
 
   revalidatePath("/clientes");
@@ -133,6 +139,21 @@ export async function actualizarCliente(
 export async function eliminarCliente(id: string) {
   const { tallerId, clerkUserId } = await requireRole(["admin"]);
   const db = getDb();
+
+  // Check if client has orders - if so, block deletion
+  const [ordenesCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.clienteId, id), eq(ordenesTrabajo.tallerId, tallerId)));
+
+  if (Number(ordenesCount.count) > 0) {
+    throw new Error("No se puede eliminar un cliente con órdenes de trabajo");
+  }
+
+  // Delete vehicles first (safe since no orders reference them)
+  await db
+    .delete(vehiculos)
+    .where(and(eq(vehiculos.clienteId, id), eq(vehiculos.tallerId, tallerId)));
 
   await db
     .delete(clientes)
@@ -209,6 +230,16 @@ export async function actualizarVehiculo(
 export async function eliminarVehiculo(id: string) {
   const { tallerId } = await requireRole(["admin"]);
   const db = getDb();
+
+  // Check if vehicle has orders - if so, block deletion
+  const [ordenesCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.vehiculoId, id), eq(ordenesTrabajo.tallerId, tallerId)));
+
+  if (Number(ordenesCount.count) > 0) {
+    throw new Error("No se puede eliminar un vehículo con órdenes de trabajo");
+  }
 
   await db
     .delete(vehiculos)

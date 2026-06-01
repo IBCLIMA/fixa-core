@@ -1,12 +1,14 @@
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { getCitasSemana } from "../actions/citas";
 import { CalendarioView } from "./calendario-view";
 
-function getWeekDates() {
-  const now = new Date();
+function getWeekDates(baseDate?: string) {
+  const now = baseDate ? new Date(baseDate + "T12:00:00") : new Date();
   const day = now.getDay();
   const diff = now.getDate() - day + (day === 0 ? -6 : 1);
-  const monday = new Date(now.setDate(diff));
+  const monday = new Date(now);
+  monday.setDate(diff);
   monday.setHours(0, 0, 0, 0);
 
   const days = [];
@@ -18,14 +20,35 @@ function getWeekDates() {
 
   return {
     days,
+    monday,
     start: days[0].toISOString().split("T")[0],
     end: days[6].toISOString().split("T")[0],
   };
 }
 
-export default async function CalendarioPage() {
-  const week = getWeekDates();
+function formatMondayParam(date: Date): string {
+  return date.toISOString().split("T")[0];
+}
+
+export default async function CalendarioPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ semana?: string }>;
+}) {
+  const params = await searchParams;
+  const week = getWeekDates(params.semana);
   const citas = await getCitasSemana(week.start, week.end);
+
+  // Calcular semanas anterior y siguiente
+  const prevMonday = new Date(week.monday);
+  prevMonday.setDate(prevMonday.getDate() - 7);
+  const nextMonday = new Date(week.monday);
+  nextMonday.setDate(nextMonday.getDate() + 7);
+
+  // Detectar si es la semana actual
+  const today = new Date();
+  const currentWeek = getWeekDates();
+  const isCurrentWeek = week.start === currentWeek.start;
 
   return (
     <div className="space-y-5">
@@ -37,6 +60,28 @@ export default async function CalendarioPage() {
             {week.days[0].toLocaleDateString("es-ES", { day: "numeric", month: "long" })} al{" "}
             {week.days[6].toLocaleDateString("es-ES", { day: "numeric", month: "long" })}
           </p>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <Link
+            href={`/calendario?semana=${formatMondayParam(prevMonday)}`}
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-border hover:bg-muted transition-colors"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Link>
+          {!isCurrentWeek && (
+            <Link
+              href="/calendario"
+              className="flex h-8 items-center rounded-full bg-brand px-3 text-white text-xs font-bold hover:bg-brand/90 transition-colors"
+            >
+              Hoy
+            </Link>
+          )}
+          <Link
+            href={`/calendario?semana=${formatMondayParam(nextMonday)}`}
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-border hover:bg-muted transition-colors"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Link>
         </div>
       </div>
 

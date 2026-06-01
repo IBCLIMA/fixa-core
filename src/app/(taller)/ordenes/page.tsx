@@ -6,30 +6,7 @@ import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
 import { ordenesTrabajo, vehiculos, clientes } from "@/db/schema";
 import { eq, and, sql, desc } from "drizzle-orm";
-
-const estadoLabels: Record<string, string> = {
-  recibido: "Recibido",
-  diagnostico: "Diagnóstico",
-  presupuestado: "Presupuestado",
-  aprobado: "Aprobado",
-  en_reparacion: "En reparación",
-  esperando_recambio: "Esp. recambio",
-  listo: "Listo",
-  entregado: "Entregado",
-  cancelado: "Cancelado",
-};
-
-const estadoColors: Record<string, string> = {
-  recibido: "bg-zinc-100 text-zinc-700",
-  diagnostico: "bg-blue-100 text-blue-700",
-  presupuestado: "bg-amber-100 text-amber-700",
-  aprobado: "bg-emerald-100 text-emerald-700",
-  en_reparacion: "bg-orange-100 text-orange-700",
-  esperando_recambio: "bg-red-100 text-red-700",
-  listo: "bg-emerald-200 text-emerald-800",
-  entregado: "bg-zinc-100 text-zinc-400",
-  cancelado: "bg-zinc-100 text-zinc-300",
-};
+import { estadoLabels, estadoColors } from "@/lib/constants";
 
 const filtros = [
   { value: "activas", label: "En taller" },
@@ -42,15 +19,19 @@ const filtros = [
   { value: "entregado", label: "Entregadas" },
 ];
 
+const PER_PAGE = 20;
+
 export default async function OrdenesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ filtro?: string }>;
+  searchParams: Promise<{ filtro?: string; page?: string }>;
 }) {
   const params = await searchParams;
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
   const filtro = params.filtro || "activas";
+  const page = Math.max(1, parseInt(params.page || "1", 10));
+  const offset = (page - 1) * PER_PAGE;
 
   let whereCondition;
   if (filtro === "activas") {
@@ -66,6 +47,15 @@ export default async function OrdenesPage({
       sql`${ordenesTrabajo.estado} = ${filtro}`
     );
   }
+
+  const [{ total }] = await db
+    .select({ total: sql<number>`count(*)` })
+    .from(ordenesTrabajo)
+    .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
+    .leftJoin(clientes, eq(ordenesTrabajo.clienteId, clientes.id))
+    .where(whereCondition);
+
+  const totalPages = Math.max(1, Math.ceil(Number(total) / PER_PAGE));
 
   const ordenes = await db
     .select({
@@ -85,14 +75,16 @@ export default async function OrdenesPage({
     .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
     .leftJoin(clientes, eq(ordenesTrabajo.clienteId, clientes.id))
     .where(whereCondition)
-    .orderBy(desc(ordenesTrabajo.createdAt));
+    .orderBy(desc(ordenesTrabajo.createdAt))
+    .limit(PER_PAGE)
+    .offset(offset);
 
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Órdenes de trabajo</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{ordenes.length} orden{ordenes.length !== 1 ? "es" : ""}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">{Number(total)} orden{Number(total) !== 1 ? "es" : ""}</p>
         </div>
         <Link href="/ordenes/nueva">
           <Button className="rounded-full"><Plus className="mr-1.5 h-4 w-4" />Nueva orden</Button>
@@ -156,6 +148,39 @@ export default async function OrdenesPage({
               </div>
             </Link>
           ))}
+        </div>
+      )}
+
+      {/* Paginación */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3 pt-2">
+          {page > 1 ? (
+            <Link
+              href={`/ordenes?filtro=${filtro}&page=${page - 1}`}
+              className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+            >
+              Anterior
+            </Link>
+          ) : (
+            <span className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground/40">
+              Anterior
+            </span>
+          )}
+          <span className="text-sm text-muted-foreground">
+            Página {page} de {totalPages}
+          </span>
+          {page < totalPages ? (
+            <Link
+              href={`/ordenes?filtro=${filtro}&page=${page + 1}`}
+              className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+            >
+              Siguiente
+            </Link>
+          ) : (
+            <span className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground/40">
+              Siguiente
+            </span>
+          )}
         </div>
       )}
     </div>

@@ -24,6 +24,15 @@ export const combustibleEnum = pgEnum("combustible", [
   "glp",
 ]);
 
+export const metodoPagoEnum = pgEnum("metodo_pago", [
+  "efectivo",
+  "tarjeta",
+  "transferencia",
+  "bizum",
+  "domiciliacion",
+  "otro",
+]);
+
 export const estadoOrdenEnum = pgEnum("estado_orden", [
   "recibido",
   "diagnostico",
@@ -179,6 +188,12 @@ export const ordenesTrabajo = pgTable("ordenes_trabajo", {
   fechaEntrega: timestamp("fecha_entrega"),
   asignadoA: uuid("asignado_a").references(() => usuarios.id),
   notasInternas: text("notas_internas"),
+  // Pago
+  pagado: boolean("pagado").default(false).notNull(),
+  metodoPago: metodoPagoEnum("metodo_pago"),
+  fechaPago: timestamp("fecha_pago"),
+  importeTotal: numeric("importe_total", { precision: 10, scale: 2 }),
+  notasPago: text("notas_pago"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

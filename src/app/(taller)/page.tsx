@@ -19,28 +19,8 @@ import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
 import { ordenesTrabajo, clientes, citas, vehiculos } from "@/db/schema";
 import { eq, and, count, sql, desc } from "drizzle-orm";
-
-const estadoLabels: Record<string, string> = {
-  recibido: "Recibido",
-  diagnostico: "Diagnóstico",
-  presupuestado: "Presupuestado",
-  aprobado: "Aprobado",
-  en_reparacion: "En reparación",
-  esperando_recambio: "Esp. recambio",
-  listo: "Listo",
-  entregado: "Entregado",
-};
-
-const estadoColors: Record<string, string> = {
-  recibido: "bg-zinc-100 text-zinc-700",
-  diagnostico: "bg-blue-100 text-blue-700",
-  presupuestado: "bg-amber-100 text-amber-700",
-  aprobado: "bg-emerald-100 text-emerald-700",
-  en_reparacion: "bg-orange-100 text-orange-700",
-  esperando_recambio: "bg-red-100 text-red-700",
-  listo: "bg-emerald-200 text-emerald-800",
-  entregado: "bg-zinc-100 text-zinc-400",
-};
+import { estadoLabels, estadoColors } from "@/lib/constants";
+import { formatWhatsAppUrl } from "@/lib/utils";
 
 const estadoDots: Record<string, string> = {
   recibido: "bg-zinc-400",
@@ -191,7 +171,7 @@ export default async function PanelDelDia() {
                     </div>
                   </Link>
                   {o.clienteTelefono && (
-                    <a href={`https://wa.me/34${o.clienteTelefono?.replace(/\s/g, "")}?text=${encodeURIComponent(`Hola ${o.clienteNombre?.split(" ")[0]}, tu coche ya está listo para recoger. Puedes pasar cuando quieras. ¡Un saludo!`)}`} target="_blank" className="flex h-8 items-center gap-1 rounded-full bg-emerald-600 px-3 text-white text-xs font-bold hover:bg-emerald-500 transition-colors">
+                    <a href={formatWhatsAppUrl(o.clienteTelefono!, `Hola ${o.clienteNombre?.split(" ")[0]}, tu coche ya está listo para recoger. Puedes pasar cuando quieras. ¡Un saludo!`)} target="_blank" className="flex h-8 items-center gap-1 rounded-full bg-emerald-600 px-3 text-white text-xs font-bold hover:bg-emerald-500 transition-colors">
                       <MessageSquare className="h-3 w-3" />Avisar
                     </a>
                   )}
@@ -235,6 +215,18 @@ export default async function PanelDelDia() {
                     <Badge className={`text-[10px] shrink-0 ${estadoColors[o.estado] || ""}`}>{estadoLabels[o.estado]}</Badge>
                   </Link>
                 ))}
+                {ordenesActivas.length > 8 && (
+                  <div className="pt-1 space-y-1">
+                    <p className="text-xs text-muted-foreground text-center">
+                      Mostrando 8 de {ordenesActivas.length} órdenes activas
+                    </p>
+                    <Link href="/ordenes" className="block text-center">
+                      <span className="text-xs font-bold text-brand hover:underline">
+                        Ver todas las órdenes &rarr;
+                      </span>
+                    </Link>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>

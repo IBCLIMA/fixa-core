@@ -5,11 +5,12 @@ import {
   ordenesTrabajo,
   lineasOrden,
   historialEstados,
+  presupuestos,
   vehiculos,
   clientes,
 } from "@/db/schema";
 import { eq, and, desc, count, sql } from "drizzle-orm";
-import { getTallerIdFromAuth } from "@/lib/auth";
+import { getTallerIdFromAuth, requireRole } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { logAudit } from "@/lib/audit";
 
@@ -254,4 +255,117 @@ export async function getEstadisticasTaller() {
     cochesEnTaller: cochesEnTaller[0]?.count ?? 0,
     totalClientes: totalClientes[0]?.count ?? 0,
   };
+}
+
+export async function eliminarOrden(id: string) {
+  const { tallerId, clerkUserId } = await requireRole(["admin"]);
+  const db = getDb();
+
+  // Verify order belongs to this workshop
+  const orden = await db.query.ordenesTrabajo.findFirst({
+    where: and(eq(ordenesTrabajo.id, id), eq(ordenesTrabajo.tallerId, tallerId)),
+  });
+
+  if (!orden) throw new Error("Orden no encontrada");
+
+  // Delete related presupuestos (their lineas cascade automatically)
+  await db
+    .delete(presupuestos)
+    .where(eq(presupuestos.ordenId, id));
+
+  // Delete the order (lineasOrden, fotosOrden, historialEstados cascade automatically)
+  await db
+    .delete(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, id), eq(ordenesTrabajo.tallerId, tallerId)));
+
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "delete",
+    entityType: "orden",
+    entityId: id,
+    details: { numero: orden.numero },
+  });
+
+  revalidatePath("/ordenes");
+  revalidatePath("/");
+}
+
+export async function registrarPago(data: {
+  ordenId: string;
+  metodoPago: "efectivo" | "tarjeta" | "transferencia" | "bizum" | "domiciliacion" | "otro";
+  importeTotal?: number;
+  notasPago?: string;
+}) {
+  const { tallerId, clerkUserId } = await getTallerIdFromAuth();
+  const db = getDb();
+
+  const [orden] = await db
+    .select({ id: ordenesTrabajo.id })
+    .from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, data.ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
+
+  if (!orden) throw new Error("Orden no encontrada");
+
+  await db
+    .update(ordenesTrabajo)
+    .set({
+      pagado: true,
+      metodoPago: data.metodoPago,
+      fechaPago: new Date(),
+      importeTotal: data.importeTotal ? String(data.importeTotal) : null,
+      notasPago: data.notasPago || null,
+      updatedAt: new Date(),
+    })
+    .where(eq(ordenesTrabajo.id, data.ordenId));
+
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "update",
+    entityType: "orden",
+    entityId: data.ordenId,
+    details: { action: "pago", metodoPago: data.metodoPago, importe: data.importeTotal },
+  });
+
+  revalidatePath(`/ordenes/${data.ordenId}`);
+  revalidatePath("/ordenes");
+  revalidatePath("/facturacion");
+}
+
+export async function anularPago(ordenId: string) {
+  const { tallerId, clerkUserId } = await getTallerIdFromAuth();
+  const db = getDb();
+
+  const [orden] = await db
+    .select({ id: ordenesTrabajo.id })
+    .from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
+
+  if (!orden) throw new Error("Orden no encontrada");
+
+  await db
+    .update(ordenesTrabajo)
+    .set({
+      pagado: false,
+      metodoPago: null,
+      fechaPago: null,
+      importeTotal: null,
+      notasPago: null,
+      updatedAt: new Date(),
+    })
+    .where(eq(ordenesTrabajo.id, ordenId));
+
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "update",
+    entityType: "orden",
+    entityId: ordenId,
+    details: { action: "anular_pago" },
+  });
+
+  revalidatePath(`/ordenes/${ordenId}`);
+  revalidatePath("/ordenes");
+  revalidatePath("/facturacion");
 }

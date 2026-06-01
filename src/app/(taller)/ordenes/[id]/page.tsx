@@ -11,30 +11,10 @@ import { AgregarLineaForm } from "./agregar-linea";
 import { EditarDiagnostico } from "./editar-diagnostico";
 import { CrearPresupuestoBtn } from "./crear-presupuesto-btn";
 import { FotosOrden } from "./fotos-orden";
-
-const estadoLabels: Record<string, string> = {
-  recibido: "Recibido",
-  diagnostico: "En diagnóstico",
-  presupuestado: "Presupuestado",
-  aprobado: "Aprobado",
-  en_reparacion: "En reparación",
-  esperando_recambio: "Esperando recambio",
-  listo: "Listo para entregar",
-  entregado: "Entregado",
-  cancelado: "Cancelado",
-};
-
-const estadoColors: Record<string, string> = {
-  recibido: "bg-zinc-100 text-zinc-700",
-  diagnostico: "bg-blue-100 text-blue-700",
-  presupuestado: "bg-amber-100 text-amber-700",
-  aprobado: "bg-emerald-100 text-emerald-700",
-  en_reparacion: "bg-orange-100 text-orange-700",
-  esperando_recambio: "bg-red-100 text-red-700",
-  listo: "bg-emerald-100 text-emerald-800",
-  entregado: "bg-zinc-100 text-zinc-500",
-  cancelado: "bg-zinc-100 text-zinc-400",
-};
+import { EliminarOrdenBtn } from "./eliminar-orden-btn";
+import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
+import { formatWhatsAppUrl } from "@/lib/utils";
+import { getUserRole } from "@/lib/auth";
 
 export default async function OrdenDetallePage({
   params,
@@ -44,6 +24,9 @@ export default async function OrdenDetallePage({
   const { id } = await params;
   const orden = await getOrden(id);
   if (!orden) return notFound();
+
+  const rol = await getUserRole();
+  const isAdmin = rol === "admin";
 
   const lineas = orden.lineas || [];
   const totalBase = lineas.reduce((sum, l) => {
@@ -108,7 +91,7 @@ export default async function OrdenDetallePage({
         <CardContent>
           <CambiarEstadoButtons ordenId={orden.id} estadoActual={orden.estado} />
           <p className="text-xs text-muted-foreground mt-3">
-            Comparte con el cliente: {typeof window !== "undefined" ? window.location.origin : ""}/estado/{orden.id}
+            Comparte con el cliente: {process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")}/estado/{orden.id}
           </p>
         </CardContent>
       </Card>
@@ -165,7 +148,7 @@ export default async function OrdenDetallePage({
               {orden.cliente?.telefono && (
                 <div className="flex gap-2 mt-2">
                   <a
-                    href={`https://wa.me/34${orden.cliente.telefono.replace(/\s/g, "")}?text=${encodeURIComponent(`Hola ${orden.cliente.nombre.split(" ")[0]}, te escribimos desde el taller sobre tu vehículo ${orden.vehiculo?.matricula || ""}.`)}`}
+                    href={formatWhatsAppUrl(orden.cliente.telefono, `Hola ${orden.cliente.nombre.split(" ")[0]}, te escribimos desde el taller sobre tu vehículo ${orden.vehiculo?.matricula || ""}.`)}
                     target="_blank"
                     className="flex h-8 items-center gap-1.5 rounded-full bg-emerald-600 px-3 text-white text-xs font-bold hover:bg-emerald-500 transition-colors"
                   >
@@ -206,6 +189,7 @@ export default async function OrdenDetallePage({
             <Printer className="mr-1.5 h-4 w-4" />Imprimir / Compartir
           </Button>
         </a>
+        {isAdmin && <EliminarOrdenBtn ordenId={orden.id} />}
       </div>
 
       {/* Líneas de trabajo */}

@@ -23,9 +23,25 @@ const estadoIcons: Record<string, typeof FileText> = {
   rechazado: X, expirado: Clock,
 };
 
-export default async function PresupuestosPage() {
+const PER_PAGE = 20;
+
+export default async function PresupuestosPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const params = await searchParams;
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
+  const page = Math.max(1, parseInt(params.page || "1", 10));
+  const offset = (page - 1) * PER_PAGE;
+
+  const [{ total }] = await db
+    .select({ total: sql<number>`count(*)` })
+    .from(presupuestos)
+    .where(eq(presupuestos.tallerId, tallerId));
+
+  const totalPages = Math.max(1, Math.ceil(Number(total) / PER_PAGE));
 
   const presupuestosList = await db
     .select({
@@ -43,14 +59,16 @@ export default async function PresupuestosPage() {
     .leftJoin(vehiculos, eq(presupuestos.vehiculoId, vehiculos.id))
     .leftJoin(clientes, eq(presupuestos.clienteId, clientes.id))
     .where(eq(presupuestos.tallerId, tallerId))
-    .orderBy(desc(presupuestos.createdAt));
+    .orderBy(desc(presupuestos.createdAt))
+    .limit(PER_PAGE)
+    .offset(offset);
 
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Presupuestos</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{presupuestosList.length} presupuesto{presupuestosList.length !== 1 ? "s" : ""}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">{Number(total)} presupuesto{Number(total) !== 1 ? "s" : ""}</p>
         </div>
       </div>
 
@@ -86,6 +104,39 @@ export default async function PresupuestosPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Paginación */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3 pt-2">
+          {page > 1 ? (
+            <Link
+              href={`/presupuestos?page=${page - 1}`}
+              className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+            >
+              Anterior
+            </Link>
+          ) : (
+            <span className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground/40">
+              Anterior
+            </span>
+          )}
+          <span className="text-sm text-muted-foreground">
+            Página {page} de {totalPages}
+          </span>
+          {page < totalPages ? (
+            <Link
+              href={`/presupuestos?page=${page + 1}`}
+              className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+            >
+              Siguiente
+            </Link>
+          ) : (
+            <span className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground/40">
+              Siguiente
+            </span>
+          )}
         </div>
       )}
     </div>

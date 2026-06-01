@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { getAvisos } from "../actions/avisos";
 import { AvisosActions } from "./avisos-actions";
+import { formatWhatsAppUrl } from "@/lib/utils";
 
 const tipoLabels: Record<string, string> = {
   itv: "ITV", revision_km: "Revisión km", aceite: "Aceite",
@@ -59,7 +60,7 @@ export default async function AvisosPage() {
                     </div>
                     {a.clienteTelefono && (
                       <a
-                        href={`https://wa.me/34${a.clienteTelefono.replace(/\s/g, "")}?text=${encodeURIComponent(`Hola ${a.clienteNombre?.split(" ")[0]}, te recordamos que ${a.descripcion || `tu vehículo ${a.matricula} necesita atención`}. ¿Te reservamos cita? ¡Un saludo!`)}`}
+                        href={formatWhatsAppUrl(a.clienteTelefono, `Hola ${a.clienteNombre?.split(" ")[0]}, te recordamos que ${a.descripcion || `tu vehículo ${a.matricula} necesita atención`}. ¿Te reservamos cita? ¡Un saludo!`)}
                         target="_blank"
                         className="flex h-8 items-center gap-1.5 rounded-full bg-emerald-600 px-3 text-white text-xs font-bold hover:bg-emerald-500 transition-colors shrink-0"
                       >

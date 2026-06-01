@@ -12,24 +12,8 @@ import { eq, and, desc } from "drizzle-orm";
 import { NuevoVehiculoDialog } from "./nuevo-vehiculo-dialog";
 import { EditarClienteDialog } from "./editar-cliente-dialog";
 import { EditarVehiculoDialog } from "./editar-vehiculo-dialog";
-
-const estadoColors: Record<string, string> = {
-  recibido: "bg-zinc-100 text-zinc-600",
-  diagnostico: "bg-blue-100 text-blue-700",
-  presupuestado: "bg-amber-100 text-amber-700",
-  aprobado: "bg-emerald-100 text-emerald-700",
-  en_reparacion: "bg-orange-100 text-orange-700",
-  esperando_recambio: "bg-red-100 text-red-700",
-  listo: "bg-emerald-200 text-emerald-800",
-  entregado: "bg-zinc-100 text-zinc-400",
-  cancelado: "bg-zinc-100 text-zinc-300",
-};
-
-const estadoLabels: Record<string, string> = {
-  recibido: "Recibido", diagnostico: "Diagnóstico", presupuestado: "Presupuestado",
-  aprobado: "Aprobado", en_reparacion: "En reparación", esperando_recambio: "Esp. recambio",
-  listo: "Listo", entregado: "Entregado", cancelado: "Cancelado",
-};
+import { estadoLabels, estadoColors } from "@/lib/constants";
+import { formatWhatsAppUrl } from "@/lib/utils";
 
 export default async function ClienteDetallePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -88,7 +72,7 @@ export default async function ClienteDetallePage({ params }: { params: Promise<{
           {cliente.telefono && (
             <div className="mt-2">
               <a
-                href={`https://wa.me/34${cliente.telefono.replace(/\s/g, "")}?text=${encodeURIComponent(`Hola ${cliente.nombre.split(" ")[0]}, te escribimos desde el taller.`)}`}
+                href={formatWhatsAppUrl(cliente.telefono, `Hola ${cliente.nombre.split(" ")[0]}, te escribimos desde el taller.`)}
                 target="_blank"
                 className="inline-flex h-8 items-center gap-1.5 rounded-full bg-emerald-600 px-3 text-white text-xs font-bold hover:bg-emerald-500 transition-colors"
               >
