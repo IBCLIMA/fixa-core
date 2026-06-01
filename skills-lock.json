@@ -12,6 +12,12 @@
       "sourceType": "github",
       "skillPath": "tools/image/nano-banana-2/SKILL.md",
       "computedHash": "999180c6dad2e4f9e28197f32a35122ea95fda984db9ae882767fdaab7a99ec0"
+    },
+    "using-superpowers": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/using-superpowers/SKILL.md",
+      "computedHash": "de10fd3ff46d797acc92b9df6b3ea456a5cd1d095b73c90bc921e83cce4c5bb9"
     }
   }
 }
