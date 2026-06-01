@@ -9,6 +9,8 @@ import {
   date,
   time,
   pgEnum,
+  jsonb,
+  index,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -77,6 +79,15 @@ export const rolUsuarioEnum = pgEnum("rol_usuario", [
   "recepcion",
 ]);
 
+export const accionAuditEnum = pgEnum("accion_audit", [
+  "create",
+  "read",
+  "update",
+  "delete",
+  "export",
+  "login",
+]);
+
 // ═══ TABLAS ═══
 
 export const planEnum = pgEnum("plan", ["pendiente", "trial", "basico", "taller", "pro", "cancelado"]);
@@ -97,6 +108,7 @@ export const talleres = pgTable("talleres", {
   suscripcionActiva: boolean("suscripcion_activa").default(false),
   ultimoAcceso: timestamp("ultimo_acceso"),
   activo: boolean("activo").default(true).notNull(),
+  dpaAcceptedAt: timestamp("dpa_accepted_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -291,6 +303,26 @@ export const historialEstados = pgTable("historial_estados", {
   usuarioId: uuid("usuario_id").references(() => usuarios.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const auditLogs = pgTable(
+  "audit_logs",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    tallerId: uuid("taller_id")
+      .references(() => talleres.id)
+      .notNull(),
+    userId: text("user_id").notNull(),
+    action: accionAuditEnum("action").notNull(),
+    entityType: text("entity_type").notNull(),
+    entityId: text("entity_id").notNull(),
+    details: jsonb("details"),
+    ipAddress: text("ip_address"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_audit_logs_taller_created").on(table.tallerId, table.createdAt),
+  ]
+);
 
 // ═══ RELACIONES ═══
 

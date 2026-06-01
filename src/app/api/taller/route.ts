@@ -10,15 +10,21 @@ export async function PUT(request: Request) {
     const body = await request.json();
     const db = getDb();
 
+    const updateData: Record<string, any> = {
+      nombre: body.nombre,
+      cif: body.cif || null,
+      direccion: body.direccion || null,
+      telefono: body.telefono || null,
+      email: body.email || null,
+    };
+
+    if (body.dpaAceptado) {
+      updateData.dpaAcceptedAt = new Date();
+    }
+
     await db
       .update(talleres)
-      .set({
-        nombre: body.nombre,
-        cif: body.cif || null,
-        direccion: body.direccion || null,
-        telefono: body.telefono || null,
-        email: body.email || null,
-      })
+      .set(updateData)
       .where(eq(talleres.id, tallerId));
 
     return NextResponse.json({ ok: true });

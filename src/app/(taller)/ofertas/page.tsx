@@ -1,8 +1,15 @@
 import { Megaphone } from "lucide-react";
 import { getClientesConTelefono } from "../actions/ofertas";
 import { OfertaForm } from "./oferta-form";
+import { requireRole } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function OfertasPage() {
+  try {
+    await requireRole(["admin", "recepcion"]);
+  } catch {
+    redirect("/");
+  }
   const clientesList = await getClientesConTelefono();
 
   return (

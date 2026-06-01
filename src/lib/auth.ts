@@ -22,7 +22,7 @@ export async function getTallerIdFromAuth() {
       .set({ ultimoAcceso: new Date() })
       .where(eq(talleres.id, usuario.tallerId));
 
-    return { tallerId: usuario.tallerId, usuarioId: usuario.id };
+    return { tallerId: usuario.tallerId, usuarioId: usuario.id, clerkUserId: userId, rol: usuario.rol };
   }
 
   // Crear taller como PENDIENTE — necesita aprobación del admin
@@ -55,7 +55,22 @@ export async function getTallerIdFromAuth() {
     }).catch(() => {});
   } catch {}
 
-  return { tallerId: taller.id, usuarioId: nuevoUsuario.id };
+  return { tallerId: taller.id, usuarioId: nuevoUsuario.id, clerkUserId: userId, rol: nuevoUsuario.rol };
+}
+
+export type RolUsuario = "admin" | "mecanico" | "recepcion";
+
+export async function requireRole(allowedRoles: RolUsuario[]) {
+  const auth = await getTallerIdFromAuth();
+  if (!allowedRoles.includes(auth.rol)) {
+    throw new Error("No tienes permisos para esta acción");
+  }
+  return auth;
+}
+
+export async function getUserRole(): Promise<RolUsuario> {
+  const { rol } = await getTallerIdFromAuth();
+  return rol;
 }
 
 export async function checkTrialStatus(): Promise<{

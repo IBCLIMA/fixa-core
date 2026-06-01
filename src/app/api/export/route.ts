@@ -3,10 +3,11 @@ import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
 import { talleres, clientes, vehiculos, ordenesTrabajo, lineasOrden, citas, avisos } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
+import { logAudit } from "@/lib/audit";
 
 export async function GET() {
   try {
-    const { tallerId } = await getTallerIdFromAuth();
+    const { tallerId, clerkUserId } = await getTallerIdFromAuth();
     const db = getDb();
 
     // Exportar todos los datos del taller
@@ -48,6 +49,15 @@ export async function GET() {
 
     const json = JSON.stringify(exportData, null, 2);
     const filename = `fixa-backup-${taller.nombre?.replace(/\s/g, "-").toLowerCase()}-${new Date().toISOString().split("T")[0]}.json`;
+
+    logAudit({
+      tallerId,
+      userId: clerkUserId,
+      action: "export",
+      entityType: "taller",
+      entityId: tallerId,
+      details: { totals: exportData.totals },
+    });
 
     return new NextResponse(json, {
       headers: {

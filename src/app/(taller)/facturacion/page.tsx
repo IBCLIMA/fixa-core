@@ -1,13 +1,20 @@
 import { Receipt, TrendingUp, Car, Users, ClipboardList, Calendar, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getTallerIdFromAuth } from "@/lib/auth";
+import { requireRole } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { getDb } from "@/db";
 import { ordenesTrabajo, lineasOrden, clientes, vehiculos, citas } from "@/db/schema";
 import { eq, and, sql, count, desc, gte } from "drizzle-orm";
 
 export default async function FacturacionPage() {
-  const { tallerId } = await getTallerIdFromAuth();
+  let tallerId: string;
+  try {
+    const auth = await requireRole(["admin", "recepcion"]);
+    tallerId = auth.tallerId;
+  } catch {
+    redirect("/");
+  }
   const db = getDb();
 
   const now = new Date();

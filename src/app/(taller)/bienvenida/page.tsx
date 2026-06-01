@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ArrowRight, CheckCircle2, Settings, Users, Car, ClipboardList, Upload, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FixaLogo } from "@/components/ui/fixa-logo";
@@ -19,6 +20,7 @@ export default function BienvenidaPage() {
   const router = useRouter();
   const [paso, setPaso] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [dpaAceptado, setDpaAceptado] = useState(false);
   const [datos, setDatos] = useState({
     nombre: "",
     telefono: "",
@@ -32,12 +34,16 @@ export default function BienvenidaPage() {
       toast.error("Pon el nombre de tu taller");
       return;
     }
+    if (!dpaAceptado) {
+      toast.error("Debes aceptar el contrato de encargado del tratamiento (DPA)");
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/taller", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(datos),
+        body: JSON.stringify({ ...datos, dpaAceptado: true }),
       });
       if (!res.ok) throw new Error();
       setPaso(2);
@@ -123,9 +129,25 @@ export default function BienvenidaPage() {
                 </div>
               </div>
             </div>
+            <div className="flex items-start gap-3 rounded-xl bg-white border border-stone-200/60 p-4 shadow-sm">
+              <input
+                type="checkbox"
+                id="dpa-check"
+                checked={dpaAceptado}
+                onChange={(e) => setDpaAceptado(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-stone-300 text-orange-500 focus:ring-orange-500 cursor-pointer accent-orange-500"
+              />
+              <label htmlFor="dpa-check" className="text-sm text-stone-600 cursor-pointer leading-snug">
+                Acepto el{" "}
+                <Link href="/dpa" target="_blank" className="text-orange-600 underline underline-offset-2 font-medium hover:text-orange-700">
+                  contrato de encargado del tratamiento de datos (DPA)
+                </Link>{" "}
+                conforme al RGPD. *
+              </label>
+            </div>
             <div className="flex gap-3">
               <Button variant="outline" onClick={() => setPaso(0)} className="rounded-full">Atrás</Button>
-              <Button onClick={guardarDatos} disabled={loading} className="rounded-full flex-1 h-12 font-bold text-base">
+              <Button onClick={guardarDatos} disabled={loading || !dpaAceptado} className="rounded-full flex-1 h-12 font-bold text-base">
                 {loading ? "Guardando..." : "Guardar y continuar"}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>

@@ -2,14 +2,21 @@ import { Settings, Shield, Download, FileText, Database } from "lucide-react";
 import { getDb } from "@/db";
 import { talleres } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { getTallerIdFromAuth } from "@/lib/auth";
+import { requireRole } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { ConfigForm } from "./config-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default async function ConfiguracionPage() {
-  const { tallerId } = await getTallerIdFromAuth();
+  let tallerId: string;
+  try {
+    const auth = await requireRole(["admin"]);
+    tallerId = auth.tallerId;
+  } catch {
+    redirect("/");
+  }
   const db = getDb();
 
   const taller = await db.query.talleres.findFirst({

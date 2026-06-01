@@ -2,7 +2,8 @@ import { Users, Plus, Shield, Wrench, Phone } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getTallerIdFromAuth } from "@/lib/auth";
+import { requireRole } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { getDb } from "@/db";
 import { usuarios } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -27,7 +28,13 @@ const rolIcons: Record<string, typeof Shield> = {
 };
 
 export default async function EquipoPage() {
-  const { tallerId } = await getTallerIdFromAuth();
+  let tallerId: string;
+  try {
+    const auth = await requireRole(["admin"]);
+    tallerId = auth.tallerId;
+  } catch {
+    redirect("/");
+  }
   const db = getDb();
 
   const equipo = await db
