@@ -39,16 +39,17 @@ export async function crearOrdenRapida(data: {
   kmEntrada?: number;
   descripcionCliente?: string;
 }) {
-  const { tallerId, usuarioId } = await getTallerIdFromAuth();
+  const { tallerId, usuarioId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
   const { sql } = await import("drizzle-orm");
 
-  const [result] = await db
+  // Get next order number (unique index prevents duplicates)
+  const [maxResult] = await db
     .select({ max: sql<number>`COALESCE(MAX(${ordenesTrabajo.numero}), 0)` })
     .from(ordenesTrabajo)
     .where(eq(ordenesTrabajo.tallerId, tallerId));
 
-  const numero = (result?.max ?? 0) + 1;
+  const numero = (maxResult?.max ?? 0) + 1;
 
   const [orden] = await db
     .insert(ordenesTrabajo)
@@ -68,6 +69,16 @@ export async function crearOrdenRapida(data: {
     ordenId: orden.id,
     estadoNuevo: "recibido",
     usuarioId,
+  });
+
+  const { logAudit } = await import("@/lib/audit");
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "create",
+    entityType: "orden",
+    entityId: orden.id,
+    details: { numero: orden.numero, rapida: true, vehiculoId: data.vehiculoId, clienteId: data.clienteId },
   });
 
   const { revalidatePath } = await import("next/cache");

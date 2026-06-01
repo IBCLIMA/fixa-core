@@ -11,6 +11,7 @@ import {
 import { eq, and, desc, count, sql } from "drizzle-orm";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { logAudit } from "@/lib/audit";
 
 type EstadoOrden =
   | "recibido"
@@ -70,16 +71,16 @@ export async function crearOrden(data: {
   descripcionCliente?: string;
   fechaEstimada?: string;
 }) {
-  const { tallerId, usuarioId } = await getTallerIdFromAuth();
+  const { tallerId, usuarioId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  // Obtener siguiente número de orden
-  const [result] = await db
+  // Get next order number (unique index on taller_id+numero prevents duplicates)
+  const [maxResult] = await db
     .select({ max: sql<number>`COALESCE(MAX(${ordenesTrabajo.numero}), 0)` })
     .from(ordenesTrabajo)
     .where(eq(ordenesTrabajo.tallerId, tallerId));
 
-  const numero = (result?.max ?? 0) + 1;
+  const numero = (maxResult?.max ?? 0) + 1;
 
   const [orden] = await db
     .insert(ordenesTrabajo)
@@ -104,13 +105,22 @@ export async function crearOrden(data: {
     usuarioId,
   });
 
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "create",
+    entityType: "orden",
+    entityId: orden.id,
+    details: { numero: orden.numero, vehiculoId: data.vehiculoId, clienteId: data.clienteId },
+  });
+
   revalidatePath("/ordenes");
   revalidatePath("/");
   return orden;
 }
 
 export async function cambiarEstadoOrden(id: string, nuevoEstado: EstadoOrden) {
-  const { tallerId, usuarioId } = await getTallerIdFromAuth();
+  const { tallerId, usuarioId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
 
   const orden = await db.query.ordenesTrabajo.findFirst({
@@ -135,6 +145,15 @@ export async function cambiarEstadoOrden(id: string, nuevoEstado: EstadoOrden) {
     usuarioId,
   });
 
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "update",
+    entityType: "orden",
+    entityId: id,
+    details: { estadoAnterior: orden.estado, estadoNuevo: nuevoEstado },
+  });
+
   revalidatePath("/ordenes");
   revalidatePath(`/ordenes/${id}`);
   revalidatePath("/");
@@ -149,7 +168,16 @@ export async function agregarLineaOrden(data: {
   descuentoPct?: number;
   ivaPct?: number;
 }) {
+  const { tallerId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
+
+  // Verify order belongs to authenticated workshop
+  const [orden] = await db
+    .select({ id: ordenesTrabajo.id })
+    .from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, data.ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
+
+  if (!orden) throw new Error("Orden no encontrada");
 
   const [linea] = await db
     .insert(lineasOrden)
@@ -164,13 +192,42 @@ export async function agregarLineaOrden(data: {
     })
     .returning();
 
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "create",
+    entityType: "orden",
+    entityId: data.ordenId,
+    details: { lineaId: linea.id, tipo: data.tipo, descripcion: data.descripcion },
+  });
+
   revalidatePath(`/ordenes/${data.ordenId}`);
   return linea;
 }
 
 export async function eliminarLineaOrden(id: string, ordenId: string) {
+  const { tallerId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
+
+  // Verify order belongs to authenticated workshop before deleting line
+  const [orden] = await db
+    .select({ id: ordenesTrabajo.id })
+    .from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
+
+  if (!orden) throw new Error("Orden no encontrada");
+
   await db.delete(lineasOrden).where(eq(lineasOrden.id, id));
+
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "delete",
+    entityType: "orden",
+    entityId: ordenId,
+    details: { lineaId: id },
+  });
+
   revalidatePath(`/ordenes/${ordenId}`);
 }
 

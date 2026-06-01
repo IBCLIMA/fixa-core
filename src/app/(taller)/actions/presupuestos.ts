@@ -23,13 +23,13 @@ export async function crearPresupuestoDesdeOrden(ordenId: string) {
     .from(lineasOrden)
     .where(eq(lineasOrden.ordenId, ordenId));
 
-  // Siguiente número de presupuesto
-  const [result] = await db
+  // Get next quote number (unique index prevents duplicates)
+  const [maxResult] = await db
     .select({ max: sql<number>`COALESCE(MAX(${presupuestos.numero}), 0)` })
     .from(presupuestos)
     .where(eq(presupuestos.tallerId, tallerId));
 
-  const numero = (result?.max ?? 0) + 1;
+  const numero = (maxResult?.max ?? 0) + 1;
   const token = randomBytes(16).toString("hex");
 
   // Crear presupuesto

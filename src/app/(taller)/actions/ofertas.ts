@@ -3,10 +3,10 @@
 import { getDb } from "@/db";
 import { clientes } from "@/db/schema";
 import { eq, and, isNotNull } from "drizzle-orm";
-import { getTallerIdFromAuth } from "@/lib/auth";
+import { requireRole } from "@/lib/auth";
 
 export async function getClientesConTelefono() {
-  const { tallerId } = await getTallerIdFromAuth();
+  const { tallerId } = await requireRole(["admin", "recepcion"]);
   const db = getDb();
 
   return db
@@ -23,6 +23,7 @@ export async function getClientesConTelefono() {
 }
 
 export async function generarLinksOferta(mensaje: string) {
+  await requireRole(["admin", "recepcion"]);
   const clientesList = await getClientesConTelefono();
 
   return clientesList.map((c) => ({

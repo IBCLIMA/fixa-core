@@ -3,9 +3,10 @@
 import { getDb } from "@/db";
 import { clientes, vehiculos, ordenesTrabajo } from "@/db/schema";
 import { eq, and, ilike, or, desc } from "drizzle-orm";
-import { getTallerIdFromAuth } from "@/lib/auth";
+import { getTallerIdFromAuth, requireRole } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { sanitize } from "@/lib/validation";
+import { logAudit } from "@/lib/audit";
 
 export async function getClientes(busqueda?: string) {
   const { tallerId } = await getTallerIdFromAuth();
@@ -61,7 +62,7 @@ export async function crearCliente(data: {
   direccion?: string;
   notas?: string;
 }) {
-  const { tallerId } = await getTallerIdFromAuth();
+  const { tallerId, clerkUserId } = await requireRole(["admin", "recepcion"]);
   const db = getDb();
 
   // Sanitizar inputs
@@ -81,6 +82,15 @@ export async function crearCliente(data: {
     .values({ ...cleanData, tallerId })
     .returning();
 
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "create",
+    entityType: "cliente",
+    entityId: cliente.id,
+    details: { nombre: cleanData.nombre },
+  });
+
   revalidatePath("/clientes");
   revalidatePath("/");
   return cliente;
@@ -97,7 +107,7 @@ export async function actualizarCliente(
     notas?: string;
   }
 ) {
-  const { tallerId } = await getTallerIdFromAuth();
+  const { tallerId, clerkUserId } = await requireRole(["admin", "recepcion"]);
   const db = getDb();
 
   const [cliente] = await db
@@ -106,18 +116,35 @@ export async function actualizarCliente(
     .where(and(eq(clientes.id, id), eq(clientes.tallerId, tallerId)))
     .returning();
 
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "update",
+    entityType: "cliente",
+    entityId: id,
+    details: { camposModificados: Object.keys(data) },
+  });
+
   revalidatePath("/clientes");
   revalidatePath(`/clientes/${id}`);
   return cliente;
 }
 
 export async function eliminarCliente(id: string) {
-  const { tallerId } = await getTallerIdFromAuth();
+  const { tallerId, clerkUserId } = await requireRole(["admin"]);
   const db = getDb();
 
   await db
     .delete(clientes)
     .where(and(eq(clientes.id, id), eq(clientes.tallerId, tallerId)));
+
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "delete",
+    entityType: "cliente",
+    entityId: id,
+  });
 
   revalidatePath("/clientes");
   revalidatePath("/");
@@ -180,7 +207,7 @@ export async function actualizarVehiculo(
 }
 
 export async function eliminarVehiculo(id: string) {
-  const { tallerId } = await getTallerIdFromAuth();
+  const { tallerId } = await requireRole(["admin"]);
   const db = getDb();
 
   await db
