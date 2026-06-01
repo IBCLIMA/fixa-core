@@ -1,41 +1,86 @@
 import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
 import { FixaLogo } from "@/components/ui/fixa-logo";
+import { Wrench, ArrowLeft } from "lucide-react";
 
 export default function Page() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
-      <div className="mb-6">
-        <Link href="/inicio">
-          <FixaLogo size="md" />
-        </Link>
+    <div className="flex min-h-screen" style={{ background: "linear-gradient(135deg, #faf9f7 0%, #f5f3f0 50%, #fef3e2 100%)" }}>
+      {/* Left panel - branding */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 bg-stone-950 relative overflow-hidden">
+        {/* Background effects */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,rgba(249,115,22,0.12),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_60%_at_80%_80%,rgba(59,130,246,0.06),transparent)]" />
+
+        <div className="relative z-10">
+          <Link href="/inicio">
+            <FixaLogo size="md" theme="dark" />
+          </Link>
+        </div>
+
+        <div className="relative z-10 space-y-6">
+          <h1 className="text-4xl font-extrabold text-white tracking-tight leading-tight">
+            Gestiona tu taller
+            <br />
+            <span className="text-orange-400">desde cualquier lugar.</span>
+          </h1>
+          <div className="space-y-4">
+            {[
+              "Órdenes de trabajo en 10 segundos",
+              "WhatsApp integrado con un toque",
+              "Tus clientes ven el estado online",
+            ].map((text) => (
+              <div key={text} className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0">
+                  <Wrench className="h-4 w-4 text-orange-400" />
+                </div>
+                <span className="text-sm text-stone-300">{text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative z-10">
+          <p className="text-xs text-stone-500">© 2026 FIXA by Ibañez Clima</p>
+        </div>
       </div>
 
-      <SignIn
-        appearance={{
-          elements: {
-            rootBox: "w-full max-w-md",
-            card: "shadow-xl border border-stone-200/60 rounded-2xl",
-            headerTitle: "text-xl font-extrabold",
-            headerSubtitle: "text-sm text-stone-500",
-            formButtonPrimary: "bg-orange-500 hover:bg-orange-600 rounded-full h-11 font-bold",
-            footerActionLink: "text-orange-600 font-semibold",
-          },
-        }}
-      />
+      {/* Right panel - auth form */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+        <div className="lg:hidden mb-8">
+          <Link href="/inicio">
+            <FixaLogo size="md" />
+          </Link>
+        </div>
 
-      <div className="mt-6 max-w-md text-center">
-        <p className="text-xs text-stone-400 leading-relaxed">
-          Si tienes problemas para acceder, prueba en una ventana de incógnito
-          o desactiva temporalmente el bloqueador de anuncios.{" "}
-          <a
-            href="https://wa.me/34611433218?text=Hola%2C%20tengo%20problemas%20para%20acceder%20a%20FIXA"
-            target="_blank"
-            className="text-orange-600 font-medium underline"
-          >
-            ¿Necesitas ayuda?
-          </a>
-        </p>
+        <div className="w-full max-w-md">
+          <SignIn
+            appearance={{
+              elements: {
+                rootBox: "w-full",
+                card: "shadow-none border-0 bg-transparent p-0",
+                headerTitle: "text-2xl font-extrabold text-stone-900",
+                headerSubtitle: "text-sm text-stone-500",
+                formButtonPrimary: "bg-orange-500 hover:bg-orange-600 rounded-xl h-12 font-bold text-sm shadow-lg shadow-orange-500/20",
+                formFieldInput: "rounded-xl border-stone-200 h-12 text-sm focus:border-orange-300 focus:ring-orange-500/20",
+                formFieldLabel: "text-sm font-medium text-stone-700",
+                footerActionLink: "text-orange-600 font-semibold hover:text-orange-500",
+                socialButtonsBlockButton: "rounded-xl border-stone-200 h-12 font-medium text-sm hover:bg-stone-50",
+                dividerLine: "bg-stone-200",
+                dividerText: "text-stone-400 text-xs",
+                identityPreviewEditButton: "text-orange-600",
+                alert: "rounded-xl",
+              },
+            }}
+          />
+        </div>
+
+        <div className="mt-8 text-center">
+          <Link href="/inicio" className="inline-flex items-center gap-2 text-sm text-stone-400 hover:text-stone-700 transition-colors">
+            <ArrowLeft className="h-4 w-4" />
+            Volver a la web
+          </Link>
+        </div>
       </div>
     </div>
   );
