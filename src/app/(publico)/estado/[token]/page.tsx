@@ -15,7 +15,7 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
   const { token } = await params;
   const db = getDb();
 
-  // Buscar orden por ID (en producción usaríamos un token público)
+  // Buscar orden por token público (no por UUID interno)
   const orden = await db
     .select({
       id: ordenesTrabajo.id,
@@ -36,7 +36,7 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
     .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
     .leftJoin(clientes, eq(ordenesTrabajo.clienteId, clientes.id))
     .leftJoin(talleres, eq(ordenesTrabajo.tallerId, talleres.id))
-    .where(eq(ordenesTrabajo.id, token))
+    .where(eq(ordenesTrabajo.tokenPublico, token))
     .limit(1);
 
   if (!orden[0]) return notFound();

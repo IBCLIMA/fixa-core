@@ -88,6 +88,9 @@ export async function crearOrden(data: {
 
   const numero = (maxResult?.max ?? 0) + 1;
 
+  const { randomBytes } = await import("crypto");
+  const tokenPublico = randomBytes(16).toString("hex");
+
   const [orden] = await db
     .insert(ordenesTrabajo)
     .values({
@@ -101,6 +104,7 @@ export async function crearOrden(data: {
       fechaEstimada: data.fechaEstimada
         ? new Date(data.fechaEstimada)
         : undefined,
+      tokenPublico,
     })
     .returning();
 
@@ -419,8 +423,29 @@ export async function enviarSolicitudResena(ordenId: string) {
 }
 
 export async function getInformeUrl(ordenId: string) {
+  const { tallerId } = await getTallerIdFromAuth();
+  const db = getDb();
+  const [orden] = await db
+    .select({ tokenPublico: ordenesTrabajo.tokenPublico })
+    .from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
+
+  const token = orden?.tokenPublico || ordenId;
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-  return `${baseUrl}/informe/${ordenId}`;
+  return `${baseUrl}/informe/${token}`;
+}
+
+export async function getEstadoUrl(ordenId: string) {
+  const { tallerId } = await getTallerIdFromAuth();
+  const db = getDb();
+  const [orden] = await db
+    .select({ tokenPublico: ordenesTrabajo.tokenPublico })
+    .from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
+
+  const token = orden?.tokenPublico || ordenId;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+  return `${baseUrl}/estado/${token}`;
 }
 
 export async function getMecanicos() {

@@ -70,16 +70,19 @@ export default async function InformePublicoPage({
     .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
     .leftJoin(clientes, eq(ordenesTrabajo.clienteId, clientes.id))
     .leftJoin(talleres, eq(ordenesTrabajo.tallerId, talleres.id))
-    .where(eq(ordenesTrabajo.id, ordenId))
+    .where(eq(ordenesTrabajo.tokenPublico, ordenId))
     .limit(1);
 
   if (!orden) return notFound();
 
+  // Use the real order ID (not the public token) for sub-queries
+  const realOrdenId = orden.id;
+
   // Fetch lines, photos, inspections in parallel
   const [lineas, fotos, inspecciones] = await Promise.all([
-    db.select().from(lineasOrden).where(eq(lineasOrden.ordenId, ordenId)),
-    db.select().from(fotosOrden).where(eq(fotosOrden.ordenId, ordenId)),
-    db.select().from(inspeccionesOrden).where(eq(inspeccionesOrden.ordenId, ordenId)),
+    db.select().from(lineasOrden).where(eq(lineasOrden.ordenId, realOrdenId)),
+    db.select().from(fotosOrden).where(eq(fotosOrden.ordenId, realOrdenId)),
+    db.select().from(inspeccionesOrden).where(eq(inspeccionesOrden.ordenId, realOrdenId)),
   ]);
 
   // Separate inspection items by status

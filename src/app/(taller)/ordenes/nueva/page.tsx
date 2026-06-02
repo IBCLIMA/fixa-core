@@ -1,37 +1,47 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ArrowLeft, Check, ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import Link from "next/link";
 import { getClientes } from "../../actions/clientes";
 import { crearOrden } from "../../actions/ordenes";
 import { toast } from "sonner";
 import { FichaScanner } from "./ficha-scanner";
 import { VoiceRecorder } from "@/components/voice-recorder";
+import { cn } from "@/lib/utils";
 
 type ClienteConVehiculos = Awaited<ReturnType<typeof getClientes>>[number];
 
 export default function NuevaOrdenPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [clientes, setClientes] = useState<ClienteConVehiculos[]>([]);
   const [clienteId, setClienteId] = useState("");
   const [vehiculoId, setVehiculoId] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingClientes, setLoadingClientes] = useState(true);
   const [descripcion, setDescripcion] = useState("");
+  const [clienteOpen, setClienteOpen] = useState(false);
+  const [vehiculoOpen, setVehiculoOpen] = useState(false);
 
   const clienteSeleccionado = clientes.find((c) => c.id === clienteId);
   const vehiculos = clienteSeleccionado?.vehiculos || [];
@@ -40,8 +50,18 @@ export default function NuevaOrdenPage() {
     getClientes().then((data) => {
       setClientes(data);
       setLoadingClientes(false);
+
+      // Pre-select client and vehicle from query params
+      const qClienteId = searchParams.get("clienteId");
+      const qVehiculoId = searchParams.get("vehiculoId");
+      if (qClienteId) {
+        setClienteId(qClienteId);
+        if (qVehiculoId) {
+          setVehiculoId(qVehiculoId);
+        }
+      }
     });
-  }, []);
+  }, [searchParams]);
 
   async function handleSubmit(formData: FormData) {
     if (!clienteId || !vehiculoId) {
@@ -114,19 +134,53 @@ export default function NuevaOrdenPage() {
           <CardContent className="space-y-4">
             <div className="space-y-1.5">
               <Label>Cliente *</Label>
-              <Select value={clienteId} onValueChange={(v) => { setClienteId(v); setVehiculoId(""); }}>
-                <SelectTrigger className="h-11 rounded-xl">
-                  <SelectValue placeholder={loadingClientes ? "Cargando..." : "Seleccionar cliente"} />
-                </SelectTrigger>
-                <SelectContent>
-                  {clientes.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.nombre}
-                      {c.telefono ? ` — ${c.telefono}` : ""}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Popover open={clienteOpen} onOpenChange={setClienteOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={clienteOpen}
+                    className="w-full h-11 rounded-xl justify-between font-normal"
+                  >
+                    {loadingClientes
+                      ? "Cargando..."
+                      : clienteSeleccionado
+                        ? `${clienteSeleccionado.nombre}${clienteSeleccionado.telefono ? ` — ${clienteSeleccionado.telefono}` : ""}`
+                        : "Buscar cliente..."}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                  <Command>
+                    <CommandInput placeholder="Buscar por nombre o teléfono..." />
+                    <CommandList>
+                      <CommandEmpty>No encontrado</CommandEmpty>
+                      <CommandGroup>
+                        {clientes.map((c) => (
+                          <CommandItem
+                            key={c.id}
+                            value={`${c.nombre} ${c.telefono || ""}`}
+                            onSelect={() => {
+                              setClienteId(c.id);
+                              setVehiculoId("");
+                              setClienteOpen(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                clienteId === c.id ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {c.nombre}
+                            {c.telefono ? ` — ${c.telefono}` : ""}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
               {clientes.length === 0 && !loadingClientes && (
                 <p className="text-xs text-muted-foreground">
                   No hay clientes.{" "}
@@ -140,20 +194,56 @@ export default function NuevaOrdenPage() {
             {clienteId && (
               <div className="space-y-1.5">
                 <Label>Vehículo *</Label>
-                <Select value={vehiculoId} onValueChange={setVehiculoId}>
-                  <SelectTrigger className="h-11 rounded-xl">
-                    <SelectValue placeholder="Seleccionar vehículo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {vehiculos.map((v) => (
-                      <SelectItem key={v.id} value={v.id}>
-                        {v.matricula}
-                        {v.marca ? ` — ${v.marca}` : ""}
-                        {v.modelo ? ` ${v.modelo}` : ""}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Popover open={vehiculoOpen} onOpenChange={setVehiculoOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={vehiculoOpen}
+                      className="w-full h-11 rounded-xl justify-between font-normal"
+                    >
+                      {vehiculoId
+                        ? (() => {
+                            const v = vehiculos.find((v) => v.id === vehiculoId);
+                            return v
+                              ? `${v.matricula}${v.marca ? ` — ${v.marca}` : ""}${v.modelo ? ` ${v.modelo}` : ""}`
+                              : "Seleccionar vehículo";
+                          })()
+                        : "Buscar vehículo..."}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                    <Command>
+                      <CommandInput placeholder="Buscar por matrícula, marca..." />
+                      <CommandList>
+                        <CommandEmpty>No encontrado</CommandEmpty>
+                        <CommandGroup>
+                          {vehiculos.map((v) => (
+                            <CommandItem
+                              key={v.id}
+                              value={`${v.matricula} ${v.marca || ""} ${v.modelo || ""}`}
+                              onSelect={() => {
+                                setVehiculoId(v.id);
+                                setVehiculoOpen(false);
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  vehiculoId === v.id ? "opacity-100" : "opacity-0"
+                                )}
+                              />
+                              {v.matricula}
+                              {v.marca ? ` — ${v.marca}` : ""}
+                              {v.modelo ? ` ${v.modelo}` : ""}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
                 {vehiculos.length === 0 && (
                   <p className="text-xs text-muted-foreground">
                     Este cliente no tiene vehículos registrados.

@@ -206,23 +206,29 @@ export default async function OrdenDetallePage({
               {orden.cliente?.email && (
                 <p className="text-muted-foreground">{orden.cliente.email}</p>
               )}
-              {orden.cliente?.telefono && (
-                <div className="flex gap-2 mt-2">
-                  <a
-                    href={formatWhatsAppUrl(orden.cliente.telefono, `Hola ${orden.cliente.nombre.split(" ")[0]}, te escribimos desde el taller sobre tu vehículo ${orden.vehiculo?.matricula || ""}.`)}
-                    target="_blank"
-                    className="flex h-8 items-center gap-1.5 rounded-full bg-emerald-600 px-3 text-white text-xs font-bold hover:bg-emerald-500 transition-colors"
-                  >
-                    <MessageSquare className="h-3 w-3" />WhatsApp
-                  </a>
-                  <a
-                    href={`tel:${orden.cliente.telefono}`}
-                    className="flex h-8 items-center gap-1.5 rounded-full bg-muted px-3 text-xs font-bold hover:bg-muted/80 transition-colors"
-                  >
-                    <Phone className="h-3 w-3" />Llamar
-                  </a>
-                </div>
-              )}
+              <div className="flex gap-2 mt-2">
+                {orden.cliente?.telefono ? (
+                  <>
+                    <a
+                      href={formatWhatsAppUrl(orden.cliente.telefono, `Hola ${orden.cliente.nombre.split(" ")[0]}, te escribimos desde el taller sobre tu vehículo ${orden.vehiculo?.matricula || ""}.`)}
+                      target="_blank"
+                      className="flex h-11 items-center gap-1.5 rounded-full bg-emerald-600 px-4 text-white text-sm font-bold hover:bg-emerald-500 transition-colors"
+                    >
+                      <MessageSquare className="h-4 w-4" />WhatsApp
+                    </a>
+                    <a
+                      href={`tel:${orden.cliente.telefono}`}
+                      className="flex h-11 items-center gap-1.5 rounded-full bg-muted px-4 text-sm font-bold hover:bg-muted/80 transition-colors"
+                    >
+                      <Phone className="h-4 w-4" />Llamar
+                    </a>
+                  </>
+                ) : (
+                  <Button disabled className="rounded-full h-11 px-4 text-sm" title="Añade un teléfono al cliente">
+                    <Phone className="h-4 w-4 mr-1.5" /> Sin teléfono
+                  </Button>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>

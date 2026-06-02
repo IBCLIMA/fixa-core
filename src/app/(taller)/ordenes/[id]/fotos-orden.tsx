@@ -66,7 +66,7 @@ export function FotosOrden({ ordenId, fotos: initialFotos }: { ordenId: string; 
       <div className="flex items-center justify-between">
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
           <Camera className="h-3.5 w-3.5" />
-          Media ({mediaCount})
+          Fotos y vídeos ({mediaCount})
           {videoCount > 0 && (
             <span className="text-muted-foreground font-normal normal-case">
               {photoCount} foto{photoCount !== 1 ? "s" : ""}, {videoCount} video{videoCount !== 1 ? "s" : ""}

@@ -66,7 +66,7 @@ export function ConfigForm({ taller }: { taller: Taller }) {
               <Input id="telefono" name="telefono" defaultValue={taller.telefono || ""} placeholder="960 000 000" className="h-11 rounded-xl" />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Correo electrónico</Label>
               <Input id="email" name="email" type="email" defaultValue={taller.email || ""} placeholder="info@mitaller.com" className="h-11 rounded-xl" />
             </div>
             <div className="space-y-1.5">

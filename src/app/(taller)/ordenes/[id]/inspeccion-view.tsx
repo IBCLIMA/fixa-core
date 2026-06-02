@@ -200,10 +200,10 @@ export function InspeccionView({
                 {!collapsedCats.has(categoria) && (
                   <div className="divide-y divide-stone-100">
                     {items.map((item) => (
-                      <div key={item.id} className="px-4 py-2.5">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-sm flex-1">{item.item}</span>
-                          <div className="flex gap-1">
+                      <div key={item.id} className="px-4 py-3">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
+                          <span className="text-sm font-medium flex-1">{item.item}</span>
+                          <div className="flex gap-1.5 w-full sm:w-auto">
                             {(["bien", "atencion", "urgente", "no_aplica"] as const).map((estado) => {
                               const config = estadoConfig[estado];
                               const isActive = item.estado === estado;
@@ -211,7 +211,7 @@ export function InspeccionView({
                                 <button
                                   key={estado}
                                   onClick={() => handleEstado(item.id, estado)}
-                                  className={`h-7 min-w-[2.5rem] px-1.5 rounded-lg border text-xs font-bold transition-all ${
+                                  className={`h-11 min-w-[3.5rem] flex-1 sm:flex-none px-2 rounded-lg border text-sm font-bold transition-all ${
                                     isActive ? config.activeClassName : config.className
                                   }`}
                                   title={config.label}
@@ -222,14 +222,14 @@ export function InspeccionView({
                             })}
                             <button
                               onClick={() => toggleNotes(item.id)}
-                              className={`h-7 w-7 rounded-lg border flex items-center justify-center transition-colors ${
+                              className={`h-11 w-11 shrink-0 rounded-lg border flex items-center justify-center transition-colors ${
                                 item.notas
                                   ? "border-blue-200 text-blue-500 bg-blue-50"
                                   : "border-stone-200 text-stone-300 hover:text-stone-500 hover:bg-stone-50"
                               }`}
                               title="Notas"
                             >
-                              <MessageSquare className="h-3 w-3" />
+                              <MessageSquare className="h-5 w-5" />
                             </button>
                           </div>
                         </div>

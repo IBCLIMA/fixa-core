@@ -23,8 +23,8 @@ const colorByTipo = {
 
 const labelByTipo = {
   cliente: "Clientes",
-  vehiculo: "Vehiculos",
-  orden: "Ordenes",
+  vehiculo: "Vehículos",
+  orden: "Órdenes",
 };
 
 function getRecentSearches(): string[] {
@@ -143,7 +143,7 @@ export function BusquedaGlobal() {
       <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       <Input
         ref={inputRef}
-        placeholder="Buscar... (Cmd+K)"
+        placeholder="Buscar..."
         className="pl-9 pr-8 h-9 w-full rounded-full bg-muted border-0 text-sm"
         value={query}
         onChange={(e) => setQuery(e.target.value)}

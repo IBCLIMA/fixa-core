@@ -9,6 +9,7 @@ import {
   Clock,
   Phone,
   CreditCard,
+  BarChart3,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,7 @@ import { TourGuiado } from "./tour-guiado";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
 import { ordenesTrabajo, clientes, citas, vehiculos } from "@/db/schema";
-import { eq, and, count, sql, desc } from "drizzle-orm";
+import { eq, and, count, sql, desc, sum } from "drizzle-orm";
 import { estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
 
@@ -38,57 +39,116 @@ export default async function PanelDelDia() {
   const db = getDb();
   const hoy = new Date().toISOString().split("T")[0];
 
-  // Queries
-  const [clientesResult] = await db.select({ count: count() }).from(clientes).where(eq(clientes.tallerId, tallerId));
-  const [citasCountResult] = await db.select({ count: count() }).from(citas).where(and(eq(citas.tallerId, tallerId), eq(citas.fecha, hoy)));
+  const manana = new Date();
+  manana.setDate(manana.getDate() + 1);
+  const mananaStr = manana.toISOString().split("T")[0];
 
-  // Ordenes activas con vehiculo y cliente
-  const ordenesActivas = await db
-    .select({
-      id: ordenesTrabajo.id,
-      numero: ordenesTrabajo.numero,
-      estado: ordenesTrabajo.estado,
-      descripcionCliente: ordenesTrabajo.descripcionCliente,
-      fechaEntrada: ordenesTrabajo.fechaEntrada,
-      matricula: vehiculos.matricula,
-      marca: vehiculos.marca,
-      modelo: vehiculos.modelo,
-      clienteNombre: clientes.nombre,
-      clienteTelefono: clientes.telefono,
-    })
-    .from(ordenesTrabajo)
-    .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
-    .leftJoin(clientes, eq(ordenesTrabajo.clienteId, clientes.id))
-    .where(and(
-      eq(ordenesTrabajo.tallerId, tallerId),
-      sql`${ordenesTrabajo.estado} NOT IN ('entregado', 'cancelado')`
-    ))
-    .orderBy(desc(ordenesTrabajo.createdAt));
+  // All queries in parallel
+  const [
+    [clientesResult],
+    ordenesActivas,
+    citasHoy,
+    [cobrosPendientesResult],
+    ordenesHoy,
+    [entregadasHoyResult],
+    [facturacionHoyResult],
+    citasManana,
+  ] = await Promise.all([
+    // Clientes count
+    db.select({ count: count() }).from(clientes).where(eq(clientes.tallerId, tallerId)),
+    // Ordenes activas con vehiculo y cliente
+    db
+      .select({
+        id: ordenesTrabajo.id,
+        numero: ordenesTrabajo.numero,
+        estado: ordenesTrabajo.estado,
+        descripcionCliente: ordenesTrabajo.descripcionCliente,
+        fechaEntrada: ordenesTrabajo.fechaEntrada,
+        matricula: vehiculos.matricula,
+        marca: vehiculos.marca,
+        modelo: vehiculos.modelo,
+        clienteNombre: clientes.nombre,
+        clienteTelefono: clientes.telefono,
+      })
+      .from(ordenesTrabajo)
+      .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
+      .leftJoin(clientes, eq(ordenesTrabajo.clienteId, clientes.id))
+      .where(and(
+        eq(ordenesTrabajo.tallerId, tallerId),
+        sql`${ordenesTrabajo.estado} NOT IN ('entregado', 'cancelado')`
+      ))
+      .orderBy(desc(ordenesTrabajo.createdAt)),
+    // Citas de hoy
+    db
+      .select({
+        id: citas.id,
+        nombreCliente: citas.nombreCliente,
+        telefonoCliente: citas.telefonoCliente,
+        horaInicio: citas.horaInicio,
+        motivo: citas.motivo,
+        estado: citas.estado,
+      })
+      .from(citas)
+      .where(and(eq(citas.tallerId, tallerId), eq(citas.fecha, hoy)))
+      .orderBy(citas.horaInicio),
+    // Cobros pendientes
+    db
+      .select({ count: count() })
+      .from(ordenesTrabajo)
+      .where(and(
+        eq(ordenesTrabajo.tallerId, tallerId),
+        eq(ordenesTrabajo.estado, "entregado"),
+        eq(ordenesTrabajo.pagado, false)
+      )),
+    // Órdenes creadas hoy
+    db
+      .select({
+        id: ordenesTrabajo.id,
+        numero: ordenesTrabajo.numero,
+        matricula: vehiculos.matricula,
+        clienteNombre: clientes.nombre,
+      })
+      .from(ordenesTrabajo)
+      .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
+      .leftJoin(clientes, eq(ordenesTrabajo.clienteId, clientes.id))
+      .where(and(
+        eq(ordenesTrabajo.tallerId, tallerId),
+        sql`${ordenesTrabajo.fechaEntrada}::date = ${hoy}`
+      ))
+      .orderBy(desc(ordenesTrabajo.createdAt)),
+    // Órdenes entregadas hoy
+    db
+      .select({ count: count() })
+      .from(ordenesTrabajo)
+      .where(and(
+        eq(ordenesTrabajo.tallerId, tallerId),
+        sql`${ordenesTrabajo.fechaEntrega}::date = ${hoy}`
+      )),
+    // Facturación del día (pagadas hoy)
+    db
+      .select({ total: sum(ordenesTrabajo.importeTotal) })
+      .from(ordenesTrabajo)
+      .where(and(
+        eq(ordenesTrabajo.tallerId, tallerId),
+        eq(ordenesTrabajo.pagado, true),
+        sql`${ordenesTrabajo.fechaPago}::date = ${hoy}`
+      )),
+    // Citas de mañana
+    db
+      .select({
+        id: citas.id,
+        nombreCliente: citas.nombreCliente,
+        horaInicio: citas.horaInicio,
+        motivo: citas.motivo,
+      })
+      .from(citas)
+      .where(and(eq(citas.tallerId, tallerId), eq(citas.fecha, mananaStr)))
+      .orderBy(citas.horaInicio),
+  ]);
 
-  // Citas de hoy
-  const citasHoy = await db
-    .select({
-      id: citas.id,
-      nombreCliente: citas.nombreCliente,
-      telefonoCliente: citas.telefonoCliente,
-      horaInicio: citas.horaInicio,
-      motivo: citas.motivo,
-      estado: citas.estado,
-    })
-    .from(citas)
-    .where(and(eq(citas.tallerId, tallerId), eq(citas.fecha, hoy)))
-    .orderBy(citas.horaInicio);
-
-  // Cobros pendientes
-  const [cobrosPendientesResult] = await db
-    .select({ count: count() })
-    .from(ordenesTrabajo)
-    .where(and(
-      eq(ordenesTrabajo.tallerId, tallerId),
-      eq(ordenesTrabajo.estado, "entregado"),
-      eq(ordenesTrabajo.pagado, false)
-    ));
   const cobrosPendientes = cobrosPendientesResult?.count ?? 0;
+  const entregadasHoy = entregadasHoyResult?.count ?? 0;
+  const facturacionHoy = Number(facturacionHoyResult?.total || 0);
 
   const cochesListos = ordenesActivas.filter((o) => o.estado === "listo");
   const totalClientes = clientesResult?.count ?? 0;
@@ -297,6 +357,68 @@ export default async function PanelDelDia() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Resumen del día */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base flex items-center gap-2">
+            <BarChart3 className="h-4 w-4 text-muted-foreground" />
+            Resumen del día
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-4">
+            <div className="rounded-xl bg-muted/50 p-3 text-center">
+              <p className="text-2xl font-extrabold text-stone-900">{ordenesHoy.length}</p>
+              <p className="text-xs text-muted-foreground font-medium">Creadas hoy</p>
+            </div>
+            <div className="rounded-xl bg-muted/50 p-3 text-center">
+              <p className="text-2xl font-extrabold text-stone-900">{entregadasHoy}</p>
+              <p className="text-xs text-muted-foreground font-medium">Entregadas hoy</p>
+            </div>
+            <div className="rounded-xl bg-muted/50 p-3 text-center">
+              <p className="text-2xl font-extrabold text-stone-900">{facturacionHoy.toFixed(2)}€</p>
+              <p className="text-xs text-muted-foreground font-medium">Facturación</p>
+            </div>
+            <div className="rounded-xl bg-muted/50 p-3 text-center">
+              <p className="text-2xl font-extrabold text-stone-900">{citasManana.length}</p>
+              <p className="text-xs text-muted-foreground font-medium">Citas mañana</p>
+            </div>
+          </div>
+
+          {/* Órdenes creadas hoy */}
+          {ordenesHoy.length > 0 && (
+            <div className="mb-3">
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Órdenes creadas hoy</p>
+              <div className="space-y-1">
+                {ordenesHoy.map((o) => (
+                  <Link key={o.id} href={`/ordenes/${o.id}`} className="flex items-center gap-2 rounded-lg bg-muted/50 hover:bg-muted px-3 py-2 transition-colors text-sm">
+                    <span className="font-bold">OR-{o.numero}</span>
+                    <span className="text-muted-foreground">{o.matricula}</span>
+                    <span className="text-muted-foreground truncate">{o.clienteNombre}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Citas de mañana */}
+          {citasManana.length > 0 && (
+            <div>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Citas de mañana</p>
+              <div className="space-y-1">
+                {citasManana.map((c) => (
+                  <div key={c.id} className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2 text-sm">
+                    {c.horaInicio && <span className="font-mono text-xs text-muted-foreground bg-background px-1.5 py-0.5 rounded">{String(c.horaInicio).slice(0, 5)}</span>}
+                    <span className="font-medium">{c.nombreCliente}</span>
+                    {c.motivo && <span className="text-muted-foreground truncate">{c.motivo}</span>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

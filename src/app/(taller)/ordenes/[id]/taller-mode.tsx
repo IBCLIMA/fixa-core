@@ -28,13 +28,12 @@ export function TallerModeToggle() {
     <>
       <Button
         variant={active ? "default" : "outline"}
-        size="sm"
         onClick={toggle}
-        className="rounded-full gap-1.5"
+        className="rounded-full gap-1.5 h-11 px-4 text-sm"
         title="Modo taller: botones grandes para manos sucias"
       >
-        <Wrench className="h-4 w-4" />
-        <span className="hidden sm:inline">Modo taller</span>
+        <Wrench className="h-5 w-5" />
+        <span>Modo taller</span>
       </Button>
       {active && <TallerModeClass />}
     </>

@@ -26,6 +26,18 @@ const flujo: { estado: Estado; label: string; color: string }[] = [
   { estado: "cancelado", label: "Cancelado", color: "bg-zinc-100 text-zinc-400 hover:bg-zinc-200" },
 ];
 
+const validTransitions: Record<string, string[]> = {
+  recibido: ["diagnostico", "cancelado"],
+  diagnostico: ["presupuestado", "en_reparacion", "cancelado"],
+  presupuestado: ["aprobado", "cancelado"],
+  aprobado: ["en_reparacion", "esperando_recambio"],
+  en_reparacion: ["esperando_recambio", "listo"],
+  esperando_recambio: ["en_reparacion", "listo"],
+  listo: ["entregado"],
+  entregado: [],
+  cancelado: [],
+};
+
 export function CambiarEstadoButtons({
   ordenId,
   estadoActual,
@@ -33,31 +45,53 @@ export function CambiarEstadoButtons({
   ordenId: string;
   estadoActual: string;
 }) {
+  const estadoActualInfo = flujo.find((f) => f.estado === estadoActual);
+  const nextStates = validTransitions[estadoActual] || [];
+  const availableButtons = flujo.filter((f) => nextStates.includes(f.estado));
+
   async function handleCambio(nuevoEstado: Estado) {
+    const info = flujo.find((f) => f.estado === nuevoEstado);
+    if (nuevoEstado === "entregado" || nuevoEstado === "cancelado") {
+      if (!window.confirm(`¿Seguro que quieres marcar como "${info?.label}"?`)) return;
+    }
     try {
       await cambiarEstadoOrden(ordenId, nuevoEstado);
-      toast.success(`Estado cambiado a: ${flujo.find((f) => f.estado === nuevoEstado)?.label}`);
+      toast.success(`Estado cambiado a: ${info?.label}`);
     } catch {
       toast.error("Error al cambiar estado");
     }
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
-      {flujo.map((f) => (
-        <button
-          key={f.estado}
-          onClick={() => handleCambio(f.estado)}
-          disabled={f.estado === estadoActual}
-          className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
-            f.estado === estadoActual
-              ? `${f.color} ring-2 ring-offset-1 ring-foreground/20 opacity-100`
-              : `${f.color} opacity-60 hover:opacity-100`
-          }`}
+    <div className="space-y-3">
+      {/* Current status badge */}
+      <div>
+        <span className="text-xs font-medium text-muted-foreground mr-2">Estado actual:</span>
+        <span
+          className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-bold ${estadoActualInfo?.color || ""} ring-2 ring-offset-1 ring-foreground/20`}
         >
-          {f.label}
-        </button>
-      ))}
+          {estadoActualInfo?.label || estadoActual}
+        </span>
+      </div>
+
+      {/* Valid next state buttons */}
+      {availableButtons.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {availableButtons.map((f) => (
+            <button
+              key={f.estado}
+              onClick={() => handleCambio(f.estado)}
+              className={`px-4 py-3 rounded-full text-sm font-bold min-h-[44px] transition-all ${f.color} hover:opacity-100 opacity-80`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <p className="text-xs text-muted-foreground">
+          Estado final alcanzado. No hay cambios disponibles.
+        </p>
+      )}
     </div>
   );
 }

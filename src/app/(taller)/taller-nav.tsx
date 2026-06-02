@@ -130,7 +130,7 @@ export function TallerNav({ children, rol }: { children: React.ReactNode; rol: R
               <DropdownMenuTrigger asChild>
                 <button className="flex flex-1 flex-col items-center gap-0.5 py-2.5 rounded-xl text-[10px] font-bold text-stone-400 active:bg-stone-100 transition-all duration-200">
                   <MoreHorizontal className="h-[18px] w-[18px]" />
-                  Mas
+                  Más
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 rounded-xl">

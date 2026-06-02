@@ -143,7 +143,7 @@ export default async function ClienteDetallePage({ params }: { params: Promise<{
 
                     {/* Crear orden para este vehículo */}
                     <div className="mt-3">
-                      <Link href={`/ordenes/nueva`}>
+                      <Link href={`/ordenes/nueva?clienteId=${id}&vehiculoId=${v.id}`}>
                         <Button size="sm" variant="outline" className="rounded-full text-xs">
                           <Plus className="mr-1 h-3 w-3" />Nueva orden para {v.matricula}
                         </Button>

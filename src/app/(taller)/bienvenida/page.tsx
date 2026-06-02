@@ -116,7 +116,7 @@ export default function BienvenidaPage() {
                   <Input value={datos.telefono} onChange={(e) => setDatos({ ...datos, telefono: e.target.value })} placeholder="612 345 678" className="h-11 rounded-xl" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-stone-500">Email</Label>
+                  <Label className="text-xs font-bold text-stone-500">Correo electrónico</Label>
                   <Input value={datos.email} onChange={(e) => setDatos({ ...datos, email: e.target.value })} placeholder="info@taller.com" type="email" className="h-11 rounded-xl" />
                 </div>
                 <div className="space-y-1.5">

@@ -36,7 +36,7 @@ export async function lookupVehicleByPlate(
       color: vehiculos.color,
     })
     .from(vehiculos)
-    .where(ilike(vehiculos.matricula, plate))
+    .where(and(ilike(vehiculos.matricula, plate), eq(vehiculos.tallerId, tallerId)))
     .limit(1);
 
   if (existing.length > 0) {

@@ -192,6 +192,7 @@ export const ordenesTrabajo = pgTable("ordenes_trabajo", {
   fechaEntrega: timestamp("fecha_entrega"),
   asignadoA: uuid("asignado_a").references(() => usuarios.id),
   notasInternas: text("notas_internas"),
+  tokenPublico: text("token_publico").unique(),
   // Pago
   pagado: boolean("pagado").default(false).notNull(),
   metodoPago: metodoPagoEnum("metodo_pago"),
