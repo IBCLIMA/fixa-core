@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
-import { ordenesTrabajo, lineasOrden, clientes, vehiculos } from "@/db/schema";
+import { ordenesTrabajo, lineasOrden, clientes, vehiculos, documentosCobro } from "@/db/schema";
 import { eq, and, gte, lt, desc } from "drizzle-orm";
 import { logAudit } from "@/lib/audit";
 
@@ -83,10 +83,31 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Fetch documents for these orders
+    let docsMap: Record<string, { numero: number; baseImponible: string; totalIva: string; totalFinal: string }> = {};
+    if (ordenIds.length > 0) {
+      const { inArray: inArrayDocs } = await import("drizzle-orm");
+      const docs = await db
+        .select({
+          ordenId: documentosCobro.ordenId,
+          numero: documentosCobro.numero,
+          baseImponible: documentosCobro.baseImponible,
+          totalIva: documentosCobro.totalIva,
+          totalFinal: documentosCobro.totalFinal,
+        })
+        .from(documentosCobro)
+        .where(inArrayDocs(documentosCobro.ordenId, ordenIds));
+
+      for (const d of docs) {
+        docsMap[d.ordenId] = d;
+      }
+    }
+
     // Build CSV
     const header = [
       "Fecha",
       "Nº Orden",
+      "Nº Documento",
       "Cliente",
       "NIF Cliente",
       "Matrícula",
@@ -102,20 +123,31 @@ export async function GET(request: NextRequest) {
     const rows = ordenes.map((o) => {
       const lineas = lineasMap[o.id] || [];
       const descripcion = lineas[0]?.descripcion || o.descripcionCliente || "";
+      const docData = docsMap[o.id];
 
-      // Calculate base imponible (without IVA)
-      let baseImponible = 0;
-      let totalIva = 0;
-      for (const l of lineas) {
-        const cant = Number(l.cantidad);
-        const precio = Number(l.precioUnitario);
-        const desc = Number(l.descuentoPct || 0);
-        const lineBase = cant * precio * (1 - desc / 100);
-        const iva = Number(l.ivaPct);
-        baseImponible += lineBase;
-        totalIva += lineBase * (iva / 100);
+      // Use document data if available, otherwise calculate from lines
+      let baseImponible: number;
+      let totalIva: number;
+      let total: number;
+
+      if (docData) {
+        baseImponible = Number(docData.baseImponible);
+        totalIva = Number(docData.totalIva);
+        total = Number(docData.totalFinal);
+      } else {
+        baseImponible = 0;
+        totalIva = 0;
+        for (const l of lineas) {
+          const cant = Number(l.cantidad);
+          const precio = Number(l.precioUnitario);
+          const desc = Number(l.descuentoPct || 0);
+          const lineBase = cant * precio * (1 - desc / 100);
+          const iva = Number(l.ivaPct);
+          baseImponible += lineBase;
+          totalIva += lineBase * (iva / 100);
+        }
+        total = baseImponible + totalIva;
       }
-      const total = baseImponible + totalIva;
 
       const fecha = o.fechaEntrega
         ? formatDateES(new Date(o.fechaEntrega))
@@ -132,9 +164,12 @@ export async function GET(request: NextRequest) {
         otro: "Otro",
       };
 
+      const numDocumento = docData ? `DOC-${String(docData.numero).padStart(4, "0")}` : "";
+
       return [
         fecha,
         `OR-${o.numero}`,
+        numDocumento,
         escapeCsv(o.clienteNombre || ""),
         escapeCsv(o.clienteNif || ""),
         escapeCsv(o.matricula || ""),

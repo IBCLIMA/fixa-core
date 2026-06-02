@@ -400,6 +400,53 @@ export const inviteTokens = pgTable("invite_tokens", {
   expiresAt: timestamp("expires_at").notNull(),
 });
 
+export const documentosCobro = pgTable("documentos_cobro", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tallerId: uuid("taller_id")
+    .references(() => talleres.id)
+    .notNull(),
+  ordenId: uuid("orden_id")
+    .references(() => ordenesTrabajo.id)
+    .notNull(),
+  clienteId: uuid("cliente_id")
+    .references(() => clientes.id)
+    .notNull(),
+  vehiculoId: uuid("vehiculo_id")
+    .references(() => vehiculos.id)
+    .notNull(),
+  numero: integer("numero").notNull(),
+  // Workshop data (snapshot at time of creation)
+  tallerNombre: text("taller_nombre").notNull(),
+  tallerCif: text("taller_cif"),
+  tallerDireccion: text("taller_direccion"),
+  tallerTelefono: text("taller_telefono"),
+  tallerEmail: text("taller_email"),
+  // Client data (snapshot)
+  clienteNombre: text("cliente_nombre").notNull(),
+  clienteNif: text("cliente_nif"),
+  clienteDireccion: text("cliente_direccion"),
+  clienteTelefono: text("cliente_telefono"),
+  // Vehicle data (snapshot)
+  matricula: text("matricula").notNull(),
+  marca: text("marca"),
+  modelo: text("modelo"),
+  km: integer("km"),
+  // Financial
+  baseImponible: numeric("base_imponible", { precision: 10, scale: 2 }).notNull(),
+  totalIva: numeric("total_iva", { precision: 10, scale: 2 }).notNull(),
+  totalFinal: numeric("total_final", { precision: 10, scale: 2 }).notNull(),
+  // Lines stored as JSON snapshot (immutable once created)
+  lineas: jsonb("lineas").notNull(), // Array of { tipo, descripcion, cantidad, precioUnitario, descuentoPct, ivaPct, subtotal }
+  // Payment
+  metodoPago: metodoPagoEnum("metodo_pago"),
+  fechaPago: timestamp("fecha_pago"),
+  // Metadata
+  estado: text("estado").default("borrador").notNull(), // borrador | finalizado
+  notas: text("notas"),
+  tokenPublico: text("token_publico").unique(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // ═══ RELACIONES ═══
 
 export const inviteTokensRelations = relations(inviteTokens, ({ one }) => ({
@@ -419,6 +466,7 @@ export const talleresRelations = relations(talleres, ({ many }) => ({
   presupuestos: many(presupuestos),
   avisos: many(avisos),
   notificaciones: many(notificaciones),
+  documentosCobro: many(documentosCobro),
 }));
 
 export const clientesRelations = relations(clientes, ({ one, many }) => ({
@@ -468,6 +516,7 @@ export const ordenesTrabajoRelations = relations(
     fotos: many(fotosOrden),
     historial: many(historialEstados),
     inspecciones: many(inspeccionesOrden),
+    documentosCobro: many(documentosCobro),
   })
 );
 
@@ -512,5 +561,24 @@ export const notificacionesRelations = relations(notificaciones, ({ one }) => ({
   usuario: one(usuarios, {
     fields: [notificaciones.usuarioId],
     references: [usuarios.id],
+  }),
+}));
+
+export const documentosCobroRelations = relations(documentosCobro, ({ one }) => ({
+  taller: one(talleres, {
+    fields: [documentosCobro.tallerId],
+    references: [talleres.id],
+  }),
+  orden: one(ordenesTrabajo, {
+    fields: [documentosCobro.ordenId],
+    references: [ordenesTrabajo.id],
+  }),
+  cliente: one(clientes, {
+    fields: [documentosCobro.clienteId],
+    references: [clientes.id],
+  }),
+  vehiculo: one(vehiculos, {
+    fields: [documentosCobro.vehiculoId],
+    references: [vehiculos.id],
   }),
 }));

@@ -1,10 +1,11 @@
-import { Receipt, TrendingUp, Car, Users, ClipboardList, Calendar, ArrowUpRight, ArrowDownRight, AlertTriangle, Wrench, Calculator, CheckCircle } from "lucide-react";
+import Link from "next/link";
+import { Receipt, TrendingUp, Car, Users, ClipboardList, Calendar, ArrowUpRight, ArrowDownRight, AlertTriangle, Wrench, Calculator, CheckCircle, FileCheck } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { requireRole } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getDb } from "@/db";
-import { ordenesTrabajo, lineasOrden, clientes, vehiculos, citas, usuarios } from "@/db/schema";
+import { ordenesTrabajo, lineasOrden, clientes, vehiculos, citas, usuarios, documentosCobro } from "@/db/schema";
 import { eq, and, sql, count, desc, gte } from "drizzle-orm";
 import { CobrosPendientes } from "./cobros-pendientes";
 import { ExportGestoria } from "./export-gestoria";
@@ -146,6 +147,13 @@ export default async function FacturacionPage() {
     (c) => c.comisionPctNum > 0 || c.numOrdenes > 0
   );
 
+  // Recent documents
+  const recentDocs = await db.query.documentosCobro.findMany({
+    where: eq(documentosCobro.tallerId, tallerId),
+    orderBy: desc(documentosCobro.createdAt),
+    limit: 10,
+  });
+
   const totalFact = Number(facturacionTotal?.total ?? 0);
   const factMes = Number(facturacionMes?.total ?? 0);
   const ticketMedio = (entregadas?.count ?? 0) > 0 ? totalFact / (entregadas?.count ?? 1) : 0;
@@ -273,6 +281,56 @@ export default async function FacturacionPage() {
                     )}
                   </div>
                 </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Documentos de cobro recientes */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <FileCheck className="h-4 w-4 text-muted-foreground" />
+              Documentos de cobro recientes
+            </CardTitle>
+            <Link href="/documentos" className="text-xs font-semibold text-brand hover:underline">
+              Ver todos →
+            </Link>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {recentDocs.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <FileCheck className="h-10 w-10 text-muted-foreground/20 mb-3" />
+              <p className="text-sm font-medium">Sin documentos</p>
+              <p className="text-xs text-muted-foreground mt-1 max-w-[280px]">
+                Los documentos de cobro se generan al cobrar una orden.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {recentDocs.map((doc) => (
+                <Link
+                  key={doc.id}
+                  href={`/documentos/${doc.id}`}
+                  className="flex items-center justify-between rounded-xl bg-muted/50 px-3 py-2.5 hover:bg-muted/80 transition-colors"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="text-xs font-bold text-muted-foreground">
+                      DOC-{String(doc.numero).padStart(4, "0")}
+                    </span>
+                    <span className="text-sm font-medium">{doc.matricula}</span>
+                    <span className="text-xs text-muted-foreground truncate">{doc.clienteNombre}</span>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="text-sm font-bold">{Number(doc.totalFinal).toFixed(2)}EUR</span>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(doc.createdAt).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
+                    </span>
+                  </div>
+                </Link>
               ))}
             </div>
           )}

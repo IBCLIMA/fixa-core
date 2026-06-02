@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import {
   LayoutDashboard, ClipboardList, CalendarDays, Users, MoreHorizontal,
-  FileText, Receipt, Bell, Settings, Megaphone, BookOpen, Upload, HelpCircle, Shield,
+  FileText, Receipt, Bell, Settings, Megaphone, BookOpen, Upload, HelpCircle, Shield, FileCheck,
 } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { cn } from "@/lib/utils";
@@ -26,6 +26,7 @@ const mainTabs = [
 
 const allMoreTabs = [
   { name: "Presupuestos", href: "/presupuestos", icon: FileText, roles: ["admin", "mecanico", "recepcion"] },
+  { name: "Documentos", href: "/documentos", icon: FileCheck, roles: ["admin", "recepcion"] },
   { name: "Facturacion", href: "/facturacion", icon: Receipt, roles: ["admin", "recepcion"] },
   { name: "Avisos", href: "/avisos", icon: Bell, roles: ["admin", "mecanico", "recepcion"] },
   { name: "Ofertas", href: "/ofertas", icon: Megaphone, roles: ["admin", "recepcion"] },

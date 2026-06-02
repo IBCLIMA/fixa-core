@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { getOrden, enviarSolicitudResena, enviarInformeCliente, getMecanicos, getMaintenanceAlerts } from "../../actions/ordenes";
+import { getDocumentoByOrden } from "../../actions/documentos";
 import { AsignarMecanico } from "./asignar-mecanico";
 import { CambiarEstadoButtons } from "./cambiar-estado";
 import { AgregarLineaForm } from "./agregar-linea";
@@ -19,6 +20,7 @@ import { TemplateSelector } from "./template-selector";
 import { InspeccionView } from "./inspeccion-view";
 import { TallerModeToggle } from "./taller-mode";
 import { PrintButton } from "./print-button";
+import { CobrarDialog } from "./cobrar-dialog";
 import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { getUserRole } from "@/lib/auth";
@@ -33,11 +35,12 @@ export default async function OrdenDetallePage({
   const orden = await getOrden(id);
   if (!orden) return notFound();
 
-  const [rol, inspecciones, mecanicos, maintenanceAlerts] = await Promise.all([
+  const [rol, inspecciones, mecanicos, maintenanceAlerts, documentoCobro] = await Promise.all([
     getUserRole(),
     getInspeccion(id).catch(() => []),
     getMecanicos().catch(() => []),
     getMaintenanceAlerts(orden.vehiculoId, orden.kmEntrada).catch(() => []),
+    getDocumentoByOrden(id).catch(() => null),
   ]);
   const isAdmin = rol === "admin";
   const canAssign = rol === "admin" || rol === "recepcion";
@@ -250,6 +253,35 @@ export default async function OrdenDetallePage({
 
       {/* Inspección */}
       <InspeccionView ordenId={orden.id} inspecciones={inspecciones} />
+
+      {/* Cobro */}
+      {(orden.estado === "listo" || orden.estado === "entregado") && lineas.length > 0 && (
+        <Card className="no-print border-emerald-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-bold">
+                  {documentoCobro ? "Cobro registrado" : "Cobrar al cliente"}
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {documentoCobro
+                    ? `DOC-${String(documentoCobro.numero).padStart(4, "0")} - ${new Date(documentoCobro.createdAt).toLocaleDateString("es-ES")}`
+                    : `Total: ${totalFinal.toFixed(2)}EUR`}
+                </p>
+              </div>
+              <CobrarDialog
+                ordenId={orden.id}
+                totalFinal={totalFinal}
+                clienteTelefono={orden.cliente?.telefono}
+                clienteNombre={orden.cliente?.nombre}
+                matricula={orden.vehiculo?.matricula}
+                yaGenerado={!!documentoCobro}
+                documentoId={documentoCobro?.id}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Acciones */}
       <Card className="no-print">
