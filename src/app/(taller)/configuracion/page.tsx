@@ -1,4 +1,4 @@
-import { Settings, Shield, Download, FileText, Database, CalendarCheck, Star, Copy } from "lucide-react";
+import { Settings, Shield, Download, FileText, Database, CalendarCheck, Star, Copy, Info } from "lucide-react";
 import { getDb } from "@/db";
 import { talleres } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -29,8 +29,15 @@ export default async function ConfiguracionPage() {
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Configuración</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Datos del taller, seguridad y privacidad</p>
+        <h1 className="text-2xl font-extrabold tracking-tight">Configuracion</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">Datos del taller, seguridad y privacidad.</p>
+      </div>
+
+      <div className="flex items-start gap-2 rounded-xl bg-blue-50 border border-blue-200 p-3">
+        <Info className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
+        <p className="text-xs text-blue-800">
+          Empieza rellenando el nombre de tu taller y el telefono. Estos datos apareceran en los presupuestos y comunicaciones con clientes.
+        </p>
       </div>
 
       <ConfigForm taller={taller} />

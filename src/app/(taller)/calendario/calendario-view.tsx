@@ -147,7 +147,8 @@ export function CalendarioView({ days, citas }: CalendarioViewProps) {
         {citas.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <CalendarDays className="h-10 w-10 text-muted-foreground/20 mb-3" />
-            <p className="text-sm text-muted-foreground">Sin citas esta semana</p>
+            <p className="text-sm font-medium">Sin citas esta semana</p>
+            <p className="text-xs text-muted-foreground mt-1 max-w-[250px]">Pulsa &quot;Nueva cita&quot; para programar la entrada de un vehiculo.</p>
           </div>
         ) : (
           citas.map((cita) => (

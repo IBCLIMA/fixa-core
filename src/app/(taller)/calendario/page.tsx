@@ -55,7 +55,8 @@ export default async function CalendarioPage({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Calendario</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
+          <p className="text-sm text-muted-foreground mt-0.5">Organiza las citas de entrada de vehiculos.</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
             Semana del{" "}
             {week.days[0].toLocaleDateString("es-ES", { day: "numeric", month: "long" })} al{" "}
             {week.days[6].toLocaleDateString("es-ES", { day: "numeric", month: "long" })}

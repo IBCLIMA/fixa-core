@@ -1,4 +1,4 @@
-import { FileText, Plus, Send, Check, Clock, X } from "lucide-react";
+import { FileText, Plus, Send, Check, Clock, X, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -70,19 +70,19 @@ export default async function PresupuestosPage({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Presupuestos</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{Number(total)} presupuesto{Number(total) !== 1 ? "s" : ""}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">Presupuestos enviados a tus clientes.</p>
         </div>
       </div>
 
       {presupuestosList.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-16 text-center">
           <FileText className="h-12 w-12 text-muted-foreground/20 mb-4" />
-          <h3 className="text-lg font-bold">Sin presupuestos</h3>
+          <h3 className="text-lg font-bold">Aun no tienes presupuestos</h3>
           <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-            Los presupuestos se crean desde las órdenes de trabajo. Abre una orden y genera un presupuesto con las líneas de trabajo.
+            Los presupuestos se crean desde cada orden de trabajo. Abre una orden, anade lineas de trabajo y genera el presupuesto para enviar al cliente.
           </p>
           <Link href="/ordenes" className="mt-4">
-            <Button className="rounded-full">Ver órdenes</Button>
+            <Button className="rounded-full"><ClipboardList className="mr-1.5 h-4 w-4" />Ir a ordenes</Button>
           </Link>
         </div>
       ) : (

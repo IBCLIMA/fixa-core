@@ -10,6 +10,10 @@ import {
   Phone,
   CreditCard,
   BarChart3,
+  Rocket,
+  Users,
+  Settings,
+  Lightbulb,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -238,6 +242,61 @@ export default async function PanelDelDia() {
         </Link>
       </div>
 
+      {/* Primeros pasos — solo si el taller está vacío */}
+      {ordenesActivas.length === 0 && totalClientes === 0 && citasHoy.length === 0 && (
+        <Card className="border-brand/30 bg-brand/5">
+          <CardContent className="p-5">
+            <div className="flex items-start gap-3 mb-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand">
+                <Rocket className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-base font-extrabold">Bienvenido a FIXA</h3>
+                <p className="text-sm text-muted-foreground mt-0.5">Configura tu taller en tres pasos para empezar a trabajar.</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Link href="/clientes" className="flex items-center justify-between rounded-xl bg-white border border-border p-3 hover:border-brand/30 transition-colors">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-100">
+                    <Users className="h-4 w-4 text-violet-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold">1. Añade tu primer cliente</p>
+                    <p className="text-xs text-muted-foreground">Nombre, teléfono y vehículo</p>
+                  </div>
+                </div>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </Link>
+              <div className="flex items-center justify-between rounded-xl bg-white border border-border p-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
+                    <ClipboardList className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold">2. Crea tu primera orden</p>
+                    <p className="text-xs text-muted-foreground">Usa el boton Entrada Rapida de arriba</p>
+                  </div>
+                </div>
+                <Lightbulb className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <Link href="/configuracion" className="flex items-center justify-between rounded-xl bg-white border border-border p-3 hover:border-brand/30 transition-colors">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100">
+                    <Settings className="h-4 w-4 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold">3. Configura tu taller</p>
+                    <p className="text-xs text-muted-foreground">Nombre, horario y cita online</p>
+                  </div>
+                </div>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Coches listos para entregar */}
       {cochesListos.length > 0 && (
         <Card className="border-emerald-200 bg-emerald-50/50">
@@ -282,7 +341,8 @@ export default async function PanelDelDia() {
             {ordenesActivas.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-8 text-center">
                 <Car className="h-10 w-10 text-muted-foreground/20 mb-3" />
-                <p className="text-sm text-muted-foreground">No hay coches en taller</p>
+                <p className="text-sm font-medium">No hay coches en taller</p>
+                <p className="text-xs text-muted-foreground mt-1 max-w-[220px]">Cuando registres una entrada, el vehiculo aparecera aqui con su estado.</p>
                 <Link href="/ordenes/nueva" className="mt-3"><Button size="sm" variant="outline" className="rounded-full"><Plus className="mr-1 h-3 w-3" />Nueva orden</Button></Link>
               </div>
             ) : (
@@ -331,7 +391,8 @@ export default async function PanelDelDia() {
             {citasHoy.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-8 text-center">
                 <CalendarDays className="h-10 w-10 text-muted-foreground/20 mb-3" />
-                <p className="text-sm text-muted-foreground">No hay citas para hoy</p>
+                <p className="text-sm font-medium">No hay citas para hoy</p>
+                <p className="text-xs text-muted-foreground mt-1 max-w-[220px]">Programa citas de entrada para organizar tu dia.</p>
                 <Link href="/calendario" className="mt-3"><Button size="sm" variant="outline" className="rounded-full"><Plus className="mr-1 h-3 w-3" />Nueva cita</Button></Link>
               </div>
             ) : (

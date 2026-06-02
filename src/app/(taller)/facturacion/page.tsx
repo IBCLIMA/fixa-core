@@ -155,8 +155,8 @@ export default async function FacturacionPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">Facturación e informes</h1>
-          <p className="text-sm text-muted-foreground mt-0.5 capitalize">{mesActual}</p>
+          <h1 className="text-2xl font-extrabold tracking-tight">Facturacion e informes</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Resumen economico y cobros pendientes.</p>
         </div>
         <ExportGestoria />
       </div>
@@ -250,7 +250,11 @@ export default async function FacturacionPage() {
         </CardHeader>
         <CardContent>
           {ultimasEntregadas.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-6">No hay órdenes completadas todavía</p>
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <Receipt className="h-10 w-10 text-muted-foreground/20 mb-3" />
+              <p className="text-sm font-medium">Sin ordenes completadas</p>
+              <p className="text-xs text-muted-foreground mt-1 max-w-[280px]">Cuando entregues un vehiculo y marques la orden como completada, aparecera aqui con su importe.</p>
+            </div>
           ) : (
             <div className="space-y-2">
               {ultimasEntregadas.map((o) => (

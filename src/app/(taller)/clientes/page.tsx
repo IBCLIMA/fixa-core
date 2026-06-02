@@ -65,7 +65,7 @@ export default async function ClientesPage({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Clientes</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{Number(total)} cliente{Number(total) !== 1 ? "s" : ""}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">Tu base de datos de clientes y sus vehiculos.</p>
         </div>
         <NuevoClienteDialog />
       </div>
@@ -80,10 +80,17 @@ export default async function ClientesPage({
       {clientesList.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-16 text-center">
           <Users className="h-12 w-12 text-muted-foreground/20 mb-4" />
-          <h3 className="text-lg font-bold">{params.q ? "Sin resultados" : "Sin clientes"}</h3>
+          <h3 className="text-lg font-bold">{params.q ? "Sin resultados" : "Aun no tienes clientes"}</h3>
           <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-            {params.q ? `No se encontraron clientes para "${params.q}"` : "Añade tu primer cliente para empezar"}
+            {params.q
+              ? `No se encontraron clientes para "${params.q}"`
+              : "Registra a tus clientes con su nombre, telefono y vehiculos para crear ordenes de trabajo."}
           </p>
+          {!params.q && (
+            <div className="mt-4">
+              <NuevoClienteDialog />
+            </div>
+          )}
         </div>
       ) : (
         <div className="space-y-2">

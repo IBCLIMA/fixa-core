@@ -28,9 +28,7 @@ export default async function AvisosPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Avisos</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {pendientes.length} pendiente{pendientes.length !== 1 ? "s" : ""} de enviar
-          </p>
+          <p className="text-sm text-muted-foreground mt-0.5">ITVs proximas y mantenimientos pendientes.</p>
         </div>
         <AvisosActions />
       </div>
@@ -79,9 +77,13 @@ export default async function AvisosPage() {
       {avisosList.length === 0 && (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-16 text-center">
           <Bell className="h-12 w-12 text-muted-foreground/20 mb-4" />
-          <h3 className="text-lg font-bold">Sin avisos</h3>
+          <h3 className="text-lg font-bold">Sin avisos pendientes</h3>
           <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-            Genera avisos automáticos de ITV o crea avisos personalizados para tus clientes
+            FIXA detecta automaticamente las ITVs proximas a vencer de tus vehiculos registrados. Tambien puedes crear avisos personalizados de mantenimiento (aceite, neumaticos, frenos).
+          </p>
+          <p className="text-xs text-muted-foreground mt-3 flex items-center gap-1.5 justify-center">
+            <Car className="h-3.5 w-3.5" />
+            Registra vehiculos con fecha de ITV para activar los avisos automaticos.
           </p>
         </div>
       )}

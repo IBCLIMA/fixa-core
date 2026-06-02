@@ -97,7 +97,7 @@ export default async function OrdenesPage({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Órdenes de trabajo</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">{Number(total)} orden{Number(total) !== 1 ? "es" : ""}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">Gestiona las reparaciones en curso y el historial de tu taller.</p>
         </div>
         <Link href="/ordenes/nueva">
           <Button className="rounded-full"><Plus className="mr-1.5 h-4 w-4" />Nueva orden</Button>
@@ -163,12 +163,14 @@ export default async function OrdenesPage({
       {ordenes.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-16 text-center">
           <ClipboardList className="h-12 w-12 text-muted-foreground/20 mb-4" />
-          <h3 className="text-lg font-bold">Sin órdenes</h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            {filtro === "activas" ? "No hay coches en taller ahora mismo" : "No hay órdenes con este filtro"}
+          <h3 className="text-lg font-bold">{filtro === "activas" ? "Aun no tienes ordenes" : "Sin ordenes con este filtro"}</h3>
+          <p className="text-sm text-muted-foreground mt-1 max-w-sm">
+            {filtro === "activas"
+              ? "Cada vehiculo que entre al taller tendra su orden con estado, lineas de trabajo y presupuesto."
+              : "Prueba con otro filtro o crea una nueva orden."}
           </p>
           <Link href="/ordenes/nueva" className="mt-4">
-            <Button className="rounded-full"><Plus className="mr-1.5 h-4 w-4" />Crear orden</Button>
+            <Button className="rounded-full"><Plus className="mr-1.5 h-4 w-4" />Crear tu primera orden</Button>
           </Link>
         </div>
       ) : (

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Check, ChevronsUpDown } from "lucide-react";
+import { ArrowLeft, Check, ChevronsUpDown, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -102,6 +102,11 @@ export default function NuevaOrdenPage() {
           Nueva orden de trabajo
         </h1>
       </div>
+
+      <p className="text-sm text-muted-foreground flex items-start gap-1.5">
+        <Info className="h-4 w-4 shrink-0 mt-0.5" />
+        Selecciona un cliente y su vehiculo, describe la averia y crea la orden. Tambien puedes escanear la ficha tecnica para rellenar datos automaticamente.
+      </p>
 
       {/* Ficha scanner */}
       <FichaScanner
