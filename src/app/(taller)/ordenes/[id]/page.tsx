@@ -35,9 +35,9 @@ export default async function OrdenDetallePage({
 
   const [rol, inspecciones, mecanicos, maintenanceAlerts] = await Promise.all([
     getUserRole(),
-    getInspeccion(id),
-    getMecanicos(),
-    getMaintenanceAlerts(orden.vehiculoId, orden.kmEntrada),
+    getInspeccion(id).catch(() => []),
+    getMecanicos().catch(() => []),
+    getMaintenanceAlerts(orden.vehiculoId, orden.kmEntrada).catch(() => []),
   ]);
   const isAdmin = rol === "admin";
   const canAssign = rol === "admin" || rol === "recepcion";
