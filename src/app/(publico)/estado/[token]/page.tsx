@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { Car, Clock, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
+import { Car, Clock, CheckCircle2, CalendarCheck } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +30,7 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
       clienteNombre: clientes.nombre,
       tallerNombre: talleres.nombre,
       tallerTelefono: talleres.telefono,
+      tallerId: ordenesTrabajo.tallerId,
     })
     .from(ordenesTrabajo)
     .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
@@ -152,6 +154,17 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
             <p className="text-xs text-muted-foreground">Powered by FIXA</p>
           </CardContent>
         </Card>
+
+        {/* Booking link */}
+        <div className="text-center">
+          <Link
+            href={`/cita/${o.tallerId}`}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-orange-600 hover:text-orange-500 transition-colors"
+          >
+            <CalendarCheck className="h-4 w-4" />
+            Necesitas otra cita? Solicita online
+          </Link>
+        </div>
       </main>
     </div>
   );

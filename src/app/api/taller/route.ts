@@ -16,6 +16,7 @@ export async function PUT(request: Request) {
       direccion: body.direccion || null,
       telefono: body.telefono || null,
       email: body.email || null,
+      googleReviewLink: body.googleReviewLink || null,
     };
 
     if (body.dpaAceptado) {

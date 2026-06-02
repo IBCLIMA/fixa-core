@@ -1,4 +1,4 @@
-import { Receipt, TrendingUp, Car, Users, ClipboardList, Calendar, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Receipt, TrendingUp, Car, Users, ClipboardList, Calendar, ArrowUpRight, ArrowDownRight, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { requireRole } from "@/lib/auth";
@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { getDb } from "@/db";
 import { ordenesTrabajo, lineasOrden, clientes, vehiculos, citas } from "@/db/schema";
 import { eq, and, sql, count, desc, gte } from "drizzle-orm";
+import { CobrosPendientes } from "./cobros-pendientes";
 
 export default async function FacturacionPage() {
   let tallerId: string;
@@ -78,6 +79,26 @@ export default async function FacturacionPage() {
     .where(and(eq(ordenesTrabajo.tallerId, tallerId), eq(ordenesTrabajo.estado, "entregado")))
     .orderBy(desc(ordenesTrabajo.fechaEntrega))
     .limit(10);
+
+  // Cobros pendientes: entregadas y no pagadas
+  const ordenesPendientesCobro = await db
+    .select({
+      id: ordenesTrabajo.id,
+      numero: ordenesTrabajo.numero,
+      fechaEntrega: ordenesTrabajo.fechaEntrega,
+      matricula: vehiculos.matricula,
+      clienteNombre: clientes.nombre,
+      total: sql<number>`COALESCE((SELECT SUM(CAST(cantidad AS NUMERIC) * CAST(precio_unitario AS NUMERIC) * (1 + CAST(iva_pct AS NUMERIC) / 100)) FROM lineas_orden WHERE lineas_orden.orden_id = ${ordenesTrabajo.id}), 0)`,
+    })
+    .from(ordenesTrabajo)
+    .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
+    .leftJoin(clientes, eq(ordenesTrabajo.clienteId, clientes.id))
+    .where(and(
+      eq(ordenesTrabajo.tallerId, tallerId),
+      eq(ordenesTrabajo.estado, "entregado"),
+      eq(ordenesTrabajo.pagado, false)
+    ))
+    .orderBy(desc(ordenesTrabajo.fechaEntrega));
 
   const totalFact = Number(facturacionTotal?.total ?? 0);
   const factMes = Number(facturacionMes?.total ?? 0);
@@ -178,6 +199,22 @@ export default async function FacturacionPage() {
               ))}
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Cobros pendientes */}
+      <Card className={ordenesPendientesCobro.length > 0 ? "border-amber-200" : ""}>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <AlertTriangle className={`h-4 w-4 ${ordenesPendientesCobro.length > 0 ? "text-amber-500" : "text-muted-foreground"}`} />
+            Cobros pendientes
+            {ordenesPendientesCobro.length > 0 && (
+              <Badge className="bg-amber-500 text-white text-[10px] ml-1">{ordenesPendientesCobro.length}</Badge>
+            )}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CobrosPendientes ordenes={ordenesPendientesCobro} />
         </CardContent>
       </Card>
 

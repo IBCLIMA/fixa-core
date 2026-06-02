@@ -1,10 +1,11 @@
-import { Settings, Shield, Download, FileText, Database } from "lucide-react";
+import { Settings, Shield, Download, FileText, Database, CalendarCheck, Star, Copy } from "lucide-react";
 import { getDb } from "@/db";
 import { talleres } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { requireRole } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { ConfigForm } from "./config-form";
+import { CopyLinkBox } from "./copy-link-box";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -33,6 +34,32 @@ export default async function ConfiguracionPage() {
       </div>
 
       <ConfigForm taller={taller} />
+
+      {/* Enlace de cita online */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <CalendarCheck className="h-4 w-4 text-orange-600" />
+            Cita online
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            Comparte este enlace con tus clientes para que puedan solicitar cita desde el móvil.
+          </p>
+          <CopyLinkBox url={`${process.env.NEXT_PUBLIC_APP_URL || "https://fixa.es"}/cita/${taller.id}`} />
+          <div className="flex items-center gap-2">
+            <Link href={`/cita/${taller.id}`} target="_blank">
+              <Button variant="outline" size="sm" className="rounded-full text-xs shrink-0">
+                Abrir
+              </Button>
+            </Link>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Puedes añadir este enlace a tu web, WhatsApp Business, Google Maps o redes sociales.
+          </p>
+        </CardContent>
+      </Card>
 
       {/* Seguridad y datos */}
       <Card>

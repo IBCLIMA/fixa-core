@@ -8,11 +8,13 @@ import {
   presupuestos,
   vehiculos,
   clientes,
+  talleres,
 } from "@/db/schema";
 import { eq, and, desc, count, sql } from "drizzle-orm";
 import { getTallerIdFromAuth, requireRole } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { logAudit } from "@/lib/audit";
+import { formatWhatsAppUrl } from "@/lib/utils";
 
 type EstadoOrden =
   | "recibido"
@@ -368,4 +370,66 @@ export async function anularPago(ordenId: string) {
   revalidatePath(`/ordenes/${ordenId}`);
   revalidatePath("/ordenes");
   revalidatePath("/facturacion");
+}
+
+export async function enviarSolicitudResena(ordenId: string) {
+  const { tallerId } = await getTallerIdFromAuth();
+  const db = getDb();
+
+  const orden = await db.query.ordenesTrabajo.findFirst({
+    where: and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)),
+    with: {
+      cliente: true,
+      vehiculo: true,
+    },
+  });
+
+  if (!orden) throw new Error("Orden no encontrada");
+  if (!orden.cliente?.telefono) throw new Error("El cliente no tiene teléfono");
+
+  const taller = await db.query.talleres.findFirst({
+    where: eq(talleres.id, tallerId),
+  });
+
+  if (!taller) throw new Error("Taller no encontrado");
+
+  const tallerNombre = taller.nombre;
+  const googleReviewLink = taller.googleReviewLink;
+
+  let mensaje = `¡Gracias por confiar en ${tallerNombre}! Si estás contento con el servicio, nos ayudaría mucho una reseña en Google 🙏`;
+  if (googleReviewLink) {
+    mensaje += ` ${googleReviewLink}`;
+  }
+
+  return formatWhatsAppUrl(orden.cliente.telefono, mensaje);
+}
+
+export async function getInformeUrl(ordenId: string) {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+  return `${baseUrl}/informe/${ordenId}`;
+}
+
+export async function enviarInformeCliente(ordenId: string) {
+  const { tallerId } = await getTallerIdFromAuth();
+  const db = getDb();
+
+  const orden = await db.query.ordenesTrabajo.findFirst({
+    where: and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)),
+    with: {
+      cliente: true,
+      vehiculo: true,
+    },
+  });
+
+  if (!orden) throw new Error("Orden no encontrada");
+  if (!orden.cliente?.telefono) throw new Error("El cliente no tiene teléfono");
+
+  const reportUrl = await getInformeUrl(ordenId);
+  const marca = orden.vehiculo?.marca || "";
+  const modelo = orden.vehiculo?.modelo || "";
+  const matricula = orden.vehiculo?.matricula || "";
+
+  const mensaje = `Aquí tienes el informe de tu ${marca} ${modelo} (${matricula}). ${reportUrl}`;
+
+  return formatWhatsAppUrl(orden.cliente.telefono, mensaje);
 }

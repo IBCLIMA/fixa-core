@@ -88,6 +88,8 @@ export const rolUsuarioEnum = pgEnum("rol_usuario", [
   "recepcion",
 ]);
 
+export const estadoInspeccionEnum = pgEnum("estado_inspeccion", ["bien", "atencion", "urgente", "no_aplica"]);
+
 export const accionAuditEnum = pgEnum("accion_audit", [
   "create",
   "read",
@@ -118,6 +120,7 @@ export const talleres = pgTable("talleres", {
   ultimoAcceso: timestamp("ultimo_acceso"),
   activo: boolean("activo").default(true).notNull(),
   dpaAcceptedAt: timestamp("dpa_accepted_at"),
+  googleReviewLink: text("google_review_link"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -305,6 +308,7 @@ export const fotosOrden = pgTable("fotos_orden", {
   url: text("url").notNull(),
   descripcion: text("descripcion"),
   tipo: tipoFotoEnum("tipo").default("entrada"),
+  esVideo: boolean("es_video").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -339,6 +343,35 @@ export const auditLogs = pgTable(
   ]
 );
 
+export const inspeccionesOrden = pgTable("inspecciones_orden", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  ordenId: uuid("orden_id").references(() => ordenesTrabajo.id, { onDelete: "cascade" }).notNull(),
+  categoria: text("categoria").notNull(),
+  item: text("item").notNull(),
+  estado: estadoInspeccionEnum("estado").default("no_aplica").notNull(),
+  notas: text("notas"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const recordatoriosMantenimiento = pgTable("recordatorios_mantenimiento", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tallerId: uuid("taller_id")
+    .references(() => talleres.id)
+    .notNull(),
+  vehiculoId: uuid("vehiculo_id")
+    .references(() => vehiculos.id)
+    .notNull(),
+  tipo: text("tipo").notNull(),
+  kmIntervalo: integer("km_intervalo"),
+  mesesIntervalo: integer("meses_intervalo"),
+  ultimoKm: integer("ultimo_km"),
+  ultimaFecha: date("ultima_fecha"),
+  proximoKm: integer("proximo_km"),
+  proximaFecha: date("proxima_fecha"),
+  activo: boolean("activo").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // ═══ RELACIONES ═══
 
 export const talleresRelations = relations(talleres, ({ many }) => ({
@@ -372,6 +405,7 @@ export const vehiculosRelations = relations(vehiculos, ({ one, many }) => ({
   }),
   ordenes: many(ordenesTrabajo),
   avisos: many(avisos),
+  recordatorios: many(recordatoriosMantenimiento),
 }));
 
 export const ordenesTrabajoRelations = relations(
@@ -396,6 +430,7 @@ export const ordenesTrabajoRelations = relations(
     lineas: many(lineasOrden),
     fotos: many(fotosOrden),
     historial: many(historialEstados),
+    inspecciones: many(inspeccionesOrden),
   })
 );
 
@@ -410,6 +445,24 @@ export const citasRelations = relations(citas, ({ one }) => ({
   }),
   vehiculo: one(vehiculos, {
     fields: [citas.vehiculoId],
+    references: [vehiculos.id],
+  }),
+}));
+
+export const inspeccionesOrdenRelations = relations(inspeccionesOrden, ({ one }) => ({
+  orden: one(ordenesTrabajo, {
+    fields: [inspeccionesOrden.ordenId],
+    references: [ordenesTrabajo.id],
+  }),
+}));
+
+export const recordatoriosMantenimientoRelations = relations(recordatoriosMantenimiento, ({ one }) => ({
+  taller: one(talleres, {
+    fields: [recordatoriosMantenimiento.tallerId],
+    references: [talleres.id],
+  }),
+  vehiculo: one(vehiculos, {
+    fields: [recordatoriosMantenimiento.vehiculoId],
     references: [vehiculos.id],
   }),
 }));

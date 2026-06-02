@@ -12,6 +12,7 @@ import { eq, and, desc } from "drizzle-orm";
 import { NuevoVehiculoDialog } from "./nuevo-vehiculo-dialog";
 import { EditarClienteDialog } from "./editar-cliente-dialog";
 import { EditarVehiculoDialog } from "./editar-vehiculo-dialog";
+import { VehicleTimeline } from "./vehicle-timeline";
 import { estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
 
@@ -39,6 +40,8 @@ export default async function ClienteDetallePage({ params }: { params: Promise<{
       descripcionCliente: ordenesTrabajo.descripcionCliente,
       fechaEntrada: ordenesTrabajo.fechaEntrada,
       vehiculoId: ordenesTrabajo.vehiculoId,
+      kmEntrada: ordenesTrabajo.kmEntrada,
+      importeTotal: ordenesTrabajo.importeTotal,
       matricula: vehiculos.matricula,
     })
     .from(ordenesTrabajo)
@@ -125,25 +128,14 @@ export default async function ClienteDetallePage({ params }: { params: Promise<{
                       </div>
                     </div>
 
-                    {/* Historial de órdenes */}
+                    {/* Historial de órdenes - Timeline */}
                     {vehiculoOrdenes.length > 0 && (
                       <>
                         <Separator className="my-3" />
-                        <p className="text-xs font-bold text-muted-foreground mb-2 flex items-center gap-1">
+                        <p className="text-xs font-bold text-muted-foreground mb-1 flex items-center gap-1">
                           <ClipboardList className="h-3 w-3" />Historial ({vehiculoOrdenes.length} orden{vehiculoOrdenes.length !== 1 ? "es" : ""})
                         </p>
-                        <div className="space-y-1.5">
-                          {vehiculoOrdenes.map((o) => (
-                            <Link key={o.id} href={`/ordenes/${o.id}`} className="flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2 hover:bg-muted transition-colors">
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs font-bold text-muted-foreground">OR-{o.numero}</span>
-                                <Badge className={`text-[10px] ${estadoColors[o.estado]}`}>{estadoLabels[o.estado]}</Badge>
-                                {o.descripcionCliente && <span className="text-xs text-muted-foreground truncate max-w-[180px]">{o.descripcionCliente}</span>}
-                              </div>
-                              <span className="text-xs text-muted-foreground shrink-0">{new Date(o.fechaEntrada).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "2-digit" })}</span>
-                            </Link>
-                          ))}
-                        </div>
+                        <VehicleTimeline ordenes={vehiculoOrdenes} />
                       </>
                     )}
 

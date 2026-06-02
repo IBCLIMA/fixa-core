@@ -1,20 +1,25 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Car, User, Clock, Hash, FileText, MessageSquare, Phone, Share2, Printer } from "lucide-react";
+import { ArrowLeft, Car, User, Clock, Hash, FileText, MessageSquare, Phone, Share2, Printer, Star, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { getOrden } from "../../actions/ordenes";
+import { getOrden, enviarSolicitudResena, enviarInformeCliente } from "../../actions/ordenes";
 import { CambiarEstadoButtons } from "./cambiar-estado";
 import { AgregarLineaForm } from "./agregar-linea";
 import { EditarDiagnostico } from "./editar-diagnostico";
 import { CrearPresupuestoBtn } from "./crear-presupuesto-btn";
 import { FotosOrden } from "./fotos-orden";
 import { EliminarOrdenBtn } from "./eliminar-orden-btn";
+import { PedirResenaBtn } from "./pedir-resena-btn";
+import { EnviarInformeBtn } from "./enviar-informe-btn";
+import { TemplateSelector } from "./template-selector";
+import { InspeccionView } from "./inspeccion-view";
 import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { getUserRole } from "@/lib/auth";
+import { getInspeccion } from "../../actions/inspecciones";
 
 export default async function OrdenDetallePage({
   params,
@@ -25,7 +30,10 @@ export default async function OrdenDetallePage({
   const orden = await getOrden(id);
   if (!orden) return notFound();
 
-  const rol = await getUserRole();
+  const [rol, inspecciones] = await Promise.all([
+    getUserRole(),
+    getInspeccion(id),
+  ]);
   const isAdmin = rol === "admin";
 
   const lineas = orden.lineas || [];
@@ -181,6 +189,9 @@ export default async function OrdenDetallePage({
         </CardContent>
       </Card>
 
+      {/* Inspección */}
+      <InspeccionView ordenId={orden.id} inspecciones={inspecciones} />
+
       {/* Acciones */}
       <div className="flex flex-wrap gap-2">
         <CrearPresupuestoBtn ordenId={orden.id} />
@@ -189,6 +200,17 @@ export default async function OrdenDetallePage({
             <Printer className="mr-1.5 h-4 w-4" />Imprimir / Compartir
           </Button>
         </a>
+        <a href={`/informe/${orden.id}`} target="_blank">
+          <Button variant="outline" className="rounded-full">
+            <FileText className="mr-1.5 h-4 w-4" />Ver informe
+          </Button>
+        </a>
+        {orden.cliente?.telefono && (
+          <EnviarInformeBtn ordenId={orden.id} />
+        )}
+        {orden.estado === "entregado" && orden.cliente?.telefono && (
+          <PedirResenaBtn ordenId={orden.id} />
+        )}
         {isAdmin && <EliminarOrdenBtn ordenId={orden.id} />}
       </div>
 
@@ -262,7 +284,12 @@ export default async function OrdenDetallePage({
             </div>
           )}
 
-          <AgregarLineaForm ordenId={orden.id} />
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <AgregarLineaForm ordenId={orden.id} />
+            </div>
+            <TemplateSelector ordenId={orden.id} />
+          </div>
         </CardContent>
       </Card>
 

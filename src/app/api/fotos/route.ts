@@ -6,7 +6,9 @@ import { fotosOrden, ordenesTrabajo } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
+const ALLOWED_VIDEO_TYPES = ["video/mp4", "video/webm", "video/quicktime"];
+const ALLOWED_MIME_TYPES = [...ALLOWED_IMAGE_TYPES, ...ALLOWED_VIDEO_TYPES];
 
 export async function POST(request: Request) {
   try {
@@ -23,13 +25,15 @@ export async function POST(request: Request) {
     }
 
     // Validar tipo de archivo (whitelist estricta, no confiar en client MIME)
+    const isVideo = ALLOWED_VIDEO_TYPES.includes(file.type);
     if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-      return NextResponse.json({ error: "Solo se permiten imágenes (JPEG, PNG, WebP, HEIC)" }, { status: 400 });
+      return NextResponse.json({ error: "Solo se permiten imágenes (JPEG, PNG, WebP, HEIC) o vídeos (MP4, WebM, MOV)" }, { status: 400 });
     }
 
-    // Limitar tamaño a 10MB
-    if (file.size > 10 * 1024 * 1024) {
-      return NextResponse.json({ error: "Imagen demasiado grande (máx 10MB)" }, { status: 400 });
+    // Limitar tamaño: 30MB para vídeo, 10MB para imagen
+    const maxSize = isVideo ? 30 * 1024 * 1024 : 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      return NextResponse.json({ error: isVideo ? "Vídeo demasiado grande (máx 30MB)" : "Imagen demasiado grande (máx 10MB)" }, { status: 400 });
     }
 
     // Verificar que la orden pertenece al taller autenticado
@@ -59,12 +63,17 @@ export async function POST(request: Request) {
         url: blob.url,
         descripcion: descripcion || null,
         tipo: tipo as "entrada" | "proceso" | "salida",
+        esVideo: isVideo,
       })
       .returning();
 
     revalidatePath(`/ordenes/${ordenId}`);
 
-    return NextResponse.json({ foto, url: blob.url });
+    return NextResponse.json({
+      foto,
+      url: blob.url,
+      ...(isVideo ? { hint: "Vídeo subido. Recomendamos vídeos de máximo 60 segundos." } : {}),
+    });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

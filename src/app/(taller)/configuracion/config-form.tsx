@@ -15,6 +15,7 @@ interface Taller {
   direccion: string | null;
   telefono: string | null;
   email: string | null;
+  googleReviewLink: string | null;
 }
 
 export function ConfigForm({ taller }: { taller: Taller }) {
@@ -32,6 +33,7 @@ export function ConfigForm({ taller }: { taller: Taller }) {
           direccion: formData.get("direccion"),
           telefono: formData.get("telefono"),
           email: formData.get("email"),
+          googleReviewLink: formData.get("googleReviewLink"),
         }),
       });
       if (!res.ok) throw new Error();
@@ -70,6 +72,11 @@ export function ConfigForm({ taller }: { taller: Taller }) {
             <div className="space-y-1.5">
               <Label htmlFor="direccion">Dirección</Label>
               <Input id="direccion" name="direccion" defaultValue={taller.direccion || ""} placeholder="Calle Principal, 1" className="h-11 rounded-xl" />
+            </div>
+            <div className="sm:col-span-2 space-y-1.5">
+              <Label htmlFor="googleReviewLink">Enlace de reseñas de Google</Label>
+              <Input id="googleReviewLink" name="googleReviewLink" defaultValue={taller.googleReviewLink || ""} placeholder="https://g.page/r/..." className="h-11 rounded-xl" />
+              <p className="text-xs text-muted-foreground">Pega aquí tu enlace de reseñas de Google Business para enviar solicitudes de reseña a tus clientes.</p>
             </div>
           </div>
           <Separator />

@@ -8,6 +8,7 @@ import {
   MessageSquare,
   Clock,
   Phone,
+  CreditCard,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -78,6 +79,17 @@ export default async function PanelDelDia() {
     .where(and(eq(citas.tallerId, tallerId), eq(citas.fecha, hoy)))
     .orderBy(citas.horaInicio);
 
+  // Cobros pendientes
+  const [cobrosPendientesResult] = await db
+    .select({ count: count() })
+    .from(ordenesTrabajo)
+    .where(and(
+      eq(ordenesTrabajo.tallerId, tallerId),
+      eq(ordenesTrabajo.estado, "entregado"),
+      eq(ordenesTrabajo.pagado, false)
+    ));
+  const cobrosPendientes = cobrosPendientesResult?.count ?? 0;
+
   const cochesListos = ordenesActivas.filter((o) => o.estado === "listo");
   const totalClientes = clientesResult?.count ?? 0;
 
@@ -100,7 +112,7 @@ export default async function PanelDelDia() {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         <div id="kpi-en-taller" className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-sm shadow-blue-500/20">
@@ -149,6 +161,21 @@ export default async function PanelDelDia() {
           </div>
           <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-emerald-500/[0.04]" />
         </div>
+        <Link href="/facturacion" className={`relative overflow-hidden rounded-2xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ${cobrosPendientes > 0 ? "bg-amber-50 border border-amber-300" : "bg-white border border-stone-200/60"}`}>
+          <div className="flex items-center gap-3">
+            <div className={`flex h-11 w-11 items-center justify-center rounded-xl shadow-sm ${cobrosPendientes > 0 ? "bg-gradient-to-br from-amber-500 to-amber-600 shadow-amber-500/20" : "bg-gradient-to-br from-stone-400 to-stone-500 shadow-stone-400/20"}`}>
+              <CreditCard className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className={`text-2xl font-extrabold leading-none ${cobrosPendientes > 0 ? "text-amber-900" : "text-stone-900"}`}>{cobrosPendientes}</p>
+              <p className={`text-xs font-medium mt-0.5 ${cobrosPendientes > 0 ? "text-amber-600" : "text-stone-400"}`}>Cobros pend.</p>
+            </div>
+          </div>
+          {cobrosPendientes > 0 && (
+            <div className="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-amber-500 animate-pulse" />
+          )}
+          <div className={`absolute -top-4 -right-4 h-16 w-16 rounded-full ${cobrosPendientes > 0 ? "bg-amber-500/[0.08]" : "bg-stone-500/[0.04]"}`} />
+        </Link>
       </div>
 
       {/* Coches listos para entregar */}
