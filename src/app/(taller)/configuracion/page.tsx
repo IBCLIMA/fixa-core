@@ -37,7 +37,7 @@ export default async function ConfiguracionPage() {
 
       {/* Enlace de cita online */}
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <CalendarCheck className="h-4 w-4 text-orange-600" />
             Cita online
@@ -63,7 +63,7 @@ export default async function ConfiguracionPage() {
 
       {/* Seguridad y datos */}
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <Shield className="h-4 w-4 text-muted-foreground" />
             Seguridad y datos
@@ -128,7 +128,7 @@ export default async function ConfiguracionPage() {
 
       {/* Zona peligrosa */}
       <Card className="border-red-200">
-        <CardHeader>
+        <CardHeader className="pb-3">
           <CardTitle className="text-base text-red-700">Zona peligrosa</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">

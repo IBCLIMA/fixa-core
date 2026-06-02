@@ -24,6 +24,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
     return NextResponse.json({ ok: true });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    console.error("Error al actualizar taller:", e);
+    return NextResponse.json({ error: "Error al actualizar taller" }, { status: 500 });
   }
 }

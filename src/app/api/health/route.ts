@@ -3,7 +3,7 @@ import { neon } from "@neondatabase/serverless";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: Request) {
   const checks: Record<string, "ok" | "error"> = {
     db: "error",
     auth: "error",
@@ -33,13 +33,19 @@ export async function GET() {
 
   const allOk = Object.values(checks).every((v) => v === "ok");
   const status = allOk ? "ok" : "degraded";
+  const timestamp = new Date().toISOString();
 
-  return NextResponse.json(
-    {
-      status,
-      checks,
-      timestamp: new Date().toISOString(),
-    },
-    { status: allOk ? 200 : 503 }
-  );
+  // Only return detailed infrastructure info if the health check secret matches
+  const showDetails = request.headers.get("x-health-secret") === process.env.HEALTH_CHECK_SECRET;
+  if (showDetails) {
+    return NextResponse.json(
+      { status, checks, timestamp },
+      { status: allOk ? 200 : 503 }
+    );
+  } else {
+    return NextResponse.json(
+      { status, timestamp },
+      { status: allOk ? 200 : 503 }
+    );
+  }
 }

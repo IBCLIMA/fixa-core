@@ -2,6 +2,13 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Download } from "lucide-react";
 
 export function ExportGestoria() {
@@ -42,21 +49,22 @@ export function ExportGestoria() {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <select
-        value={mes}
-        onChange={(e) => setMes(e.target.value)}
-        className="h-9 rounded-lg border border-stone-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-stone-300"
-      >
-        {meses.map((m) => (
-          <option key={m.value} value={m.value}>
-            {m.label}
-          </option>
-        ))}
-      </select>
+      <Select value={mes} onValueChange={setMes}>
+        <SelectTrigger className="h-9 w-48 rounded-lg text-sm">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {meses.map((m) => (
+            <SelectItem key={m.value} value={m.value}>
+              {m.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       <Button
         variant="outline"
         size="sm"
-        className="rounded-lg h-9 text-xs gap-1.5"
+        className="rounded-xl h-9 text-xs gap-1.5"
         onClick={handleDownload}
         disabled={loading}
       >

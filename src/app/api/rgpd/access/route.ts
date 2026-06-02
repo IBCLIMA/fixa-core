@@ -196,7 +196,8 @@ export async function GET(request: NextRequest) {
       headers: { "Content-Type": "text/html; charset=utf-8" },
     });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    console.error("Error al acceder a datos RGPD:", e);
+    return NextResponse.json({ error: "Error al acceder a datos" }, { status: 500 });
   }
 }
 

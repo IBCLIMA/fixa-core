@@ -1,11 +1,12 @@
 "use server";
 
 import { getDb } from "@/db";
-import { usuarios } from "@/db/schema";
+import { usuarios, inviteTokens } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { requireRole } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { logAudit } from "@/lib/audit";
+import { randomBytes } from "crypto";
 
 export async function actualizarComision(usuarioId: string, comisionPct: number) {
   const { tallerId, clerkUserId } = await requireRole(["admin"]);
@@ -38,4 +39,31 @@ export async function actualizarComision(usuarioId: string, comisionPct: number)
 
   revalidatePath("/equipo");
   revalidatePath("/facturacion");
+}
+
+export async function crearInvitacion(rol: "admin" | "mecanico" | "recepcion") {
+  const { tallerId, clerkUserId } = await requireRole(["admin"]);
+  const db = getDb();
+
+  const token = randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+  await db.insert(inviteTokens).values({
+    tallerId,
+    rol,
+    token,
+    expiresAt,
+  });
+
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "create",
+    entityType: "invite_token",
+    entityId: token,
+    details: { rol },
+  });
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+  return `${baseUrl}/sign-up?invite=${token}`;
 }

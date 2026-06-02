@@ -50,6 +50,8 @@ export async function POST(request: Request) {
     // Sanitizar filename - eliminar caracteres peligrosos y path traversal
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").replace(/\.{2,}/g, "_");
     const filename = `fixa/${tallerId}/${ordenId}/${Date.now()}-${safeName}`;
+    // Files are public by design - they need to be accessible from public informe/estado pages
+    // URLs use random suffixes (addRandomSuffix: true) making enumeration impractical
     const blob = await put(filename, file, {
       access: "public",
       addRandomSuffix: true,
@@ -75,6 +77,7 @@ export async function POST(request: Request) {
       ...(isVideo ? { hint: "Vídeo subido. Recomendamos vídeos de máximo 60 segundos." } : {}),
     });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    console.error("Error al subir archivo:", e);
+    return NextResponse.json({ error: "Error al subir archivo" }, { status: 500 });
   }
 }

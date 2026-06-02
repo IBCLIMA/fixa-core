@@ -145,6 +145,7 @@ export async function POST(request: Request) {
       mensajes: mensajes.slice(0, 10),
     });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    console.error("Error al importar datos:", e);
+    return NextResponse.json({ error: "Error al importar datos" }, { status: 500 });
   }
 }

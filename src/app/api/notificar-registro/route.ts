@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
       await resend.emails.send({
         from: "FIXA <onboarding@resend.dev>",
-        to: "sergi@ibclima.com",
+        to: process.env.ADMIN_NOTIFICATION_EMAIL || "sergi@ibclima.com",
         subject: "🔔 Nuevo registro en FIXA",
         html: `
           <div style="font-family: -apple-system, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
                 <strong>Fecha:</strong> ${new Date().toLocaleString("es-ES")}
               </p>
             </div>
-            <p>Entra al <a href="https://solcraft-rho.vercel.app/admin" style="color: #f97316; font-weight: bold;">Panel de Admin</a> para revisar y aprobar.</p>
+            <p>Entra al <a href="${process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")}/admin" style="color: #f97316; font-weight: bold;">Panel de Admin</a> para revisar y aprobar.</p>
             <p style="color: #a8a29e; font-size: 12px; margin-top: 24px;">FIXA by Ibañez Clima</p>
           </div>
         `,

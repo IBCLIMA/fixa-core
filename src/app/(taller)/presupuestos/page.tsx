@@ -42,6 +42,8 @@ export default async function PresupuestosPage({
     .where(eq(presupuestos.tallerId, tallerId));
 
   const totalPages = Math.max(1, Math.ceil(Number(total) / PER_PAGE));
+  const safePage = Math.min(page, Math.max(1, totalPages));
+  const safeOffset = (safePage - 1) * PER_PAGE;
 
   const presupuestosList = await db
     .select({
@@ -61,7 +63,7 @@ export default async function PresupuestosPage({
     .where(eq(presupuestos.tallerId, tallerId))
     .orderBy(desc(presupuestos.createdAt))
     .limit(PER_PAGE)
-    .offset(offset);
+    .offset(safeOffset);
 
   return (
     <div className="space-y-5">
@@ -86,7 +88,7 @@ export default async function PresupuestosPage({
       ) : (
         <div className="space-y-2">
           {presupuestosList.map((p) => (
-            <div key={p.id} className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 hover:bg-accent/30 transition-all duration-200">
+            <Link key={p.id} href={`/presupuestos/${p.id}`} className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 hover:bg-accent/30 transition-all duration-200">
               <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-muted">
                 <span className="text-[10px] font-bold text-muted-foreground">PT</span>
                 <span className="text-sm font-extrabold leading-none">{p.numero}</span>
@@ -102,7 +104,7 @@ export default async function PresupuestosPage({
                 <Badge className={`text-[10px] ${estadoColors[p.estado]}`}>{estadoLabels[p.estado]}</Badge>
                 <span className="text-sm font-bold">{Number(p.total).toFixed(2)}€</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}
@@ -110,9 +112,9 @@ export default async function PresupuestosPage({
       {/* Paginación */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-3 pt-2">
-          {page > 1 ? (
+          {safePage > 1 ? (
             <Link
-              href={`/presupuestos?page=${page - 1}`}
+              href={`/presupuestos?page=${safePage - 1}`}
               className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
             >
               Anterior
@@ -123,11 +125,11 @@ export default async function PresupuestosPage({
             </span>
           )}
           <span className="text-sm text-muted-foreground">
-            Página {page} de {totalPages}
+            Página {safePage} de {totalPages}
           </span>
-          {page < totalPages ? (
+          {safePage < totalPages ? (
             <Link
-              href={`/presupuestos?page=${page + 1}`}
+              href={`/presupuestos?page=${safePage + 1}`}
               className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
             >
               Siguiente

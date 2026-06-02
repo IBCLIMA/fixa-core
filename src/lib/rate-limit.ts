@@ -1,5 +1,8 @@
 // Simple in-memory rate limiter
 // Stores IP -> { count, resetTime } entries and cleans up expired ones periodically
+// NOTE: In-memory rate limiting. Works with Vercel Fluid Compute (instance reuse)
+// but is not distributed across regions. For stricter limiting, upgrade to Upstash Redis.
+// Current implementation is sufficient for low-traffic SaaS.
 
 const rateLimitStore = new Map<
   string,

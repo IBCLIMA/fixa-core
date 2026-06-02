@@ -65,6 +65,8 @@ export default async function OrdenesPage({
     .where(whereCondition);
 
   const totalPages = Math.max(1, Math.ceil(Number(total) / PER_PAGE));
+  const safePage = Math.min(page, Math.max(1, totalPages));
+  const safeOffset = (safePage - 1) * PER_PAGE;
 
   const ordenes = await db
     .select({
@@ -88,7 +90,7 @@ export default async function OrdenesPage({
     .where(whereCondition)
     .orderBy(desc(ordenesTrabajo.createdAt))
     .limit(PER_PAGE)
-    .offset(offset);
+    .offset(safeOffset);
 
   return (
     <div className="space-y-5">
@@ -210,9 +212,9 @@ export default async function OrdenesPage({
       {/* Paginación */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-3 pt-2">
-          {page > 1 ? (
+          {safePage > 1 ? (
             <Link
-              href={`/ordenes?filtro=${filtro}${mecanicoFiltro ? `&mecanico=${mecanicoFiltro}` : ""}&page=${page - 1}`}
+              href={`/ordenes?filtro=${filtro}${mecanicoFiltro ? `&mecanico=${mecanicoFiltro}` : ""}&page=${safePage - 1}`}
               className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
             >
               Anterior
@@ -223,11 +225,11 @@ export default async function OrdenesPage({
             </span>
           )}
           <span className="text-sm text-muted-foreground">
-            Página {page} de {totalPages}
+            Página {safePage} de {totalPages}
           </span>
-          {page < totalPages ? (
+          {safePage < totalPages ? (
             <Link
-              href={`/ordenes?filtro=${filtro}${mecanicoFiltro ? `&mecanico=${mecanicoFiltro}` : ""}&page=${page + 1}`}
+              href={`/ordenes?filtro=${filtro}${mecanicoFiltro ? `&mecanico=${mecanicoFiltro}` : ""}&page=${safePage + 1}`}
               className="rounded-full px-4 py-2 text-sm font-bold bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
             >
               Siguiente

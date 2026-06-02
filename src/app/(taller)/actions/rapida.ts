@@ -87,3 +87,82 @@ export async function crearOrdenRapida(data: {
 
   return orden;
 }
+
+export async function crearTodoRapido(data: {
+  nombreCliente: string;
+  telefonoCliente?: string;
+  matricula: string;
+  marca?: string;
+  modelo?: string;
+  descripcionCliente?: string;
+}) {
+  const { tallerId, usuarioId, clerkUserId } = await getTallerIdFromAuth();
+  const db = getDb();
+  const { sql } = await import("drizzle-orm");
+
+  // 1. Create client
+  const [cliente] = await db
+    .insert(clientes)
+    .values({
+      tallerId,
+      nombre: data.nombreCliente,
+      telefono: data.telefonoCliente || null,
+    })
+    .returning();
+
+  // 2. Create vehicle
+  const [vehiculo] = await db
+    .insert(vehiculos)
+    .values({
+      tallerId,
+      clienteId: cliente.id,
+      matricula: data.matricula.toUpperCase().replace(/\s/g, ""),
+      marca: data.marca || null,
+      modelo: data.modelo || null,
+    })
+    .returning();
+
+  // 3. Create order
+  const [maxResult] = await db
+    .select({ max: sql<number>`COALESCE(MAX(${ordenesTrabajo.numero}), 0)` })
+    .from(ordenesTrabajo)
+    .where(eq(ordenesTrabajo.tallerId, tallerId));
+
+  const numero = (maxResult?.max ?? 0) + 1;
+
+  const [orden] = await db
+    .insert(ordenesTrabajo)
+    .values({
+      tallerId,
+      vehiculoId: vehiculo.id,
+      clienteId: cliente.id,
+      numero,
+      estado: "recibido",
+      descripcionCliente: data.descripcionCliente || null,
+    })
+    .returning();
+
+  const { historialEstados } = await import("@/db/schema");
+  await db.insert(historialEstados).values({
+    ordenId: orden.id,
+    estadoNuevo: "recibido",
+    usuarioId,
+  });
+
+  const { logAudit } = await import("@/lib/audit");
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "create",
+    entityType: "orden",
+    entityId: orden.id,
+    details: { numero: orden.numero, rapida: true, nuevoCliente: true, vehiculoId: vehiculo.id, clienteId: cliente.id },
+  });
+
+  const { revalidatePath } = await import("next/cache");
+  revalidatePath("/ordenes");
+  revalidatePath("/clientes");
+  revalidatePath("/");
+
+  return orden;
+}

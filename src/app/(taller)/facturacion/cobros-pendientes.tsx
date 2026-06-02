@@ -99,7 +99,7 @@ export function CobrosPendientes({ ordenes }: { ordenes: OrdenPendiente[] }) {
             {pagoAbierto === o.id && (
               <div className="flex items-center gap-2 mt-2 pt-2 border-t border-border">
                 <Select value={metodo} onValueChange={setMetodo}>
-                  <SelectTrigger className="h-8 rounded-lg w-40 text-xs">
+                  <SelectTrigger className="h-8 rounded-xl w-40 text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -113,7 +113,7 @@ export function CobrosPendientes({ ordenes }: { ordenes: OrdenPendiente[] }) {
                 </Select>
                 <Button
                   size="sm"
-                  className="rounded-lg h-8 text-xs"
+                  className="rounded-xl h-8 text-xs"
                   disabled={loading}
                   onClick={() => handlePagar(o)}
                 >

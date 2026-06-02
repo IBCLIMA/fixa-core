@@ -108,19 +108,19 @@ export default async function ClienteDetallePage({ params }: { params: Promise<{
               return (
                 <Card key={v.id}>
                   <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <p className="font-bold text-lg tracking-wider">{v.matricula}</p>
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <p className="font-bold text-lg tracking-wider truncate">{v.matricula}</p>
                         <EditarVehiculoDialog vehiculo={v} />
                       </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">
+                      <div className="min-w-0">
+                        <p className="text-sm text-muted-foreground truncate">
                           {[v.marca, v.modelo, v.anio].filter(Boolean).join(" · ")}
                           {v.color ? ` · ${v.color}` : ""}
                           {v.combustible ? ` · ${v.combustible}` : ""}
                         </p>
                       </div>
-                      <div className="text-right space-y-1">
+                      <div className="ml-auto flex items-center gap-2 shrink-0">
                         {v.km && <p className="text-xs text-muted-foreground">{v.km.toLocaleString("es-ES")} km</p>}
                         {v.fechaItv && (
                           <Badge variant="outline" className="text-xs">

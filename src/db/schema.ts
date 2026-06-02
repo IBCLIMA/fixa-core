@@ -388,13 +388,33 @@ export const recordatoriosMantenimiento = pgTable("recordatorios_mantenimiento",
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const inviteTokens = pgTable("invite_tokens", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tallerId: uuid("taller_id")
+    .references(() => talleres.id)
+    .notNull(),
+  rol: rolUsuarioEnum("rol").default("mecanico").notNull(),
+  token: text("token").unique().notNull(),
+  usado: boolean("usado").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+});
+
 // ═══ RELACIONES ═══
+
+export const inviteTokensRelations = relations(inviteTokens, ({ one }) => ({
+  taller: one(talleres, {
+    fields: [inviteTokens.tallerId],
+    references: [talleres.id],
+  }),
+}));
 
 export const talleresRelations = relations(talleres, ({ many }) => ({
   usuarios: many(usuarios),
   clientes: many(clientes),
   vehiculos: many(vehiculos),
   ordenes: many(ordenesTrabajo),
+  inviteTokens: many(inviteTokens),
   citas: many(citas),
   presupuestos: many(presupuestos),
   avisos: many(avisos),

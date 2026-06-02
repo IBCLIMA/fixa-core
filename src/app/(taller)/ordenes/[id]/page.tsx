@@ -252,27 +252,40 @@ export default async function OrdenDetallePage({
       <InspeccionView ordenId={orden.id} inspecciones={inspecciones} />
 
       {/* Acciones */}
-      <div className="flex flex-wrap gap-2 no-print">
-        <PrintButton />
-        <CrearPresupuestoBtn ordenId={orden.id} />
-        <a href={`/api/ordenes/${orden.id}/resumen`} target="_blank">
-          <Button variant="outline" className="rounded-full">
-            <Printer className="mr-1.5 h-4 w-4" />Imprimir / Compartir
-          </Button>
-        </a>
-        <a href={`/informe/${orden.id}`} target="_blank">
-          <Button variant="outline" className="rounded-full">
-            <FileText className="mr-1.5 h-4 w-4" />Ver informe
-          </Button>
-        </a>
-        {orden.cliente?.telefono && (
-          <EnviarInformeBtn ordenId={orden.id} />
-        )}
-        {orden.estado === "entregado" && orden.cliente?.telefono && (
-          <PedirResenaBtn ordenId={orden.id} />
-        )}
-        {isAdmin && <EliminarOrdenBtn ordenId={orden.id} />}
-      </div>
+      <Card className="no-print">
+        <CardContent className="p-4 space-y-3">
+          {/* Primary actions */}
+          <div className="flex flex-wrap gap-2">
+            <PrintButton />
+            <a href={`/api/ordenes/${orden.id}/resumen`} target="_blank">
+              <Button variant="outline" className="rounded-full">
+                <Printer className="mr-1.5 h-4 w-4" />Imprimir / Compartir
+              </Button>
+            </a>
+          </div>
+
+          {/* Secondary actions */}
+          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border">
+            <a href={`/informe/${orden.id}`} target="_blank">
+              <Button variant="outline" size="sm" className="rounded-full">
+                <FileText className="mr-1.5 h-4 w-4" />Ver informe
+              </Button>
+            </a>
+            <CrearPresupuestoBtn ordenId={orden.id} />
+            {orden.cliente?.telefono && (
+              <EnviarInformeBtn ordenId={orden.id} />
+            )}
+            {orden.estado === "entregado" && orden.cliente?.telefono && (
+              <PedirResenaBtn ordenId={orden.id} />
+            )}
+            {isAdmin && (
+              <div className="ml-auto">
+                <EliminarOrdenBtn ordenId={orden.id} />
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Líneas de trabajo */}
       <Card>

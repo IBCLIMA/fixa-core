@@ -17,6 +17,7 @@ const isPublicRoute = createRouteMatcher([
   "/estado(.*)",
   "/cita(.*)",
   "/informe(.*)",
+  "/presupuesto(.*)",
   "/privacidad",
   "/terminos",
   "/aviso-legal",
@@ -26,6 +27,22 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
+  // Persist invite token from sign-up URL into a cookie for later use
+  if (req.nextUrl.pathname.startsWith("/sign-up")) {
+    const inviteToken = req.nextUrl.searchParams.get("invite");
+    if (inviteToken) {
+      const response = NextResponse.next();
+      response.cookies.set("invite_token", inviteToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60, // 1 hour
+        path: "/",
+      });
+      return response;
+    }
+  }
+
   if (isPublicRoute(req)) return;
 
   const { userId } = await auth();

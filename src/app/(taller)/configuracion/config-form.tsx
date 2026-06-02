@@ -47,7 +47,7 @@ export function ConfigForm({ taller }: { taller: Taller }) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-3">
         <CardTitle className="text-base">Datos del taller</CardTitle>
       </CardHeader>
       <CardContent>

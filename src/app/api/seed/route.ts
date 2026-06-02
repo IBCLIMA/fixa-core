@@ -159,6 +159,7 @@ export async function POST() {
       citas: citasData.length,
     });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    console.error("Error en seed:", e);
+    return NextResponse.json({ error: "Error al generar datos de prueba" }, { status: 500 });
   }
 }

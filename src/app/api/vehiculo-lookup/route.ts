@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    console.error("Error en consulta vehículo:", e);
+    return NextResponse.json({ error: "Error en la consulta" }, { status: 500 });
   }
 }

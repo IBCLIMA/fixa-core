@@ -109,6 +109,7 @@ export async function POST(request: Request) {
       mensaje: "Datos personales del cliente anonimizados correctamente. Los registros de órdenes y vehículos se mantienen por obligaciones fiscales.",
     });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    console.error("Error al eliminar datos RGPD:", e);
+    return NextResponse.json({ error: "Error al eliminar datos" }, { status: 500 });
   }
 }

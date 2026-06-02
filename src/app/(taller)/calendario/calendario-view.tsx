@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Clock, X } from "lucide-react";
+import { Plus, Clock, X, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -88,7 +88,7 @@ export function CalendarioView({ days, citas }: CalendarioViewProps) {
             <div key={dayIso} className="min-h-[120px]">
               {/* Day header */}
               <div
-                className={`text-center mb-2 py-1.5 rounded-lg ${
+                className={`text-center mb-2 py-1.5 rounded-xl ${
                   isToday ? "bg-brand text-white" : "bg-muted"
                 }`}
               >
@@ -103,7 +103,7 @@ export function CalendarioView({ days, citas }: CalendarioViewProps) {
                 {dayCitas.map((cita) => (
                   <div
                     key={cita.id}
-                    className="group relative rounded-lg bg-brand/10 border border-brand/20 p-1.5 text-[10px]"
+                    className="group relative rounded-xl bg-brand/10 border border-brand/20 p-1.5 text-[10px]"
                   >
                     {cita.horaInicio && (
                       <p className="font-mono font-bold text-brand">
@@ -126,7 +126,7 @@ export function CalendarioView({ days, citas }: CalendarioViewProps) {
                 {/* Add button */}
                 <button
                   onClick={() => openNewCita(dateStr)}
-                  className="w-full rounded-lg border border-dashed border-border p-1 text-muted-foreground hover:border-brand hover:text-brand transition-colors"
+                  className="w-full rounded-xl border border-dashed border-border p-1 text-muted-foreground hover:border-brand hover:text-brand transition-colors"
                 >
                   <Plus className="h-3 w-3 mx-auto" />
                 </button>
@@ -145,7 +145,10 @@ export function CalendarioView({ days, citas }: CalendarioViewProps) {
           </Button>
         </div>
         {citas.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-6">Sin citas esta semana</p>
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <CalendarDays className="h-10 w-10 text-muted-foreground/20 mb-3" />
+            <p className="text-sm text-muted-foreground">Sin citas esta semana</p>
+          </div>
         ) : (
           citas.map((cita) => (
             <div key={cita.id} className="flex items-center justify-between rounded-xl border border-border bg-card p-3">

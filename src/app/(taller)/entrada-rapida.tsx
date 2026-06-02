@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
-import { buscarPorMatricula, crearOrdenRapida } from "./actions/rapida";
+import { buscarPorMatricula, crearOrdenRapida, crearTodoRapido } from "./actions/rapida";
 import { toast } from "sonner";
 
 type Resultado = Awaited<ReturnType<typeof buscarPorMatricula>>[number];
@@ -21,6 +21,7 @@ export function EntradaRapida() {
   const [matricula, setMatricula] = useState("");
   const [resultados, setResultados] = useState<Resultado[]>([]);
   const [seleccionado, setSeleccionado] = useState<Resultado | null>(null);
+  const [creandoNuevo, setCreandoNuevo] = useState(false);
   const [loading, setLoading] = useState(false);
   const [buscando, setBuscando] = useState(false);
 
@@ -34,6 +35,29 @@ export function EntradaRapida() {
     }, 300);
     return () => clearTimeout(t);
   }, [matricula]);
+
+  async function handleCrearNuevo(formData: FormData) {
+    setLoading(true);
+    try {
+      const orden = await crearTodoRapido({
+        nombreCliente: formData.get("nombreCliente") as string,
+        telefonoCliente: (formData.get("telefonoCliente") as string) || undefined,
+        matricula: formData.get("matriculaNueva") as string,
+        marca: (formData.get("marca") as string) || undefined,
+        modelo: (formData.get("modelo") as string) || undefined,
+        descripcionCliente: (formData.get("descripcionNuevo") as string) || undefined,
+      });
+      toast.success(`Orden OR-${orden.numero} creada`);
+      setOpen(false);
+      setMatricula("");
+      setCreandoNuevo(false);
+      router.push(`/ordenes/${orden.id}`);
+    } catch {
+      toast.error("Error al crear cliente y orden");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function handleCrear(formData: FormData) {
     if (!seleccionado) return;
@@ -58,7 +82,7 @@ export function EntradaRapida() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) { setMatricula(""); setSeleccionado(null); setResultados([]); } }}>
+    <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) { setMatricula(""); setSeleccionado(null); setCreandoNuevo(false); setResultados([]); } }}>
       <DialogTrigger asChild>
         <Button className="rounded-full bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/20 hover:shadow-xl hover:shadow-orange-500/25 transition-all">
           <Car className="mr-1.5 h-4 w-4" />Entrada rápida
@@ -103,11 +127,57 @@ export function EntradaRapida() {
               </div>
             )}
 
-            {matricula.length >= 2 && resultados.length === 0 && !buscando && (
-              <div className="text-center py-4">
+            {matricula.length >= 2 && resultados.length === 0 && !buscando && !creandoNuevo && (
+              <div className="text-center py-4 space-y-3">
                 <p className="text-sm text-stone-500">No se encontró la matrícula</p>
-                <p className="text-xs text-stone-400 mt-1">Crea primero el cliente y vehículo en Clientes</p>
+                <Button
+                  variant="outline"
+                  className="rounded-xl"
+                  onClick={() => setCreandoNuevo(true)}
+                >
+                  <Plus className="mr-1.5 h-4 w-4" />Crear nuevo cliente y vehículo
+                </Button>
               </div>
+            )}
+
+            {creandoNuevo && (
+              <form action={handleCrearNuevo} className="space-y-3 border-t border-stone-100 pt-4">
+                <p className="text-sm font-bold text-stone-700">Nuevo cliente y vehículo</p>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-stone-500">Nombre del cliente *</Label>
+                  <Input name="nombreCliente" placeholder="Antonio García" required className="h-11 rounded-xl" autoFocus />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-stone-500">Teléfono</Label>
+                  <Input name="telefonoCliente" placeholder="612 345 678" type="tel" className="h-11 rounded-xl" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-stone-500">Matrícula *</Label>
+                  <Input name="matriculaNueva" defaultValue={matricula} required className="h-11 rounded-xl font-bold tracking-wider uppercase" />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-bold text-stone-500">Marca</Label>
+                    <Input name="marca" placeholder="Seat" className="h-11 rounded-xl" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-bold text-stone-500">Modelo</Label>
+                    <Input name="modelo" placeholder="León" className="h-11 rounded-xl" />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-stone-500">¿Qué le pasa?</Label>
+                  <Textarea name="descripcionNuevo" placeholder="Le hace ruido al frenar, pierde líquido..." rows={2} className="rounded-xl" />
+                </div>
+                <div className="flex gap-2">
+                  <Button type="submit" className="flex-1 h-11 rounded-xl font-bold" disabled={loading}>
+                    {loading ? "Creando..." : "Crear cliente + orden"}
+                  </Button>
+                  <Button type="button" variant="outline" className="h-11 rounded-xl" onClick={() => setCreandoNuevo(false)}>
+                    Atrás
+                  </Button>
+                </div>
+              </form>
             )}
           </div>
         ) : (

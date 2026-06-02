@@ -72,7 +72,7 @@ export function EditarDiagnostico({
               onChange={(e) => setDiagnostico(e.target.value)}
               placeholder="Describe lo que has encontrado..."
               rows={3}
-              className="rounded-lg text-sm"
+              className="rounded-xl text-sm"
               autoFocus
             />
             <div className="flex gap-2">

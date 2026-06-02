@@ -1,4 +1,4 @@
-import { Receipt, TrendingUp, Car, Users, ClipboardList, Calendar, ArrowUpRight, ArrowDownRight, AlertTriangle, Wrench } from "lucide-react";
+import { Receipt, TrendingUp, Car, Users, ClipboardList, Calendar, ArrowUpRight, ArrowDownRight, AlertTriangle, Wrench, Calculator, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { requireRole } from "@/lib/auth";
@@ -163,30 +163,54 @@ export default async function FacturacionPage() {
 
       {/* KPIs principales */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Card className="border-emerald-200 bg-emerald-50/30">
-          <CardContent className="p-4">
-            <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Facturado total</p>
-            <p className="text-2xl font-extrabold text-emerald-800 mt-1">{totalFact.toFixed(0)}€</p>
-          </CardContent>
-        </Card>
-        <Card className="border-blue-200 bg-blue-50/30">
-          <CardContent className="p-4">
-            <p className="text-xs font-bold text-blue-600 uppercase tracking-wider">Este mes</p>
-            <p className="text-2xl font-extrabold text-blue-800 mt-1">{factMes.toFixed(0)}€</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Ticket medio</p>
-            <p className="text-2xl font-extrabold mt-1">{ticketMedio.toFixed(0)}€</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Completadas</p>
-            <p className="text-2xl font-extrabold mt-1">{entregadas?.count ?? 0}</p>
-          </CardContent>
-        </Card>
+        <div className="relative overflow-hidden rounded-2xl bg-emerald-50/30 border border-emerald-200 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-sm shadow-emerald-500/20">
+              <Receipt className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className="text-2xl font-extrabold leading-none text-emerald-800">{totalFact.toFixed(0)}€</p>
+              <p className="text-xs text-emerald-600 font-medium mt-0.5">Facturado total</p>
+            </div>
+          </div>
+          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-emerald-500/[0.04]" />
+        </div>
+        <div className="relative overflow-hidden rounded-2xl bg-blue-50/30 border border-blue-200 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-sm shadow-orange-500/20">
+              <TrendingUp className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className="text-2xl font-extrabold leading-none text-blue-800">{factMes.toFixed(0)}€</p>
+              <p className="text-xs text-blue-600 font-medium mt-0.5">Este mes</p>
+            </div>
+          </div>
+          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-orange-500/[0.04]" />
+        </div>
+        <div className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-sm shadow-blue-500/20">
+              <Calculator className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className="text-2xl font-extrabold leading-none text-stone-900">{ticketMedio.toFixed(0)}€</p>
+              <p className="text-xs text-stone-400 font-medium mt-0.5">Ticket medio</p>
+            </div>
+          </div>
+          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-blue-500/[0.04]" />
+        </div>
+        <div className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-violet-600 shadow-sm shadow-violet-500/20">
+              <CheckCircle className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className="text-2xl font-extrabold leading-none text-stone-900">{entregadas?.count ?? 0}</p>
+              <p className="text-xs text-stone-400 font-medium mt-0.5">Completadas</p>
+            </div>
+          </div>
+          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-violet-500/[0.04]" />
+        </div>
       </div>
 
       {/* Resumen del mes */}

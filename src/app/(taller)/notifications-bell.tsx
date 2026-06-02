@@ -119,7 +119,7 @@ export function NotificationsBell() {
     <div className="relative" ref={ref}>
       <button
         onClick={handleOpen}
-        className="relative flex h-8 w-8 items-center justify-center rounded-xl text-stone-500 hover:bg-stone-100 transition-colors"
+        className="relative flex h-8 w-8 items-center justify-center rounded-xl text-muted-foreground hover:bg-muted transition-colors"
         aria-label="Notificaciones"
       >
         <Bell className="h-[18px] w-[18px]" />
@@ -131,13 +131,13 @@ export function NotificationsBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-10 z-50 w-80 rounded-xl border border-stone-200 bg-white shadow-xl">
-          <div className="flex items-center justify-between border-b border-stone-100 px-4 py-2.5">
+        <div className="absolute right-0 top-10 z-50 w-80 rounded-xl border border-border bg-card shadow-xl">
+          <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
             <span className="text-sm font-bold">Notificaciones</span>
             {count > 0 && (
               <button
                 onClick={markAllRead}
-                className="flex items-center gap-1 text-xs text-stone-500 hover:text-stone-900 transition-colors"
+                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 <CheckCheck className="h-3 w-3" />
                 Marcar todas
@@ -146,24 +146,24 @@ export function NotificationsBell() {
           </div>
           <div className="max-h-80 overflow-y-auto">
             {loading ? (
-              <p className="py-8 text-center text-xs text-stone-400">Cargando...</p>
+              <p className="py-8 text-center text-xs text-muted-foreground">Cargando...</p>
             ) : items.length === 0 ? (
-              <p className="py-8 text-center text-xs text-stone-400">Sin notificaciones</p>
+              <p className="py-8 text-center text-xs text-muted-foreground">Sin notificaciones</p>
             ) : (
               items.map((n) => (
                 <button
                   key={n.id}
                   onClick={() => handleClickNotification(n)}
                   className={cn(
-                    "flex w-full items-start gap-2.5 px-4 py-3 text-left hover:bg-stone-50 transition-colors border-b border-stone-50 last:border-0",
+                    "flex w-full items-start gap-2.5 px-4 py-3 text-left hover:bg-muted transition-colors border-b border-border/50 last:border-0",
                     !n.leida && "bg-blue-50/50"
                   )}
                 >
                   <span className="text-base mt-0.5 shrink-0">{tipoIcons[n.tipo] || "🔔"}</span>
                   <div className="flex-1 min-w-0">
                     <p className={cn("text-sm leading-tight", !n.leida ? "font-bold" : "font-medium")}>{n.titulo}</p>
-                    <p className="text-xs text-stone-500 mt-0.5 line-clamp-2">{n.mensaje}</p>
-                    <p className="text-[10px] text-stone-400 mt-1">{timeAgo(n.createdAt)}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{n.mensaje}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">{timeAgo(n.createdAt)}</p>
                   </div>
                   {!n.leida && <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-500" />}
                 </button>

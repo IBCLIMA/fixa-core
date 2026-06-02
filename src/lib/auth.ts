@@ -1,7 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { getDb } from "@/db";
-import { talleres, usuarios } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { talleres, usuarios, inviteTokens } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
+import { cookies } from "next/headers";
 
 const TRIAL_DAYS = 14;
 
@@ -19,7 +20,45 @@ export async function getTallerIdFromAuth() {
     return { tallerId: usuario.tallerId, usuarioId: usuario.id, clerkUserId: userId, rol: usuario.rol };
   }
 
-  // Crear taller como PENDIENTE — necesita aprobación del admin
+  // Check for invite token (set by middleware from sign-up URL)
+  const cookieStore = await cookies();
+  const inviteToken = cookieStore.get("invite_token")?.value;
+
+  if (inviteToken) {
+    // Look up valid, unused, non-expired invite token
+    const invite = await db.query.inviteTokens.findFirst({
+      where: and(
+        eq(inviteTokens.token, inviteToken),
+        eq(inviteTokens.usado, false),
+      ),
+    });
+
+    if (invite && new Date(invite.expiresAt) > new Date()) {
+      // Mark token as used
+      await db
+        .update(inviteTokens)
+        .set({ usado: true })
+        .where(eq(inviteTokens.id, invite.id));
+
+      // Add user to the inviting workshop with the specified role
+      const [nuevoUsuario] = await db
+        .insert(usuarios)
+        .values({
+          clerkUserId: userId,
+          tallerId: invite.tallerId,
+          rol: invite.rol,
+          nombre: "Nuevo usuario",
+        })
+        .returning();
+
+      // Clear the invite cookie
+      cookieStore.delete("invite_token");
+
+      return { tallerId: invite.tallerId, usuarioId: nuevoUsuario.id, clerkUserId: userId, rol: nuevoUsuario.rol };
+    }
+  }
+
+  // No valid invite — crear taller como PENDIENTE, necesita aprobación del admin
   const [taller] = await db
     .insert(talleres)
     .values({
@@ -135,16 +174,18 @@ export async function getSuperAdmin(): Promise<boolean> {
   const { userId } = await auth();
   if (!userId) return false;
 
-  const db = getDb();
-  const usuario = await db.query.usuarios.findFirst({
-    where: eq(usuarios.clerkUserId, userId),
-  });
-  if (!usuario) return false;
+  // Check against allowed super admin emails from env
+  const allowedEmails = (process.env.SUPER_ADMIN_EMAILS || "sergi@ibclima.com").split(",").map(e => e.trim());
 
-  const todosUsuarios = await db.query.usuarios.findMany({
-    orderBy: (u, { asc }) => [asc(u.createdAt)],
-    limit: 1,
-  });
+  // Get user email from Clerk
+  const { clerkClient } = await import("@clerk/nextjs/server");
+  const client = await clerkClient();
+  const user = await client.users.getUser(userId);
+  const userEmail = user.emailAddresses[0]?.emailAddress;
 
-  return todosUsuarios[0]?.id === usuario.id;
+  if (!userEmail || !allowedEmails.includes(userEmail)) {
+    return false;
+  }
+
+  return true;
 }
