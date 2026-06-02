@@ -13,6 +13,7 @@ import { NuevoVehiculoDialog } from "./nuevo-vehiculo-dialog";
 import { EditarClienteDialog } from "./editar-cliente-dialog";
 import { EditarVehiculoDialog } from "./editar-vehiculo-dialog";
 import { VehicleTimeline } from "./vehicle-timeline";
+import { PrintButton } from "./print-button";
 import { estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
 
@@ -60,6 +61,7 @@ export default async function ClienteDetallePage({ params }: { params: Promise<{
           <div className="flex items-center gap-3 flex-wrap">
             <h1 className="text-2xl font-extrabold tracking-tight">{cliente.nombre}</h1>
             <EditarClienteDialog cliente={cliente} />
+            <PrintButton />
           </div>
           <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mt-1">
             {cliente.telefono && (
@@ -73,7 +75,7 @@ export default async function ClienteDetallePage({ params }: { params: Promise<{
           </div>
           {/* WhatsApp */}
           {cliente.telefono && (
-            <div className="mt-2">
+            <div className="mt-2 no-print">
               <a
                 href={formatWhatsAppUrl(cliente.telefono, `Hola ${cliente.nombre.split(" ")[0]}, te escribimos desde el taller.`)}
                 target="_blank"
@@ -94,7 +96,7 @@ export default async function ClienteDetallePage({ params }: { params: Promise<{
       <div>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-bold flex items-center gap-2"><Car className="h-5 w-5 text-muted-foreground" />Vehículos ({vehiculosList.length})</h2>
-          <NuevoVehiculoDialog clienteId={id} />
+          <span className="no-print"><NuevoVehiculoDialog clienteId={id} /></span>
         </div>
 
         {vehiculosList.length === 0 ? (

@@ -13,6 +13,7 @@ import {
 } from "@/db/schema";
 import { eq, and, desc, count, sql } from "drizzle-orm";
 import { getTallerIdFromAuth, requireRole } from "@/lib/auth";
+import { checkMaintenanceAlerts, type MaintenanceAlert } from "@/lib/maintenance-check";
 import { revalidatePath } from "next/cache";
 import { logAudit } from "@/lib/audit";
 import { createNotification } from "@/lib/notify";
@@ -469,6 +470,30 @@ export async function asignarMecanico(ordenId: string, usuarioId: string | null)
 
   revalidatePath(`/ordenes/${ordenId}`);
   revalidatePath("/ordenes");
+}
+
+export async function getMaintenanceAlerts(
+  vehiculoId: string,
+  kmActual: number | null
+): Promise<MaintenanceAlert[]> {
+  if (!kmActual) return [];
+
+  const { tallerId } = await getTallerIdFromAuth();
+  const db = getDb();
+
+  // Get previous orders for this vehicle, sorted by date desc
+  const previousOrders = await db.query.ordenesTrabajo.findMany({
+    where: and(
+      eq(ordenesTrabajo.tallerId, tallerId),
+      eq(ordenesTrabajo.vehiculoId, vehiculoId)
+    ),
+    with: {
+      lineas: true,
+    },
+    orderBy: desc(ordenesTrabajo.fechaEntrada),
+  });
+
+  return checkMaintenanceAlerts(kmActual, previousOrders);
 }
 
 export async function enviarInformeCliente(ordenId: string) {

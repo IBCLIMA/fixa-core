@@ -247,6 +247,21 @@
   --shadow-strong: #00000088;
 }
 
+@media print {
+  /* Hide navigation, sidebar, buttons, floating elements */
+  header, aside, nav, .fixed, .no-print { display: none !important; }
+  /* Full width content */
+  main { padding: 0 !important; max-width: 100% !important; }
+  /* Clean backgrounds */
+  body, .min-h-screen, [style*="background"] { background: white !important; }
+  /* Show borders for cards */
+  .rounded-2xl, .rounded-xl { border: 1px solid #e5e5e5 !important; }
+  /* Ensure text is black */
+  * { color: #000 !important; }
+  /* Page breaks */
+  .page-break { page-break-before: always; }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -254,6 +269,25 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Tour guiado styles */
+/* Modo taller: botones grandes para manos sucias */
+.taller-mode button {
+  min-height: 56px;
+  font-size: 18px !important;
+  padding: 16px 24px !important;
+}
+.taller-mode input,
+.taller-mode select {
+  min-height: 56px;
+  font-size: 18px !important;
+}
+.taller-mode .text-sm {
+  font-size: 16px !important;
+}
+.taller-mode .text-xs {
+  font-size: 14px !important;
 }
 
 /* Tour guiado styles */

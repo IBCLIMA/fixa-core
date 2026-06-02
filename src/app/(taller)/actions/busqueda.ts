@@ -69,8 +69,10 @@ export async function busquedaGlobal(termino: string): Promise<ResultadoBusqueda
     });
   }
 
-  // Buscar órdenes por número
-  if (/^\d+$/.test(termino.trim())) {
+  // Buscar órdenes por número — support "OR-123", "or-123", or plain "123"
+  const orderNumMatch = termino.trim().match(/^(?:OR-?)?(\d+)$/i);
+  if (orderNumMatch) {
+    const num = parseInt(orderNumMatch[1]);
     const ordenesRes = await db
       .select({
         id: ordenesTrabajo.id,
@@ -84,7 +86,7 @@ export async function busquedaGlobal(termino: string): Promise<ResultadoBusqueda
       .leftJoin(clientes, eq(ordenesTrabajo.clienteId, clientes.id))
       .where(and(
         eq(ordenesTrabajo.tallerId, tallerId),
-        eq(ordenesTrabajo.numero, parseInt(termino.trim()))
+        eq(ordenesTrabajo.numero, num)
       ))
       .limit(5);
 
@@ -96,6 +98,44 @@ export async function busquedaGlobal(termino: string): Promise<ResultadoBusqueda
         subtitulo: `${o.matricula || ""} · ${o.clienteNombre || ""}`,
         href: `/ordenes/${o.id}`,
       });
+    }
+  }
+
+  // Also search orders by description if not a number-only search
+  if (!orderNumMatch) {
+    const ordenesDescRes = await db
+      .select({
+        id: ordenesTrabajo.id,
+        numero: ordenesTrabajo.numero,
+        estado: ordenesTrabajo.estado,
+        matricula: vehiculos.matricula,
+        clienteNombre: clientes.nombre,
+      })
+      .from(ordenesTrabajo)
+      .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
+      .leftJoin(clientes, eq(ordenesTrabajo.clienteId, clientes.id))
+      .where(and(
+        eq(ordenesTrabajo.tallerId, tallerId),
+        or(
+          ilike(ordenesTrabajo.descripcionCliente, term),
+          ilike(vehiculos.matricula, term),
+          ilike(clientes.nombre, term),
+          ilike(clientes.telefono, term)
+        )
+      ))
+      .limit(5);
+
+    for (const o of ordenesDescRes) {
+      // Avoid duplicates if already found via client/vehicle search
+      if (!resultados.some((r) => r.tipo === "orden" && r.id === o.id)) {
+        resultados.push({
+          tipo: "orden",
+          id: o.id,
+          titulo: `OR-${o.numero}`,
+          subtitulo: `${o.matricula || ""} · ${o.clienteNombre || ""}`,
+          href: `/ordenes/${o.id}`,
+        });
+      }
     }
   }
 

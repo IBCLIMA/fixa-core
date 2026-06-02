@@ -5,6 +5,7 @@ import { Pencil, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { VoiceRecorder } from "@/components/voice-recorder";
 
 export function EditarDiagnostico({
   ordenId,
@@ -41,18 +42,28 @@ export function EditarDiagnostico({
     <div className="rounded-xl bg-muted/50 p-4 space-y-3">
       {descripcionActual && (
         <div>
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Descripción del cliente</p>
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Descripción del cliente</p>
+          </div>
           <p className="text-sm">{descripcionActual}</p>
         </div>
       )}
       <div>
         <div className="flex items-center justify-between mb-1">
           <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Diagnóstico del mecánico</p>
-          {!editando && (
-            <Button variant="ghost" size="sm" className="h-6 px-2 text-xs rounded-full" onClick={() => setEditando(true)}>
-              <Pencil className="h-3 w-3 mr-1" />{diagnosticoActual ? "Editar" : "Añadir"}
-            </Button>
-          )}
+          <div className="flex items-center gap-1">
+            <VoiceRecorder
+              onTranscription={(text) => {
+                setDiagnostico((prev) => (prev ? prev + " " + text : text));
+                setEditando(true);
+              }}
+            />
+            {!editando && (
+              <Button variant="ghost" size="sm" className="h-6 px-2 text-xs rounded-full" onClick={() => setEditando(true)}>
+                <Pencil className="h-3 w-3 mr-1" />{diagnosticoActual ? "Editar" : "Añadir"}
+              </Button>
+            )}
+          </div>
         </div>
         {editando ? (
           <div className="space-y-2">

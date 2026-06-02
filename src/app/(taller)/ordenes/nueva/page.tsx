@@ -19,6 +19,8 @@ import Link from "next/link";
 import { getClientes } from "../../actions/clientes";
 import { crearOrden } from "../../actions/ordenes";
 import { toast } from "sonner";
+import { FichaScanner } from "./ficha-scanner";
+import { VoiceRecorder } from "@/components/voice-recorder";
 
 type ClienteConVehiculos = Awaited<ReturnType<typeof getClientes>>[number];
 
@@ -29,6 +31,7 @@ export default function NuevaOrdenPage() {
   const [vehiculoId, setVehiculoId] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingClientes, setLoadingClientes] = useState(true);
+  const [descripcion, setDescripcion] = useState("");
 
   const clienteSeleccionado = clientes.find((c) => c.id === clienteId);
   const vehiculos = clienteSeleccionado?.vehiculos || [];
@@ -79,6 +82,28 @@ export default function NuevaOrdenPage() {
           Nueva orden de trabajo
         </h1>
       </div>
+
+      {/* Ficha scanner */}
+      <FichaScanner
+        onApply={(data) => {
+          // Try to auto-match vehicle by matrícula
+          if (data.matricula) {
+            const normalizedScan = data.matricula.replace(/[\s-]/g, "").toUpperCase();
+            for (const c of clientes) {
+              const match = c.vehiculos?.find(
+                (v) => v.matricula.replace(/[\s-]/g, "").toUpperCase() === normalizedScan
+              );
+              if (match) {
+                setClienteId(c.id);
+                setVehiculoId(match.id);
+                toast.success(`Vehículo ${data.matricula} encontrado — ${c.nombre}`);
+                return;
+              }
+            }
+            toast.info(`Matrícula ${data.matricula} escaneada. No se encontró en la base de datos — selecciona el cliente y vehículo manualmente.`);
+          }
+        }}
+      />
 
       <form action={handleSubmit} className="space-y-6">
         {/* Cliente */}
@@ -156,12 +181,21 @@ export default function NuevaOrdenPage() {
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="descripcion">
-                ¿Qué dice el cliente?
-              </Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="descripcion">
+                  ¿Qué dice el cliente?
+                </Label>
+                <VoiceRecorder
+                  onTranscription={(text) => {
+                    setDescripcion((prev) => (prev ? prev + " " + text : text));
+                  }}
+                />
+              </div>
               <Textarea
                 id="descripcion"
                 name="descripcion"
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
                 placeholder="Le hace ruido al frenar, pierde líquido..."
                 rows={3}
                 className="rounded-xl"

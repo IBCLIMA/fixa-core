@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Car, User, Clock, Hash, FileText, MessageSquare, Phone, Share2, Printer, Star, Send } from "lucide-react";
+import { ArrowLeft, Car, User, Clock, Hash, FileText, MessageSquare, Phone, Share2, Printer, Star, Send, AlertTriangle, CircleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { getOrden, enviarSolicitudResena, enviarInformeCliente, getMecanicos } from "../../actions/ordenes";
+import { getOrden, enviarSolicitudResena, enviarInformeCliente, getMecanicos, getMaintenanceAlerts } from "../../actions/ordenes";
 import { AsignarMecanico } from "./asignar-mecanico";
 import { CambiarEstadoButtons } from "./cambiar-estado";
 import { AgregarLineaForm } from "./agregar-linea";
@@ -17,6 +17,8 @@ import { PedirResenaBtn } from "./pedir-resena-btn";
 import { EnviarInformeBtn } from "./enviar-informe-btn";
 import { TemplateSelector } from "./template-selector";
 import { InspeccionView } from "./inspeccion-view";
+import { TallerModeToggle } from "./taller-mode";
+import { PrintButton } from "./print-button";
 import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { getUserRole } from "@/lib/auth";
@@ -31,10 +33,11 @@ export default async function OrdenDetallePage({
   const orden = await getOrden(id);
   if (!orden) return notFound();
 
-  const [rol, inspecciones, mecanicos] = await Promise.all([
+  const [rol, inspecciones, mecanicos, maintenanceAlerts] = await Promise.all([
     getUserRole(),
     getInspeccion(id),
     getMecanicos(),
+    getMaintenanceAlerts(orden.vehiculoId, orden.kmEntrada),
   ]);
   const isAdmin = rol === "admin";
   const canAssign = rol === "admin" || rol === "recepcion";
@@ -57,7 +60,7 @@ export default async function OrdenDetallePage({
   const totalFinal = totalBase + totalIva;
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div id="orden-detail-container" className="space-y-6 max-w-3xl">
       {/* Header */}
       <div className="flex items-start gap-3">
         <Link href="/ordenes">
@@ -83,10 +86,36 @@ export default async function OrdenDetallePage({
             })}
           </p>
         </div>
+        <TallerModeToggle />
       </div>
 
+      {/* Maintenance Alerts */}
+      {maintenanceAlerts.length > 0 && (
+        <div className="space-y-2">
+          {maintenanceAlerts.map((alert) => (
+            <div
+              key={alert.tipo}
+              className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium ${
+                alert.urgente
+                  ? "bg-red-50 text-red-800 border border-red-200"
+                  : "bg-amber-50 text-amber-800 border border-amber-200"
+              }`}
+            >
+              {alert.urgente ? (
+                <CircleAlert className="h-4 w-4 shrink-0 text-red-600" />
+              ) : (
+                <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600" />
+              )}
+              <span>
+                {alert.tipo}: {alert.kmDesdeUltimo.toLocaleString("es-ES")} km desde el ultimo (recomendado: {alert.kmRecomendado.toLocaleString("es-ES")} km)
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Estado + Portal */}
-      <Card>
+      <Card className="no-print">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base">Cambiar estado</CardTitle>
@@ -109,7 +138,7 @@ export default async function OrdenDetallePage({
 
       {/* Asignar mecánico */}
       {canAssign && (
-        <Card>
+        <Card className="no-print">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Asignar mecánico</CardTitle>
           </CardHeader>
@@ -217,7 +246,8 @@ export default async function OrdenDetallePage({
       <InspeccionView ordenId={orden.id} inspecciones={inspecciones} />
 
       {/* Acciones */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 no-print">
+        <PrintButton />
         <CrearPresupuestoBtn ordenId={orden.id} />
         <a href={`/api/ordenes/${orden.id}/resumen`} target="_blank">
           <Button variant="outline" className="rounded-full">

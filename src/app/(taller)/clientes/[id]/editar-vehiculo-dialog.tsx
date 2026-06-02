@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { actualizarVehiculo } from "../../actions/clientes";
 import { toast } from "sonner";
+import { FichaScanner } from "@/app/(taller)/ordenes/nueva/ficha-scanner";
 
 interface Props {
   vehiculo: {
@@ -29,6 +30,7 @@ export function EditarVehiculoDialog({ vehiculo }: Props) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [combustible, setCombustible] = useState(vehiculo.combustible || "");
+  const [ocrOverrides, setOcrOverrides] = useState<Record<string, string>>({});
 
   async function handleSubmit(formData: FormData) {
     setLoading(true);
@@ -62,6 +64,28 @@ export function EditarVehiculoDialog({ vehiculo }: Props) {
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <DialogHeader><DialogTitle>Editar vehículo — {vehiculo.matricula}</DialogTitle></DialogHeader>
+        <FichaScanner
+          onApply={(data) => {
+            const overrides: Record<string, string> = {};
+            if (data.matricula) overrides.matricula = data.matricula;
+            if (data.marca) overrides.marca = data.marca;
+            if (data.modelo) overrides.modelo = data.modelo;
+            if (data.vin) overrides.vin = data.vin;
+            if (data.color) overrides.color = data.color;
+            if (data.combustible) setCombustible(data.combustible);
+            setOcrOverrides(overrides);
+            // Update input values directly via DOM for uncontrolled inputs
+            for (const [key, value] of Object.entries(overrides)) {
+              const input = document.querySelector<HTMLInputElement>(`input[name="${key}"]`);
+              if (input) {
+                const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
+                nativeInputValueSetter?.call(input, value);
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+            }
+            toast.success("Datos de la ficha aplicados");
+          }}
+        />
         <form action={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2 space-y-1.5">
