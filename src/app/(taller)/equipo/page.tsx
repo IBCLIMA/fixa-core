@@ -8,6 +8,7 @@ import { getDb } from "@/db";
 import { usuarios } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { InvitarUsuarioDialog } from "./invitar-dialog";
+import { ComisionInput } from "./comision-input";
 
 const rolLabels: Record<string, string> = {
   admin: "Administrador",
@@ -69,7 +70,13 @@ export default async function EquipoPage() {
                     </p>
                   </div>
                 </div>
-                <Badge className={rolColors[u.rol]}>{rolLabels[u.rol]}</Badge>
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider mb-0.5">Comisión</p>
+                    <ComisionInput usuarioId={u.id} comisionActual={Number(u.comisionPct ?? 0)} />
+                  </div>
+                  <Badge className={rolColors[u.rol]}>{rolLabels[u.rol]}</Badge>
+                </div>
               </CardContent>
             </Card>
           );

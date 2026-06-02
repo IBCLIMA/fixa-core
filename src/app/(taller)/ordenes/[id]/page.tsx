@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { getOrden, enviarSolicitudResena, enviarInformeCliente } from "../../actions/ordenes";
+import { getOrden, enviarSolicitudResena, enviarInformeCliente, getMecanicos } from "../../actions/ordenes";
+import { AsignarMecanico } from "./asignar-mecanico";
 import { CambiarEstadoButtons } from "./cambiar-estado";
 import { AgregarLineaForm } from "./agregar-linea";
 import { EditarDiagnostico } from "./editar-diagnostico";
@@ -30,11 +31,13 @@ export default async function OrdenDetallePage({
   const orden = await getOrden(id);
   if (!orden) return notFound();
 
-  const [rol, inspecciones] = await Promise.all([
+  const [rol, inspecciones, mecanicos] = await Promise.all([
     getUserRole(),
     getInspeccion(id),
+    getMecanicos(),
   ]);
   const isAdmin = rol === "admin";
+  const canAssign = rol === "admin" || rol === "recepcion";
 
   const lineas = orden.lineas || [];
   const totalBase = lineas.reduce((sum, l) => {
@@ -103,6 +106,27 @@ export default async function OrdenDetallePage({
           </p>
         </CardContent>
       </Card>
+
+      {/* Asignar mecánico */}
+      {canAssign && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Asignar mecánico</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <AsignarMecanico
+              ordenId={orden.id}
+              asignadoActual={orden.asignadoA}
+              mecanicos={mecanicos}
+            />
+            {orden.asignado && (
+              <p className="text-xs text-muted-foreground mt-2">
+                Asignado a: <span className="font-bold">{orden.asignado.nombre}</span>
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Info del vehículo y cliente */}
       <div className="grid gap-4 sm:grid-cols-2">

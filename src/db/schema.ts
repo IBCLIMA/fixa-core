@@ -132,6 +132,7 @@ export const usuarios = pgTable("usuarios", {
     .notNull(),
   rol: rolUsuarioEnum("rol").default("admin").notNull(),
   nombre: text("nombre").notNull(),
+  comisionPct: numeric("comision_pct", { precision: 5, scale: 2 }).default("0"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -353,6 +354,20 @@ export const inspeccionesOrden = pgTable("inspecciones_orden", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const notificaciones = pgTable("notificaciones", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tallerId: uuid("taller_id")
+    .references(() => talleres.id)
+    .notNull(),
+  usuarioId: uuid("usuario_id").references(() => usuarios.id),
+  tipo: text("tipo").notNull(), // "cita_nueva", "orden_lista", "pago_pendiente", "itv_proxima", "mantenimiento_pendiente"
+  titulo: text("titulo").notNull(),
+  mensaje: text("mensaje").notNull(),
+  leida: boolean("leida").default(false).notNull(),
+  enlace: text("enlace"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const recordatoriosMantenimiento = pgTable("recordatorios_mantenimiento", {
   id: uuid("id").defaultRandom().primaryKey(),
   tallerId: uuid("taller_id")
@@ -382,6 +397,7 @@ export const talleresRelations = relations(talleres, ({ many }) => ({
   citas: many(citas),
   presupuestos: many(presupuestos),
   avisos: many(avisos),
+  notificaciones: many(notificaciones),
 }));
 
 export const clientesRelations = relations(clientes, ({ one, many }) => ({
@@ -464,5 +480,16 @@ export const recordatoriosMantenimientoRelations = relations(recordatoriosManten
   vehiculo: one(vehiculos, {
     fields: [recordatoriosMantenimiento.vehiculoId],
     references: [vehiculos.id],
+  }),
+}));
+
+export const notificacionesRelations = relations(notificaciones, ({ one }) => ({
+  taller: one(talleres, {
+    fields: [notificaciones.tallerId],
+    references: [talleres.id],
+  }),
+  usuario: one(usuarios, {
+    fields: [notificaciones.usuarioId],
+    references: [usuarios.id],
   }),
 }));

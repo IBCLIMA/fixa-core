@@ -13,6 +13,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { BusquedaGlobal } from "./busqueda-global";
+import { NotificationsBell } from "./notifications-bell";
 import { TrialBanner } from "./trial-banner";
 import type { RolUsuario } from "@/lib/auth";
 
@@ -57,7 +58,10 @@ export function TallerNav({ children, rol }: { children: React.ReactNode; rol: R
             <FixaLogo size="sm" />
           </Link>
           <BusquedaGlobal />
-          <UserButton appearance={{ elements: { avatarBox: "h-8 w-8 rounded-xl" } }} />
+          <div className="flex items-center gap-2">
+            <NotificationsBell />
+            <UserButton appearance={{ elements: { avatarBox: "h-8 w-8 rounded-xl" } }} />
+          </div>
         </div>
       </header>
 

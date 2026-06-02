@@ -2,24 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/db";
 import { citas, talleres } from "@/db/schema";
 import { eq } from "drizzle-orm";
-
-// Simple in-memory rate limiting: max 5 bookings per IP per day
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + 24 * 60 * 60 * 1000 });
-    return true;
-  }
-
-  if (entry.count >= 5) return false;
-
-  entry.count++;
-  return true;
-}
+import { rateLimit } from "@/lib/rate-limit";
+import { createNotification } from "@/lib/notify";
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,9 +12,10 @@ export async function POST(request: NextRequest) {
       request.headers.get("x-real-ip") ||
       "unknown";
 
-    if (!checkRateLimit(ip)) {
+    const { success } = rateLimit(ip, 5, 60 * 60 * 1000);
+    if (!success) {
       return NextResponse.json(
-        { error: "Demasiadas solicitudes. Inténtalo mañana." },
+        { error: "Demasiadas solicitudes" },
         { status: 429 }
       );
     }
@@ -95,6 +80,15 @@ export async function POST(request: NextRequest) {
       horaInicio,
       motivo: `${motivo}${matricula ? ` | Matrícula: ${matricula}` : ""}${horaPreferida ? ` | Horario: ${horaPreferida === "manana" ? "Mañana (9-13h)" : horaPreferida === "tarde" ? "Tarde (15-19h)" : "Indiferente"}` : ""}`,
       estado: "programada",
+    });
+
+    // Notify workshop about new online booking
+    createNotification({
+      tallerId,
+      tipo: "cita_nueva",
+      titulo: "Nueva cita online",
+      mensaje: `${nombre} ha solicitado cita para el ${fecha}${matricula ? ` (${matricula})` : ""}.`,
+      enlace: "/calendario",
     });
 
     return NextResponse.json({ ok: true, message: "Cita solicitada" });

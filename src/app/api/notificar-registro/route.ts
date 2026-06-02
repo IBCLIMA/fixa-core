@@ -1,9 +1,23 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { auth } from "@clerk/nextjs/server";
+import { rateLimit } from "@/lib/rate-limit";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+
+    const { success } = rateLimit(ip, 3, 60 * 60 * 1000);
+    if (!success) {
+      return NextResponse.json(
+        { error: "Demasiadas solicitudes" },
+        { status: 429 }
+      );
+    }
+
     // Auth check - only authenticated users can trigger notifications
     const { userId: authUserId } = await auth();
     if (!authUserId) {

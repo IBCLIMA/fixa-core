@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Home, BookOpen, MessageCircle } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { Button } from "@/components/ui/button";
 
@@ -12,14 +12,34 @@ export default function NotFound() {
         </div>
         <div>
           <h1 className="text-6xl font-extrabold text-stone-200">404</h1>
-          <p className="text-lg font-bold text-stone-900 mt-2">Página no encontrada</p>
-          <p className="text-sm text-muted-foreground mt-1">La página que buscas no existe o ha sido movida.</p>
+          <p className="text-lg font-bold text-stone-900 mt-2">Pagina no encontrada</p>
+          <p className="text-sm text-muted-foreground mt-1">La pagina que buscas no existe o ha sido movida.</p>
         </div>
-        <Link href="/">
-          <Button className="rounded-full">
-            <ArrowLeft className="mr-2 h-4 w-4" />Volver al panel
-          </Button>
-        </Link>
+        <div className="flex flex-col gap-3">
+          <Link href="/">
+            <Button className="rounded-full w-full">
+              <Home className="mr-2 h-4 w-4" />Ir al inicio
+            </Button>
+          </Link>
+          <div className="flex gap-3">
+            <Link href="/blog" className="flex-1">
+              <Button variant="outline" className="rounded-full w-full">
+                <BookOpen className="mr-2 h-4 w-4" />Blog
+              </Button>
+            </Link>
+            <a
+              href="https://wa.me/34644032200?text=Hola%2C%20necesito%20ayuda%20con%20FIXA"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1"
+            >
+              <Button variant="outline" className="rounded-full w-full">
+                <MessageCircle className="mr-2 h-4 w-4" />Contacto
+              </Button>
+            </a>
+          </div>
+        </div>
+        <p className="text-xs text-muted-foreground">FIXA by Ibanez Clima</p>
       </div>
     </div>
   );

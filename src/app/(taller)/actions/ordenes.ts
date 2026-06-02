@@ -9,11 +9,13 @@ import {
   vehiculos,
   clientes,
   talleres,
+  usuarios,
 } from "@/db/schema";
 import { eq, and, desc, count, sql } from "drizzle-orm";
 import { getTallerIdFromAuth, requireRole } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { logAudit } from "@/lib/audit";
+import { createNotification } from "@/lib/notify";
 import { formatWhatsAppUrl } from "@/lib/utils";
 
 type EstadoOrden =
@@ -156,6 +158,17 @@ export async function cambiarEstadoOrden(id: string, nuevoEstado: EstadoOrden) {
     entityId: id,
     details: { estadoAnterior: orden.estado, estadoNuevo: nuevoEstado },
   });
+
+  // Notification when order is ready
+  if (nuevoEstado === "listo") {
+    createNotification({
+      tallerId,
+      tipo: "orden_lista",
+      titulo: `Orden OR-${orden.numero} lista`,
+      mensaje: `La orden OR-${orden.numero} ha sido marcada como lista para entrega.`,
+      enlace: `/ordenes/${id}`,
+    });
+  }
 
   revalidatePath("/ordenes");
   revalidatePath(`/ordenes/${id}`);
@@ -407,6 +420,55 @@ export async function enviarSolicitudResena(ordenId: string) {
 export async function getInformeUrl(ordenId: string) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
   return `${baseUrl}/informe/${ordenId}`;
+}
+
+export async function getMecanicos() {
+  const { tallerId } = await getTallerIdFromAuth();
+  const db = getDb();
+
+  return db
+    .select({ id: usuarios.id, nombre: usuarios.nombre, rol: usuarios.rol })
+    .from(usuarios)
+    .where(eq(usuarios.tallerId, tallerId));
+}
+
+export async function asignarMecanico(ordenId: string, usuarioId: string | null) {
+  const { tallerId, clerkUserId } = await requireRole(["admin", "recepcion"]);
+  const db = getDb();
+
+  const orden = await db.query.ordenesTrabajo.findFirst({
+    where: and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)),
+  });
+
+  if (!orden) throw new Error("Orden no encontrada");
+
+  // If assigning, verify the user belongs to this workshop
+  if (usuarioId) {
+    const usuario = await db.query.usuarios.findFirst({
+      where: and(eq(usuarios.id, usuarioId), eq(usuarios.tallerId, tallerId)),
+    });
+    if (!usuario) throw new Error("Usuario no encontrado en este taller");
+  }
+
+  await db
+    .update(ordenesTrabajo)
+    .set({
+      asignadoA: usuarioId,
+      updatedAt: new Date(),
+    })
+    .where(eq(ordenesTrabajo.id, ordenId));
+
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "update",
+    entityType: "orden",
+    entityId: ordenId,
+    details: { action: "asignar_mecanico", usuarioId },
+  });
+
+  revalidatePath(`/ordenes/${ordenId}`);
+  revalidatePath("/ordenes");
 }
 
 export async function enviarInformeCliente(ordenId: string) {

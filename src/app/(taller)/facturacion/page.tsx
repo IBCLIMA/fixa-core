@@ -1,12 +1,13 @@
-import { Receipt, TrendingUp, Car, Users, ClipboardList, Calendar, ArrowUpRight, ArrowDownRight, AlertTriangle } from "lucide-react";
+import { Receipt, TrendingUp, Car, Users, ClipboardList, Calendar, ArrowUpRight, ArrowDownRight, AlertTriangle, Wrench } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { requireRole } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getDb } from "@/db";
-import { ordenesTrabajo, lineasOrden, clientes, vehiculos, citas } from "@/db/schema";
+import { ordenesTrabajo, lineasOrden, clientes, vehiculos, citas, usuarios } from "@/db/schema";
 import { eq, and, sql, count, desc, gte } from "drizzle-orm";
 import { CobrosPendientes } from "./cobros-pendientes";
+import { ExportGestoria } from "./export-gestoria";
 
 export default async function FacturacionPage() {
   let tallerId: string;
@@ -100,6 +101,51 @@ export default async function FacturacionPage() {
     ))
     .orderBy(desc(ordenesTrabajo.fechaEntrega));
 
+  // Comisiones: mecánicos con sus órdenes entregadas+pagadas este mes
+  const mecanicosConComision = await db
+    .select({
+      id: usuarios.id,
+      nombre: usuarios.nombre,
+      comisionPct: usuarios.comisionPct,
+    })
+    .from(usuarios)
+    .where(eq(usuarios.tallerId, tallerId));
+
+  const comisionesData = await Promise.all(
+    mecanicosConComision.map(async (mec) => {
+      const [result] = await db
+        .select({
+          numOrdenes: sql<number>`count(*)`,
+          totalFacturado: sql<number>`COALESCE(SUM((SELECT SUM(CAST(cantidad AS NUMERIC) * CAST(precio_unitario AS NUMERIC) * (1 + CAST(iva_pct AS NUMERIC) / 100)) FROM lineas_orden WHERE lineas_orden.orden_id = ${ordenesTrabajo.id})), 0)`,
+        })
+        .from(ordenesTrabajo)
+        .where(
+          and(
+            eq(ordenesTrabajo.tallerId, tallerId),
+            eq(ordenesTrabajo.asignadoA, mec.id),
+            eq(ordenesTrabajo.estado, "entregado"),
+            eq(ordenesTrabajo.pagado, true),
+            gte(ordenesTrabajo.fechaEntrega, new Date(primerDiaMes))
+          )
+        );
+
+      const pct = Number(mec.comisionPct ?? 0);
+      const totalFact = Number(result?.totalFacturado ?? 0);
+      return {
+        ...mec,
+        numOrdenes: Number(result?.numOrdenes ?? 0),
+        totalFacturado: totalFact,
+        comisionGanada: totalFact * (pct / 100),
+        comisionPctNum: pct,
+      };
+    })
+  );
+
+  // Only show mechanics that have a commission set or have orders
+  const comisionesVisibles = comisionesData.filter(
+    (c) => c.comisionPctNum > 0 || c.numOrdenes > 0
+  );
+
   const totalFact = Number(facturacionTotal?.total ?? 0);
   const factMes = Number(facturacionMes?.total ?? 0);
   const ticketMedio = (entregadas?.count ?? 0) > 0 ? totalFact / (entregadas?.count ?? 1) : 0;
@@ -107,9 +153,12 @@ export default async function FacturacionPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Facturación e informes</h1>
-        <p className="text-sm text-muted-foreground mt-0.5 capitalize">{mesActual}</p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight">Facturación e informes</h1>
+          <p className="text-sm text-muted-foreground mt-0.5 capitalize">{mesActual}</p>
+        </div>
+        <ExportGestoria />
       </div>
 
       {/* KPIs principales */}
@@ -217,6 +266,49 @@ export default async function FacturacionPage() {
           <CobrosPendientes ordenes={ordenesPendientesCobro} />
         </CardContent>
       </Card>
+
+      {/* Comisiones */}
+      {comisionesVisibles.length > 0 && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Wrench className="h-4 w-4 text-muted-foreground" />
+              Comisiones del mes
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {comisionesVisibles.map((c) => (
+                <div
+                  key={c.id}
+                  className="flex items-center justify-between rounded-xl bg-muted/50 px-3 py-2.5"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold">{c.nombre}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {c.numOrdenes} {c.numOrdenes === 1 ? "orden" : "órdenes"} completada{c.numOrdenes !== 1 ? "s" : ""}
+                      {" · "}Facturado: {c.totalFacturado.toFixed(2)}€
+                      {" · "}Comisión: {c.comisionPctNum}%
+                    </p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-sm font-extrabold text-emerald-700">
+                      {c.comisionGanada.toFixed(2)}€
+                    </p>
+                    <p className="text-[10px] text-muted-foreground">comisión</p>
+                  </div>
+                </div>
+              ))}
+              <div className="flex justify-between items-center pt-2 border-t border-border">
+                <span className="text-sm font-bold">Total comisiones</span>
+                <span className="text-sm font-extrabold text-emerald-700">
+                  {comisionesVisibles.reduce((sum, c) => sum + c.comisionGanada, 0).toFixed(2)}€
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* VeriFactu */}
       <Card className="border-amber-200 bg-amber-50/30">
