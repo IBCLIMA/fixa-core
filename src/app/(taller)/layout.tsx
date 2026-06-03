@@ -1,12 +1,13 @@
 import { getUserRole } from "@/lib/auth";
 import { TallerNav } from "./taller-nav";
+import { redirect } from "next/navigation";
 
 export default async function TallerLayout({ children }: { children: React.ReactNode }) {
-  let rol: "admin" | "mecanico" | "recepcion" = "mecanico";
+  let rol: "admin" | "mecanico" | "recepcion";
   try {
     rol = await getUserRole();
   } catch {
-    // Default to most restricted role - middleware handles redirect
+    redirect("/sign-in");
   }
 
   return <TallerNav rol={rol}>{children}</TallerNav>;
