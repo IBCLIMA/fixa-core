@@ -110,6 +110,9 @@ export const talleres = pgTable("talleres", {
   direccion: text("direccion"),
   telefono: text("telefono"),
   email: text("email"),
+  codigoPostal: text("codigo_postal"),
+  ciudad: text("ciudad"),
+  provincia: text("provincia"),
   clerkOrgId: text("clerk_org_id").unique(),
   // Suscripción
   plan: planEnum("plan").default("trial").notNull(),

@@ -16,6 +16,9 @@ export async function PUT(request: Request) {
       direccion: body.direccion || null,
       telefono: body.telefono || null,
       email: body.email || null,
+      codigoPostal: body.codigoPostal || null,
+      ciudad: body.ciudad || null,
+      provincia: body.provincia || null,
       googleReviewLink: body.googleReviewLink || null,
     };
 

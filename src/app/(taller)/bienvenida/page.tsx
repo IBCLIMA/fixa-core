@@ -24,6 +24,9 @@ export default function BienvenidaPage() {
     email: "",
     cif: "",
     direccion: "",
+    codigoPostal: "",
+    ciudad: "",
+    provincia: "",
   });
 
   async function guardarDatos() {
@@ -157,6 +160,20 @@ export default function BienvenidaPage() {
                   <Input value={datos.direccion} onChange={(e) => setDatos({ ...datos, direccion: e.target.value })} placeholder="Calle Mayor, 1" className="h-11 rounded-xl" />
                 </div>
               </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-stone-500">Código postal</Label>
+                  <Input value={datos.codigoPostal} onChange={(e) => setDatos({ ...datos, codigoPostal: e.target.value })} placeholder="25001" className="h-11 rounded-xl" maxLength={5} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-stone-500">Ciudad</Label>
+                  <Input value={datos.ciudad} onChange={(e) => setDatos({ ...datos, ciudad: e.target.value })} placeholder="Lleida" className="h-11 rounded-xl" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-stone-500">Provincia</Label>
+                  <Input value={datos.provincia} onChange={(e) => setDatos({ ...datos, provincia: e.target.value })} placeholder="Lleida" className="h-11 rounded-xl" />
+                </div>
+              </div>
             </div>
 
             {/* DPA */}
@@ -169,11 +186,10 @@ export default function BienvenidaPage() {
                 className="mt-0.5 h-5 w-5 rounded border-stone-300 text-orange-500 focus:ring-orange-500 cursor-pointer accent-orange-500"
               />
               <label htmlFor="dpa-check" className="text-sm text-stone-600 cursor-pointer leading-snug">
-                Acepto el{" "}
-                <Link href="/dpa" target="_blank" className="text-orange-600 underline underline-offset-2 font-semibold">
-                  contrato de tratamiento de datos (DPA)
-                </Link>{" "}
-                conforme al RGPD.
+                Acepto que FIXA guarde los datos de mi taller de forma segura para poder usar el servicio.{" "}
+                <Link href="/dpa" target="_blank" className="text-orange-600 underline underline-offset-2 font-medium text-xs">
+                  Ver condiciones
+                </Link>
               </label>
             </div>
 
