@@ -41,17 +41,37 @@ const estadoDots: Record<string, string> = {
 export default async function PanelDelDia() {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
+
+  // Check if this is a brand new workshop - redirect to onboarding
+  const taller = await db.query.talleres.findFirst({
+    where: eq(require("@/db/schema").talleres.id, tallerId),
+  });
+  if (taller && (!taller.nombre || taller.nombre === "Mi Taller") && !taller.telefono) {
+    const { redirect } = require("next/navigation");
+    redirect("/bienvenida");
+  }
+
   const hoy = new Date().toISOString().split("T")[0];
 
   const manana = new Date();
   manana.setDate(manana.getDate() + 1);
   const mananaStr = manana.toISOString().split("T")[0];
 
-  // All queries in parallel
+  // All queries in parallel - wrapped in try/catch for resilience
+  let clientesResult: any = { count: 0 };
+  let ordenesActivas: any[] = [];
+  let citasHoy: any[] = [];
+  let cobrosPendientesResult: any = { count: 0 };
+  let ordenesHoy: any[] = [];
+  let entregadasHoyResult: any = { count: 0 };
+  let facturacionHoyResult: any = { total: 0 };
+  let citasManana: any[] = [];
+
+  try {
   const [
-    [clientesResult],
-    ordenesActivas,
-    citasHoy,
+    [_clientesResult],
+    _ordenesActivas,
+    _citasHoy,
     [cobrosPendientesResult],
     ordenesHoy,
     [entregadasHoyResult],
@@ -149,6 +169,13 @@ export default async function PanelDelDia() {
       .where(and(eq(citas.tallerId, tallerId), eq(citas.fecha, mananaStr)))
       .orderBy(citas.horaInicio),
   ]);
+
+  clientesResult = _clientesResult;
+  ordenesActivas = _ordenesActivas;
+  citasHoy = _citasHoy;
+  } catch (e) {
+    console.error("Dashboard query error:", e);
+  }
 
   const cobrosPendientes = cobrosPendientesResult?.count ?? 0;
   const entregadasHoy = entregadasHoyResult?.count ?? 0;
