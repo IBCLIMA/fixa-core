@@ -83,22 +83,25 @@ export default function BienvenidaPage() {
 
             <div>
               <h1 className="text-4xl font-extrabold tracking-tight text-stone-900">
-                ¡Bienvenido a <span className="text-orange-600">FIXA</span>!
+                Se acabó el caos.
+                <br />
+                <span className="text-orange-600">Tu taller, organizado.</span>
               </h1>
               <p className="text-lg text-stone-500 mt-3 max-w-md mx-auto leading-relaxed">
-                Has dado el primer paso para transformar la gestión de tu taller.
-                A partir de ahora, <strong className="text-stone-700">todo va a ser más fácil</strong>.
+                No más llamadas de "¿está listo mi coche?".
+                No más presupuestos a las 9 de la noche.
+                <strong className="text-stone-700"> FIXA se encarga.</strong>
               </p>
             </div>
 
             {/* What you'll get */}
             <div className="space-y-3 text-left">
-              <p className="text-xs font-bold text-orange-600 uppercase tracking-wider text-center mb-4">Esto es lo que vas a conseguir</p>
+              <p className="text-xs font-bold text-orange-600 uppercase tracking-wider text-center mb-4">A partir de hoy</p>
               {[
-                { icon: Zap, text: "Crear órdenes de trabajo en 10 segundos", color: "text-orange-500 bg-orange-50" },
-                { icon: MessageSquare, text: "Avisar a tus clientes por WhatsApp con un toque", color: "text-emerald-500 bg-emerald-50" },
-                { icon: Smartphone, text: "Que tus clientes vean el estado online (cero llamadas)", color: "text-blue-500 bg-blue-50" },
-                { icon: Bell, text: "Avisos automáticos de ITV que generan trabajo", color: "text-violet-500 bg-violet-50" },
+                { icon: Zap, text: "Matrícula y listo. Orden creada en 10 segundos.", color: "text-orange-500 bg-orange-50" },
+                { icon: MessageSquare, text: "Un toque y tu cliente recibe el WhatsApp.", color: "text-emerald-500 bg-emerald-50" },
+                { icon: Smartphone, text: "Tu cliente ve el estado online. Cero llamadas.", color: "text-blue-500 bg-blue-50" },
+                { icon: Bell, text: "FIXA detecta ITVs y te avisa. Trabajo que no pierdes.", color: "text-violet-500 bg-violet-50" },
               ].map((item) => (
                 <div key={item.text} className="flex items-center gap-4 rounded-2xl bg-white/80 backdrop-blur-sm border border-stone-200/40 p-4 shadow-sm hover:shadow-md transition-shadow">
                   <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${item.color}`}>
@@ -197,10 +200,10 @@ export default function BienvenidaPage() {
 
             <div>
               <h2 className="text-3xl font-extrabold tracking-tight text-stone-900">
-                ¡Tu taller está listo! <Sparkles className="inline h-7 w-7 text-amber-400" />
+                Ya está. Así de fácil. <Sparkles className="inline h-7 w-7 text-amber-400" />
               </h2>
               <p className="text-stone-500 mt-3 text-lg max-w-sm mx-auto">
-                Ya puedes empezar a trabajar. Te recomendamos estos primeros pasos:
+                Tu taller está configurado. Ahora el siguiente paso: meter tu primer coche.
               </p>
             </div>
 
