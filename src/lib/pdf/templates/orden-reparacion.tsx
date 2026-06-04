@@ -7,339 +7,179 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 
-// Use Helvetica (built-in, no network fetch needed)
-const FONT_FAMILY = "Helvetica";
+const FONT = "Helvetica";
+const FONT_BOLD = "Helvetica-Bold";
 
-// ═══ COLORS ═══
-const colors = {
-  brand: "#EA580C", // orange-600
-  brandLight: "#FFF7ED", // orange-50
-  brandBorder: "#FDBA74", // orange-300
-  text: "#1C1917", // stone-900
-  textSecondary: "#78716C", // stone-500
-  textMuted: "#A8A29E", // stone-400
-  border: "#E7E5E4", // stone-200
-  borderLight: "#F5F5F4", // stone-100
-  bgStripe: "#FAFAF9", // stone-50
+const c = {
+  black: "#000000",
+  dark: "#1C1917",
+  gray: "#57534E",
+  lightGray: "#A8A29E",
+  border: "#D6D3D1",
+  lineDots: "#E7E5E4",
+  bgLight: "#F5F5F4",
   white: "#FFFFFF",
-  emerald: "#059669",
-  blue: "#003399", // EU plate blue
+  brand: "#EA580C",
 };
 
-// ═══ STYLES ═══
 const s = StyleSheet.create({
   page: {
-    fontFamily: FONT_FAMILY,
+    fontFamily: FONT,
     fontSize: 9,
-    color: colors.text,
-    paddingTop: 0,
-    paddingBottom: 50,
-    paddingHorizontal: 40,
+    color: c.dark,
+    padding: 30,
+    paddingBottom: 40,
   },
-  // Top accent bar
-  accentBar: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 4,
-    backgroundColor: colors.brand,
-  },
-  // Header
-  header: {
+  // ── Header ──
+  headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginTop: 24,
-    marginBottom: 20,
+    marginBottom: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: c.black,
+    paddingBottom: 10,
   },
-  tallerName: {
-    fontSize: 16,
-    fontWeight: 700,
-    color: colors.text,
-    marginBottom: 2,
-  },
-  tallerInfo: {
-    fontSize: 8,
-    color: colors.textSecondary,
-    lineHeight: 1.5,
-  },
-  orTitle: {
-    fontSize: 10,
-    fontWeight: 600,
-    color: colors.textSecondary,
-    textTransform: "uppercase" as any,
-    letterSpacing: 1.5,
-    textAlign: "right" as any,
-  },
-  orNumber: {
-    fontSize: 18,
-    fontWeight: 700,
-    color: colors.brand,
-    textAlign: "right" as any,
-    marginTop: 2,
-  },
-  orDate: {
-    fontSize: 8,
-    color: colors.textSecondary,
-    textAlign: "right" as any,
-    marginTop: 4,
-  },
-  // Badge
-  badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10,
-    fontSize: 7,
-    fontWeight: 600,
-    textTransform: "uppercase" as any,
-    letterSpacing: 0.5,
-    alignSelf: "flex-end" as any,
-    marginTop: 4,
-  },
-  // Separator
-  separator: {
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-    marginVertical: 12,
-  },
-  // Section
-  sectionLabel: {
-    fontSize: 7,
-    fontWeight: 600,
-    color: colors.textSecondary,
-    textTransform: "uppercase" as any,
-    letterSpacing: 1,
-    marginBottom: 6,
-  },
-  // Two columns
-  row: {
+  tallerName: { fontSize: 14, fontFamily: FONT_BOLD },
+  tallerInfo: { fontSize: 7.5, color: c.gray, lineHeight: 1.5, marginTop: 2 },
+  orBlock: { alignItems: "flex-end" as any },
+  orLabel: { fontSize: 8, color: c.gray, textTransform: "uppercase" as any, letterSpacing: 1 },
+  orNumber: { fontSize: 22, fontFamily: FONT_BOLD, marginTop: 1 },
+  // ── Matrícula destacada ──
+  plateRow: {
     flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 12,
     gap: 20,
   },
-  col: {
-    flex: 1,
-  },
-  // Vehicle plate style
-  plate: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  plateBlue: {
-    backgroundColor: colors.blue,
-    paddingHorizontal: 4,
+  plateBox: {
+    borderWidth: 2,
+    borderColor: c.black,
+    paddingHorizontal: 16,
     paddingVertical: 6,
-    borderTopLeftRadius: 3,
-    borderBottomLeftRadius: 3,
+    borderRadius: 4,
   },
-  plateStar: {
-    fontSize: 5,
-    color: "#FFD700",
-    textAlign: "center" as any,
-  },
-  plateEU: {
-    fontSize: 5,
-    color: colors.white,
-    fontWeight: 700,
-    textAlign: "center" as any,
-  },
-  plateText: {
-    fontSize: 14,
-    fontWeight: 700,
-    letterSpacing: 2,
-    color: colors.text,
-    backgroundColor: colors.white,
+  plateText: { fontSize: 20, fontFamily: FONT_BOLD, letterSpacing: 3 },
+  dateText: { fontSize: 8, color: c.gray },
+  // ── Bloques datos ──
+  twoCol: { flexDirection: "row", gap: 12, marginBottom: 10 },
+  colBox: {
+    flex: 1,
     borderWidth: 1,
-    borderColor: colors.border,
-    borderLeftWidth: 0,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderTopRightRadius: 3,
-    borderBottomRightRadius: 3,
+    borderColor: c.border,
+    borderRadius: 4,
+    padding: 8,
   },
-  fieldLabel: {
+  colTitle: {
     fontSize: 7,
-    color: colors.textMuted,
-    marginBottom: 1,
-  },
-  fieldValue: {
-    fontSize: 9,
-    fontWeight: 500,
-    color: colors.text,
+    fontFamily: FONT_BOLD,
+    textTransform: "uppercase" as any,
+    letterSpacing: 1,
+    color: c.gray,
     marginBottom: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: c.lineDots,
+    paddingBottom: 3,
   },
-  // Description box
-  descBox: {
-    backgroundColor: colors.bgStripe,
-    borderRadius: 6,
-    padding: 10,
-    marginBottom: 12,
-  },
-  descText: {
+  fieldRow: { flexDirection: "row", marginBottom: 3 },
+  fieldLabel: { fontSize: 7.5, color: c.lightGray, width: 50 },
+  fieldValue: { fontSize: 9, fontFamily: FONT_BOLD, flex: 1 },
+  // ── Sección grande: trabajos ──
+  sectionTitle: {
     fontSize: 9,
-    color: colors.text,
-    lineHeight: 1.5,
+    fontFamily: FONT_BOLD,
+    textTransform: "uppercase" as any,
+    letterSpacing: 1,
+    backgroundColor: c.bgLight,
+    padding: 6,
+    borderWidth: 1,
+    borderColor: c.border,
+    borderRadius: 3,
+    marginBottom: 4,
+    marginTop: 8,
   },
-  // Table
+  blankLine: {
+    borderBottomWidth: 1,
+    borderBottomColor: c.lineDots,
+    borderBottomStyle: "dotted" as any,
+    height: 18,
+    marginBottom: 0,
+  },
+  filledLine: {
+    borderBottomWidth: 1,
+    borderBottomColor: c.lineDots,
+    borderBottomStyle: "dotted" as any,
+    minHeight: 18,
+    paddingBottom: 2,
+    paddingTop: 2,
+    marginBottom: 0,
+  },
+  lineText: { fontSize: 9, lineHeight: 1.4 },
+  // ── Tabla líneas ──
   tableHeader: {
     flexDirection: "row",
-    backgroundColor: colors.brandLight,
     borderBottomWidth: 1,
-    borderBottomColor: colors.brandBorder,
-    paddingVertical: 6,
-    paddingHorizontal: 8,
+    borderBottomColor: c.black,
+    paddingBottom: 3,
+    marginTop: 4,
   },
   tableRow: {
     flexDirection: "row",
-    paddingVertical: 6,
-    paddingHorizontal: 8,
     borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
-  },
-  tableRowStripe: {
-    backgroundColor: colors.bgStripe,
-  },
-  th: {
-    fontSize: 7,
-    fontWeight: 600,
-    color: colors.textSecondary,
-    textTransform: "uppercase" as any,
-    letterSpacing: 0.5,
-  },
-  td: {
-    fontSize: 9,
-    color: colors.text,
-  },
-  tdRight: {
-    fontSize: 9,
-    color: colors.text,
-    textAlign: "right" as any,
-  },
-  tdBold: {
-    fontSize: 9,
-    fontWeight: 600,
-    color: colors.text,
-    textAlign: "right" as any,
-  },
-  // Totals
-  totalsRow: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
+    borderBottomColor: c.lineDots,
     paddingVertical: 3,
-    paddingRight: 8,
+    minHeight: 16,
   },
-  totalsLabel: {
-    fontSize: 9,
-    color: colors.textSecondary,
-    width: 100,
-    textAlign: "right" as any,
-    paddingRight: 12,
+  th: { fontSize: 7, fontFamily: FONT_BOLD, color: c.gray, textTransform: "uppercase" as any },
+  td: { fontSize: 8 },
+  // ── Totales ──
+  totalsBlock: {
+    alignItems: "flex-end" as any,
+    marginTop: 6,
+    paddingTop: 4,
+    borderTopWidth: 1,
+    borderTopColor: c.border,
   },
-  totalsValue: {
-    fontSize: 9,
-    fontWeight: 500,
-    width: 80,
-    textAlign: "right" as any,
-  },
-  totalFinalRow: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    paddingVertical: 6,
-    paddingRight: 8,
-    borderTopWidth: 2,
-    borderTopColor: colors.text,
-    marginTop: 4,
-  },
-  totalFinalLabel: {
-    fontSize: 12,
-    fontWeight: 700,
-    width: 100,
-    textAlign: "right" as any,
-    paddingRight: 12,
-  },
-  totalFinalValue: {
-    fontSize: 12,
-    fontWeight: 700,
-    width: 80,
-    textAlign: "right" as any,
-  },
-  // Warranty
-  warrantyBox: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 6,
-    padding: 10,
-    marginTop: 16,
-  },
-  warrantyText: {
-    fontSize: 7.5,
-    color: colors.textSecondary,
-    lineHeight: 1.6,
-  },
-  // Signatures
-  signatureRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 24,
-    gap: 40,
-  },
-  signatureBlock: {
-    flex: 1,
-    alignItems: "center" as any,
-  },
-  signatureLine: {
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-    width: "100%",
-    marginTop: 40,
-    marginBottom: 4,
-  },
-  signatureLabel: {
-    fontSize: 7,
-    color: colors.textMuted,
-  },
-  // QR section
-  qrSection: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: colors.bgStripe,
-    borderRadius: 6,
-  },
-  qrText: {
-    fontSize: 8,
-    color: colors.textSecondary,
-    lineHeight: 1.5,
-  },
-  qrBold: {
-    fontSize: 8,
-    fontWeight: 600,
-    color: colors.brand,
-  },
-  // Footer
+  totalRow: { flexDirection: "row", marginBottom: 2 },
+  totalLabel: { fontSize: 8, color: c.gray, width: 80, textAlign: "right" as any, paddingRight: 8 },
+  totalValue: { fontSize: 8, width: 60, textAlign: "right" as any },
+  totalFinalLabel: { fontSize: 10, fontFamily: FONT_BOLD, width: 80, textAlign: "right" as any, paddingRight: 8 },
+  totalFinalValue: { fontSize: 10, fontFamily: FONT_BOLD, width: 60, textAlign: "right" as any },
+  // ── Footer ──
   footer: {
     position: "absolute",
-    bottom: 20,
-    left: 40,
-    right: 40,
-    borderTopWidth: 1,
-    borderTopColor: colors.borderLight,
-    paddingTop: 8,
+    bottom: 15,
+    left: 30,
+    right: 30,
   },
-  footerText: {
-    fontSize: 6.5,
-    color: colors.textMuted,
-    textAlign: "center" as any,
-    lineHeight: 1.6,
+  footerText: { fontSize: 6, color: c.lightGray, textAlign: "center" as any, lineHeight: 1.5 },
+  // ── Signatures ──
+  sigRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 16,
+    gap: 30,
   },
+  sigBlock: { flex: 1, alignItems: "center" as any },
+  sigLine: { borderBottomWidth: 1, borderBottomColor: c.border, width: "100%", marginBottom: 3 },
+  sigLabel: { fontSize: 7, color: c.lightGray },
+  // QR
+  qrRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 10,
+    padding: 6,
+    borderWidth: 1,
+    borderColor: c.lineDots,
+    borderRadius: 4,
+  },
+  qrText: { fontSize: 7, color: c.gray, lineHeight: 1.5 },
 });
 
 // ═══ TYPES ═══
 export type OrdenPDFData = {
-  // Taller
   tallerNombre: string;
   tallerCif?: string | null;
   tallerDireccion?: string | null;
@@ -347,7 +187,6 @@ export type OrdenPDFData = {
   tallerEmail?: string | null;
   tallerRegistro?: string | null;
   tallerRama?: string[] | null;
-  // Orden
   numero: number;
   estado: string;
   fechaEntrada: string | Date;
@@ -356,12 +195,10 @@ export type OrdenPDFData = {
   diagnostico?: string | null;
   observacionesEntrada?: string | null;
   kmEntrada?: number | null;
-  // Cliente
   clienteNombre: string;
   clienteNif?: string | null;
   clienteTelefono?: string | null;
   clienteDireccion?: string | null;
-  // Vehículo
   matricula: string;
   marca?: string | null;
   modelo?: string | null;
@@ -369,7 +206,6 @@ export type OrdenPDFData = {
   vin?: string | null;
   color?: string | null;
   combustible?: string | null;
-  // Líneas
   lineas: {
     tipo: string;
     descripcion: string;
@@ -379,58 +215,26 @@ export type OrdenPDFData = {
     ivaPct: string | number;
     tipoPieza?: string | null;
   }[];
-  // QR
   qrDataUrl?: string | null;
   trackingUrl?: string | null;
-  // Firma
   firmaCliente?: string | null;
 };
 
-const estadoLabel: Record<string, string> = {
-  recibido: "Recibido",
-  diagnostico: "Diagnóstico",
-  presupuestado: "Presupuestado",
-  aprobado: "Aprobado",
-  en_reparacion: "En reparación",
-  esperando_recambio: "Esp. recambio",
-  listo: "Listo",
-  entregado: "Entregado",
-  cancelado: "Cancelado",
-};
-
-const estadoBadgeColor: Record<string, { bg: string; text: string }> = {
-  recibido: { bg: "#DBEAFE", text: "#1E40AF" },
-  diagnostico: { bg: "#E0E7FF", text: "#3730A3" },
-  presupuestado: { bg: "#FEF3C7", text: "#92400E" },
-  aprobado: { bg: "#D1FAE5", text: "#065F46" },
-  en_reparacion: { bg: "#FFF7ED", text: "#9A3412" },
-  esperando_recambio: { bg: "#FEF3C7", text: "#92400E" },
-  listo: { bg: "#D1FAE5", text: "#065F46" },
-  entregado: { bg: "#F3F4F6", text: "#374151" },
-  cancelado: { bg: "#FEE2E2", text: "#991B1B" },
-};
-
-function formatDate(d: string | Date | null | undefined): string {
-  if (!d) return "—";
-  const date = new Date(d);
-  return date.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
-}
-
-function formatCurrency(n: number): string {
-  return n.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " EUR";
+function fmt(d: string | Date | null | undefined): string {
+  if (!d) return "___/___/______";
+  return new Date(d).toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 const combustibleLabels: Record<string, string> = {
-  gasolina: "Gasolina",
-  diesel: "Diésel",
-  electrico: "Eléctrico",
-  hibrido: "Híbrido",
-  glp: "GLP",
+  gasolina: "Gasolina", diesel: "Diésel", electrico: "Eléctrico", hibrido: "Híbrido", glp: "GLP",
 };
 
-// ═══ COMPONENT ═══
+const ramaLabels: Record<string, string> = {
+  mecanica: "Mecánica", electricidad: "Elec.", carroceria: "Carrocería", pintura: "Pintura",
+};
+
+// ═══ MAIN COMPONENT ═══
 export function OrdenReparacionPDF({ data }: { data: OrdenPDFData }) {
-  // Calculate totals
   let totalBase = 0;
   let totalIva = 0;
   const lineasCalc = data.lineas.map((l) => {
@@ -445,22 +249,19 @@ export function OrdenReparacionPDF({ data }: { data: OrdenPDFData }) {
   });
   const totalFinal = totalBase + totalIva;
 
-  const badgeColors = estadoBadgeColor[data.estado] || estadoBadgeColor.recibido;
+  // Blank lines to fill total to ~8 for handwriting space
+  const blanksNeeded = Math.max(0, 8 - lineasCalc.length);
 
   return (
     <Document>
       <Page size="A4" style={s.page}>
-        {/* Orange accent bar */}
-        <View style={s.accentBar} fixed />
 
-        {/* ═══ HEADER ═══ */}
-        <View style={s.header}>
+        {/* ══ HEADER: Taller + OR Number ══ */}
+        <View style={s.headerRow}>
           <View style={{ flex: 1 }}>
             <Text style={s.tallerName}>{data.tallerNombre}</Text>
             <Text style={s.tallerInfo}>
-              {[data.tallerCif && `CIF: ${data.tallerCif}`, data.tallerDireccion]
-                .filter(Boolean)
-                .join(" · ")}
+              {[data.tallerCif && `CIF: ${data.tallerCif}`, data.tallerDireccion].filter(Boolean).join(" · ")}
             </Text>
             <Text style={s.tallerInfo}>
               {[data.tallerTelefono, data.tallerEmail].filter(Boolean).join(" · ")}
@@ -470,252 +271,183 @@ export function OrdenReparacionPDF({ data }: { data: OrdenPDFData }) {
             )}
             {data.tallerRama && data.tallerRama.length > 0 && (
               <Text style={s.tallerInfo}>
-                Rama: {data.tallerRama.map((r) => {
-                  const labels: Record<string, string> = {
-                    mecanica: "Mecánica",
-                    electricidad: "Electricidad-Electrónica",
-                    carroceria: "Carrocería",
-                    pintura: "Pintura",
-                  };
-                  return labels[r] || r;
-                }).join(", ")}
+                {data.tallerRama.map((r) => ramaLabels[r] || r).join(" · ")}
               </Text>
             )}
           </View>
-          <View style={{ alignItems: "flex-end" as any }}>
-            <Text style={s.orTitle}>Orden de reparación</Text>
+          <View style={s.orBlock}>
+            <Text style={s.orLabel}>Orden de reparación</Text>
             <Text style={s.orNumber}>OR-{data.numero}</Text>
-            <Text style={s.orDate}>
-              Entrada: {formatDate(data.fechaEntrada)}
-            </Text>
-            {data.fechaEstimada && (
-              <Text style={s.orDate}>
-                Entrega prevista: {formatDate(data.fechaEstimada)}
-              </Text>
-            )}
-            <View
-              style={[
-                s.badge,
-                { backgroundColor: badgeColors.bg, color: badgeColors.text },
-              ]}
-            >
-              <Text style={{ color: badgeColors.text, fontSize: 7, fontWeight: 600 }}>
-                {estadoLabel[data.estado] || data.estado}
-              </Text>
-            </View>
           </View>
         </View>
 
-        <View style={s.separator} />
-
-        {/* ═══ CLIENTE + VEHÍCULO ═══ */}
-        <View style={s.row}>
-          {/* Cliente */}
-          <View style={s.col}>
-            <Text style={s.sectionLabel}>Datos del cliente</Text>
-            <Text style={s.fieldValue}>{data.clienteNombre}</Text>
-            {data.clienteNif && (
-              <>
-                <Text style={s.fieldLabel}>NIF/CIF</Text>
-                <Text style={s.fieldValue}>{data.clienteNif}</Text>
-              </>
-            )}
-            {data.clienteTelefono && (
-              <>
-                <Text style={s.fieldLabel}>Teléfono</Text>
-                <Text style={s.fieldValue}>{data.clienteTelefono}</Text>
-              </>
-            )}
-            {data.clienteDireccion && (
-              <>
-                <Text style={s.fieldLabel}>Dirección</Text>
-                <Text style={s.fieldValue}>{data.clienteDireccion}</Text>
-              </>
-            )}
+        {/* ══ MATRÍCULA GRANDE + FECHAS ══ */}
+        <View style={s.plateRow}>
+          <View>
+            <Text style={[s.dateText, { marginBottom: 2 }]}>Entrada: {fmt(data.fechaEntrada)}</Text>
+            <Text style={s.dateText}>Entrega prevista: {fmt(data.fechaEstimada)}</Text>
           </View>
+          <View style={s.plateBox}>
+            <Text style={s.plateText}>{data.matricula}</Text>
+          </View>
+          <View>
+            <Text style={[s.dateText, { marginBottom: 2 }]}>Km: {data.kmEntrada?.toLocaleString("es-ES") || "________"}</Text>
+            <Text style={s.dateText}>Color: {data.color || "________"}</Text>
+          </View>
+        </View>
 
-          {/* Vehículo */}
-          <View style={s.col}>
-            <Text style={s.sectionLabel}>Datos del vehículo</Text>
-            {/* EU-style plate */}
-            <View style={s.plate}>
-              <View style={s.plateBlue}>
-                <Text style={s.plateStar}>★</Text>
-                <Text style={s.plateEU}>E</Text>
-              </View>
-              <Text style={s.plateText}>{data.matricula}</Text>
+        {/* ══ CLIENTE + VEHÍCULO ══ */}
+        <View style={s.twoCol}>
+          <View style={s.colBox}>
+            <Text style={s.colTitle}>Cliente</Text>
+            <View style={s.fieldRow}>
+              <Text style={s.fieldLabel}>Nombre</Text>
+              <Text style={s.fieldValue}>{data.clienteNombre}</Text>
             </View>
-            <Text style={s.fieldValue}>
-              {[data.marca, data.modelo, data.anio].filter(Boolean).join(" · ")}
-            </Text>
+            <View style={s.fieldRow}>
+              <Text style={s.fieldLabel}>Teléfono</Text>
+              <Text style={s.fieldValue}>{data.clienteTelefono || ""}</Text>
+            </View>
+            <View style={s.fieldRow}>
+              <Text style={s.fieldLabel}>NIF</Text>
+              <Text style={s.fieldValue}>{data.clienteNif || ""}</Text>
+            </View>
+          </View>
+          <View style={s.colBox}>
+            <Text style={s.colTitle}>Vehículo</Text>
+            <View style={s.fieldRow}>
+              <Text style={s.fieldLabel}>Marca</Text>
+              <Text style={s.fieldValue}>{[data.marca, data.modelo].filter(Boolean).join(" ") || ""}</Text>
+            </View>
+            <View style={s.fieldRow}>
+              <Text style={s.fieldLabel}>Año</Text>
+              <Text style={s.fieldValue}>{data.anio || ""}</Text>
+            </View>
+            <View style={s.fieldRow}>
+              <Text style={s.fieldLabel}>Combust.</Text>
+              <Text style={s.fieldValue}>{data.combustible ? combustibleLabels[data.combustible] || data.combustible : ""}</Text>
+            </View>
             {data.vin && (
-              <>
-                <Text style={s.fieldLabel}>VIN / Bastidor</Text>
-                <Text style={[s.fieldValue, { fontSize: 7.5, letterSpacing: 0.5 }]}>{data.vin}</Text>
-              </>
+              <View style={s.fieldRow}>
+                <Text style={s.fieldLabel}>VIN</Text>
+                <Text style={[s.fieldValue, { fontSize: 7 }]}>{data.vin}</Text>
+              </View>
             )}
-            <View style={{ flexDirection: "row", gap: 16 }}>
-              {data.kmEntrada && (
-                <View>
-                  <Text style={s.fieldLabel}>Km entrada</Text>
-                  <Text style={s.fieldValue}>{data.kmEntrada.toLocaleString("es-ES")}</Text>
-                </View>
-              )}
-              {data.color && (
-                <View>
-                  <Text style={s.fieldLabel}>Color</Text>
-                  <Text style={s.fieldValue}>{data.color}</Text>
-                </View>
-              )}
-              {data.combustible && (
-                <View>
-                  <Text style={s.fieldLabel}>Combustible</Text>
-                  <Text style={s.fieldValue}>
-                    {combustibleLabels[data.combustible] || data.combustible}
-                  </Text>
-                </View>
-              )}
-            </View>
           </View>
         </View>
 
-        <View style={s.separator} />
-
-        {/* ═══ DESCRIPCIÓN + DIAGNÓSTICO ═══ */}
-        {data.descripcionCliente && (
-          <View style={s.descBox}>
-            <Text style={s.sectionLabel}>Motivo de entrada</Text>
-            <Text style={s.descText}>{data.descripcionCliente}</Text>
+        {/* ══ TRABAJOS A REALIZAR (sección principal) ══ */}
+        <Text style={s.sectionTitle}>Trabajos a realizar / Descripción del cliente</Text>
+        {data.descripcionCliente ? (
+          <View style={s.filledLine}>
+            <Text style={s.lineText}>{data.descripcionCliente}</Text>
           </View>
-        )}
+        ) : null}
+        {/* Blank lines for handwriting */}
+        {Array.from({ length: 5 }).map((_, i) => (
+          <View key={`trabajo-${i}`} style={s.blankLine} />
+        ))}
 
-        {data.diagnostico && (
-          <View style={s.descBox}>
-            <Text style={s.sectionLabel}>Diagnóstico</Text>
-            <Text style={s.descText}>{data.diagnostico}</Text>
+        {/* ══ DIAGNÓSTICO / OBSERVACIONES DEL MECÁNICO ══ */}
+        <Text style={s.sectionTitle}>Diagnóstico del mecánico</Text>
+        {data.diagnostico ? (
+          <View style={s.filledLine}>
+            <Text style={s.lineText}>{data.diagnostico}</Text>
           </View>
-        )}
+        ) : null}
+        {Array.from({ length: 4 }).map((_, i) => (
+          <View key={`diag-${i}`} style={s.blankLine} />
+        ))}
 
+        {/* ══ OBSERVACIONES DE ENTRADA ══ */}
         {data.observacionesEntrada && (
-          <View style={s.descBox}>
-            <Text style={s.sectionLabel}>Observaciones / Daños preexistentes</Text>
-            <Text style={s.descText}>{data.observacionesEntrada}</Text>
-          </View>
+          <>
+            <Text style={s.sectionTitle}>Observaciones / Daños preexistentes</Text>
+            <View style={s.filledLine}>
+              <Text style={s.lineText}>{data.observacionesEntrada}</Text>
+            </View>
+          </>
         )}
 
-        {/* ═══ TABLA DE LÍNEAS ═══ */}
+        {/* ══ RECAMBIOS Y MANO DE OBRA ══ */}
+        <Text style={s.sectionTitle}>Recambios y mano de obra</Text>
+        <View style={s.tableHeader}>
+          <Text style={[s.th, { width: "8%" }]}>Tipo</Text>
+          <Text style={[s.th, { width: "47%" }]}>Descripción</Text>
+          <Text style={[s.th, { width: "10%", textAlign: "right" as any }]}>Cant.</Text>
+          <Text style={[s.th, { width: "15%", textAlign: "right" as any }]}>Precio</Text>
+          <Text style={[s.th, { width: "20%", textAlign: "right" as any }]}>Importe</Text>
+        </View>
+        {lineasCalc.map((l, i) => (
+          <View key={i} style={s.tableRow}>
+            <Text style={[s.td, { width: "8%", color: c.lightGray, fontSize: 7 }]}>
+              {l.tipo === "mano_obra" ? "MO" : l.tipo === "recambio" ? "RC" : "OT"}
+            </Text>
+            <Text style={[s.td, { width: "47%" }]}>{l.descripcion}</Text>
+            <Text style={[s.td, { width: "10%", textAlign: "right" as any }]}>{Number(l.cantidad)}</Text>
+            <Text style={[s.td, { width: "15%", textAlign: "right" as any }]}>{Number(l.precioUnitario).toFixed(2)}</Text>
+            <Text style={[s.td, { width: "20%", textAlign: "right" as any, fontFamily: FONT_BOLD }]}>{l.base.toFixed(2)}</Text>
+          </View>
+        ))}
+        {/* Empty rows for handwriting */}
+        {Array.from({ length: blanksNeeded }).map((_, i) => (
+          <View key={`blank-${i}`} style={s.tableRow}>
+            <Text style={[s.td, { width: "100%" }]}> </Text>
+          </View>
+        ))}
+
+        {/* Totals */}
         {lineasCalc.length > 0 && (
-          <View style={{ marginTop: 4 }}>
-            <Text style={[s.sectionLabel, { marginBottom: 8 }]}>Trabajos y recambios</Text>
-
-            {/* Table header */}
-            <View style={s.tableHeader}>
-              <Text style={[s.th, { width: "8%" }]}>Tipo</Text>
-              <Text style={[s.th, { width: "42%" }]}>Descripción</Text>
-              <Text style={[s.th, { width: "10%", textAlign: "right" as any }]}>Cant.</Text>
-              <Text style={[s.th, { width: "15%", textAlign: "right" as any }]}>Precio</Text>
-              <Text style={[s.th, { width: "10%", textAlign: "right" as any }]}>Dto.</Text>
-              <Text style={[s.th, { width: "15%", textAlign: "right" as any }]}>Importe</Text>
+          <View style={s.totalsBlock}>
+            <View style={s.totalRow}>
+              <Text style={s.totalLabel}>Base</Text>
+              <Text style={s.totalValue}>{totalBase.toFixed(2)} EUR</Text>
             </View>
-
-            {/* Table rows */}
-            {lineasCalc.map((l, i) => (
-              <View
-                key={i}
-                style={[s.tableRow, i % 2 === 1 ? s.tableRowStripe : {}]}
-              >
-                <Text style={[s.td, { width: "8%", fontSize: 7, color: colors.textSecondary }]}>
-                  {l.tipo === "mano_obra" ? "M.O." : l.tipo === "recambio" ? "Rec." : "Otro"}
-                </Text>
-                <View style={{ width: "42%" }}>
-                  <Text style={s.td}>{l.descripcion}</Text>
-                  {l.tipoPieza && l.tipoPieza !== "nueva" && (
-                    <Text style={{ fontSize: 6.5, color: colors.textMuted }}>
-                      Pieza {l.tipoPieza}
-                    </Text>
-                  )}
-                </View>
-                <Text style={[s.tdRight, { width: "10%" }]}>{Number(l.cantidad)}</Text>
-                <Text style={[s.tdRight, { width: "15%" }]}>
-                  {Number(l.precioUnitario).toFixed(2)}
-                </Text>
-                <Text style={[s.tdRight, { width: "10%", color: Number(l.descuentoPct || 0) > 0 ? colors.brand : colors.textMuted }]}>
-                  {Number(l.descuentoPct || 0) > 0 ? `-${l.descuentoPct}%` : "—"}
-                </Text>
-                <Text style={[s.tdBold, { width: "15%" }]}>{l.base.toFixed(2)}</Text>
-              </View>
-            ))}
-
-            {/* Totals */}
-            <View style={{ marginTop: 8 }}>
-              <View style={s.totalsRow}>
-                <Text style={s.totalsLabel}>Base imponible</Text>
-                <Text style={s.totalsValue}>{formatCurrency(totalBase)}</Text>
-              </View>
-              <View style={s.totalsRow}>
-                <Text style={s.totalsLabel}>IVA</Text>
-                <Text style={s.totalsValue}>{formatCurrency(totalIva)}</Text>
-              </View>
-              <View style={s.totalFinalRow}>
-                <Text style={s.totalFinalLabel}>Total</Text>
-                <Text style={s.totalFinalValue}>{formatCurrency(totalFinal)}</Text>
-              </View>
+            <View style={s.totalRow}>
+              <Text style={s.totalLabel}>IVA</Text>
+              <Text style={s.totalValue}>{totalIva.toFixed(2)} EUR</Text>
+            </View>
+            <View style={[s.totalRow, { borderTopWidth: 1, borderTopColor: c.black, paddingTop: 3, marginTop: 2 }]}>
+              <Text style={s.totalFinalLabel}>TOTAL</Text>
+              <Text style={s.totalFinalValue}>{totalFinal.toFixed(2)} EUR</Text>
             </View>
           </View>
         )}
 
-        {/* ═══ GARANTÍA ═══ */}
-        <View style={s.warrantyBox}>
-          <Text style={[s.sectionLabel, { marginBottom: 4 }]}>Garantía</Text>
-          <Text style={s.warrantyText}>
-            Los trabajos realizados y las piezas suministradas tienen una garantía de 3 meses o 2.000 km
-            (lo que se cumpla primero) para vehículos particulares, y de 15 días o 2.000 km para vehículos
-            industriales, conforme al RD 1457/1986. La garantía cubre materiales, mano de obra y transporte.
-            {"\n"}Las piezas sustituidas quedan a disposición del cliente durante 15 días salvo renuncia expresa.
-          </Text>
-        </View>
-
-        {/* ═══ FIRMAS ═══ */}
-        <View style={s.signatureRow}>
-          <View style={s.signatureBlock}>
-            {data.firmaCliente ? (
-              <Image src={data.firmaCliente} style={{ width: 120, height: 40, marginTop: 10 }} />
-            ) : (
-              <View style={s.signatureLine} />
-            )}
-            <Text style={s.signatureLabel}>Firma del cliente</Text>
+        {/* ══ FIRMAS ══ */}
+        <View style={s.sigRow}>
+          <View style={s.sigBlock}>
+            <View style={{ height: 30 }} />
+            <View style={s.sigLine} />
+            <Text style={s.sigLabel}>Firma del cliente</Text>
           </View>
-          <View style={s.signatureBlock}>
-            <View style={s.signatureLine} />
-            <Text style={s.signatureLabel}>Firma del taller</Text>
+          <View style={s.sigBlock}>
+            <View style={{ height: 30 }} />
+            <View style={s.sigLine} />
+            <Text style={s.sigLabel}>Firma del taller</Text>
           </View>
         </View>
 
-        {/* ═══ QR + TRACKING ═══ */}
+        {/* ══ QR tracking ══ */}
         {data.qrDataUrl && data.trackingUrl && (
-          <View style={s.qrSection}>
-            <Image src={data.qrDataUrl} style={{ width: 50, height: 50 }} />
+          <View style={s.qrRow}>
+            <Image src={data.qrDataUrl} style={{ width: 35, height: 35 }} />
             <View>
-              <Text style={s.qrText}>
-                Consulta el estado de tu reparación en tiempo real:
-              </Text>
-              <Text style={s.qrBold}>{data.trackingUrl}</Text>
+              <Text style={s.qrText}>Estado online: {data.trackingUrl}</Text>
+              <Text style={[s.qrText, { fontSize: 6 }]}>El cliente puede consultar el estado de su reparación escaneando este QR</Text>
             </View>
           </View>
         )}
 
-        {/* ═══ FOOTER ═══ */}
+        {/* ══ FOOTER ══ */}
         <View style={s.footer} fixed>
           <Text style={s.footerText}>
-            {data.tallerNombre}
-            {data.tallerCif ? ` · CIF ${data.tallerCif}` : ""}
-            {data.tallerRegistro ? ` · Reg. Industrial ${data.tallerRegistro}` : ""}
-            {"\n"}
-            Datos protegidos conforme al RGPD. Este documento es un resguardo de depósito según el RD 1457/1986.
-            {"\n"}
-            Generado con FIXA — fixa.ibclima.com
+            Garantía: 3 meses o 2.000 km (RD 1457/1986). Piezas sustituidas a disposición del cliente.
+            {"\n"}Vehículo no retirado en 3 días hábiles: gastos de estancia aplicables.
+            {"\n"}{data.tallerNombre}{data.tallerCif ? ` · CIF ${data.tallerCif}` : ""}{data.tallerRegistro ? ` · Reg. ${data.tallerRegistro}` : ""} · Generado con FIXA
           </Text>
         </View>
+
       </Page>
     </Document>
   );
