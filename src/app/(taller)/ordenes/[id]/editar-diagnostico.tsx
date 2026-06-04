@@ -1,9 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Pencil, Check, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { VoiceRecorder } from "@/components/voice-recorder";
@@ -17,32 +14,28 @@ export function EditarDiagnostico({
   diagnosticoActual: string | null;
   descripcionActual: string | null;
 }) {
-  const [editandoDesc, setEditandoDesc] = useState(false);
-  const [editandoDiag, setEditandoDiag] = useState(false);
   const [descripcion, setDescripcion] = useState(descripcionActual || "");
   const [diagnostico, setDiagnostico] = useState(diagnosticoActual || "");
-  const [loading, setLoading] = useState(false);
+  const descRef = useRef(descripcionActual || "");
+  const diagRef = useRef(diagnosticoActual || "");
 
-  async function guardar(campo: "descripcion" | "diagnostico") {
-    setLoading(true);
+  async function guardar(campo: "descripcion" | "diagnostico", valor: string) {
+    // Skip if unchanged
+    const ref = campo === "descripcion" ? descRef : diagRef;
+    if (valor === ref.current) return;
+    ref.current = valor;
+
     try {
-      const body =
-        campo === "diagnostico"
-          ? { diagnostico }
-          : { descripcion };
+      const body = campo === "diagnostico" ? { diagnostico: valor } : { descripcion: valor };
       const res = await fetch(`/api/ordenes/${ordenId}/diagnostico`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error();
-      toast.success("Guardado");
-      if (campo === "diagnostico") setEditandoDiag(false);
-      else setEditandoDesc(false);
+      toast.success("Guardado", { duration: 1500 });
     } catch {
       toast.error("Error al guardar");
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -51,45 +44,17 @@ export function EditarDiagnostico({
       {/* Descripción del cliente */}
       <Card>
         <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-              Qué dice el cliente
-            </p>
-            {!editandoDesc && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-7 px-2 text-xs rounded-full text-muted-foreground"
-                onClick={() => setEditandoDesc(true)}
-              >
-                <Pencil className="h-3 w-3 mr-1" />Editar
-              </Button>
-            )}
-          </div>
-          {editandoDesc ? (
-            <div className="space-y-2">
-              <Textarea
-                value={descripcion}
-                onChange={(e) => setDescripcion(e.target.value)}
-                placeholder="Lo que el cliente describe..."
-                rows={3}
-                className="rounded-xl text-sm"
-                autoFocus
-              />
-              <div className="flex gap-2">
-                <Button size="sm" onClick={() => guardar("descripcion")} disabled={loading} className="rounded-full">
-                  <Check className="h-3 w-3 mr-1" />{loading ? "..." : "Guardar"}
-                </Button>
-                <Button size="sm" variant="ghost" onClick={() => { setEditandoDesc(false); setDescripcion(descripcionActual || ""); }} className="rounded-full">
-                  <X className="h-3 w-3" />
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <p className="text-sm leading-relaxed">
-              {descripcionActual || <span className="text-muted-foreground italic">Sin descripción</span>}
-            </p>
-          )}
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
+            Qué dice el cliente
+          </p>
+          <textarea
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
+            onBlur={() => guardar("descripcion", descripcion)}
+            placeholder="Toca para escribir lo que dice el cliente..."
+            rows={3}
+            className="w-full text-sm leading-relaxed bg-transparent border-none outline-none resize-none placeholder:text-muted-foreground/50 placeholder:italic"
+          />
         </CardContent>
       </Card>
 
@@ -100,49 +65,20 @@ export function EditarDiagnostico({
             <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               Diagnóstico del mecánico
             </p>
-            <div className="flex items-center gap-1">
-              <VoiceRecorder
-                onTranscription={(text) => {
-                  setDiagnostico((prev) => (prev ? prev + " " + text : text));
-                  setEditandoDiag(true);
-                }}
-              />
-              {!editandoDiag && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 px-2 text-xs rounded-full text-muted-foreground"
-                  onClick={() => setEditandoDiag(true)}
-                >
-                  <Pencil className="h-3 w-3 mr-1" />{diagnosticoActual ? "Editar" : "Añadir"}
-                </Button>
-              )}
-            </div>
+            <VoiceRecorder
+              onTranscription={(text) => {
+                setDiagnostico((prev) => (prev ? prev + " " + text : text));
+              }}
+            />
           </div>
-          {editandoDiag ? (
-            <div className="space-y-2">
-              <Textarea
-                value={diagnostico}
-                onChange={(e) => setDiagnostico(e.target.value)}
-                placeholder="Describe lo que has encontrado..."
-                rows={3}
-                className="rounded-xl text-sm"
-                autoFocus
-              />
-              <div className="flex gap-2">
-                <Button size="sm" onClick={() => guardar("diagnostico")} disabled={loading} className="rounded-full">
-                  <Check className="h-3 w-3 mr-1" />{loading ? "..." : "Guardar"}
-                </Button>
-                <Button size="sm" variant="ghost" onClick={() => { setEditandoDiag(false); setDiagnostico(diagnosticoActual || ""); }} className="rounded-full">
-                  <X className="h-3 w-3" />
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <p className="text-sm leading-relaxed">
-              {diagnosticoActual || <span className="text-muted-foreground italic">Sin diagnóstico todavía</span>}
-            </p>
-          )}
+          <textarea
+            value={diagnostico}
+            onChange={(e) => setDiagnostico(e.target.value)}
+            onBlur={() => guardar("diagnostico", diagnostico)}
+            placeholder="Toca para escribir el diagnóstico..."
+            rows={3}
+            className="w-full text-sm leading-relaxed bg-transparent border-none outline-none resize-none placeholder:text-muted-foreground/50 placeholder:italic"
+          />
         </CardContent>
       </Card>
     </div>

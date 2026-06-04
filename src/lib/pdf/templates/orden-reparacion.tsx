@@ -5,19 +5,10 @@ import {
   View,
   Image,
   StyleSheet,
-  Font,
 } from "@react-pdf/renderer";
 
-// Register Inter font
-Font.register({
-  family: "Inter",
-  fonts: [
-    { src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiA.woff2", fontWeight: 400 },
-    { src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuI6fAZ9hiA.woff2", fontWeight: 500 },
-    { src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuGKYAZ9hiA.woff2", fontWeight: 600 },
-    { src: "https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuFuYAZ9hiA.woff2", fontWeight: 700 },
-  ],
-});
+// Use Helvetica (built-in, no network fetch needed)
+const FONT_FAMILY = "Helvetica";
 
 // ═══ COLORS ═══
 const colors = {
@@ -38,7 +29,7 @@ const colors = {
 // ═══ STYLES ═══
 const s = StyleSheet.create({
   page: {
-    fontFamily: "Inter",
+    fontFamily: FONT_FAMILY,
     fontSize: 9,
     color: colors.text,
     paddingTop: 0,

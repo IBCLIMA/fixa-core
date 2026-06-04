@@ -10,7 +10,6 @@ import { actualizarDatosLegales } from "../../actions/orden-legal";
 
 interface DatosLegalesProps {
   ordenId: string;
-  motivoDeposito: string | null;
   fechaEstimada: Date | string | null;
   observacionesEntrada: string | null;
   renunciaPresupuesto: boolean | null;
@@ -19,13 +18,11 @@ interface DatosLegalesProps {
 
 export function DatosLegales({
   ordenId,
-  motivoDeposito,
   fechaEstimada,
   observacionesEntrada,
   renunciaPresupuesto,
   renunciaPiezas,
 }: DatosLegalesProps) {
-  const [motivo, setMotivo] = useState(motivoDeposito || "reparacion");
   const [fecha, setFecha] = useState(() => {
     if (!fechaEstimada) return "";
     const d = typeof fechaEstimada === "string" ? new Date(fechaEstimada) : fechaEstimada;
@@ -40,7 +37,6 @@ export function DatosLegales({
 
   const guardar = useCallback(
     (overrides?: Partial<{
-      motivoDeposito: string;
       fechaEstimada: string | null;
       observacionesEntrada: string;
       renunciaPresupuesto: boolean;
@@ -50,7 +46,6 @@ export function DatosLegales({
       timeoutRef.current = setTimeout(async () => {
         try {
           await actualizarDatosLegales(ordenId, {
-            motivoDeposito: overrides?.motivoDeposito ?? motivo,
             fechaEstimada: overrides?.fechaEstimada !== undefined ? overrides.fechaEstimada : (fecha || null),
             observacionesEntrada: overrides?.observacionesEntrada ?? observaciones,
             renunciaPresupuesto: overrides?.renunciaPresupuesto ?? rPresupuesto,
@@ -62,7 +57,7 @@ export function DatosLegales({
         }
       }, 500);
     },
-    [ordenId, motivo, fecha, observaciones, rPresupuesto, rPiezas]
+    [ordenId, fecha, observaciones, rPresupuesto, rPiezas]
   );
 
   // Auto-save on state changes (skip first render)
@@ -75,7 +70,7 @@ export function DatosLegales({
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [motivo, fecha, observaciones, rPresupuesto, rPiezas]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fecha, observaciones, rPresupuesto, rPiezas]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Card>
@@ -86,35 +81,6 @@ export function DatosLegales({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
-        {/* Motivo del depósito */}
-        <div>
-          <p className="text-xs font-bold text-stone-500 mb-2">Motivo del depósito</p>
-          <div className="flex gap-4">
-            <label className="flex items-center gap-1.5 text-sm cursor-pointer">
-              <input
-                type="radio"
-                name="motivo"
-                value="presupuesto"
-                checked={motivo === "presupuesto"}
-                onChange={() => setMotivo("presupuesto")}
-                className="accent-orange-500 h-4 w-4"
-              />
-              Presupuesto
-            </label>
-            <label className="flex items-center gap-1.5 text-sm cursor-pointer">
-              <input
-                type="radio"
-                name="motivo"
-                value="reparacion"
-                checked={motivo === "reparacion"}
-                onChange={() => setMotivo("reparacion")}
-                className="accent-orange-500 h-4 w-4"
-              />
-              Reparación
-            </label>
-          </div>
-        </div>
-
         {/* Fecha estimada de entrega */}
         <div>
           <p className="text-xs font-bold text-stone-500 mb-2">Fecha estimada de entrega</p>
