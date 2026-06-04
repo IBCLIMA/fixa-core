@@ -128,25 +128,35 @@ export default async function OrdenDetallePage({
         </div>
       )}
 
-      {/* Estado + Portal */}
+      {/* Estado + Compartir con cliente */}
       <Card className="no-print">
         <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base">Cambiar estado</CardTitle>
-            <a
-              href={`/estado/${orden.id}`}
-              target="_blank"
-              className="text-xs font-semibold text-brand hover:underline"
-            >
-              Ver portal del cliente →
-            </a>
-          </div>
+          <CardTitle className="text-base">Cambiar estado</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <CambiarEstadoButtons ordenId={orden.id} estadoActual={orden.estado} />
-          <p className="text-xs text-muted-foreground mt-3">
-            Comparte con el cliente: {process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")}/estado/{orden.id}
-          </p>
+
+          {/* Compartir estado con cliente — directo a WhatsApp */}
+          {orden.cliente?.telefono && orden.tokenPublico && (
+            <div className="pt-3 border-t border-border">
+              <a
+                href={formatWhatsAppUrl(
+                  orden.cliente.telefono,
+                  `Hola ${orden.cliente.nombre?.split(" ")[0] || ""}, aquí puedes ver el estado de tu ${orden.vehiculo?.marca || "coche"} ${orden.vehiculo?.modelo || ""} (${orden.vehiculo?.matricula || ""}): ${process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com"}/estado/${orden.tokenPublico}`
+                )}
+                target="_blank"
+                className="flex items-center justify-center gap-2 w-full h-11 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-500 transition-colors"
+              >
+                <Send className="h-4 w-4" />
+                Enviar estado al cliente por WhatsApp
+              </a>
+            </div>
+          )}
+          {!orden.cliente?.telefono && (
+            <p className="text-xs text-muted-foreground pt-2 border-t border-border">
+              Añade un teléfono al cliente para poder enviarle el estado por WhatsApp.
+            </p>
+          )}
         </CardContent>
       </Card>
 
@@ -309,7 +319,7 @@ export default async function OrdenDetallePage({
 
           {/* Secondary actions */}
           <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border">
-            <a href={`/informe/${orden.id}`} target="_blank">
+            <a href={`/informe/${orden.tokenPublico || orden.id}`} target="_blank">
               <Button variant="outline" size="sm" className="rounded-full">
                 <FileText className="mr-1.5 h-4 w-4" />Ver informe
               </Button>
