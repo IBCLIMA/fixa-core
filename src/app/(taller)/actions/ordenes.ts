@@ -11,6 +11,7 @@ import {
   talleres,
   usuarios,
   fotosOrden,
+  averiasOcultas,
 } from "@/db/schema";
 import { eq, and, desc, count, sql } from "drizzle-orm";
 import { getTallerIdFromAuth, requireRole } from "@/lib/auth";
@@ -75,6 +76,7 @@ export async function getOrden(id: string) {
   const asignado = orden.asignadoA
     ? (await db.select().from(usuarios).where(eq(usuarios.id, orden.asignadoA)))[0]
     : null;
+  const averias = await db.select().from(averiasOcultas).where(eq(averiasOcultas.ordenId, id)).orderBy(desc(averiasOcultas.createdAt));
 
   return {
     ...orden,
@@ -84,6 +86,7 @@ export async function getOrden(id: string) {
     fotos,
     historial,
     asignado,
+    averias,
   };
 }
 

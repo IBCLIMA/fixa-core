@@ -113,6 +113,8 @@ export const talleres = pgTable("talleres", {
   codigoPostal: text("codigo_postal"),
   ciudad: text("ciudad"),
   provincia: text("provincia"),
+  registroIndustrial: text("registro_industrial"),
+  ramaActividad: text("rama_actividad").array(), // ['mecanica','electricidad','carroceria','pintura']
   clerkOrgId: text("clerk_org_id").unique(),
   // Suscripción
   plan: planEnum("plan").default("trial").notNull(),
@@ -198,6 +200,20 @@ export const ordenesTrabajo = pgTable("ordenes_trabajo", {
   asignadoA: uuid("asignado_a").references(() => usuarios.id),
   notasInternas: text("notas_internas"),
   tokenPublico: text("token_publico").unique(),
+  // Legal (RD 1457/1986)
+  tipoIntervencion: text("tipo_intervencion").array(), // ['mecanica','chapa','pintura','electricidad','diagnostico','mantenimiento','pre_itv','otro']
+  motivoDeposito: text("motivo_deposito").default("reparacion"), // 'presupuesto' | 'reparacion'
+  renunciaPresupuesto: boolean("renuncia_presupuesto").default(false),
+  renunciaPiezas: boolean("renuncia_piezas").default(false),
+  observacionesEntrada: text("observaciones_entrada"), // daños preexistentes
+  firmaCliente: text("firma_cliente"), // base64 data URL
+  firmaClienteAt: timestamp("firma_cliente_at"),
+  // Seguro (chapa y pintura)
+  aseguradora: text("aseguradora"),
+  numPoliza: text("num_poliza"),
+  numSiniestro: text("num_siniestro"),
+  numPeritaje: text("num_peritaje"),
+  nombrePerito: text("nombre_perito"),
   // Pago
   pagado: boolean("pagado").default(false).notNull(),
   metodoPago: metodoPagoEnum("metodo_pago"),
@@ -227,6 +243,8 @@ export const lineasOrden = pgTable("lineas_orden", {
   ivaPct: numeric("iva_pct", { precision: 5, scale: 2 })
     .default("21")
     .notNull(),
+  tipoPieza: text("tipo_pieza").default("nueva"), // 'nueva' | 'reconstruida' | 'usada'
+  esAveriaOculta: boolean("es_averia_oculta").default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -452,6 +470,29 @@ export const documentosCobro = pgTable("documentos_cobro", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const averiasOcultas = pgTable("averias_ocultas", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  ordenId: uuid("orden_id")
+    .references(() => ordenesTrabajo.id, { onDelete: "cascade" })
+    .notNull(),
+  tallerId: uuid("taller_id")
+    .references(() => talleres.id)
+    .notNull(),
+  descripcion: text("descripcion").notNull(),
+  importeEstimado: numeric("importe_estimado", { precision: 10, scale: 2 }),
+  fotoUrl: text("foto_url"),
+  // Notificación
+  notificadoAt: timestamp("notificado_at"),
+  metodoNotificacion: text("metodo_notificacion"), // 'whatsapp' | 'email' | 'telefono' | 'presencial'
+  // Aprobación
+  tokenAprobacion: text("token_aprobacion").unique(),
+  estado: text("estado").default("pendiente").notNull(), // 'pendiente' | 'aprobada' | 'rechazada'
+  respondidoAt: timestamp("respondido_at"),
+  // Metadata
+  registradoPor: uuid("registrado_por").references(() => usuarios.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // ═══ RELACIONES ═══
 
 export const inviteTokensRelations = relations(inviteTokens, ({ one }) => ({
@@ -522,8 +563,24 @@ export const ordenesTrabajoRelations = relations(
     historial: many(historialEstados),
     inspecciones: many(inspeccionesOrden),
     documentosCobro: many(documentosCobro),
+    averiasOcultas: many(averiasOcultas),
   })
 );
+
+export const averiasOcultasRelations = relations(averiasOcultas, ({ one }) => ({
+  orden: one(ordenesTrabajo, {
+    fields: [averiasOcultas.ordenId],
+    references: [ordenesTrabajo.id],
+  }),
+  taller: one(talleres, {
+    fields: [averiasOcultas.tallerId],
+    references: [talleres.id],
+  }),
+  registrador: one(usuarios, {
+    fields: [averiasOcultas.registradoPor],
+    references: [usuarios.id],
+  }),
+}));
 
 export const citasRelations = relations(citas, ({ one }) => ({
   taller: one(talleres, {

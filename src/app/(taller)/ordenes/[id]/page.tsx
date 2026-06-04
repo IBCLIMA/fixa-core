@@ -18,6 +18,7 @@ import { PedirResenaBtn } from "./pedir-resena-btn";
 import { EnviarInformeBtn } from "./enviar-informe-btn";
 import { TemplateSelector } from "./template-selector";
 import { InspeccionView } from "./inspeccion-view";
+import { AveriasOcultas } from "./averias-ocultas";
 import { TallerModeToggle } from "./taller-mode";
 import { PrintButton } from "./print-button";
 import { CobrarDialog } from "./cobrar-dialog";
@@ -274,6 +275,15 @@ export default async function OrdenDetallePage({
 
       {/* Inspección */}
       <InspeccionView ordenId={orden.id} inspecciones={inspecciones} />
+
+      {/* Averías ocultas */}
+      {orden.estado !== "entregado" && orden.estado !== "cancelado" && (
+        <AveriasOcultas
+          ordenId={orden.id}
+          averias={orden.averias || []}
+          clienteTelefono={orden.cliente?.telefono}
+        />
+      )}
 
       {/* Cobro */}
       {(orden.estado === "listo" || orden.estado === "entregado") && lineas.length > 0 && (
