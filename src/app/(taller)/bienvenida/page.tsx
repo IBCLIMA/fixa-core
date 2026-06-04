@@ -60,8 +60,8 @@ export default function BienvenidaPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ background: "radial-gradient(ellipse 80% 60% at 50% 0%, #fff7ed 0%, #faf9f7 40%, #f5f3f0 100%)" }}>
-      <div className="max-w-lg w-full">
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-12 overflow-y-auto" style={{ background: "radial-gradient(ellipse 80% 60% at 50% 0%, #fff7ed 0%, #faf9f7 40%, #f5f3f0 100%)" }}>
+      <div className="max-w-lg w-full my-auto">
 
         {/* Progress dots */}
         <div className="flex items-center justify-center gap-2 mb-8">
