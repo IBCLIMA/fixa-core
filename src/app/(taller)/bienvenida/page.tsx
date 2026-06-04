@@ -194,18 +194,30 @@ export default function BienvenidaPage() {
               </label>
             </div>
 
-            {/* Newsletter consent */}
-            <div className="flex items-start gap-3 rounded-2xl bg-white/60 border border-stone-100 p-4">
+            {/* Newsletter consent - visible and inviting */}
+            <div
+              onClick={() => setNewsletterConsent(!newsletterConsent)}
+              className={`flex items-start gap-4 rounded-2xl p-5 cursor-pointer transition-all duration-200 ${
+                newsletterConsent
+                  ? "bg-orange-50 border-2 border-orange-300 shadow-sm"
+                  : "bg-white/80 border-2 border-stone-200/60 hover:border-orange-200 hover:bg-orange-50/50"
+              }`}
+            >
               <input
                 type="checkbox"
                 id="newsletter-check"
                 checked={newsletterConsent}
                 onChange={(e) => setNewsletterConsent(e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded border-stone-200 text-orange-400 focus:ring-orange-400 cursor-pointer accent-orange-400"
+                className="mt-1 h-5 w-5 rounded border-stone-300 text-orange-500 focus:ring-orange-500 cursor-pointer accent-orange-500"
               />
-              <label htmlFor="newsletter-check" className="text-xs text-stone-400 cursor-pointer leading-snug">
-                Quiero recibir consejos y novedades para mejorar mi taller <span className="text-stone-300">(opcional)</span>
-              </label>
+              <div>
+                <label htmlFor="newsletter-check" className="text-sm font-semibold text-stone-800 cursor-pointer block">
+                  Recibe trucos gratis para llenar tu taller de clientes
+                </label>
+                <p className="text-xs text-stone-500 mt-1 leading-relaxed">
+                  Te enviamos ideas prácticas para captar más coches, fidelizar clientes y ahorrar tiempo. Sin spam. Te das de baja cuando quieras.
+                </p>
+              </div>
             </div>
 
             <div className="flex gap-3">
