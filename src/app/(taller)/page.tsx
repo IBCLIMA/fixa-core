@@ -27,6 +27,8 @@ import { ordenesTrabajo, clientes, citas, vehiculos } from "@/db/schema";
 import { eq, and, count, sql, desc, sum } from "drizzle-orm";
 import { estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
+import { getVehicleAbandonment, type VehicleAbandonment } from "@/lib/vehicle-alerts";
+import { AlertTriangle } from "lucide-react";
 
 const estadoDots: Record<string, string> = {
   recibido: "bg-zinc-400",
@@ -66,6 +68,7 @@ export default async function PanelDelDia() {
   let entregadasHoyResult: any = { count: 0 };
   let facturacionHoyResult: any = { total: 0 };
   let citasManana: any[] = [];
+  let vehiculosAbandonados: VehicleAbandonment[] = [];
 
   try {
   const [
@@ -175,6 +178,12 @@ export default async function PanelDelDia() {
   citasHoy = _citasHoy;
   } catch (e) {
     console.error("Dashboard query error:", e);
+  }
+
+  try {
+    vehiculosAbandonados = await getVehicleAbandonment(tallerId);
+  } catch (e) {
+    console.error("Vehicle abandonment query error:", e);
   }
 
   const cobrosPendientes = cobrosPendientesResult?.count ?? 0;
@@ -346,6 +355,45 @@ export default async function PanelDelDia() {
                   {o.clienteTelefono && (
                     <a href={formatWhatsAppUrl(o.clienteTelefono!, `Hola ${o.clienteNombre?.split(" ")[0]}, tu coche ya está listo para recoger. Puedes pasar cuando quieras. ¡Un saludo!`)} target="_blank" className="flex h-8 items-center gap-1 rounded-full bg-emerald-600 px-3 text-white text-xs font-bold hover:bg-emerald-500 transition-colors">
                       <MessageSquare className="h-3 w-3" />Avisar
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Vehículos pendientes de recogida (abandono) */}
+      {vehiculosAbandonados.length > 0 && (
+        <Card className="border-amber-300 bg-amber-50/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base text-amber-800 flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" />
+              Vehiculos pendientes de recogida ({vehiculosAbandonados.length})
+            </CardTitle>
+            <p className="text-xs text-amber-700 mt-1">
+              Estos vehiculos llevan mas de 3 dias listos sin ser recogidos. Segun la ley puedes cobrar gastos de estancia.
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {vehiculosAbandonados.map((v) => (
+                <div key={v.ordenId} className="flex items-center justify-between rounded-xl bg-white border border-amber-200 p-3">
+                  <Link href={`/ordenes/${v.ordenId}`} className="flex items-center gap-3 flex-1 min-w-0">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-bold">{v.matricula}</p>
+                        <span className="text-xs font-bold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-full">
+                          {v.diasSinRecoger} dias
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{v.clienteNombre}</p>
+                    </div>
+                  </Link>
+                  {v.clienteTelefono && (
+                    <a href={formatWhatsAppUrl(v.clienteTelefono, `Hola ${v.clienteNombre.split(" ")[0]}, te recordamos que tu vehiculo esta listo para recoger desde hace ${v.diasSinRecoger} dias. Por favor, pasa a recogerlo lo antes posible. Gracias.`)} target="_blank" className="flex h-8 items-center gap-1 rounded-full bg-amber-600 px-3 text-white text-xs font-bold hover:bg-amber-500 transition-colors">
+                      <MessageSquare className="h-3 w-3" />Recordar
                     </a>
                   )}
                 </div>

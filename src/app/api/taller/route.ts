@@ -33,6 +33,8 @@ export async function PUT(request: Request) {
       ciudad: body.ciudad || null,
       provincia: body.provincia || null,
       googleReviewLink: body.googleReviewLink || null,
+      registroIndustrial: body.registroIndustrial || null,
+      ramaActividad: body.ramaActividad || null,
     };
 
     if (body.dpaAceptado) {

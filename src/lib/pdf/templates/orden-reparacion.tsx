@@ -477,6 +477,19 @@ export function OrdenReparacionPDF({ data }: { data: OrdenPDFData }) {
             {data.tallerRegistro && (
               <Text style={s.tallerInfo}>Reg. Industrial: {data.tallerRegistro}</Text>
             )}
+            {data.tallerRama && data.tallerRama.length > 0 && (
+              <Text style={s.tallerInfo}>
+                Rama: {data.tallerRama.map((r) => {
+                  const labels: Record<string, string> = {
+                    mecanica: "Mecánica",
+                    electricidad: "Electricidad-Electrónica",
+                    carroceria: "Carrocería",
+                    pintura: "Pintura",
+                  };
+                  return labels[r] || r;
+                }).join(", ")}
+              </Text>
+            )}
           </View>
           <View style={{ alignItems: "flex-end" as any }}>
             <Text style={s.orTitle}>Orden de reparación</Text>
