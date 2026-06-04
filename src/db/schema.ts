@@ -124,6 +124,8 @@ export const talleres = pgTable("talleres", {
   activo: boolean("activo").default(true).notNull(),
   dpaAcceptedAt: timestamp("dpa_accepted_at"),
   googleReviewLink: text("google_review_link"),
+  newsletterConsent: boolean("newsletter_consent").default(false).notNull(),
+  newsletterConsentAt: timestamp("newsletter_consent_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

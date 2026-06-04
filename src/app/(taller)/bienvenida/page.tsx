@@ -18,6 +18,7 @@ export default function BienvenidaPage() {
   const [paso, setPaso] = useState(0);
   const [loading, setLoading] = useState(false);
   const [dpaAceptado, setDpaAceptado] = useState(false);
+  const [newsletterConsent, setNewsletterConsent] = useState(false);
   const [datos, setDatos] = useState({
     nombre: "",
     telefono: "",
@@ -43,7 +44,7 @@ export default function BienvenidaPage() {
       const res = await fetch("/api/taller", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...datos, dpaAceptado: true }),
+        body: JSON.stringify({ ...datos, dpaAceptado: true, newsletterConsent }),
       });
       if (!res.ok) throw new Error();
       setPaso(2);
@@ -190,6 +191,20 @@ export default function BienvenidaPage() {
                 <Link href="/dpa" target="_blank" className="text-orange-600 underline underline-offset-2 font-medium text-xs">
                   Ver condiciones
                 </Link>
+              </label>
+            </div>
+
+            {/* Newsletter consent */}
+            <div className="flex items-start gap-3 rounded-2xl bg-white/60 border border-stone-100 p-4">
+              <input
+                type="checkbox"
+                id="newsletter-check"
+                checked={newsletterConsent}
+                onChange={(e) => setNewsletterConsent(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-stone-200 text-orange-400 focus:ring-orange-400 cursor-pointer accent-orange-400"
+              />
+              <label htmlFor="newsletter-check" className="text-xs text-stone-400 cursor-pointer leading-snug">
+                Quiero recibir consejos y novedades para mejorar mi taller <span className="text-stone-300">(opcional)</span>
               </label>
             </div>
 
