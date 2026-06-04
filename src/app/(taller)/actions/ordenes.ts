@@ -10,6 +10,7 @@ import {
   clientes,
   talleres,
   usuarios,
+  fotosOrden,
 } from "@/db/schema";
 import { eq, and, desc, count, sql } from "drizzle-orm";
 import { getTallerIdFromAuth, requireRole } from "@/lib/auth";
@@ -57,17 +58,33 @@ export async function getOrden(id: string) {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  return db.query.ordenesTrabajo.findFirst({
-    where: and(eq(ordenesTrabajo.id, id), eq(ordenesTrabajo.tallerId, tallerId)),
-    with: {
-      vehiculo: true,
-      cliente: true,
-      lineas: true,
-      fotos: true,
-      historial: true,
-      asignado: true,
-    },
-  });
+  // Main order with vehicle and client
+  const [orden] = await db
+    .select()
+    .from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, id), eq(ordenesTrabajo.tallerId, tallerId)));
+
+  if (!orden) return null;
+
+  // Fetch relations separately to avoid Drizzle ORM nested relation issues
+  const [vehiculo] = await db.select().from(vehiculos).where(eq(vehiculos.id, orden.vehiculoId));
+  const [cliente] = await db.select().from(clientes).where(eq(clientes.id, orden.clienteId));
+  const lineas = await db.select().from(lineasOrden).where(eq(lineasOrden.ordenId, id));
+  const fotos = await db.select().from(fotosOrden).where(eq(fotosOrden.ordenId, id));
+  const historial = await db.select().from(historialEstados).where(eq(historialEstados.ordenId, id)).orderBy(desc(historialEstados.createdAt));
+  const asignado = orden.asignadoA
+    ? (await db.select().from(usuarios).where(eq(usuarios.id, orden.asignadoA)))[0]
+    : null;
+
+  return {
+    ...orden,
+    vehiculo: vehiculo || null,
+    cliente: cliente || null,
+    lineas,
+    fotos,
+    historial,
+    asignado,
+  };
 }
 
 export async function crearOrden(data: {
