@@ -29,7 +29,7 @@ const estadoConfig: Record<EstadoInspeccion, { label: string; icon: string; clas
     activeClassName: "bg-emerald-500 text-white border-emerald-500 hover:bg-emerald-600",
   },
   atencion: {
-    label: "Atenci\u00f3n",
+    label: "Atención",
     icon: "\u26A0",
     className: "border-amber-200 text-amber-600 hover:bg-amber-50",
     activeClassName: "bg-amber-500 text-white border-amber-500 hover:bg-amber-600",
@@ -78,9 +78,9 @@ export function InspeccionView({
     startTransition(async () => {
       try {
         await iniciarInspeccion(ordenId);
-        toast.success("Inspecci\u00f3n iniciada");
+        toast.success("Inspección iniciada");
       } catch {
-        toast.error("Error al iniciar la inspecci\u00f3n");
+        toast.error("Error al iniciar la inspección");
       }
     });
   }
@@ -142,7 +142,7 @@ export function InspeccionView({
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <ClipboardCheck className="h-4 w-4 text-muted-foreground" />
-          Inspecci\u00f3n del veh\u00edculo
+          Inspección del vehículo
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -150,14 +150,14 @@ export function InspeccionView({
           <div className="text-center py-6">
             <ClipboardCheck className="h-10 w-10 text-muted-foreground/20 mx-auto mb-3" />
             <p className="text-sm text-muted-foreground mb-4">
-              No se ha realizado ninguna inspecci\u00f3n para esta orden.
+              No se ha realizado ninguna inspección para esta orden.
             </p>
             <Button
               onClick={handleIniciar}
               disabled={isPending}
               className="rounded-full"
             >
-              {isPending ? "Iniciando..." : "Iniciar inspecci\u00f3n"}
+              {isPending ? "Iniciando..." : "Iniciar inspección"}
             </Button>
           </div>
         ) : (
@@ -169,7 +169,7 @@ export function InspeccionView({
               </Badge>
               {attention > 0 && (
                 <Badge className="rounded-full text-xs bg-amber-100 text-amber-700">
-                  {attention} atenci\u00f3n
+                  {attention} atención
                 </Badge>
               )}
               {urgent > 0 && (
