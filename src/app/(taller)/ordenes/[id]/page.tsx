@@ -269,7 +269,6 @@ export default async function OrdenDetallePage({
       {/* Datos legales (RD 1457/1986) */}
       <DatosLegales
         ordenId={orden.id}
-        tipoIntervencion={orden.tipoIntervencion}
         motivoDeposito={orden.motivoDeposito}
         fechaEstimada={orden.fechaEstimada}
         observacionesEntrada={orden.observacionesEntrada}

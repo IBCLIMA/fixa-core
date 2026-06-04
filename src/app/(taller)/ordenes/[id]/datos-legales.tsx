@@ -8,20 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { actualizarDatosLegales } from "../../actions/orden-legal";
 
-const TIPOS_INTERVENCION = [
-  { value: "mecanica", label: "Mecánica" },
-  { value: "chapa", label: "Chapa" },
-  { value: "pintura", label: "Pintura" },
-  { value: "electricidad", label: "Electricidad" },
-  { value: "diagnostico", label: "Diagnóstico" },
-  { value: "mantenimiento", label: "Mantenimiento" },
-  { value: "pre_itv", label: "Pre-ITV" },
-  { value: "otro", label: "Otro" },
-] as const;
-
 interface DatosLegalesProps {
   ordenId: string;
-  tipoIntervencion: string[] | null;
   motivoDeposito: string | null;
   fechaEstimada: Date | string | null;
   observacionesEntrada: string | null;
@@ -31,14 +19,12 @@ interface DatosLegalesProps {
 
 export function DatosLegales({
   ordenId,
-  tipoIntervencion,
   motivoDeposito,
   fechaEstimada,
   observacionesEntrada,
   renunciaPresupuesto,
   renunciaPiezas,
 }: DatosLegalesProps) {
-  const [tipos, setTipos] = useState<string[]>(tipoIntervencion || []);
   const [motivo, setMotivo] = useState(motivoDeposito || "reparacion");
   const [fecha, setFecha] = useState(() => {
     if (!fechaEstimada) return "";
@@ -54,7 +40,6 @@ export function DatosLegales({
 
   const guardar = useCallback(
     (overrides?: Partial<{
-      tipoIntervencion: string[];
       motivoDeposito: string;
       fechaEstimada: string | null;
       observacionesEntrada: string;
@@ -65,7 +50,6 @@ export function DatosLegales({
       timeoutRef.current = setTimeout(async () => {
         try {
           await actualizarDatosLegales(ordenId, {
-            tipoIntervencion: overrides?.tipoIntervencion ?? tipos,
             motivoDeposito: overrides?.motivoDeposito ?? motivo,
             fechaEstimada: overrides?.fechaEstimada !== undefined ? overrides.fechaEstimada : (fecha || null),
             observacionesEntrada: overrides?.observacionesEntrada ?? observaciones,
@@ -78,7 +62,7 @@ export function DatosLegales({
         }
       }, 500);
     },
-    [ordenId, tipos, motivo, fecha, observaciones, rPresupuesto, rPiezas]
+    [ordenId, motivo, fecha, observaciones, rPresupuesto, rPiezas]
   );
 
   // Auto-save on state changes (skip first render)
@@ -91,13 +75,7 @@ export function DatosLegales({
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [tipos, motivo, fecha, observaciones, rPresupuesto, rPiezas]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  function toggleTipo(value: string) {
-    setTipos((prev) =>
-      prev.includes(value) ? prev.filter((t) => t !== value) : [...prev, value]
-    );
-  }
+  }, [motivo, fecha, observaciones, rPresupuesto, rPiezas]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Card>
@@ -108,24 +86,6 @@ export function DatosLegales({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
-        {/* Tipo de intervención */}
-        <div>
-          <p className="text-xs font-bold text-stone-500 mb-2">Tipo de intervención</p>
-          <div className="flex flex-wrap gap-3">
-            {TIPOS_INTERVENCION.map(({ value, label }) => (
-              <label key={value} className="flex items-center gap-1.5 text-sm cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={tipos.includes(value)}
-                  onChange={() => toggleTipo(value)}
-                  className="accent-orange-500 h-4 w-4"
-                />
-                {label}
-              </label>
-            ))}
-          </div>
-        </div>
-
         {/* Motivo del depósito */}
         <div>
           <p className="text-xs font-bold text-stone-500 mb-2">Motivo del depósito</p>
