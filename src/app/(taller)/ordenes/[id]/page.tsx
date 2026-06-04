@@ -19,6 +19,8 @@ import { EnviarInformeBtn } from "./enviar-informe-btn";
 import { TemplateSelector } from "./template-selector";
 import { InspeccionView } from "./inspeccion-view";
 import { AveriasOcultas } from "./averias-ocultas";
+import { DatosLegales } from "./datos-legales";
+import { SeguroChapa } from "./seguro-chapa";
 import { TallerModeToggle } from "./taller-mode";
 import { PrintButton } from "./print-button";
 import { CobrarDialog } from "./cobrar-dialog";
@@ -264,6 +266,28 @@ export default async function OrdenDetallePage({
         ordenId={orden.id}
         diagnosticoActual={orden.diagnostico}
         descripcionActual={orden.descripcionCliente}
+      />
+
+      {/* Datos legales (RD 1457/1986) */}
+      <DatosLegales
+        ordenId={orden.id}
+        tipoIntervencion={orden.tipoIntervencion}
+        motivoDeposito={orden.motivoDeposito}
+        fechaEstimada={orden.fechaEstimada}
+        observacionesEntrada={orden.observacionesEntrada}
+        renunciaPresupuesto={orden.renunciaPresupuesto}
+        renunciaPiezas={orden.renunciaPiezas}
+      />
+
+      {/* Datos del seguro (chapa/pintura) */}
+      <SeguroChapa
+        ordenId={orden.id}
+        tipoIntervencion={orden.tipoIntervencion}
+        aseguradora={orden.aseguradora}
+        numPoliza={orden.numPoliza}
+        numSiniestro={orden.numSiniestro}
+        numPeritaje={orden.numPeritaje}
+        nombrePerito={orden.nombrePerito}
       />
 
       {/* Fotos */}
