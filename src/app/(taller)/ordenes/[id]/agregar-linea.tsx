@@ -18,6 +18,7 @@ import { toast } from "sonner";
 export function AgregarLineaForm({ ordenId }: { ordenId: string }) {
   const [open, setOpen] = useState(false);
   const [tipo, setTipo] = useState<"mano_obra" | "recambio" | "otros">("mano_obra");
+  const [tipoPieza, setTipoPieza] = useState<"nueva" | "reconstruida" | "usada">("nueva");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(formData: FormData) {
@@ -30,6 +31,7 @@ export function AgregarLineaForm({ ordenId }: { ordenId: string }) {
         cantidad: Number(formData.get("cantidad") || 1),
         precioUnitario: Number(formData.get("precio") || 0),
         ivaPct: Number(formData.get("iva") || 21),
+        ...(tipo === "recambio" ? { tipoPieza } : {}),
       });
       toast.success("Línea añadida");
       setOpen(false);
@@ -75,6 +77,21 @@ export function AgregarLineaForm({ ordenId }: { ordenId: string }) {
           <Input name="iva" type="number" defaultValue="21" className="h-10 rounded-lg" />
         </div>
       </div>
+      {tipo === "recambio" && (
+        <div className="space-y-1">
+          <Label className="text-xs">Tipo de pieza</Label>
+          <Select value={tipoPieza} onValueChange={(v) => setTipoPieza(v as typeof tipoPieza)}>
+            <SelectTrigger className="h-10 rounded-lg">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="nueva">Nueva</SelectItem>
+              <SelectItem value="reconstruida">Reconstruida</SelectItem>
+              <SelectItem value="usada">Usada</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
       <div className="space-y-1">
         <Label className="text-xs">Descripción *</Label>
         <Input name="descripcion" placeholder="Cambio pastillas de freno..." required className="h-10 rounded-lg" autoFocus />
