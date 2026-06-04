@@ -141,3 +141,27 @@ export async function busquedaGlobal(termino: string): Promise<ResultadoBusqueda
 
   return resultados;
 }
+
+export async function buscarClientes(query: string) {
+  const { tallerId } = await getTallerIdFromAuth();
+  const db = getDb();
+  const term = `%${query.trim()}%`;
+
+  const results = await db
+    .select({
+      id: clientes.id,
+      nombre: clientes.nombre,
+      telefono: clientes.telefono,
+    })
+    .from(clientes)
+    .where(and(
+      eq(clientes.tallerId, tallerId),
+      or(
+        ilike(clientes.nombre, term),
+        ilike(clientes.telefono, term)
+      )
+    ))
+    .limit(5);
+
+  return results;
+}

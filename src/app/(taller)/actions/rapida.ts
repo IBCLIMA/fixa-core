@@ -61,6 +61,7 @@ export async function crearOrdenRapida(data: {
       estado: "recibido",
       kmEntrada: data.kmEntrada,
       descripcionCliente: data.descripcionCliente,
+      tokenPublico: require("crypto").randomBytes(16).toString("hex"),
     })
     .returning();
 
@@ -139,6 +140,7 @@ export async function crearTodoRapido(data: {
       numero,
       estado: "recibido",
       descripcionCliente: data.descripcionCliente || null,
+      tokenPublico: require("crypto").randomBytes(16).toString("hex"),
     })
     .returning();
 

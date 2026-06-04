@@ -11,9 +11,11 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { buscarPorMatricula, crearOrdenRapida, crearTodoRapido } from "./actions/rapida";
+import { buscarClientes } from "./actions/busqueda";
 import { toast } from "sonner";
 
 type Resultado = Awaited<ReturnType<typeof buscarPorMatricula>>[number];
+type ClienteMatch = { id: string; nombre: string; telefono: string | null };
 
 export function EntradaRapida() {
   const router = useRouter();
@@ -24,6 +26,19 @@ export function EntradaRapida() {
   const [creandoNuevo, setCreandoNuevo] = useState(false);
   const [loading, setLoading] = useState(false);
   const [buscando, setBuscando] = useState(false);
+  const [nombreCliente, setNombreCliente] = useState("");
+  const [telefonoCliente, setTelefonoCliente] = useState("");
+  const [clientesMatch, setClientesMatch] = useState<ClienteMatch[]>([]);
+  const [clienteSeleccionado, setClienteSeleccionado] = useState<ClienteMatch | null>(null);
+
+  useEffect(() => {
+    if (nombreCliente.length < 2 || clienteSeleccionado) { setClientesMatch([]); return; }
+    const t = setTimeout(async () => {
+      const res = await buscarClientes(nombreCliente);
+      setClientesMatch(res);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [nombreCliente, clienteSeleccionado]);
 
   useEffect(() => {
     if (matricula.length < 2) { setResultados([]); return; }

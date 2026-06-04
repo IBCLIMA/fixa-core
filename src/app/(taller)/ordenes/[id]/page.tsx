@@ -32,16 +32,33 @@ export default async function OrdenDetallePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const orden = await getOrden(id);
+
+  let orden;
+  try {
+    orden = await getOrden(id);
+  } catch (e) {
+    console.error("Error loading order:", e);
+    return notFound();
+  }
   if (!orden) return notFound();
 
-  const [rol, inspecciones, mecanicos, maintenanceAlerts, documentoCobro] = await Promise.all([
-    getUserRole(),
-    getInspeccion(id).catch(() => []),
-    getMecanicos().catch(() => []),
-    getMaintenanceAlerts(orden.vehiculoId, orden.kmEntrada).catch(() => []),
-    getDocumentoByOrden(id).catch(() => null),
-  ]);
+  let rol: "admin" | "mecanico" | "recepcion" = "mecanico";
+  let inspecciones: any[] = [];
+  let mecanicos: any[] = [];
+  let maintenanceAlerts: any[] = [];
+  let documentoCobro: any = null;
+
+  try {
+    [rol, inspecciones, mecanicos, maintenanceAlerts, documentoCobro] = await Promise.all([
+      getUserRole(),
+      getInspeccion(id).catch(() => []),
+      getMecanicos().catch(() => []),
+      getMaintenanceAlerts(orden.vehiculoId, orden.kmEntrada).catch(() => []),
+      getDocumentoByOrden(id).catch(() => null),
+    ]);
+  } catch (e) {
+    console.error("Error loading order details:", e);
+  }
   const isAdmin = rol === "admin";
   const canAssign = rol === "admin" || rol === "recepcion";
 
