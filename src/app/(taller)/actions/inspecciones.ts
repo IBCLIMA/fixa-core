@@ -12,9 +12,8 @@ export async function iniciarInspeccion(ordenId: string) {
   const db = getDb();
 
   // Verify order belongs to this workshop
-  const orden = await db.query.ordenesTrabajo.findFirst({
-    where: and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)),
-  });
+  const [orden] = await db.select({ id: ordenesTrabajo.id }).from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
   if (!orden) throw new Error("Orden no encontrada");
 
   // Check if inspection already exists
@@ -78,10 +77,9 @@ export async function getInspeccion(ordenId: string) {
   const db = getDb();
 
   // Verify order belongs to this workshop
-  const orden = await db.query.ordenesTrabajo.findFirst({
-    where: and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)),
-  });
-  if (!orden) throw new Error("Orden no encontrada");
+  const [orden] = await db.select({ id: ordenesTrabajo.id }).from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
+  if (!orden) return [];
 
   return db
     .select()

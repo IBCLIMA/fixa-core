@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Car, User, Clock, Hash, FileText, MessageSquare, Phone, Share2, Printer, Star, Send, AlertTriangle, CircleAlert } from "lucide-react";
+import { ArrowLeft, Car, Clock, Hash, FileText, Printer, Send, AlertTriangle, CircleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +20,7 @@ import { TemplateSelector } from "./template-selector";
 import { InspeccionView } from "./inspeccion-view";
 import { AveriasOcultas } from "./averias-ocultas";
 import { DatosLegales } from "./datos-legales";
+import { ClienteCard } from "./cliente-card";
 import { SeguroChapa } from "./seguro-chapa";
 import { PrintButton } from "./print-button";
 import { CobrarDialog } from "./cobrar-dialog";
@@ -210,53 +211,10 @@ export default async function OrdenDetallePage({
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand/10">
-                <User className="h-4 w-4 text-brand" />
-              </div>
-              <p className="font-bold">Cliente</p>
-            </div>
-            <div className="space-y-1 text-sm">
-              <Link
-                href={`/clientes/${orden.cliente?.id}`}
-                className="font-bold text-brand hover:underline"
-              >
-                {orden.cliente?.nombre}
-              </Link>
-              {orden.cliente?.telefono && (
-                <p className="text-muted-foreground">{orden.cliente.telefono}</p>
-              )}
-              {orden.cliente?.email && (
-                <p className="text-muted-foreground">{orden.cliente.email}</p>
-              )}
-              <div className="flex gap-2 mt-2">
-                {orden.cliente?.telefono ? (
-                  <>
-                    <a
-                      href={formatWhatsAppUrl(orden.cliente.telefono, `Hola ${orden.cliente.nombre.split(" ")[0]}, te escribimos desde el taller sobre tu vehículo ${orden.vehiculo?.matricula || ""}.`)}
-                      target="_blank"
-                      className="flex h-11 items-center gap-1.5 rounded-full bg-emerald-600 px-4 text-white text-sm font-bold hover:bg-emerald-500 transition-colors"
-                    >
-                      <MessageSquare className="h-4 w-4" />WhatsApp
-                    </a>
-                    <a
-                      href={`tel:${orden.cliente.telefono}`}
-                      className="flex h-11 items-center gap-1.5 rounded-full bg-muted px-4 text-sm font-bold hover:bg-muted/80 transition-colors"
-                    >
-                      <Phone className="h-4 w-4" />Llamar
-                    </a>
-                  </>
-                ) : (
-                  <Button disabled className="rounded-full h-11 px-4 text-sm" title="Añade un teléfono al cliente">
-                    <Phone className="h-4 w-4 mr-1.5" /> Sin teléfono
-                  </Button>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <ClienteCard
+          cliente={orden.cliente}
+          matricula={orden.vehiculo?.matricula}
+        />
       </div>
 
       {/* Descripción y diagnóstico */}
@@ -294,8 +252,10 @@ export default async function OrdenDetallePage({
         </CardContent>
       </Card>
 
-      {/* Inspección */}
-      <InspeccionView ordenId={orden.id} inspecciones={inspecciones} />
+      {/* Inspección — solo mostrar si ya tiene datos */}
+      {inspecciones.length > 0 && (
+        <InspeccionView ordenId={orden.id} inspecciones={inspecciones} />
+      )}
 
       {/* Averías ocultas */}
       {orden.estado !== "entregado" && orden.estado !== "cancelado" && (
