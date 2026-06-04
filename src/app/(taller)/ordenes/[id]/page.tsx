@@ -319,12 +319,12 @@ export default async function OrdenDetallePage({
         <CardContent className="p-4 space-y-3">
           {/* Primary actions */}
           <div className="flex flex-wrap gap-2">
-            <PrintButton />
-            <a href={`/api/ordenes/${orden.id}/resumen`} target="_blank">
-              <Button variant="outline" className="rounded-full">
-                <Printer className="mr-1.5 h-4 w-4" />Imprimir / Compartir
+            <a href={`/api/ordenes/${orden.id}/pdf`} target="_blank">
+              <Button className="rounded-full bg-stone-900 hover:bg-stone-800 text-white">
+                <Printer className="mr-1.5 h-4 w-4" />Descargar OR (PDF)
               </Button>
             </a>
+            <PrintButton />
           </div>
 
           {/* Secondary actions */}
