@@ -21,7 +21,6 @@ import { InspeccionView } from "./inspeccion-view";
 import { AveriasOcultas } from "./averias-ocultas";
 import { DatosLegales } from "./datos-legales";
 import { SeguroChapa } from "./seguro-chapa";
-import { TallerModeToggle } from "./taller-mode";
 import { PrintButton } from "./print-button";
 import { CobrarDialog } from "./cobrar-dialog";
 import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
@@ -103,7 +102,6 @@ export default async function OrdenDetallePage({
             })}
           </p>
         </div>
-        <TallerModeToggle />
       </div>
 
       {/* Maintenance Alerts */}

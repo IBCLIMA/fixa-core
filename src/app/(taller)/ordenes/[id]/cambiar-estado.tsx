@@ -33,8 +33,9 @@ const estadoHoverColors: Record<string, string> = {
   cancelado: "hover:bg-zinc-200",
 };
 
-const validTransitions: Record<string, string[]> = {
-  recibido: ["diagnostico", "cancelado"],
+// Forward transitions (primary actions)
+const forwardTransitions: Record<string, string[]> = {
+  recibido: ["diagnostico", "en_reparacion", "cancelado"],
   diagnostico: ["presupuestado", "en_reparacion", "cancelado"],
   presupuestado: ["aprobado", "cancelado"],
   aprobado: ["en_reparacion", "esperando_recambio"],
@@ -45,6 +46,19 @@ const validTransitions: Record<string, string[]> = {
   cancelado: [],
 };
 
+// Backward transitions (corrections / undo)
+const backwardTransitions: Record<string, string[]> = {
+  recibido: [],
+  diagnostico: ["recibido"],
+  presupuestado: ["diagnostico"],
+  aprobado: ["presupuestado", "diagnostico"],
+  en_reparacion: ["diagnostico", "aprobado"],
+  esperando_recambio: ["en_reparacion"],
+  listo: ["en_reparacion"],
+  entregado: ["listo"],
+  cancelado: ["recibido"],
+};
+
 export function CambiarEstadoButtons({
   ordenId,
   estadoActual,
@@ -52,13 +66,16 @@ export function CambiarEstadoButtons({
   ordenId: string;
   estadoActual: string;
 }) {
-  const nextStates = validTransitions[estadoActual] || [];
-  const availableEstados = allEstados.filter((e) => nextStates.includes(e));
+  const forward = forwardTransitions[estadoActual] || [];
+  const backward = backwardTransitions[estadoActual] || [];
 
   async function handleCambio(nuevoEstado: Estado) {
     const label = estadoLabels[nuevoEstado] || nuevoEstado;
     if (nuevoEstado === "entregado" || nuevoEstado === "cancelado") {
       if (!window.confirm(`Seguro que quieres marcar como "${label}"?`)) return;
+    }
+    if (backward.includes(nuevoEstado)) {
+      if (!window.confirm(`¿Volver al estado "${label}"?`)) return;
     }
     try {
       await cambiarEstadoOrden(ordenId, nuevoEstado);
@@ -80,22 +97,40 @@ export function CambiarEstadoButtons({
         </span>
       </div>
 
-      {/* Valid next state buttons */}
-      {availableEstados.length > 0 ? (
+      {/* Forward transitions (primary) */}
+      {forward.length > 0 && (
         <div className="flex flex-wrap gap-2">
-          {availableEstados.map((estado) => (
+          {forward.map((estado) => (
             <button
               key={estado}
-              onClick={() => handleCambio(estado)}
+              onClick={() => handleCambio(estado as Estado)}
               className={`px-4 py-3 rounded-full text-sm font-bold min-h-[44px] transition-all ${estadoColors[estado] || ""} ${estadoHoverColors[estado] || ""} hover:opacity-100 opacity-80`}
             >
               {estadoLabels[estado]}
             </button>
           ))}
         </div>
-      ) : (
+      )}
+
+      {/* Backward transitions (corrections) */}
+      {backward.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border">
+          <span className="text-[10px] text-muted-foreground">Volver a:</span>
+          {backward.map((estado) => (
+            <button
+              key={estado}
+              onClick={() => handleCambio(estado as Estado)}
+              className="px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground border border-border hover:bg-muted transition-colors"
+            >
+              ← {estadoLabels[estado]}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {forward.length === 0 && backward.length === 0 && (
         <p className="text-xs text-muted-foreground">
-          Estado final alcanzado. No hay cambios disponibles.
+          Estado final alcanzado.
         </p>
       )}
     </div>
