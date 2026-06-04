@@ -61,6 +61,8 @@ export function EntradaRapida() {
         marca: (formData.get("marca") as string) || undefined,
         modelo: (formData.get("modelo") as string) || undefined,
         descripcionCliente: (formData.get("descripcionNuevo") as string) || undefined,
+        fechaEstimada: formData.get("fechaEstimada") as string,
+        motivoDeposito: (formData.get("motivoDeposito") as string) || "reparacion",
       });
       toast.success(`Orden OR-${orden.numero} creada`);
       setOpen(false);
@@ -83,6 +85,8 @@ export function EntradaRapida() {
         clienteId: seleccionado.clienteId!,
         kmEntrada: formData.get("km") ? Number(formData.get("km")) : undefined,
         descripcionCliente: (formData.get("descripcion") as string) || undefined,
+        fechaEstimada: formData.get("fechaEstimada") as string,
+        motivoDeposito: (formData.get("motivoDeposito") as string) || "reparacion",
       });
       toast.success(`Orden OR-${orden.numero} creada`);
       setOpen(false);
@@ -184,6 +188,23 @@ export function EntradaRapida() {
                   <Label className="text-xs font-bold text-stone-500">¿Qué le pasa?</Label>
                   <Textarea name="descripcionNuevo" placeholder="Le hace ruido al frenar, pierde líquido..." rows={2} className="rounded-xl" />
                 </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-stone-500">Fecha estimada de entrega *</Label>
+                  <Input name="fechaEstimada" type="date" required className="h-11 rounded-xl" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-stone-500">Motivo del depósito</Label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2 text-sm">
+                      <input type="radio" name="motivoDeposito" value="reparacion" defaultChecked className="accent-orange-500" />
+                      Reparación
+                    </label>
+                    <label className="flex items-center gap-2 text-sm">
+                      <input type="radio" name="motivoDeposito" value="presupuesto" className="accent-orange-500" />
+                      Presupuesto
+                    </label>
+                  </div>
+                </div>
                 <div className="flex gap-2">
                   <Button type="submit" className="flex-1 h-11 rounded-xl font-bold" disabled={loading}>
                     {loading ? "Creando..." : "Crear cliente + orden"}
@@ -212,6 +233,25 @@ export function EntradaRapida() {
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-stone-500">¿Qué le pasa?</Label>
               <Textarea name="descripcion" placeholder="Le hace ruido al frenar, pierde líquido..." rows={2} className="rounded-xl" autoFocus />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-stone-500">Fecha estimada de entrega *</Label>
+              <Input name="fechaEstimada" type="date" required className="h-11 rounded-xl" />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-stone-500">Motivo del depósito</Label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="radio" name="motivoDeposito" value="reparacion" defaultChecked className="accent-orange-500" />
+                  Reparación
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <input type="radio" name="motivoDeposito" value="presupuesto" className="accent-orange-500" />
+                  Presupuesto
+                </label>
+              </div>
             </div>
 
             <div className="flex gap-2">

@@ -96,6 +96,9 @@ export async function crearOrden(data: {
   kmEntrada?: number;
   descripcionCliente?: string;
   fechaEstimada?: string;
+  motivoDeposito?: string;
+  tipoIntervencion?: string[];
+  observacionesEntrada?: string;
 }) {
   const { tallerId, usuarioId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
@@ -124,6 +127,9 @@ export async function crearOrden(data: {
       fechaEstimada: data.fechaEstimada
         ? new Date(data.fechaEstimada)
         : undefined,
+      motivoDeposito: data.motivoDeposito || "reparacion",
+      tipoIntervencion: data.tipoIntervencion || undefined,
+      observacionesEntrada: data.observacionesEntrada || undefined,
       tokenPublico,
     })
     .returning();

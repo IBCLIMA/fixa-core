@@ -38,6 +38,8 @@ export async function crearOrdenRapida(data: {
   clienteId: string;
   kmEntrada?: number;
   descripcionCliente?: string;
+  fechaEstimada?: string;
+  motivoDeposito?: string;
 }) {
   const { tallerId, usuarioId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
@@ -61,6 +63,8 @@ export async function crearOrdenRapida(data: {
       estado: "recibido",
       kmEntrada: data.kmEntrada,
       descripcionCliente: data.descripcionCliente,
+      fechaEstimada: data.fechaEstimada ? new Date(data.fechaEstimada) : undefined,
+      motivoDeposito: data.motivoDeposito || "reparacion",
       tokenPublico: require("crypto").randomBytes(16).toString("hex"),
     })
     .returning();
@@ -96,6 +100,8 @@ export async function crearTodoRapido(data: {
   marca?: string;
   modelo?: string;
   descripcionCliente?: string;
+  fechaEstimada?: string;
+  motivoDeposito?: string;
 }) {
   const { tallerId, usuarioId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
@@ -140,6 +146,8 @@ export async function crearTodoRapido(data: {
       numero,
       estado: "recibido",
       descripcionCliente: data.descripcionCliente || null,
+      fechaEstimada: data.fechaEstimada ? new Date(data.fechaEstimada) : undefined,
+      motivoDeposito: data.motivoDeposito || "reparacion",
       tokenPublico: require("crypto").randomBytes(16).toString("hex"),
     })
     .returning();
