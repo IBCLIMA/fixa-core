@@ -33,13 +33,7 @@ export default async function OrdenDetallePage({
 }) {
   const { id } = await params;
 
-  let orden;
-  try {
-    orden = await getOrden(id);
-  } catch (e) {
-    console.error("Error loading order:", e);
-    return notFound();
-  }
+  const orden = await getOrden(id);
   if (!orden) return notFound();
 
   let rol: "admin" | "mecanico" | "recepcion" = "mecanico";
