@@ -50,6 +50,9 @@ export default async function CalendarioPage({
   const currentWeek = getWeekDates();
   const isCurrentWeek = week.start === currentWeek.start;
 
+  // Total citas de la semana
+  const totalCitas = citas.length;
+
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
@@ -62,31 +65,35 @@ export default async function CalendarioPage({
             {week.days[6].toLocaleDateString("es-ES", { day: "numeric", month: "long" })}
           </p>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <Link
             href={`/calendario?semana=${formatMondayParam(prevMonday)}`}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-border hover:bg-muted transition-colors"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-border hover:bg-muted transition-all duration-200 hover:scale-105"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-5 w-5" />
           </Link>
-          {!isCurrentWeek && (
+          {!isCurrentWeek ? (
             <Link
               href="/calendario"
-              className="flex h-8 items-center rounded-full bg-brand px-3 text-white text-xs font-bold hover:bg-brand/90 transition-colors"
+              className="flex h-10 items-center rounded-xl bg-brand px-4 text-white text-sm font-bold hover:bg-brand/90 transition-all duration-200 shadow-sm shadow-brand/20"
             >
               Hoy
             </Link>
+          ) : (
+            <span className="flex h-10 items-center rounded-xl bg-brand/10 px-4 text-brand text-sm font-bold">
+              Esta semana
+            </span>
           )}
           <Link
             href={`/calendario?semana=${formatMondayParam(nextMonday)}`}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-border hover:bg-muted transition-colors"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-border hover:bg-muted transition-all duration-200 hover:scale-105"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-5 w-5" />
           </Link>
         </div>
       </div>
 
-      <CalendarioView days={week.days.map((d) => d.toISOString())} citas={citas} />
+      <CalendarioView days={week.days.map((d) => d.toISOString())} citas={citas} totalCitas={totalCitas} />
     </div>
   );
 }

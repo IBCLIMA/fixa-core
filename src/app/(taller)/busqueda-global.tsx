@@ -51,14 +51,29 @@ function saveRecentSearch(term: string) {
   }
 }
 
+const placeholders = [
+  "Buscar matricula...",
+  "Buscar cliente...",
+  "Buscar orden...",
+];
+
 export function BusquedaGlobal() {
   const [query, setQuery] = useState("");
   const [resultados, setResultados] = useState<ResultadoBusqueda[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [placeholderIdx, setPlaceholderIdx] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Rotate placeholder text
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIdx((prev) => (prev + 1) % placeholders.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Load recent searches on mount
   useEffect(() => {
@@ -143,7 +158,7 @@ export function BusquedaGlobal() {
       <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       <Input
         ref={inputRef}
-        placeholder="Buscar..."
+        placeholder={placeholders[placeholderIdx]}
         className="pl-9 pr-8 h-9 w-full rounded-full bg-muted border-0 text-sm"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
