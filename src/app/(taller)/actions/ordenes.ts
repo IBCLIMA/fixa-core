@@ -60,11 +60,11 @@ export async function getOrden(id: string) {
   return db.query.ordenesTrabajo.findFirst({
     where: and(eq(ordenesTrabajo.id, id), eq(ordenesTrabajo.tallerId, tallerId)),
     with: {
-      vehiculo: { with: { cliente: true } },
+      vehiculo: true,
       cliente: true,
       lineas: true,
       fotos: true,
-      historial: { orderBy: desc(historialEstados.createdAt) },
+      historial: true,
       asignado: true,
     },
   });
