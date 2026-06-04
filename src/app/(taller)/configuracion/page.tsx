@@ -6,6 +6,8 @@ import { requireRole } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { ConfigForm } from "./config-form";
 import { CopyLinkBox } from "./copy-link-box";
+import { PlantillasForm } from "./plantillas-form";
+import { getPlantillas, type LineaPlantilla } from "../actions/plantillas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -26,6 +28,8 @@ export default async function ConfiguracionPage() {
 
   if (!taller) return <p>Error cargando configuración</p>;
 
+  const plantillas = await getPlantillas().catch(() => []);
+
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
@@ -41,6 +45,15 @@ export default async function ConfiguracionPage() {
       </div>
 
       <ConfigForm taller={taller} />
+
+      {/* Plantillas de servicio */}
+      <PlantillasForm
+        plantillasIniciales={plantillas.map((p) => ({
+          id: p.id,
+          nombre: p.nombre,
+          lineas: p.lineas as LineaPlantilla[],
+        }))}
+      />
 
       {/* Enlace de cita online */}
       <Card>

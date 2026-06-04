@@ -8,12 +8,16 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   try {
     const { id } = await params;
     const { tallerId } = await getTallerIdFromAuth();
-    const { diagnostico } = await request.json();
+    const body = await request.json();
     const db = getDb();
+
+    const updateData: Record<string, any> = { updatedAt: new Date() };
+    if (body.diagnostico !== undefined) updateData.diagnostico = body.diagnostico;
+    if (body.descripcion !== undefined) updateData.descripcionCliente = body.descripcion;
 
     await db
       .update(ordenesTrabajo)
-      .set({ diagnostico, updatedAt: new Date() })
+      .set(updateData)
       .where(and(eq(ordenesTrabajo.id, id), eq(ordenesTrabajo.tallerId, tallerId)));
 
     return NextResponse.json({ ok: true });

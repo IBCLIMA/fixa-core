@@ -470,6 +470,16 @@ export const documentosCobro = pgTable("documentos_cobro", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const plantillasServicio = pgTable("plantillas_servicio", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tallerId: uuid("taller_id")
+    .references(() => talleres.id)
+    .notNull(),
+  nombre: text("nombre").notNull(),
+  lineas: jsonb("lineas").notNull(), // Array of { tipo, descripcion, cantidad, precioUnitario }
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const averiasOcultas = pgTable("averias_ocultas", {
   id: uuid("id").defaultRandom().primaryKey(),
   ordenId: uuid("orden_id")
@@ -566,6 +576,13 @@ export const ordenesTrabajoRelations = relations(
     averiasOcultas: many(averiasOcultas),
   })
 );
+
+export const plantillasServicioRelations = relations(plantillasServicio, ({ one }) => ({
+  taller: one(talleres, {
+    fields: [plantillasServicio.tallerId],
+    references: [talleres.id],
+  }),
+}));
 
 export const averiasOcultasRelations = relations(averiasOcultas, ({ one }) => ({
   orden: one(ordenesTrabajo, {
