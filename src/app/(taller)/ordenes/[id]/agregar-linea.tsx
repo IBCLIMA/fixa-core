@@ -15,11 +15,12 @@ import {
 import { agregarLineaOrden } from "../../actions/ordenes";
 import { toast } from "sonner";
 
-export function AgregarLineaForm({ ordenId }: { ordenId: string }) {
+export function AgregarLineaForm({ ordenId, precioHora = 0 }: { ordenId: string; precioHora?: number }) {
   const [open, setOpen] = useState(false);
   const [tipo, setTipo] = useState<"mano_obra" | "recambio" | "otros">("mano_obra");
   const [tipoPieza, setTipoPieza] = useState<"nueva" | "reconstruida" | "usada">("nueva");
   const [loading, setLoading] = useState(false);
+  const [precio, setPrecio] = useState<string>(precioHora > 0 ? String(precioHora) : "");
 
   async function handleSubmit(formData: FormData) {
     setLoading(true);
@@ -61,7 +62,15 @@ export function AgregarLineaForm({ ordenId }: { ordenId: string }) {
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
           <Label className="text-xs">Tipo</Label>
-          <Select value={tipo} onValueChange={(v) => setTipo(v as typeof tipo)}>
+          <Select value={tipo} onValueChange={(v) => {
+            const newTipo = v as typeof tipo;
+            setTipo(newTipo);
+            if (newTipo === "mano_obra" && precioHora > 0) {
+              setPrecio(String(precioHora));
+            } else {
+              setPrecio("");
+            }
+          }}>
             <SelectTrigger className="h-10 rounded-lg">
               <SelectValue />
             </SelectTrigger>
@@ -103,7 +112,7 @@ export function AgregarLineaForm({ ordenId }: { ordenId: string }) {
         </div>
         <div className="space-y-1">
           <Label className="text-xs">Precio unitario (€)</Label>
-          <Input name="precio" type="number" step="0.01" placeholder="0.00" className="h-10 rounded-lg" />
+          <Input name="precio" type="number" step="0.01" placeholder="0.00" value={precio} onChange={(e) => setPrecio(e.target.value)} className="h-10 rounded-lg" />
         </div>
       </div>
       <div className="flex gap-2">

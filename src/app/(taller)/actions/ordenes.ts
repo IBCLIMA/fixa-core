@@ -581,6 +581,18 @@ export async function getMaintenanceAlerts(
   return checkMaintenanceAlerts(kmActual, previousOrders);
 }
 
+export async function getPrecioHora(): Promise<number> {
+  const { tallerId } = await getTallerIdFromAuth();
+  const db = getDb();
+
+  const [taller] = await db
+    .select({ precioHora: talleres.precioHora })
+    .from(talleres)
+    .where(eq(talleres.id, tallerId));
+
+  return taller ? Number(taller.precioHora || 0) : 0;
+}
+
 export async function enviarInformeCliente(ordenId: string) {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();

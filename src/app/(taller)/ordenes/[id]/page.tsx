@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { getOrden, enviarSolicitudResena, enviarInformeCliente, getMecanicos, getMaintenanceAlerts } from "../../actions/ordenes";
+import { getOrden, enviarSolicitudResena, enviarInformeCliente, getMecanicos, getMaintenanceAlerts, getPrecioHora } from "../../actions/ordenes";
 import { getDocumentoByOrden } from "../../actions/documentos";
 import { AsignarMecanico } from "./asignar-mecanico";
 import { CambiarEstadoButtons } from "./cambiar-estado";
@@ -46,14 +46,16 @@ export default async function OrdenDetallePage({
   let mecanicos: any[] = [];
   let maintenanceAlerts: any[] = [];
   let documentoCobro: any = null;
+  let precioHora: number = 0;
 
   try {
-    [rol, inspecciones, mecanicos, maintenanceAlerts, documentoCobro] = await Promise.all([
+    [rol, inspecciones, mecanicos, maintenanceAlerts, documentoCobro, precioHora] = await Promise.all([
       getUserRole(),
       getInspeccion(id).catch(() => []),
       getMecanicos().catch(() => []),
       getMaintenanceAlerts(orden.vehiculoId, orden.kmEntrada).catch(() => []),
       getDocumentoByOrden(id).catch(() => null),
+      getPrecioHora().catch(() => 0),
     ]);
   } catch (e) {
     console.error("Error loading order details:", e);
@@ -312,7 +314,7 @@ export default async function OrdenDetallePage({
 
           <div className="flex gap-2">
             <div className="flex-1">
-              <AgregarLineaForm ordenId={orden.id} />
+              <AgregarLineaForm ordenId={orden.id} precioHora={precioHora} />
             </div>
             <TemplateSelector ordenId={orden.id} />
           </div>
