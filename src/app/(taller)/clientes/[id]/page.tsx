@@ -100,7 +100,7 @@ export default async function ClienteDetallePage({ params }: { params: Promise<{
         </div>
 
         {vehiculosList.length === 0 ? (
-          <Card><CardContent className="p-6 text-center"><Car className="h-8 w-8 text-muted-foreground/20 mx-auto mb-2" /><p className="text-sm text-muted-foreground">Sin vehículos registrados</p></CardContent></Card>
+          <Card><CardContent className="p-6 text-center"><Car className="h-12 w-12 text-muted-foreground/20 mx-auto mb-4" /><p className="text-sm font-bold">Sin vehículos registrados</p><p className="text-xs text-muted-foreground mt-1">Añade un vehículo para poder crear órdenes.</p></CardContent></Card>
         ) : (
           <div className="space-y-3">
             {vehiculosList.map((v) => {

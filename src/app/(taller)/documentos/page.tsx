@@ -53,8 +53,8 @@ export default async function DocumentosPage({
         <CardContent className="p-4">
           {documentos.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <Receipt className="h-10 w-10 text-muted-foreground/20 mb-3" />
-              <p className="text-sm font-medium">
+              <Receipt className="h-12 w-12 text-muted-foreground/20 mb-4" />
+              <p className="text-sm font-bold">
                 {search ? "Sin resultados" : "Sin documentos de cobro"}
               </p>
               <p className="text-xs text-muted-foreground mt-1 max-w-[280px]">

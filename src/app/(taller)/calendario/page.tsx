@@ -64,7 +64,7 @@ export default async function CalendarioPage({
   const totalCitas = citas.length;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Calendario</h1>

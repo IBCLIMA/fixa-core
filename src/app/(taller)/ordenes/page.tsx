@@ -17,7 +17,7 @@ const filtros = [
   { value: "diagnostico", label: "Diagnóstico" },
   { value: "en_reparacion", label: "En reparación" },
   { value: "esperando_recambio", label: "Esp. recambio" },
-  { value: "listo", label: "Listas" },
+  { value: "listo", label: "Finalizadas" },
   { value: "entregado", label: "Entregadas" },
 ];
 
@@ -95,7 +95,7 @@ export default async function OrdenesPage({
     .offset(safeOffset);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Órdenes de trabajo</h1>
