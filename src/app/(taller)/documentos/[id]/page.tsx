@@ -50,7 +50,7 @@ export default async function DocumentoDetallePage({
         </Link>
         <div className="flex-1">
           <h1 className="text-2xl font-extrabold tracking-tight">{docNumero}</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground mt-0.5">
             {new Date(doc.createdAt).toLocaleDateString("es-ES", {
               day: "numeric",
               month: "long",

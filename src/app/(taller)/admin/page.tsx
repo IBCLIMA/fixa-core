@@ -80,7 +80,7 @@ export default async function AdminPage() {
         </div>
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Panel de administración</h1>
-          <p className="text-sm text-muted-foreground">Gestiona talleres, planes y facturación</p>
+          <p className="text-sm text-muted-foreground mt-0.5">Gestiona talleres, planes y facturación</p>
         </div>
       </div>
 

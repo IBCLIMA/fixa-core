@@ -258,8 +258,8 @@ export default async function FacturacionPage() {
         <CardContent>
           {ultimasEntregadas.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Receipt className="h-10 w-10 text-muted-foreground/20 mb-3" />
-              <p className="text-sm font-medium">Sin ordenes completadas</p>
+              <Receipt className="h-12 w-12 text-muted-foreground/20 mb-4" />
+              <p className="text-sm font-bold">Sin ordenes completadas</p>
               <p className="text-xs text-muted-foreground mt-1 max-w-[280px]">Cuando entregues un vehiculo y marques la orden como completada, aparecera aqui con su importe.</p>
             </div>
           ) : (
@@ -302,8 +302,8 @@ export default async function FacturacionPage() {
         <CardContent>
           {recentDocs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <FileCheck className="h-10 w-10 text-muted-foreground/20 mb-3" />
-              <p className="text-sm font-medium">Sin documentos</p>
+              <FileCheck className="h-12 w-12 text-muted-foreground/20 mb-4" />
+              <p className="text-sm font-bold">Sin documentos</p>
               <p className="text-xs text-muted-foreground mt-1 max-w-[280px]">
                 Los documentos de cobro se generan al cobrar una orden.
               </p>
