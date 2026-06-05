@@ -131,7 +131,7 @@ export async function generarDocumentoCobro(
     })
     .returning();
 
-  // Mark the order as paid
+  // Mark the order as paid (filter by tallerId for multi-tenant safety)
   await db
     .update(ordenesTrabajo)
     .set({
@@ -142,7 +142,7 @@ export async function generarDocumentoCobro(
       notasPago: notas || null,
       updatedAt: new Date(),
     })
-    .where(eq(ordenesTrabajo.id, ordenId));
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
 
   logAudit({
     tallerId,
@@ -244,7 +244,7 @@ export async function actualizarDatosFacturacion(
       ...(datos.clienteDireccion !== undefined && { clienteDireccion: datos.clienteDireccion }),
       ...(datos.clienteTelefono !== undefined && { clienteTelefono: datos.clienteTelefono }),
     })
-    .where(eq(documentosCobro.id, docId));
+    .where(and(eq(documentosCobro.id, docId), eq(documentosCobro.tallerId, tallerId)));
 
   logAudit({
     tallerId,
@@ -270,7 +270,7 @@ export async function finalizarDocumento(docId: string) {
   await db
     .update(documentosCobro)
     .set({ estado: "finalizado" })
-    .where(eq(documentosCobro.id, docId));
+    .where(and(eq(documentosCobro.id, docId), eq(documentosCobro.tallerId, tallerId)));
 
   logAudit({
     tallerId,

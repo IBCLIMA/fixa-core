@@ -135,6 +135,7 @@ export async function generarAvisosITV() {
       .select({ id: avisos.id })
       .from(avisos)
       .where(and(
+        eq(avisos.tallerId, tallerId),
         eq(avisos.vehiculoId, v.id),
         eq(avisos.tipo, "itv"),
         eq(avisos.enviado, false)

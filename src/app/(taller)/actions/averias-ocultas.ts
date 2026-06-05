@@ -115,11 +115,11 @@ export async function getAveriaWhatsAppUrl(averiaId: string) {
     .filter(Boolean)
     .join("\n");
 
-  // Mark as notified
+  // Mark as notified (filter by tallerId for multi-tenant safety)
   await db
     .update(averiasOcultas)
     .set({ notificadoAt: new Date(), metodoNotificacion: "whatsapp" })
-    .where(eq(averiasOcultas.id, averiaId));
+    .where(and(eq(averiasOcultas.id, averiaId), eq(averiasOcultas.tallerId, tallerId)));
 
   revalidatePath(`/ordenes/${averia.ordenId}`);
 
