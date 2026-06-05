@@ -91,38 +91,30 @@ export function ConfigForm({ taller }: { taller: Taller }) {
               <Label htmlFor="direccion">Dirección</Label>
               <Input id="direccion" name="direccion" defaultValue={taller.direccion || ""} placeholder="Calle Principal, 1" className="h-11 rounded-xl" />
             </div>
-            <div className="sm:col-span-2 space-y-1.5">
-              <Label htmlFor="googleReviewLink">Enlace de reseñas de Google</Label>
-              <Input id="googleReviewLink" name="googleReviewLink" defaultValue={taller.googleReviewLink || ""} placeholder="https://g.page/r/..." className="h-11 rounded-xl" />
-              <p className="text-xs text-muted-foreground">Pega aquí tu enlace de reseñas de Google Business para enviar solicitudes de reseña a tus clientes.</p>
-            </div>
-          </div>
-
-          <Separator />
-
-          <p className="text-xs font-bold text-stone-500 uppercase tracking-wider">Registro industrial</p>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2 space-y-1.5">
-              <Label htmlFor="registroIndustrial" className="text-xs font-bold text-stone-500">N.º de registro industrial</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="registroIndustrial">N.º registro industrial</Label>
               <Input id="registroIndustrial" name="registroIndustrial" defaultValue={taller.registroIndustrial || ""} placeholder="Ej: 46/1234" className="h-11 rounded-xl" />
-              <p className="text-xs text-muted-foreground">Número del Registro Integrado Industrial (RII). Obligatorio en todos los documentos.</p>
             </div>
             <div className="sm:col-span-2 space-y-1.5">
-              <Label className="text-xs font-bold text-stone-500">Rama de actividad</Label>
-              <div className="flex flex-wrap gap-4 mt-1">
-                {RAMAS_ACTIVIDAD.map((rama) => (
-                  <label key={rama.value} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={ramas.includes(rama.value)}
-                      onChange={() => toggleRama(rama.value)}
-                      className="accent-orange-500 h-4 w-4"
-                    />
-                    <span className="text-sm">{rama.label}</span>
-                  </label>
-                ))}
+              <div className="flex items-center justify-between">
+                <Label htmlFor="googleReviewLink">Enlace de reseñas de Google</Label>
+                <a
+                  href="https://support.google.com/business/answer/7035772"
+                  target="_blank"
+                  className="text-[11px] font-medium text-orange-600 hover:underline"
+                >
+                  ¿Cómo lo consigo?
+                </a>
               </div>
-              <p className="text-xs text-muted-foreground">Selecciona las ramas en las que está registrado tu taller.</p>
+              <Input id="googleReviewLink" name="googleReviewLink" defaultValue={taller.googleReviewLink || ""} placeholder="https://g.page/r/..." className="h-11 rounded-xl" />
+              <div className="rounded-lg bg-blue-50 border border-blue-100 p-2.5 text-xs text-blue-800 space-y-1">
+                <p className="font-bold">Cómo obtener tu enlace:</p>
+                <ol className="list-decimal list-inside space-y-0.5 text-blue-700">
+                  <li>Busca el nombre de tu taller en Google</li>
+                  <li>En tu ficha, pulsa "Pedir reseñas"</li>
+                  <li>Copia el enlace y pégalo aquí</li>
+                </ol>
+              </div>
             </div>
           </div>
           <Separator />

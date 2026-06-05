@@ -349,7 +349,7 @@ export default async function OrdenDetallePage({
           <a
             href={formatWhatsAppUrl(
               orden.cliente.telefono,
-              `Hola ${orden.cliente.nombre?.split(" ")[0] || ""}, aquí puedes ver el estado de tu ${orden.vehiculo?.marca || "coche"} ${orden.vehiculo?.modelo || ""} (${orden.vehiculo?.matricula || ""}): ${process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com"}/estado/${orden.tokenPublico}`
+              `Hola ${orden.cliente.nombre?.split(" ")[0] || ""},\n\nTe informamos del estado de tu ${orden.vehiculo?.marca || ""} ${orden.vehiculo?.modelo || ""} (${orden.vehiculo?.matricula || ""}).\n\nPuedes ver los detalles aquí:\n${process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com"}/estado/${orden.tokenPublico}\n\nSi tienes alguna duda, no dudes en contactarnos.\n\n¡Un saludo!`
             )}
             target="_blank"
             className="flex items-center justify-center gap-2 w-full h-10 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-500 transition-colors"

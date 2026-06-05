@@ -456,32 +456,28 @@ export async function enviarSolicitudResena(ordenId: string) {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  const orden = await db.query.ordenesTrabajo.findFirst({
-    where: and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)),
-    with: {
-      cliente: true,
-      vehiculo: true,
-    },
-  });
-
+  const [orden] = await db.select().from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
   if (!orden) throw new Error("Orden no encontrada");
-  if (!orden.cliente?.telefono) throw new Error("El cliente no tiene teléfono");
 
-  const taller = await db.query.talleres.findFirst({
-    where: eq(talleres.id, tallerId),
-  });
+  const [cliente] = await db.select().from(clientes).where(eq(clientes.id, orden.clienteId));
+  if (!cliente?.telefono) throw new Error("El cliente no tiene teléfono");
 
+  const [taller] = await db.select().from(talleres).where(eq(talleres.id, tallerId));
   if (!taller) throw new Error("Taller no encontrado");
 
+  const nombreCliente = cliente.nombre?.split(" ")[0] || "";
   const tallerNombre = taller.nombre;
   const googleReviewLink = taller.googleReviewLink;
 
-  let mensaje = `¡Gracias por confiar en ${tallerNombre}! Si estás contento con el servicio, nos ayudaría mucho una reseña en Google 🙏`;
+  let mensaje = `Hola ${nombreCliente},\n\n¡Gracias por confiar en *${tallerNombre}*! Esperamos que todo esté perfecto con tu vehículo.\n\nSi estás contento con el servicio, nos ayudaría mucho una reseña en Google.`;
   if (googleReviewLink) {
-    mensaje += ` ${googleReviewLink}`;
+    mensaje += `\n\n${googleReviewLink}`;
   }
 
-  return formatWhatsAppUrl(orden.cliente.telefono, mensaje);
+  mensaje += `\n\n¡Un saludo del equipo de ${tallerNombre}!`;
+
+  return formatWhatsAppUrl(cliente.telefono, mensaje);
 }
 
 export async function getInformeUrl(ordenId: string) {
@@ -589,23 +585,34 @@ export async function enviarInformeCliente(ordenId: string) {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  const orden = await db.query.ordenesTrabajo.findFirst({
-    where: and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)),
-    with: {
-      cliente: true,
-      vehiculo: true,
-    },
-  });
-
+  const [orden] = await db.select().from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
   if (!orden) throw new Error("Orden no encontrada");
-  if (!orden.cliente?.telefono) throw new Error("El cliente no tiene teléfono");
+
+  const [cliente] = await db.select().from(clientes).where(eq(clientes.id, orden.clienteId));
+  const [vehiculo] = await db.select().from(vehiculos).where(eq(vehiculos.id, orden.vehiculoId));
+  const [taller] = await db.select().from(talleres).where(eq(talleres.id, tallerId));
+
+  if (!cliente?.telefono) throw new Error("El cliente no tiene teléfono");
 
   const reportUrl = await getInformeUrl(ordenId);
-  const marca = orden.vehiculo?.marca || "";
-  const modelo = orden.vehiculo?.modelo || "";
-  const matricula = orden.vehiculo?.matricula || "";
+  const nombreCliente = cliente.nombre?.split(" ")[0] || "";
+  const vehiculoDesc = [vehiculo?.marca, vehiculo?.modelo].filter(Boolean).join(" ");
+  const matricula = vehiculo?.matricula || "";
 
-  const mensaje = `Aquí tienes el informe de tu ${marca} ${modelo} (${matricula}). ${reportUrl}`;
+  const mensaje = [
+    `Hola ${nombreCliente},`,
+    ``,
+    `Te escribimos de *${taller.nombre}*. Ya tienes disponible el informe de tu ${vehiculoDesc} (${matricula}).`,
+    ``,
+    `Puedes consultarlo aquí:`,
+    reportUrl,
+    ``,
+    `Si tienes alguna duda, no dudes en contactarnos.`,
+    taller.telefono ? `Tel: ${taller.telefono}` : "",
+    ``,
+    `¡Gracias por confiar en nosotros!`,
+  ].filter(Boolean).join("\n");
 
-  return formatWhatsAppUrl(orden.cliente.telefono, mensaje);
+  return formatWhatsAppUrl(cliente.telefono, mensaje);
 }

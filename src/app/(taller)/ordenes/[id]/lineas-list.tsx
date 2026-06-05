@@ -162,17 +162,17 @@ export function LineasList({ ordenId, lineas }: { ordenId: string; lineas: Linea
               <span className="text-sm font-bold">{base.toFixed(2)}€</span>
               <button
                 onClick={() => startEdit(linea)}
-                className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-300 hover:text-stone-600 hover:bg-stone-100 transition-all"
+                className="p-1.5 rounded-lg text-stone-400 hover:text-orange-600 hover:bg-orange-50 transition-colors"
                 title="Editar"
               >
-                <Pencil className="h-3.5 w-3.5" />
+                <Pencil className="h-4 w-4" />
               </button>
               <button
                 onClick={() => handleDelete(linea.id)}
-                className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-stone-300 hover:text-red-500 hover:bg-red-50 transition-all"
+                className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                 title="Eliminar"
               >
-                <Trash2 className="h-3.5 w-3.5" />
+                <Trash2 className="h-4 w-4" />
               </button>
             </div>
           </div>
