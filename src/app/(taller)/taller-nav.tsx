@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import {
   LayoutDashboard, ClipboardList, CalendarDays, Users, MoreHorizontal,
   FileText, Receipt, Bell, Settings, Megaphone, Upload, HelpCircle, Shield, FileCheck,
-  ChevronLeft,
+  ChevronLeft, Columns3,
 } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { cn } from "@/lib/utils";
@@ -23,6 +23,7 @@ import type { RolUsuario } from "@/lib/auth";
 
 const mainNav = [
   { name: "Panel", href: "/", icon: LayoutDashboard },
+  { name: "Taller", href: "/taller-board", icon: Columns3 },
   { name: "Ordenes", href: "/ordenes", icon: ClipboardList },
   { name: "Agenda", href: "/calendario", icon: CalendarDays },
   { name: "Clientes", href: "/clientes", icon: Users },
