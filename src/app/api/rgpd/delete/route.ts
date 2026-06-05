@@ -89,13 +89,13 @@ export async function POST(request: Request) {
       .set({ notas: null })
       .where(and(eq(vehiculos.clienteId, clienteId), eq(vehiculos.tallerId, tallerId)));
 
-    // 5. Limpiar descripción del cliente en las órdenes
+    // 5. Limpiar descripción del cliente en las órdenes (filter by tallerId for multi-tenant safety)
     if (ordenIds.length > 0) {
       for (const ordenId of ordenIds) {
         await db
           .update(ordenesTrabajo)
           .set({ descripcionCliente: null })
-          .where(eq(ordenesTrabajo.id, ordenId));
+          .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
       }
     }
 

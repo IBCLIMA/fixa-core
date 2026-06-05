@@ -26,7 +26,7 @@ export async function actualizarComision(usuarioId: string, comisionPct: number)
   await db
     .update(usuarios)
     .set({ comisionPct: String(comisionPct) })
-    .where(eq(usuarios.id, usuarioId));
+    .where(and(eq(usuarios.id, usuarioId), eq(usuarios.tallerId, tallerId)));
 
   logAudit({
     tallerId,

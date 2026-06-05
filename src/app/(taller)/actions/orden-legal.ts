@@ -28,7 +28,7 @@ export async function actualizarDatosLegales(
     renunciaPiezas?: boolean;
   }
 ) {
-  const { db } = await verificarOrden(ordenId);
+  const { db, tallerId } = await verificarOrden(ordenId);
 
   await db
     .update(ordenesTrabajo)
@@ -40,7 +40,7 @@ export async function actualizarDatosLegales(
       renunciaPresupuesto: data.renunciaPresupuesto,
       renunciaPiezas: data.renunciaPiezas,
     })
-    .where(eq(ordenesTrabajo.id, ordenId));
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
 
   revalidatePath(`/ordenes/${ordenId}`);
 }
@@ -55,7 +55,7 @@ export async function actualizarDatosSeguro(
     nombrePerito?: string;
   }
 ) {
-  const { db } = await verificarOrden(ordenId);
+  const { db, tallerId } = await verificarOrden(ordenId);
 
   await db
     .update(ordenesTrabajo)
@@ -66,7 +66,7 @@ export async function actualizarDatosSeguro(
       numPeritaje: data.numPeritaje,
       nombrePerito: data.nombrePerito,
     })
-    .where(eq(ordenesTrabajo.id, ordenId));
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
 
   revalidatePath(`/ordenes/${ordenId}`);
 }

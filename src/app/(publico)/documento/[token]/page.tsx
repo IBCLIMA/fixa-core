@@ -91,7 +91,7 @@ export default async function DocumentoPublicoPage({
                 Cliente
               </p>
               <p className="text-sm font-bold">{doc.clienteNombre}</p>
-              {doc.clienteNif && <p className="text-xs text-muted-foreground">NIF: {doc.clienteNif}</p>}
+              {doc.clienteNif && <p className="text-xs text-muted-foreground">NIF: {doc.clienteNif.slice(0, 3)}{'*'.repeat(Math.max(0, doc.clienteNif.length - 5))}{doc.clienteNif.slice(-2)}</p>}
               {doc.clienteDireccion && <p className="text-xs text-muted-foreground">{doc.clienteDireccion}</p>}
             </div>
             <div className="flex items-center gap-3">

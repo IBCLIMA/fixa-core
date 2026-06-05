@@ -173,7 +173,7 @@ export async function cambiarEstadoOrden(id: string, nuevoEstado: EstadoOrden) {
       updatedAt: new Date(),
       fechaEntrega: nuevoEstado === "entregado" ? new Date() : orden.fechaEntrega,
     })
-    .where(eq(ordenesTrabajo.id, id));
+    .where(and(eq(ordenesTrabajo.id, id), eq(ordenesTrabajo.tallerId, tallerId)));
 
   await db.insert(historialEstados).values({
     ordenId: id,
@@ -399,7 +399,7 @@ export async function registrarPago(data: {
       notasPago: data.notasPago || null,
       updatedAt: new Date(),
     })
-    .where(eq(ordenesTrabajo.id, data.ordenId));
+    .where(and(eq(ordenesTrabajo.id, data.ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
 
   logAudit({
     tallerId,
@@ -436,7 +436,7 @@ export async function anularPago(ordenId: string) {
       notasPago: null,
       updatedAt: new Date(),
     })
-    .where(eq(ordenesTrabajo.id, ordenId));
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
 
   logAudit({
     tallerId,
@@ -542,7 +542,7 @@ export async function asignarMecanico(ordenId: string, usuarioId: string | null)
       asignadoA: usuarioId,
       updatedAt: new Date(),
     })
-    .where(eq(ordenesTrabajo.id, ordenId));
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
 
   logAudit({
     tallerId,

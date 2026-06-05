@@ -133,12 +133,12 @@ export async function completarRecordatorio(id: string, kmActual?: number) {
     proximaFecha = next.toISOString().split("T")[0];
   }
 
-  // Update vehicle km if provided
+  // Update vehicle km if provided (filter by tallerId for multi-tenant safety)
   if (kmActual) {
     await db
       .update(vehiculos)
       .set({ km: kmActual })
-      .where(eq(vehiculos.id, rec.vehiculoId));
+      .where(and(eq(vehiculos.id, rec.vehiculoId), eq(vehiculos.tallerId, tallerId)));
   }
 
   const [updated] = await db

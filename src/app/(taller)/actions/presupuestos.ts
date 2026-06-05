@@ -61,11 +61,11 @@ export async function crearPresupuestoDesdeOrden(ordenId: string) {
     );
   }
 
-  // Actualizar estado de la orden
+  // Actualizar estado de la orden (filter by tallerId for multi-tenant safety)
   await db
     .update(ordenesTrabajo)
     .set({ estado: "presupuestado", updatedAt: new Date() })
-    .where(eq(ordenesTrabajo.id, ordenId));
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
 
   revalidatePath(`/ordenes/${ordenId}`);
   revalidatePath("/presupuestos");
@@ -172,14 +172,14 @@ export async function cambiarEstadoPresupuesto(id: string, estado: "borrador" | 
   await db
     .update(presupuestos)
     .set({ estado })
-    .where(eq(presupuestos.id, id));
+    .where(and(eq(presupuestos.id, id), eq(presupuestos.tallerId, tallerId)));
 
-  // If accepted, update order status to "aprobado"
+  // If accepted, update order status to "aprobado" (filter by tallerId for multi-tenant safety)
   if (estado === "aceptado" && presupuesto.ordenId) {
     await db
       .update(ordenesTrabajo)
       .set({ estado: "aprobado", updatedAt: new Date() })
-      .where(eq(ordenesTrabajo.id, presupuesto.ordenId));
+      .where(and(eq(ordenesTrabajo.id, presupuesto.ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
   }
 
   revalidatePath(`/presupuestos/${id}`);
