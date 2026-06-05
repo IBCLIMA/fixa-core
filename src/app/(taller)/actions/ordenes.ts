@@ -159,9 +159,10 @@ export async function cambiarEstadoOrden(id: string, nuevoEstado: EstadoOrden) {
   const { tallerId, usuarioId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  const orden = await db.query.ordenesTrabajo.findFirst({
-    where: and(eq(ordenesTrabajo.id, id), eq(ordenesTrabajo.tallerId, tallerId)),
-  });
+  const [orden] = await db
+    .select()
+    .from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, id), eq(ordenesTrabajo.tallerId, tallerId)));
 
   if (!orden) throw new Error("Orden no encontrada");
 
@@ -310,9 +311,10 @@ export async function eliminarOrden(id: string) {
   const db = getDb();
 
   // Verify order belongs to this workshop
-  const orden = await db.query.ordenesTrabajo.findFirst({
-    where: and(eq(ordenesTrabajo.id, id), eq(ordenesTrabajo.tallerId, tallerId)),
-  });
+  const [orden] = await db
+    .select()
+    .from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, id), eq(ordenesTrabajo.tallerId, tallerId)));
 
   if (!orden) throw new Error("Orden no encontrada");
 
@@ -490,17 +492,19 @@ export async function asignarMecanico(ordenId: string, usuarioId: string | null)
   const { tallerId, clerkUserId } = await requireRole(["admin", "recepcion"]);
   const db = getDb();
 
-  const orden = await db.query.ordenesTrabajo.findFirst({
-    where: and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)),
-  });
+  const [orden] = await db
+    .select({ id: ordenesTrabajo.id })
+    .from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
 
   if (!orden) throw new Error("Orden no encontrada");
 
   // If assigning, verify the user belongs to this workshop
   if (usuarioId) {
-    const usuario = await db.query.usuarios.findFirst({
-      where: and(eq(usuarios.id, usuarioId), eq(usuarios.tallerId, tallerId)),
-    });
+    const [usuario] = await db
+      .select({ id: usuarios.id })
+      .from(usuarios)
+      .where(and(eq(usuarios.id, usuarioId), eq(usuarios.tallerId, tallerId)));
     if (!usuario) throw new Error("Usuario no encontrado en este taller");
   }
 

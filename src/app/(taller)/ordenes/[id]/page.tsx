@@ -130,38 +130,6 @@ export default async function OrdenDetallePage({
         </div>
       )}
 
-      {/* Estado + Compartir con cliente */}
-      <Card className="no-print">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Cambiar estado</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <CambiarEstadoButtons ordenId={orden.id} estadoActual={orden.estado} />
-
-          {/* Compartir estado con cliente — directo a WhatsApp */}
-          {orden.cliente?.telefono && orden.tokenPublico && (
-            <div className="pt-3 border-t border-border">
-              <a
-                href={formatWhatsAppUrl(
-                  orden.cliente.telefono,
-                  `Hola ${orden.cliente.nombre?.split(" ")[0] || ""}, aquí puedes ver el estado de tu ${orden.vehiculo?.marca || "coche"} ${orden.vehiculo?.modelo || ""} (${orden.vehiculo?.matricula || ""}): ${process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com"}/estado/${orden.tokenPublico}`
-                )}
-                target="_blank"
-                className="flex items-center justify-center gap-2 w-full h-11 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-500 transition-colors"
-              >
-                <Send className="h-4 w-4" />
-                Enviar estado al cliente por WhatsApp
-              </a>
-            </div>
-          )}
-          {!orden.cliente?.telefono && (
-            <p className="text-xs text-muted-foreground pt-2 border-t border-border">
-              Añade un teléfono al cliente para poder enviarle el estado por WhatsApp.
-            </p>
-          )}
-        </CardContent>
-      </Card>
-
       {/* Asignar mecánico */}
       {canAssign && (
         <Card className="no-print">
@@ -408,6 +376,24 @@ export default async function OrdenDetallePage({
           </div>
         </CardContent>
       </Card>
+
+      {/* Cambiar estado */}
+      <div className="no-print rounded-xl bg-muted/50 border border-border px-4 py-3 space-y-3">
+        <CambiarEstadoButtons ordenId={orden.id} estadoActual={orden.estado} />
+        {orden.cliente?.telefono && orden.tokenPublico && (
+          <a
+            href={formatWhatsAppUrl(
+              orden.cliente.telefono,
+              `Hola ${orden.cliente.nombre?.split(" ")[0] || ""}, aquí puedes ver el estado de tu ${orden.vehiculo?.marca || "coche"} ${orden.vehiculo?.modelo || ""} (${orden.vehiculo?.matricula || ""}): ${process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com"}/estado/${orden.tokenPublico}`
+            )}
+            target="_blank"
+            className="flex items-center justify-center gap-2 w-full h-10 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-500 transition-colors"
+          >
+            <Send className="h-4 w-4" />
+            Enviar estado al cliente por WhatsApp
+          </a>
+        )}
+      </div>
 
       {/* Historial */}
       {orden.historial && orden.historial.length > 0 && (
