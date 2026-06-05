@@ -47,8 +47,7 @@ export function AgregarLineaForm({ ordenId, precioHora = 0 }: { ordenId: string;
     return (
       <Button
         variant="outline"
-        size="sm"
-        className="rounded-full w-full"
+        className="rounded-xl w-full h-11"
         onClick={() => setOpen(true)}
       >
         <Plus className="mr-1 h-3 w-3" />
@@ -71,7 +70,7 @@ export function AgregarLineaForm({ ordenId, precioHora = 0 }: { ordenId: string;
               setPrecio("");
             }
           }}>
-            <SelectTrigger className="h-10 rounded-lg">
+            <SelectTrigger className="h-11 rounded-xl">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -83,14 +82,14 @@ export function AgregarLineaForm({ ordenId, precioHora = 0 }: { ordenId: string;
         </div>
         <div className="space-y-1">
           <Label className="text-xs">IVA %</Label>
-          <Input name="iva" type="number" defaultValue="21" className="h-10 rounded-lg" />
+          <Input name="iva" type="number" defaultValue="21" className="h-11 rounded-xl" />
         </div>
       </div>
       {tipo === "recambio" && (
         <div className="space-y-1">
           <Label className="text-xs">Tipo de pieza</Label>
           <Select value={tipoPieza} onValueChange={(v) => setTipoPieza(v as typeof tipoPieza)}>
-            <SelectTrigger className="h-10 rounded-lg">
+            <SelectTrigger className="h-11 rounded-xl">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -102,24 +101,24 @@ export function AgregarLineaForm({ ordenId, precioHora = 0 }: { ordenId: string;
         </div>
       )}
       <div className="space-y-1">
-        <Label className="text-xs">Descripción *</Label>
-        <Input name="descripcion" placeholder="Cambio pastillas de freno..." required className="h-10 rounded-lg" autoFocus />
+        <Label className="text-xs">Descripcion <span className="text-red-500">*</span></Label>
+        <Input name="descripcion" placeholder="Cambio pastillas de freno..." required className="h-11 rounded-xl" autoFocus />
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
           <Label className="text-xs">Cantidad</Label>
-          <Input name="cantidad" type="number" step="0.01" defaultValue="1" className="h-10 rounded-lg" />
+          <Input name="cantidad" type="number" step="0.01" defaultValue="1" min="0.01" className="h-11 rounded-xl" />
         </div>
         <div className="space-y-1">
-          <Label className="text-xs">Precio unitario (€)</Label>
-          <Input name="precio" type="number" step="0.01" placeholder="0.00" value={precio} onChange={(e) => setPrecio(e.target.value)} className="h-10 rounded-lg" />
+          <Label className="text-xs">Precio unitario (EUR) <span className="text-red-500">*</span></Label>
+          <Input name="precio" type="number" step="0.01" placeholder="0.00" required min="0" value={precio} onChange={(e) => setPrecio(e.target.value)} className="h-11 rounded-xl" />
         </div>
       </div>
       <div className="flex gap-2">
-        <Button type="submit" size="sm" className="flex-1 rounded-lg" disabled={loading}>
+        <Button type="submit" className="flex-1 h-11 rounded-xl" disabled={loading}>
           {loading ? "Guardando..." : "Añadir"}
         </Button>
-        <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)} className="rounded-lg">
+        <Button type="button" variant="ghost" className="h-11 rounded-xl" onClick={() => setOpen(false)}>
           Cancelar
         </Button>
       </div>

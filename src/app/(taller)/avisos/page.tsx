@@ -60,7 +60,7 @@ export default async function AvisosPage() {
                       <a
                         href={formatWhatsAppUrl(a.clienteTelefono, `Hola ${a.clienteNombre?.split(" ")[0]}, te recordamos que ${a.descripcion || `tu vehículo ${a.matricula} necesita atención`}. ¿Te reservamos cita? ¡Un saludo!`)}
                         target="_blank"
-                        className="flex h-8 items-center gap-1.5 rounded-full bg-emerald-600 px-3 text-white text-xs font-bold hover:bg-emerald-500 transition-colors shrink-0"
+                        className="flex h-11 items-center gap-1.5 rounded-xl bg-emerald-600 px-4 text-white text-xs font-bold hover:bg-emerald-500 transition-colors shrink-0"
                       >
                         <MessageSquare className="h-3 w-3" />Enviar
                       </a>

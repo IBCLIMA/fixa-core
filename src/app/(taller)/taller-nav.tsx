@@ -189,21 +189,21 @@ export function TallerNav({ children, rol }: { children: React.ReactNode; rol: R
                   key={tab.href}
                   href={tab.href}
                   className={cn(
-                    "flex flex-1 flex-col items-center gap-0.5 py-2.5 rounded-xl text-[10px] font-bold transition-all duration-200",
+                    "flex flex-1 flex-col items-center justify-center gap-0.5 min-h-[44px] py-2 rounded-xl text-[10px] font-bold transition-all duration-200",
                     active
                       ? "bg-stone-900 text-white shadow-sm"
                       : "text-stone-400 active:bg-stone-100"
                   )}
                 >
-                  <tab.icon className="h-[18px] w-[18px]" />
+                  <tab.icon className="h-5 w-5" />
                   {tab.name}
                 </Link>
               );
             })}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex flex-1 flex-col items-center gap-0.5 py-2.5 rounded-xl text-[10px] font-bold text-stone-400 active:bg-stone-100 transition-all duration-200 cursor-pointer">
-                  <MoreHorizontal className="h-[18px] w-[18px]" />
+                <button className="flex flex-1 flex-col items-center justify-center gap-0.5 min-h-[44px] py-2 rounded-xl text-[10px] font-bold text-stone-400 active:bg-stone-100 transition-all duration-200 cursor-pointer">
+                  <MoreHorizontal className="h-5 w-5" />
                   Mas
                 </button>
               </DropdownMenuTrigger>

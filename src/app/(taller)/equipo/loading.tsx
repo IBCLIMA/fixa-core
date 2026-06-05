@@ -1,9 +1,12 @@
 export default function Loading() {
   return (
-    <div className="flex items-center justify-center min-h-[50vh]">
-      <div className="flex flex-col items-center gap-3">
-        <div className="h-8 w-8 rounded-full border-2 border-stone-200 border-t-orange-500 animate-spin" />
-        <p className="text-sm text-stone-400 font-medium">Cargando...</p>
+    <div className="space-y-4 animate-pulse">
+      <div className="h-8 w-36 bg-stone-200 rounded-xl" />
+      <div className="h-4 w-56 bg-stone-100 rounded-lg" />
+      <div className="space-y-3 mt-6">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-20 bg-stone-100 rounded-2xl" />
+        ))}
       </div>
     </div>
   );

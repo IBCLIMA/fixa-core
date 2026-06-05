@@ -77,7 +77,7 @@ export default async function ClienteDetallePage({ params }: { params: Promise<{
               <a
                 href={formatWhatsAppUrl(cliente.telefono, `Hola ${cliente.nombre.split(" ")[0]}, te escribimos desde el taller.`)}
                 target="_blank"
-                className="inline-flex h-8 items-center gap-1.5 rounded-full bg-emerald-600 px-3 text-white text-xs font-bold hover:bg-emerald-500 transition-colors"
+                className="inline-flex h-11 items-center gap-1.5 rounded-xl bg-emerald-600 px-4 text-white text-xs font-bold hover:bg-emerald-500 transition-colors"
               >
                 <MessageSquare className="h-3 w-3" />WhatsApp
               </a>
