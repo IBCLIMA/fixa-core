@@ -31,15 +31,17 @@ export function EntradaRapida() {
 
   // Search when plate changes
   useEffect(() => {
-    if (matricula.length < 4) { setResultados([]); setBusquedaHecha(false); return; }
+    // Clean plate: remove spaces, dashes — normalize for search
+    const cleanPlate = matricula.replace(/[\s\-]/g, "");
+    if (cleanPlate.length < 4) { setResultados([]); setBusquedaHecha(false); return; }
     setBuscando(true);
     setBusquedaHecha(false);
     const t = setTimeout(async () => {
-      const res = await buscarPorMatricula(matricula);
+      const res = await buscarPorMatricula(cleanPlate);
       setResultados(res);
       setBuscando(false);
-      // Only show "not found" form when plate is long enough (Spanish plates = 7 chars)
-      if (matricula.length >= 6) setBusquedaHecha(true);
+      // Spanish plates: 7 chars (new: 1234ABC) or 8 chars (old: BA1234CD)
+      if (cleanPlate.length >= 7) setBusquedaHecha(true);
     }, 700);
     return () => clearTimeout(t);
   }, [matricula]);
@@ -121,11 +123,12 @@ export function EntradaRapida() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
               <Input
-                placeholder="Escribe la matrícula..."
+                placeholder="Ej: 1234ABC"
                 value={matricula}
-                onChange={(e) => setMatricula(e.target.value.toUpperCase())}
+                onChange={(e) => setMatricula(e.target.value.toUpperCase().replace(/[\s\-]/g, ""))}
                 className="pl-9 h-14 rounded-xl text-xl font-bold tracking-widest uppercase text-center"
                 autoFocus
+                maxLength={8}
               />
             </div>
 
@@ -154,9 +157,9 @@ export function EntradaRapida() {
               </div>
             )}
 
-            {matricula.length < 3 && !buscando && (
+            {matricula.length < 4 && !buscando && (
               <p className="text-xs text-stone-400 text-center">
-                Escribe al menos 3 caracteres
+                Sin espacios ni guiones · Ej: 1234ABC o BA1234CD
               </p>
             )}
           </div>

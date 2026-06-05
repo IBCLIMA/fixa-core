@@ -8,7 +8,7 @@ import { getTallerIdFromAuth } from "@/lib/auth";
 export async function buscarPorMatricula(matricula: string) {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
-  const term = matricula.trim().toUpperCase().replace(/\s/g, "");
+  const term = matricula.trim().toUpperCase().replace(/[\s\-]/g, "");
 
   const resultados = await db
     .select({
@@ -123,7 +123,7 @@ export async function crearTodoRapido(data: {
     .values({
       tallerId,
       clienteId: cliente.id,
-      matricula: data.matricula.toUpperCase().replace(/\s/g, ""),
+      matricula: data.matricula.toUpperCase().replace(/[\s\-]/g, ""),
       marca: data.marca || null,
       modelo: data.modelo || null,
     })
