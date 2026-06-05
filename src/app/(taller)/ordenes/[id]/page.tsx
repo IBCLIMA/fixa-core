@@ -23,6 +23,7 @@ import { DatosLegales } from "./datos-legales";
 import { ClienteCard } from "./cliente-card";
 import { SeguroChapa } from "./seguro-chapa";
 import { LineasList } from "./lineas-list";
+import { VehiculoCard } from "./vehiculo-card";
 import { PrintButton } from "./print-button";
 import { CobrarDialog } from "./cobrar-dialog";
 import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
@@ -154,31 +155,7 @@ export default async function OrdenDetallePage({
 
       {/* Info del vehículo y cliente */}
       <div className="grid gap-4 sm:grid-cols-2">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50">
-                <Car className="h-4 w-4 text-blue-600" />
-              </div>
-              <p className="font-bold">Vehículo</p>
-            </div>
-            <div className="space-y-1 text-sm">
-              <p className="font-bold text-lg tracking-wider">
-                {orden.vehiculo?.matricula}
-              </p>
-              <p className="text-muted-foreground">
-                {[orden.vehiculo?.marca, orden.vehiculo?.modelo, orden.vehiculo?.anio]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </p>
-              {orden.kmEntrada && (
-                <p className="text-muted-foreground">
-                  Entrada: {orden.kmEntrada.toLocaleString("es-ES")} km
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <VehiculoCard vehiculo={orden.vehiculo} kmEntrada={orden.kmEntrada} />
 
         <ClienteCard
           cliente={orden.cliente}
