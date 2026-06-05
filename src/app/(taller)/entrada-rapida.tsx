@@ -31,15 +31,16 @@ export function EntradaRapida() {
 
   // Search when plate changes
   useEffect(() => {
-    if (matricula.length < 3) { setResultados([]); setBusquedaHecha(false); return; }
+    if (matricula.length < 4) { setResultados([]); setBusquedaHecha(false); return; }
     setBuscando(true);
     setBusquedaHecha(false);
     const t = setTimeout(async () => {
       const res = await buscarPorMatricula(matricula);
       setResultados(res);
       setBuscando(false);
-      setBusquedaHecha(true);
-    }, 400);
+      // Only show "not found" form when plate is long enough (Spanish plates = 7 chars)
+      if (matricula.length >= 6) setBusquedaHecha(true);
+    }, 700);
     return () => clearTimeout(t);
   }, [matricula]);
 
@@ -174,7 +175,16 @@ export function EntradaRapida() {
                 <p className="text-xs text-orange-700">Rellena los datos para dar de alta cliente y vehículo</p>
               </div>
             </div>
-            <input type="hidden" name="matriculaNueva" value={matricula} />
+            {/* Matrícula editable */}
+            <div className="space-y-1">
+              <Label className="text-xs font-bold text-stone-500">Matrícula *</Label>
+              <Input
+                name="matriculaNueva"
+                defaultValue={matricula}
+                required
+                className="h-12 rounded-xl font-bold tracking-widest uppercase text-center text-lg"
+              />
+            </div>
 
             {/* Client */}
             <div className="grid grid-cols-2 gap-2">
