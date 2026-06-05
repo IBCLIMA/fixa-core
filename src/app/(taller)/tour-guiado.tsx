@@ -89,12 +89,11 @@ export function TourGuiado() {
   return (
     <Button
       variant="ghost"
-      size="icon"
       onClick={iniciarTour}
-      className="rounded-full h-8 w-8 text-stone-400 hover:text-stone-900"
-      title="Tour guiado"
+      className="rounded-full h-8 px-3 text-xs text-stone-400 hover:text-stone-700 gap-1"
     >
-      <HelpCircle className="h-4 w-4" />
+      <HelpCircle className="h-3.5 w-3.5" />
+      Ayuda
     </Button>
   );
 }
