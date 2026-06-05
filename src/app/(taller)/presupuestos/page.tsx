@@ -82,7 +82,7 @@ export default async function PresupuestosPage({
             Los presupuestos se crean desde cada orden de trabajo. Abre una orden, anade lineas de trabajo y genera el presupuesto para enviar al cliente.
           </p>
           <Link href="/ordenes" className="mt-4">
-            <Button className="rounded-full"><ClipboardList className="mr-1.5 h-4 w-4" />Ir a ordenes</Button>
+            <Button className="rounded-xl h-11"><ClipboardList className="mr-1.5 h-4 w-4" />Ir a ordenes</Button>
           </Link>
         </div>
       ) : (

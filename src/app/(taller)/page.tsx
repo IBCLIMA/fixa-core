@@ -350,7 +350,7 @@ export default async function PanelDelDia() {
                     </div>
                   </Link>
                   {o.clienteTelefono && (
-                    <a href={formatWhatsAppUrl(o.clienteTelefono!, `Hola ${o.clienteNombre?.split(" ")[0]}, tu coche ya está listo para recoger. Puedes pasar cuando quieras. ¡Un saludo!`)} target="_blank" className="flex h-8 items-center gap-1 rounded-full bg-emerald-600 px-3 text-white text-xs font-bold hover:bg-emerald-500 transition-colors">
+                    <a href={formatWhatsAppUrl(o.clienteTelefono!, `Hola ${o.clienteNombre?.split(" ")[0]}, tu coche ya está listo para recoger. Puedes pasar cuando quieras. ¡Un saludo!`)} target="_blank" className="flex h-11 items-center gap-1.5 rounded-xl bg-emerald-600 px-4 text-white text-xs font-bold hover:bg-emerald-500 transition-colors">
                       <MessageSquare className="h-3 w-3" />Avisar
                     </a>
                   )}
@@ -389,7 +389,7 @@ export default async function PanelDelDia() {
                     </div>
                   </Link>
                   {v.clienteTelefono && (
-                    <a href={formatWhatsAppUrl(v.clienteTelefono, `Hola ${v.clienteNombre.split(" ")[0]}, te recordamos que tu vehiculo esta listo para recoger desde hace ${v.diasSinRecoger} dias. Por favor, pasa a recogerlo lo antes posible. Gracias.`)} target="_blank" className="flex h-8 items-center gap-1 rounded-full bg-amber-600 px-3 text-white text-xs font-bold hover:bg-amber-500 transition-colors">
+                    <a href={formatWhatsAppUrl(v.clienteTelefono, `Hola ${v.clienteNombre.split(" ")[0]}, te recordamos que tu vehiculo esta listo para recoger desde hace ${v.diasSinRecoger} dias. Por favor, pasa a recogerlo lo antes posible. Gracias.`)} target="_blank" className="flex h-11 items-center gap-1.5 rounded-xl bg-amber-600 px-4 text-white text-xs font-bold hover:bg-amber-500 transition-colors">
                       <MessageSquare className="h-3 w-3" />Recordar
                     </a>
                   )}
