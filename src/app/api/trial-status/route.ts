@@ -11,9 +11,7 @@ export async function GET() {
 
     const db = getDb();
 
-    const usuario = await db.query.usuarios.findFirst({
-      where: eq(usuarios.clerkUserId, userId),
-    });
+    const [usuario] = await db.select().from(usuarios).where(eq(usuarios.clerkUserId, userId));
     if (!usuario) return NextResponse.json({ plan: "trial", daysLeft: 14 });
 
     const [taller] = await db

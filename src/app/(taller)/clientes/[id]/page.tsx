@@ -22,9 +22,7 @@ export default async function ClienteDetallePage({ params }: { params: Promise<{
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  const cliente = await db.query.clientes.findFirst({
-    where: and(eq(clientes.id, id), eq(clientes.tallerId, tallerId)),
-  });
+  const [cliente] = await db.select().from(clientes).where(and(eq(clientes.id, id), eq(clientes.tallerId, tallerId)));
   if (!cliente) return notFound();
 
   const vehiculosList = await db

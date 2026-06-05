@@ -23,7 +23,7 @@ import { EntradaRapida } from "./entrada-rapida";
 import { TourGuiado } from "./tour-guiado";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
-import { ordenesTrabajo, clientes, citas, vehiculos } from "@/db/schema";
+import { ordenesTrabajo, clientes, citas, vehiculos, talleres } from "@/db/schema";
 import { eq, and, count, sql, desc, sum } from "drizzle-orm";
 import { estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
@@ -45,9 +45,7 @@ export default async function PanelDelDia() {
   const db = getDb();
 
   // Check if this is a brand new workshop - redirect to onboarding
-  const taller = await db.query.talleres.findFirst({
-    where: eq(require("@/db/schema").talleres.id, tallerId),
-  });
+  const [taller] = await db.select().from(talleres).where(eq(talleres.id, tallerId));
   if (taller && (!taller.nombre || taller.nombre === "Mi Taller") && !taller.telefono) {
     const { redirect } = require("next/navigation");
     redirect("/bienvenida");

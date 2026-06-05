@@ -13,26 +13,40 @@ export async function getCitasDelDia(fecha?: string) {
   const db = getDb();
   const hoy = fecha || new Date().toISOString().split("T")[0];
 
-  return db.query.citas.findMany({
-    where: and(eq(citas.tallerId, tallerId), eq(citas.fecha, hoy)),
-    with: { cliente: true, vehiculo: true },
-    orderBy: [citas.horaInicio],
-  });
+  const citasList = await db.select().from(citas)
+    .where(and(eq(citas.tallerId, tallerId), eq(citas.fecha, hoy)))
+    .orderBy(citas.horaInicio);
+
+  // Fetch related clients and vehicles
+  const results = await Promise.all(citasList.map(async (c) => {
+    const [cliente] = c.clienteId ? await db.select().from(clientes).where(eq(clientes.id, c.clienteId)) : [null];
+    const [vehiculo] = c.vehiculoId ? await db.select().from(vehiculos).where(eq(vehiculos.id, c.vehiculoId)) : [null];
+    return { ...c, cliente: cliente ?? null, vehiculo: vehiculo ?? null };
+  }));
+
+  return results;
 }
 
 export async function getCitasSemana(fechaInicio: string, fechaFin: string) {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  return db.query.citas.findMany({
-    where: and(
+  const citasList = await db.select().from(citas)
+    .where(and(
       eq(citas.tallerId, tallerId),
       gte(citas.fecha, fechaInicio),
       lte(citas.fecha, fechaFin)
-    ),
-    with: { cliente: true, vehiculo: true },
-    orderBy: [citas.fecha, citas.horaInicio],
-  });
+    ))
+    .orderBy(citas.fecha, citas.horaInicio);
+
+  // Fetch related clients and vehicles
+  const results = await Promise.all(citasList.map(async (c) => {
+    const [cliente] = c.clienteId ? await db.select().from(clientes).where(eq(clientes.id, c.clienteId)) : [null];
+    const [vehiculo] = c.vehiculoId ? await db.select().from(vehiculos).where(eq(vehiculos.id, c.vehiculoId)) : [null];
+    return { ...c, cliente: cliente ?? null, vehiculo: vehiculo ?? null };
+  }));
+
+  return results;
 }
 
 export async function contarCitasHoy() {

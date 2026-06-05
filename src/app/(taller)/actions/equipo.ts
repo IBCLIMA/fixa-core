@@ -13,9 +13,7 @@ export async function actualizarComision(usuarioId: string, comisionPct: number)
   const db = getDb();
 
   // Verify the user belongs to this workshop
-  const usuario = await db.query.usuarios.findFirst({
-    where: and(eq(usuarios.id, usuarioId), eq(usuarios.tallerId, tallerId)),
-  });
+  const [usuario] = await db.select().from(usuarios).where(and(eq(usuarios.id, usuarioId), eq(usuarios.tallerId, tallerId)));
 
   if (!usuario) throw new Error("Usuario no encontrado en este taller");
 

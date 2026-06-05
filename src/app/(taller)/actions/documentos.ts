@@ -25,18 +25,18 @@ export async function generarDocumentoCobro(
   const db = getDb();
 
   // Get order with all related data
-  const orden = await db.query.ordenesTrabajo.findFirst({
-    where: and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)),
-    with: {
-      cliente: true,
-      vehiculo: true,
-      lineas: true,
-    },
-  });
+  const [orden] = await db.select().from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
 
   if (!orden) throw new Error("Orden no encontrada");
-  if (!orden.cliente) throw new Error("Cliente no encontrado");
-  if (!orden.vehiculo) throw new Error("Vehiculo no encontrado");
+
+  const [cliente] = await db.select().from(clientes).where(eq(clientes.id, orden.clienteId));
+  if (!cliente) throw new Error("Cliente no encontrado");
+
+  const [vehiculo] = await db.select().from(vehiculos).where(eq(vehiculos.id, orden.vehiculoId));
+  if (!vehiculo) throw new Error("Vehiculo no encontrado");
+
+  const lineasOrdenData = await db.select().from(lineasOrden).where(eq(lineasOrden.ordenId, ordenId));
 
   // Check if document already exists for this order
   const existing = await db
@@ -58,7 +58,7 @@ export async function generarDocumentoCobro(
   if (!taller) throw new Error("Taller no encontrado");
 
   // Calculate totals
-  const lineas = orden.lineas || [];
+  const lineas = lineasOrdenData;
   let baseImponible = 0;
   let totalIva = 0;
 
@@ -112,14 +112,14 @@ export async function generarDocumentoCobro(
       tallerDireccion: taller.direccion || null,
       tallerTelefono: taller.telefono || null,
       tallerEmail: taller.email || null,
-      clienteNombre: orden.cliente.nombre,
-      clienteNif: orden.cliente.nif || null,
-      clienteDireccion: orden.cliente.direccion || null,
-      clienteTelefono: orden.cliente.telefono || null,
-      matricula: orden.vehiculo.matricula,
-      marca: orden.vehiculo.marca || null,
-      modelo: orden.vehiculo.modelo || null,
-      km: orden.kmEntrada || orden.vehiculo.km || null,
+      clienteNombre: cliente.nombre,
+      clienteNif: cliente.nif || null,
+      clienteDireccion: cliente.direccion || null,
+      clienteTelefono: cliente.telefono || null,
+      matricula: vehiculo.matricula,
+      marca: vehiculo.marca || null,
+      modelo: vehiculo.modelo || null,
+      km: orden.kmEntrada || vehiculo.km || null,
       baseImponible: baseImponible.toFixed(2),
       totalIva: totalIva.toFixed(2),
       totalFinal: totalFinal.toFixed(2),
@@ -165,21 +165,19 @@ export async function getDocumentoCobro(id: string) {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  return db.query.documentosCobro.findFirst({
-    where: and(eq(documentosCobro.id, id), eq(documentosCobro.tallerId, tallerId)),
-  });
+  const [doc] = await db.select().from(documentosCobro).where(and(eq(documentosCobro.id, id), eq(documentosCobro.tallerId, tallerId)));
+  return doc ?? undefined;
 }
 
 export async function getDocumentoByOrden(ordenId: string) {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  return db.query.documentosCobro.findFirst({
-    where: and(
-      eq(documentosCobro.ordenId, ordenId),
-      eq(documentosCobro.tallerId, tallerId)
-    ),
-  });
+  const [doc] = await db.select().from(documentosCobro).where(and(
+    eq(documentosCobro.ordenId, ordenId),
+    eq(documentosCobro.tallerId, tallerId)
+  ));
+  return doc ?? undefined;
 }
 
 export async function getDocumentos(page: number = 1, search?: string) {
@@ -207,12 +205,11 @@ export async function getDocumentos(page: number = 1, search?: string) {
     .from(documentosCobro)
     .where(whereClause);
 
-  const docs = await db.query.documentosCobro.findMany({
-    where: whereClause,
-    orderBy: desc(documentosCobro.createdAt),
-    limit,
-    offset,
-  });
+  const docs = await db.select().from(documentosCobro)
+    .where(whereClause)
+    .orderBy(desc(documentosCobro.createdAt))
+    .limit(limit)
+    .offset(offset);
 
   return {
     documentos: docs,
@@ -234,9 +231,7 @@ export async function actualizarDatosFacturacion(
   const { tallerId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  const doc = await db.query.documentosCobro.findFirst({
-    where: and(eq(documentosCobro.id, docId), eq(documentosCobro.tallerId, tallerId)),
-  });
+  const [doc] = await db.select().from(documentosCobro).where(and(eq(documentosCobro.id, docId), eq(documentosCobro.tallerId, tallerId)));
 
   if (!doc) throw new Error("Documento no encontrado");
   if (doc.estado === "finalizado") throw new Error("Este documento ya está finalizado y no se puede editar");
@@ -267,9 +262,7 @@ export async function finalizarDocumento(docId: string) {
   const { tallerId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  const doc = await db.query.documentosCobro.findFirst({
-    where: and(eq(documentosCobro.id, docId), eq(documentosCobro.tallerId, tallerId)),
-  });
+  const [doc] = await db.select().from(documentosCobro).where(and(eq(documentosCobro.id, docId), eq(documentosCobro.tallerId, tallerId)));
 
   if (!doc) throw new Error("Documento no encontrado");
   if (doc.estado === "finalizado") throw new Error("Este documento ya está finalizado");
@@ -296,9 +289,8 @@ export async function getDocumentosRecientes(limit: number = 10) {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  return db.query.documentosCobro.findMany({
-    where: eq(documentosCobro.tallerId, tallerId),
-    orderBy: desc(documentosCobro.createdAt),
-    limit,
-  });
+  return db.select().from(documentosCobro)
+    .where(eq(documentosCobro.tallerId, tallerId))
+    .orderBy(desc(documentosCobro.createdAt))
+    .limit(limit);
 }

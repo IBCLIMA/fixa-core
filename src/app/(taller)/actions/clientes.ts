@@ -12,46 +12,49 @@ export async function getClientes(busqueda?: string) {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
 
+  const conditions = [eq(clientes.tallerId, tallerId)];
   if (busqueda && busqueda.trim()) {
     const term = `%${busqueda.trim()}%`;
-    return db.query.clientes.findMany({
-      where: and(
-        eq(clientes.tallerId, tallerId),
-        or(
-          ilike(clientes.nombre, term),
-          ilike(clientes.telefono, term),
-          ilike(clientes.email, term)
-        )
-      ),
-      with: { vehiculos: true },
-      orderBy: desc(clientes.createdAt),
-    });
+    conditions.push(
+      or(
+        ilike(clientes.nombre, term),
+        ilike(clientes.telefono, term),
+        ilike(clientes.email, term)
+      )!
+    );
   }
 
-  return db.query.clientes.findMany({
-    where: eq(clientes.tallerId, tallerId),
-    with: { vehiculos: true },
-    orderBy: desc(clientes.createdAt),
-  });
+  const clientesList = await db.select().from(clientes)
+    .where(and(...conditions))
+    .orderBy(desc(clientes.createdAt));
+
+  // Fetch vehicles for each client
+  const results = await Promise.all(clientesList.map(async (c) => {
+    const vehs = await db.select().from(vehiculos).where(eq(vehiculos.clienteId, c.id));
+    return { ...c, vehiculos: vehs };
+  }));
+
+  return results;
 }
 
 export async function getCliente(id: string) {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  return db.query.clientes.findFirst({
-    where: and(eq(clientes.id, id), eq(clientes.tallerId, tallerId)),
-    with: {
-      vehiculos: {
-        with: {
-          ordenes: {
-            orderBy: desc(ordenesTrabajo.createdAt),
-            limit: 10,
-          },
-        },
-      },
-    },
-  });
+  const [cliente] = await db.select().from(clientes).where(and(eq(clientes.id, id), eq(clientes.tallerId, tallerId)));
+  if (!cliente) return undefined;
+
+  const vehs = await db.select().from(vehiculos).where(eq(vehiculos.clienteId, cliente.id));
+
+  const vehiculosConOrdenes = await Promise.all(vehs.map(async (v) => {
+    const ordenes = await db.select().from(ordenesTrabajo)
+      .where(eq(ordenesTrabajo.vehiculoId, v.id))
+      .orderBy(desc(ordenesTrabajo.createdAt))
+      .limit(10);
+    return { ...v, ordenes };
+  }));
+
+  return { ...cliente, vehiculos: vehiculosConOrdenes };
 }
 
 export async function crearCliente(data: {

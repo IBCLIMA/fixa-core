@@ -148,11 +148,10 @@ export default async function FacturacionPage() {
   );
 
   // Recent documents
-  const recentDocs = await db.query.documentosCobro.findMany({
-    where: eq(documentosCobro.tallerId, tallerId),
-    orderBy: desc(documentosCobro.createdAt),
-    limit: 10,
-  });
+  const recentDocs = await db.select().from(documentosCobro)
+    .where(eq(documentosCobro.tallerId, tallerId))
+    .orderBy(desc(documentosCobro.createdAt))
+    .limit(10);
 
   const totalFact = Number(facturacionTotal?.total ?? 0);
   const factMes = Number(facturacionMes?.total ?? 0);
