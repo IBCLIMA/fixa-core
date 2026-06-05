@@ -8,6 +8,7 @@ import {
   clientes,
   talleres,
   lineasOrden,
+  usuarios,
 } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { OrdenReparacionPDF, type OrdenPDFData } from "@/lib/pdf/templates/orden-reparacion";
@@ -50,6 +51,13 @@ export async function GET(
       .from(lineasOrden)
       .where(eq(lineasOrden.ordenId, id));
 
+    // Get assigned mechanic name
+    let asignadoNombre: string | null = null;
+    if (orden.asignadoA) {
+      const [asignado] = await db.select({ nombre: usuarios.nombre }).from(usuarios).where(eq(usuarios.id, orden.asignadoA));
+      asignadoNombre = asignado?.nombre || null;
+    }
+
     // Generate QR code
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com";
     const trackingUrl = orden.tokenPublico
@@ -82,6 +90,10 @@ export async function GET(
       diagnostico: orden.diagnostico,
       observacionesEntrada: orden.observacionesEntrada,
       kmEntrada: orden.kmEntrada,
+      asignado: asignadoNombre,
+      tipoIntervencion: orden.tipoIntervencion,
+      renunciaPresupuesto: orden.renunciaPresupuesto,
+      renunciaPiezas: orden.renunciaPiezas,
       clienteNombre: cliente?.nombre || "—",
       clienteNif: cliente?.nif,
       clienteTelefono: cliente?.telefono,
