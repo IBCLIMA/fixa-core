@@ -22,6 +22,7 @@ import { AveriasOcultas } from "./averias-ocultas";
 import { DatosLegales } from "./datos-legales";
 import { ClienteCard } from "./cliente-card";
 import { SeguroChapa } from "./seguro-chapa";
+import { LineasList } from "./lineas-list";
 import { PrintButton } from "./print-button";
 import { CobrarDialog } from "./cobrar-dialog";
 import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
@@ -310,44 +311,8 @@ export default async function OrdenDetallePage({
         </CardHeader>
         <CardContent>
           {lineas.length > 0 && (
-            <div className="space-y-2 mb-4">
-              {lineas.map((linea) => {
-                const base =
-                  Number(linea.cantidad) *
-                  Number(linea.precioUnitario) *
-                  (1 - Number(linea.descuentoPct || 0) / 100);
-                return (
-                  <div
-                    key={linea.id}
-                    className="flex items-center justify-between rounded-xl bg-muted/50 px-3 py-2.5"
-                  >
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-[10px]">
-                          {linea.tipo === "mano_obra"
-                            ? "M.O."
-                            : linea.tipo === "recambio"
-                              ? "Recambio"
-                              : "Otros"}
-                        </Badge>
-                        <span className="text-sm font-medium">
-                          {linea.descripcion}
-                        </span>
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {Number(linea.cantidad)} × {Number(linea.precioUnitario).toFixed(2)}€
-                        {Number(linea.descuentoPct || 0) > 0 &&
-                          ` (-${linea.descuentoPct}%)`}
-                        {" · IVA "}
-                        {linea.ivaPct}%
-                      </p>
-                    </div>
-                    <span className="text-sm font-bold">
-                      {base.toFixed(2)}€
-                    </span>
-                  </div>
-                );
-              })}
+            <div className="mb-4">
+              <LineasList ordenId={orden.id} lineas={lineas} />
 
               <Separator className="my-3" />
 

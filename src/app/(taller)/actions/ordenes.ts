@@ -255,6 +255,38 @@ export async function agregarLineaOrden(data: {
   return linea;
 }
 
+export async function editarLineaOrden(data: {
+  id: string;
+  ordenId: string;
+  descripcion: string;
+  cantidad: number;
+  precioUnitario: number;
+  descuentoPct?: number;
+  ivaPct?: number;
+}) {
+  const { tallerId, clerkUserId } = await getTallerIdFromAuth();
+  const db = getDb();
+
+  const [orden] = await db
+    .select({ id: ordenesTrabajo.id })
+    .from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, data.ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
+  if (!orden) throw new Error("Orden no encontrada");
+
+  await db
+    .update(lineasOrden)
+    .set({
+      descripcion: data.descripcion,
+      cantidad: String(data.cantidad),
+      precioUnitario: String(data.precioUnitario),
+      descuentoPct: data.descuentoPct ? String(data.descuentoPct) : "0",
+      ivaPct: data.ivaPct ? String(data.ivaPct) : "21",
+    })
+    .where(eq(lineasOrden.id, data.id));
+
+  revalidatePath(`/ordenes/${data.ordenId}`);
+}
+
 export async function eliminarLineaOrden(id: string, ordenId: string) {
   const { tallerId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();

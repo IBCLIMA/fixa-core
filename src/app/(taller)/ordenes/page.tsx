@@ -8,6 +8,7 @@ import { ordenesTrabajo, vehiculos, clientes, usuarios } from "@/db/schema";
 import { eq, and, sql, desc } from "drizzle-orm";
 import { estadoLabels, estadoColors } from "@/lib/constants";
 import { EntradaRapida } from "../entrada-rapida";
+import { EliminarRapido } from "./eliminar-rapido";
 
 const filtros = [
   { value: "activas", label: "En taller" },
@@ -173,7 +174,8 @@ export default async function OrdenesPage({
       ) : (
         <div className="space-y-2">
           {ordenes.map((o) => (
-            <Link key={o.id} href={`/ordenes/${o.id}`} className="block">
+            <div key={o.id} className="group relative">
+            <Link href={`/ordenes/${o.id}`} className="block">
               <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 hover:bg-accent/30 hover:border-brand/20 transition-all duration-200">
                 <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-muted">
                   <span className="text-[10px] font-bold text-muted-foreground">OR</span>
@@ -204,6 +206,10 @@ export default async function OrdenesPage({
                 </div>
               </div>
             </Link>
+            <div className="absolute top-3 right-3">
+              <EliminarRapido ordenId={o.id} numero={o.numero} />
+            </div>
+            </div>
           ))}
         </div>
       )}
