@@ -205,9 +205,6 @@ export default async function PanelDelDia() {
         <div className="flex items-center gap-2">
           <TourGuiado />
           <div id="btn-entrada-rapida"><EntradaRapida /></div>
-          <Link href="/ordenes/nueva">
-            <Button size="sm" variant="outline" className="rounded-full"><Plus className="mr-1.5 h-4 w-4" />Manual</Button>
-          </Link>
         </div>
       </div>
 
@@ -418,7 +415,7 @@ export default async function PanelDelDia() {
                 <Car className="h-10 w-10 text-muted-foreground/20 mb-3" />
                 <p className="text-sm font-medium">No hay coches en taller</p>
                 <p className="text-xs text-muted-foreground mt-1 max-w-[220px]">Cuando registres una entrada, el vehiculo aparecera aqui con su estado.</p>
-                <Link href="/ordenes/nueva" className="mt-3"><Button size="sm" variant="outline" className="rounded-full"><Plus className="mr-1 h-3 w-3" />Nueva orden</Button></Link>
+                <div className="mt-3"><EntradaRapida /></div>
               </div>
             ) : (
               <div className="space-y-2">

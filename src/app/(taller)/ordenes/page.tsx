@@ -7,6 +7,7 @@ import { getDb } from "@/db";
 import { ordenesTrabajo, vehiculos, clientes, usuarios } from "@/db/schema";
 import { eq, and, sql, desc } from "drizzle-orm";
 import { estadoLabels, estadoColors } from "@/lib/constants";
+import { EntradaRapida } from "../entrada-rapida";
 
 const filtros = [
   { value: "activas", label: "En taller" },
@@ -99,9 +100,7 @@ export default async function OrdenesPage({
           <h1 className="text-2xl font-extrabold tracking-tight">Órdenes de trabajo</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Gestiona las reparaciones en curso y el historial de tu taller.</p>
         </div>
-        <Link href="/ordenes/nueva">
-          <Button className="rounded-full"><Plus className="mr-1.5 h-4 w-4" />Nueva orden</Button>
-        </Link>
+        <EntradaRapida />
       </div>
 
       {/* Filtros */}
@@ -169,9 +168,7 @@ export default async function OrdenesPage({
               ? "Cada vehiculo que entre al taller tendra su orden con estado, lineas de trabajo y presupuesto."
               : "Prueba con otro filtro o crea una nueva orden."}
           </p>
-          <Link href="/ordenes/nueva" className="mt-4">
-            <Button className="rounded-full"><Plus className="mr-1.5 h-4 w-4" />Crear tu primera orden</Button>
-          </Link>
+          <div className="mt-4"><EntradaRapida /></div>
         </div>
       ) : (
         <div className="space-y-2">
