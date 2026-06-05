@@ -1,7 +1,9 @@
-import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import Link from "next/link";
 import { getCitasSemana } from "../actions/citas";
 import { CalendarioView } from "./calendario-view";
+import { getTallerIdFromAuth } from "@/lib/auth";
+import { CopyLinkBox } from "../configuracion/copy-link-box";
 
 function getWeekDates(baseDate?: string) {
   const now = baseDate ? new Date(baseDate + "T12:00:00") : new Date();
@@ -36,8 +38,10 @@ export default async function CalendarioPage({
   searchParams: Promise<{ semana?: string }>;
 }) {
   const params = await searchParams;
+  const { tallerId } = await getTallerIdFromAuth();
   const week = getWeekDates(params.semana);
   const citas = await getCitasSemana(week.start, week.end);
+  const citaUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com"}/cita/${tallerId}`;
 
   // Calcular semanas anterior y siguiente
   const prevMonday = new Date(week.monday);
@@ -94,6 +98,16 @@ export default async function CalendarioPage({
       </div>
 
       <CalendarioView days={week.days.map((d) => d.toISOString())} citas={citas} totalCitas={totalCitas} />
+
+      {/* Cita online */}
+      <div className="flex items-center gap-3 rounded-xl bg-orange-50 border border-orange-200 p-3">
+        <Share2 className="h-4 w-4 text-orange-600 shrink-0" />
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-bold text-orange-900">Enlace de cita online</p>
+          <p className="text-[10px] text-orange-700">Compártelo en WhatsApp, Google Maps o tu web</p>
+        </div>
+        <CopyLinkBox url={citaUrl} />
+      </div>
     </div>
   );
 }

@@ -18,6 +18,7 @@ interface Taller {
   googleReviewLink: string | null;
   registroIndustrial: string | null;
   ramaActividad: string[] | null;
+  precioHora: string | null;
 }
 
 const RAMAS_ACTIVIDAD = [
@@ -51,6 +52,7 @@ export function ConfigForm({ taller }: { taller: Taller }) {
           email: formData.get("email"),
           googleReviewLink: formData.get("googleReviewLink"),
           registroIndustrial: formData.get("registroIndustrial"),
+          precioHora: formData.get("precioHora"),
           ramaActividad: ramas,
         }),
       });
@@ -90,6 +92,11 @@ export function ConfigForm({ taller }: { taller: Taller }) {
             <div className="space-y-1.5">
               <Label htmlFor="direccion">Dirección</Label>
               <Input id="direccion" name="direccion" defaultValue={taller.direccion || ""} placeholder="Calle Principal, 1" className="h-11 rounded-xl" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="precioHora">Precio/hora mano de obra (EUR)</Label>
+              <Input id="precioHora" name="precioHora" type="number" step="0.50" min="0" defaultValue={taller.precioHora || "40.00"} className="h-11 rounded-xl" />
+              <p className="text-xs text-muted-foreground">Se aplica por defecto al añadir mano de obra en las órdenes.</p>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="registroIndustrial">N.º registro industrial</Label>

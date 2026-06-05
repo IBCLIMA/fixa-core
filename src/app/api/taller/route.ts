@@ -35,6 +35,7 @@ export async function PUT(request: Request) {
       googleReviewLink: body.googleReviewLink || null,
       registroIndustrial: body.registroIndustrial || null,
       ramaActividad: body.ramaActividad || null,
+      precioHora: body.precioHora || null,
     };
 
     if (body.dpaAceptado) {

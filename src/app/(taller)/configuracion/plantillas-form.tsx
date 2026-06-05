@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { crearPlantilla, actualizarPlantilla, eliminarPlantilla, type LineaPlantilla } from "../actions/plantillas";
+import { serviceTemplates } from "@/lib/service-templates";
 import { toast } from "sonner";
 
 type Plantilla = {
@@ -191,25 +192,17 @@ export function PlantillasForm({ plantillasIniciales }: { plantillasIniciales: P
         </div>
       </CardHeader>
       <CardContent>
-        {plantillas.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-4">
-            No tienes plantillas propias. Crea una para aplicarla rápidamente en las órdenes.
-          </p>
-        ) : (
-          <div className="space-y-2">
+        {/* Custom plantillas */}
+        {plantillas.length > 0 && (
+          <div className="space-y-2 mb-4">
+            <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Mis plantillas</p>
             {plantillas.map((p) => (
-              <div
-                key={p.id}
-                className="flex items-center justify-between rounded-xl bg-muted/50 px-4 py-3"
-              >
+              <div key={p.id} className="flex items-center justify-between rounded-xl bg-muted/50 px-4 py-3">
                 <div>
                   <p className="text-sm font-medium">{p.nombre}</p>
                   <p className="text-xs text-muted-foreground">
-                    {p.lineas.length} línea{p.lineas.length !== 1 ? "s" : ""}
-                    {" · "}
-                    {p.lineas
-                      .reduce((sum, l) => sum + l.cantidad * l.precioUnitario, 0)
-                      .toFixed(2)}€
+                    {p.lineas.length} línea{p.lineas.length !== 1 ? "s" : ""}{" · "}
+                    {p.lineas.reduce((sum, l) => sum + l.cantidad * l.precioUnitario, 0).toFixed(2)}€
                   </p>
                 </div>
                 <div className="flex gap-1">
@@ -224,6 +217,35 @@ export function PlantillasForm({ plantillasIniciales }: { plantillasIniciales: P
             ))}
           </div>
         )}
+
+        {/* Default plantillas */}
+        <div className="space-y-2">
+          <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Predefinidas</p>
+          {serviceTemplates.map((t) => (
+            <div key={t.name} className="flex items-center justify-between rounded-xl bg-stone-50 border border-stone-100 px-4 py-3">
+              <div>
+                <p className="text-sm font-medium text-stone-600">{t.name}</p>
+                <p className="text-xs text-stone-400">
+                  {t.lines.length} línea{t.lines.length !== 1 ? "s" : ""}{" · "}
+                  {t.lines.reduce((sum, l) => sum + l.cantidad * l.precioUnitario, 0).toFixed(2)}€
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs text-orange-600 hover:text-orange-700"
+                onClick={() => {
+                  setNombre(t.name);
+                  setLineas(t.lines.map(l => ({ ...l })));
+                  setEditando(null);
+                  setOpen(true);
+                }}
+              >
+                <Pencil className="h-3 w-3 mr-1" />Personalizar
+              </Button>
+            </div>
+          ))}
+        </div>
       </CardContent>
     </Card>
   );

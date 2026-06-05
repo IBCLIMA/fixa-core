@@ -114,7 +114,8 @@ export const talleres = pgTable("talleres", {
   ciudad: text("ciudad"),
   provincia: text("provincia"),
   registroIndustrial: text("registro_industrial"),
-  ramaActividad: text("rama_actividad").array(), // ['mecanica','electricidad','carroceria','pintura']
+  ramaActividad: text("rama_actividad").array(),
+  precioHora: numeric("precio_hora", { precision: 10, scale: 2 }).default("40.00"), // ['mecanica','electricidad','carroceria','pintura']
   clerkOrgId: text("clerk_org_id").unique(),
   // Suscripción
   plan: planEnum("plan").default("trial").notNull(),
