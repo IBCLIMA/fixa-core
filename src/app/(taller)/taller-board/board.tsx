@@ -8,7 +8,7 @@ import {
   type DragStartEvent, type DragEndEvent,
 } from "@dnd-kit/core";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
-import { ArrowRight, GripVertical, Settings2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cambiarEstadoOrden } from "../actions/ordenes";
 import { cambiarFlujoTaller } from "../actions/workflow";
 import { getKanbanColumns, getColumnForState, workflowPresets } from "@/lib/workflow";
@@ -33,18 +33,13 @@ function DraggableCard({ orden, nextLabel, nextState, onMove }: {
   onMove: (id: string, state: string) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: orden.id });
-  const style = transform ? { transform: `translate(${transform.x}px, ${transform.y}px)` } : undefined;
+  const style = transform ? { transform: `translate(${transform.x}px, ${transform.y}px)`, zIndex: 50 } : undefined;
 
   return (
-    <div ref={setNodeRef} style={style}
-      className={`group relative rounded-2xl border bg-white p-3.5 shadow-sm transition-shadow ${isDragging ? "opacity-40 shadow-lg" : "hover:shadow-md"}`}
+    <div ref={setNodeRef} style={style} {...listeners} {...attributes}
+      className={`group relative rounded-2xl border bg-white p-3.5 shadow-sm transition-shadow cursor-grab active:cursor-grabbing touch-none ${isDragging ? "opacity-40 shadow-lg" : "hover:shadow-md"}`}
     >
-      <div {...listeners} {...attributes}
-        className="absolute left-1 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing p-1 text-stone-200 hover:text-stone-400"
-      >
-        <GripVertical className="h-4 w-4" />
-      </div>
-      <div className="pl-5">
+      <div>
         <div className="flex items-center justify-between mb-1.5">
           <Link href={`/ordenes/${orden.id}`} className="flex items-center gap-2">
             <span className="text-base font-extrabold tracking-wider">{orden.matricula}</span>
