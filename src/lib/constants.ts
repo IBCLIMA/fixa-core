@@ -7,7 +7,7 @@ export const estadoLabels: Record<string, string> = {
   aprobado: "Aprobado",
   en_reparacion: "En reparación",
   esperando_recambio: "Esp. recambio",
-  listo: "Listo",
+  listo: "Finalizado",
   entregado: "Entregado",
   cancelado: "Cancelado",
 };
@@ -32,7 +32,7 @@ export const estadoLabelsDetalle: Record<string, string> = {
   aprobado: "Aprobado",
   en_reparacion: "En reparación",
   esperando_recambio: "Esperando recambio",
-  listo: "Listo para entregar",
+  listo: "Finalizado",
   entregado: "Entregado",
   cancelado: "Cancelado",
 };
@@ -45,7 +45,7 @@ export const estadoLabelsCliente: Record<string, string> = {
   aprobado: "Reparación aprobada",
   en_reparacion: "Tu vehículo está siendo reparado",
   esperando_recambio: "Esperando recambio para continuar",
-  listo: "¡Tu vehículo está listo para recoger!",
+  listo: "¡Tu vehículo está listo! Ya puedes venir a recogerlo.",
   entregado: "Vehículo entregado",
   cancelado: "Orden cancelada",
 };

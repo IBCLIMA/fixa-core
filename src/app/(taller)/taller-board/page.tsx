@@ -1,14 +1,20 @@
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
-import { ordenesTrabajo, vehiculos, clientes, usuarios } from "@/db/schema";
+import { ordenesTrabajo, vehiculos, clientes, usuarios, talleres } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { TallerBoard } from "./board";
+import { getActivePhases } from "@/lib/workflow";
 
 export default async function TallerBoardPage() {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  // Get all active orders (not delivered/cancelled) with vehicle + client + assigned
+  // Get taller config for workflow
+  const [taller] = await db.select({ flujoTaller: talleres.flujoTaller }).from(talleres).where(eq(talleres.id, tallerId));
+  const activePhases = getActivePhases(taller?.flujoTaller);
+  const flujoActual = typeof taller?.flujoTaller === "string" ? taller.flujoTaller : "simple";
+
+  // Get active orders + recently delivered (last 24h)
   const ordenes = await db
     .select({
       id: ordenesTrabajo.id,
@@ -31,17 +37,15 @@ export default async function TallerBoardPage() {
     .where(
       and(
         eq(ordenesTrabajo.tallerId, tallerId),
-        sql`${ordenesTrabajo.estado} NOT IN ('entregado', 'cancelado')`
+        sql`(${ordenesTrabajo.estado} NOT IN ('cancelado') AND (${ordenesTrabajo.estado} != 'entregado' OR ${ordenesTrabajo.updatedAt} > NOW() - INTERVAL '24 hours'))`
       )
     );
 
-  // Get mechanics
   const mecanicos = await db
     .select({ id: usuarios.id, nombre: usuarios.nombre })
     .from(usuarios)
     .where(eq(usuarios.tallerId, tallerId));
 
-  // Map assigned names
   const mecMap = Object.fromEntries(mecanicos.map((m) => [m.id, m.nombre]));
 
   const ordenesData = ordenes.map((o) => ({
@@ -50,5 +54,12 @@ export default async function TallerBoardPage() {
     fechaEntrada: o.fechaEntrada.toISOString(),
   }));
 
-  return <TallerBoard ordenes={ordenesData} />;
+  return (
+    <TallerBoard
+      ordenes={ordenesData}
+      activePhases={activePhases}
+      flujoActual={flujoActual as string}
+      tallerId={tallerId}
+    />
+  );
 }
