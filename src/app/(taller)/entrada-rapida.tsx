@@ -192,19 +192,6 @@ export function EntradaRapida() {
                   <Label className="text-xs font-bold text-stone-500">Fecha estimada de entrega *</Label>
                   <Input name="fechaEstimada" type="date" required className="h-11 rounded-xl" />
                 </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-stone-500">Motivo del depósito</Label>
-                  <div className="flex gap-4">
-                    <label className="flex items-center gap-2 text-sm">
-                      <input type="radio" name="motivoDeposito" value="reparacion" defaultChecked className="accent-orange-500" />
-                      Reparación
-                    </label>
-                    <label className="flex items-center gap-2 text-sm">
-                      <input type="radio" name="motivoDeposito" value="presupuesto" className="accent-orange-500" />
-                      Presupuesto
-                    </label>
-                  </div>
-                </div>
                 <div className="flex gap-2">
                   <Button type="submit" className="flex-1 h-11 rounded-xl font-bold" disabled={loading}>
                     {loading ? "Creando..." : "Crear cliente + orden"}
@@ -238,20 +225,6 @@ export function EntradaRapida() {
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-stone-500">Fecha estimada de entrega *</Label>
               <Input name="fechaEstimada" type="date" required className="h-11 rounded-xl" />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-stone-500">Motivo del depósito</Label>
-              <div className="flex gap-4">
-                <label className="flex items-center gap-2 text-sm">
-                  <input type="radio" name="motivoDeposito" value="reparacion" defaultChecked className="accent-orange-500" />
-                  Reparación
-                </label>
-                <label className="flex items-center gap-2 text-sm">
-                  <input type="radio" name="motivoDeposito" value="presupuesto" className="accent-orange-500" />
-                  Presupuesto
-                </label>
-              </div>
             </div>
 
             <div className="flex gap-2">
