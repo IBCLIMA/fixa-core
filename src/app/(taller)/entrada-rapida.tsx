@@ -25,31 +25,30 @@ export function EntradaRapida() {
   const [loading, setLoading] = useState(false);
   const [buscando, setBuscando] = useState(false);
   const [busquedaHecha, setBusquedaHecha] = useState(false);
+  const [showNewForm, setShowNewForm] = useState(false);
   const [marcaValue, setMarcaValue] = useState("");
   const [modeloValue, setModeloValue] = useState("");
   const [modelosSugeridos, setModelosSugeridos] = useState<string[]>([]);
 
   // Search when plate changes
   useEffect(() => {
-    // Clean plate: remove spaces, dashes — normalize for search
     const cleanPlate = matricula.replace(/[\s\-]/g, "");
-    if (cleanPlate.length < 4) { setResultados([]); setBusquedaHecha(false); return; }
+    if (cleanPlate.length < 3) { setResultados([]); setBusquedaHecha(false); return; }
     setBuscando(true);
     setBusquedaHecha(false);
     const t = setTimeout(async () => {
       const res = await buscarPorMatricula(cleanPlate);
       setResultados(res);
       setBuscando(false);
-      // Spanish plates: 7 chars (new: 1234ABC) or 8 chars (old: BA1234CD)
-      if (cleanPlate.length >= 7) setBusquedaHecha(true);
-    }, 700);
+      setBusquedaHecha(true);
+    }, 1000);
     return () => clearTimeout(t);
   }, [matricula]);
 
   function resetAll() {
     setMatricula(""); setSeleccionado(null); setResultados([]);
-    setBusquedaHecha(false); setMarcaValue(""); setModeloValue("");
-    setModelosSugeridos([]);
+    setBusquedaHecha(false); setShowNewForm(false);
+    setMarcaValue(""); setModeloValue(""); setModelosSugeridos([]);
   }
 
   // Vehicle NOT found → create everything
@@ -97,7 +96,8 @@ export function EntradaRapida() {
     }
   }
 
-  const vehiculoNoEncontrado = busquedaHecha && resultados.length === 0 && matricula.length >= 3;
+  const noResults = busquedaHecha && resultados.length === 0 && matricula.length >= 3;
+  const vehiculoNoEncontrado = showNewForm;
 
   return (
     <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) resetAll(); }}>
@@ -128,7 +128,6 @@ export function EntradaRapida() {
                 onChange={(e) => setMatricula(e.target.value.toUpperCase().replace(/[\s\-]/g, ""))}
                 className="pl-9 h-14 rounded-xl text-xl font-bold tracking-widest uppercase text-center"
                 autoFocus
-                maxLength={8}
               />
             </div>
 
@@ -157,7 +156,20 @@ export function EntradaRapida() {
               </div>
             )}
 
-            {matricula.length < 4 && !buscando && (
+            {/* Not found: show register button */}
+            {noResults && !buscando && (
+              <div className="text-center py-3 space-y-2">
+                <p className="text-sm text-stone-500">No se ha encontrado <span className="font-bold tracking-wider">{matricula}</span></p>
+                <Button
+                  onClick={() => setShowNewForm(true)}
+                  className="rounded-xl h-11 font-bold"
+                >
+                  <UserPlus className="mr-1.5 h-4 w-4" />Registrar nuevo vehículo
+                </Button>
+              </div>
+            )}
+
+            {matricula.length < 3 && !buscando && (
               <p className="text-xs text-stone-400 text-center">
                 Sin espacios ni guiones · Ej: 1234ABC o BA1234CD
               </p>
@@ -236,7 +248,7 @@ export function EntradaRapida() {
               <Button type="submit" className="flex-1 h-12 rounded-xl font-bold text-sm" disabled={loading}>
                 {loading ? "Creando..." : "Dar de alta + crear OR"}
               </Button>
-              <Button type="button" variant="outline" className="h-12 rounded-xl" onClick={() => { setMatricula(""); setBusquedaHecha(false); }}>
+              <Button type="button" variant="outline" className="h-12 rounded-xl" onClick={() => setShowNewForm(false)}>
                 Atrás
               </Button>
             </div>
