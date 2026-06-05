@@ -116,7 +116,13 @@ export const talleres = pgTable("talleres", {
   registroIndustrial: text("registro_industrial"),
   ramaActividad: text("rama_actividad").array(),
   precioHora: numeric("precio_hora", { precision: 10, scale: 2 }).default("40.00"),
-  flujoTaller: jsonb("flujo_taller").default('"simple"'), // "simple" | "completo" | string[] (custom phases) // ['mecanica','electricidad','carroceria','pintura']
+  flujoTaller: jsonb("flujo_taller").default('"simple"'),
+  horarioApertura: text("horario_apertura").default("08:00"),
+  horarioCierre: text("horario_cierre").default("18:00"),
+  trabajaSabados: boolean("trabaja_sabados").default(false),
+  horarioSabadoApertura: text("horario_sabado_apertura").default("09:00"),
+  horarioSabadoCierre: text("horario_sabado_cierre").default("13:00"),
+  capacidadDiaria: integer("capacidad_diaria").default(4), // "simple" | "completo" | string[] (custom phases) // ['mecanica','electricidad','carroceria','pintura']
   clerkOrgId: text("clerk_org_id").unique(),
   // Suscripción
   plan: planEnum("plan").default("trial").notNull(),
@@ -469,6 +475,16 @@ export const documentosCobro = pgTable("documentos_cobro", {
   estado: text("estado").default("borrador").notNull(), // borrador | finalizado
   notas: text("notas"),
   tokenPublico: text("token_publico").unique(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const diasBloqueados = pgTable("dias_bloqueados", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tallerId: uuid("taller_id")
+    .references(() => talleres.id)
+    .notNull(),
+  fecha: date("fecha").notNull(),
+  motivo: text("motivo"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

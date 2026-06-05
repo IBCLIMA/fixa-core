@@ -19,6 +19,12 @@ interface Taller {
   registroIndustrial: string | null;
   ramaActividad: string[] | null;
   precioHora: string | null;
+  horarioApertura: string | null;
+  horarioCierre: string | null;
+  trabajaSabados: boolean | null;
+  horarioSabadoApertura: string | null;
+  horarioSabadoCierre: string | null;
+  capacidadDiaria: number | null;
 }
 
 const RAMAS_ACTIVIDAD = [
@@ -31,6 +37,7 @@ const RAMAS_ACTIVIDAD = [
 export function ConfigForm({ taller }: { taller: Taller }) {
   const [loading, setLoading] = useState(false);
   const [ramas, setRamas] = useState<string[]>(taller.ramaActividad || []);
+  const [sabados, setSabados] = useState(taller.trabajaSabados || false);
 
   function toggleRama(value: string) {
     setRamas((prev) =>
@@ -53,6 +60,12 @@ export function ConfigForm({ taller }: { taller: Taller }) {
           googleReviewLink: formData.get("googleReviewLink"),
           registroIndustrial: formData.get("registroIndustrial"),
           precioHora: formData.get("precioHora"),
+          horarioApertura: formData.get("horarioApertura"),
+          horarioCierre: formData.get("horarioCierre"),
+          trabajaSabados: sabados,
+          horarioSabadoApertura: formData.get("horarioSabadoApertura"),
+          horarioSabadoCierre: formData.get("horarioSabadoCierre"),
+          capacidadDiaria: formData.get("capacidadDiaria") ? Number(formData.get("capacidadDiaria")) : 4,
           ramaActividad: ramas,
         }),
       });
@@ -98,6 +111,54 @@ export function ConfigForm({ taller }: { taller: Taller }) {
               <Input id="precioHora" name="precioHora" type="number" step="0.50" min="0" defaultValue={taller.precioHora || "40.00"} className="h-11 rounded-xl" />
               <p className="text-xs text-muted-foreground">Se aplica por defecto al añadir mano de obra en las órdenes.</p>
             </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="capacidadDiaria">Coches máx. por día</Label>
+              <Input id="capacidadDiaria" name="capacidadDiaria" type="number" min="1" max="50" defaultValue={taller.capacidadDiaria || 4} className="h-11 rounded-xl" />
+              <p className="text-xs text-muted-foreground">Cuando se llena un día, se bloquea en las citas online.</p>
+            </div>
+          </div>
+
+          <Separator />
+
+          <p className="text-xs font-bold text-stone-500 uppercase tracking-wider">Horario del taller</p>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="horarioApertura">Apertura (L-V)</Label>
+              <Input id="horarioApertura" name="horarioApertura" type="time" defaultValue={taller.horarioApertura || "08:00"} className="h-11 rounded-xl" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="horarioCierre">Cierre (L-V)</Label>
+              <Input id="horarioCierre" name="horarioCierre" type="time" defaultValue={taller.horarioCierre || "18:00"} className="h-11 rounded-xl" />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={sabados}
+                  onChange={(e) => setSabados(e.target.checked)}
+                  className="accent-orange-500 h-5 w-5"
+                />
+                <span className="text-sm font-medium">Abrimos los sábados</span>
+              </label>
+            </div>
+            {sabados && (
+              <>
+                <div className="space-y-1.5">
+                  <Label htmlFor="horarioSabadoApertura">Apertura sábados</Label>
+                  <Input id="horarioSabadoApertura" name="horarioSabadoApertura" type="time" defaultValue={taller.horarioSabadoApertura || "09:00"} className="h-11 rounded-xl" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="horarioSabadoCierre">Cierre sábados</Label>
+                  <Input id="horarioSabadoCierre" name="horarioSabadoCierre" type="time" defaultValue={taller.horarioSabadoCierre || "13:00"} className="h-11 rounded-xl" />
+                </div>
+              </>
+            )}
+          </div>
+
+          <Separator />
+
+          <p className="text-xs font-bold text-stone-500 uppercase tracking-wider">Otros</p>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label htmlFor="registroIndustrial">N.º registro industrial</Label>
               <Input id="registroIndustrial" name="registroIndustrial" defaultValue={taller.registroIndustrial || ""} placeholder="Ej: 46/1234" className="h-11 rounded-xl" />

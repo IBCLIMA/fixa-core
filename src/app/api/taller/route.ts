@@ -36,6 +36,12 @@ export async function PUT(request: Request) {
       registroIndustrial: body.registroIndustrial || null,
       ramaActividad: body.ramaActividad || null,
       precioHora: body.precioHora || null,
+      horarioApertura: body.horarioApertura || "08:00",
+      horarioCierre: body.horarioCierre || "18:00",
+      trabajaSabados: body.trabajaSabados ?? false,
+      horarioSabadoApertura: body.horarioSabadoApertura || "09:00",
+      horarioSabadoCierre: body.horarioSabadoCierre || "13:00",
+      capacidadDiaria: body.capacidadDiaria ? Number(body.capacidadDiaria) : 4,
     };
 
     if (body.dpaAceptado) {
