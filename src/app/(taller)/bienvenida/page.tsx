@@ -6,12 +6,14 @@ import Link from "next/link";
 import {
   ArrowRight, CheckCircle2, Settings, Users, Car, ClipboardList,
   Upload, Zap, Smartphone, MessageSquare, Bell, Star, Shield, Sparkles,
+  Plus, Wrench, X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { crearOperariosEnLote } from "../actions/operarios";
 
 export default function BienvenidaPage() {
   const router = useRouter();
@@ -19,6 +21,7 @@ export default function BienvenidaPage() {
   const [loading, setLoading] = useState(false);
   const [dpaAceptado, setDpaAceptado] = useState(false);
   const [newsletterConsent, setNewsletterConsent] = useState(false);
+  const [operarios, setOperarios] = useState<string[]>([""]);
   const [datos, setDatos] = useState({
     nombre: "",
     telefono: "",
@@ -47,6 +50,18 @@ export default function BienvenidaPage() {
         body: JSON.stringify({ ...datos, dpaAceptado: true, newsletterConsent }),
       });
       if (!res.ok) throw new Error();
+
+      // Create operarios if any names were entered
+      const nombresValidos = operarios.map((n) => n.trim()).filter(Boolean);
+      if (nombresValidos.length > 0) {
+        try {
+          await crearOperariosEnLote(nombresValidos);
+        } catch {
+          // Non-blocking: taller data is saved, operarios can be added later
+          console.error("Error creating operarios during onboarding");
+        }
+      }
+
       setPaso(2);
     } catch {
       toast.error("Error al guardar");
@@ -218,6 +233,57 @@ export default function BienvenidaPage() {
                   Te enviamos ideas prácticas para captar más coches, fidelizar clientes y ahorrar tiempo. Sin spam. Te das de baja cuando quieras.
                 </p>
               </div>
+            </div>
+
+            {/* Operarios */}
+            <div className="rounded-2xl bg-white/80 backdrop-blur-sm border border-stone-200/40 shadow-sm p-6 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
+                  <Wrench className="h-5 w-5 text-blue-500" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-stone-900">¿Cuántos mecánicos trabajan contigo?</h3>
+                  <p className="text-xs text-stone-500">Opcional. Puedes añadir más después.</p>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {operarios.map((nombre, i) => (
+                  <div key={i} className="flex gap-2">
+                    <Input
+                      value={nombre}
+                      onChange={(e) => {
+                        const next = [...operarios];
+                        next[i] = e.target.value;
+                        setOperarios(next);
+                      }}
+                      placeholder={`Nombre del mecánico ${i + 1}`}
+                      className="h-11 rounded-xl"
+                    />
+                    {operarios.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-11 w-11 shrink-0 rounded-xl text-stone-400 hover:text-red-500"
+                        onClick={() => setOperarios(operarios.filter((_, j) => j !== i))}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="rounded-full text-xs"
+                onClick={() => setOperarios([...operarios, ""])}
+              >
+                <Plus className="h-3.5 w-3.5 mr-1" />Añadir otro
+              </Button>
             </div>
 
             <div className="flex gap-3">

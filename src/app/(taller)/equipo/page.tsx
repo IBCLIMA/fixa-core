@@ -8,6 +8,7 @@ import { getDb } from "@/db";
 import { usuarios } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { InvitarUsuarioDialog } from "./invitar-dialog";
+import { AnadirOperarioDialog } from "./anadir-operario-dialog";
 import { ComisionInput } from "./comision-input";
 
 const rolLabels: Record<string, string> = {
@@ -50,7 +51,10 @@ export default async function EquipoPage() {
           <h1 className="text-2xl font-extrabold tracking-tight">Equipo</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{equipo.length} usuario{equipo.length !== 1 ? "s" : ""}</p>
         </div>
-        <InvitarUsuarioDialog />
+        <div className="flex gap-2">
+          <AnadirOperarioDialog />
+          <InvitarUsuarioDialog />
+        </div>
       </div>
 
       <div className="space-y-3">
