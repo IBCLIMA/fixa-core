@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
 import { clientes, vehiculos } from "@/db/schema";
+import { eq, and, ilike } from "drizzle-orm";
 import Papa from "papaparse";
 
 interface ClienteRow {
@@ -91,10 +92,8 @@ export async function POST(request: Request) {
 
         if (clienteNombre) {
           // Buscar cliente existente
-          const existente = await db.query.clientes.findFirst({
-            where: (c, { and, eq, ilike }) =>
-              and(eq(c.tallerId, tallerId), ilike(c.nombre, clienteNombre.trim())),
-          });
+          const [existente] = await db.select().from(clientes)
+            .where(and(eq(clientes.tallerId, tallerId), ilike(clientes.nombre, clienteNombre.trim())));
 
           if (existente) {
             clienteId = existente.id;

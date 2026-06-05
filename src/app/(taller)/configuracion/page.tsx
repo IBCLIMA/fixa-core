@@ -22,9 +22,7 @@ export default async function ConfiguracionPage() {
   }
   const db = getDb();
 
-  const taller = await db.query.talleres.findFirst({
-    where: eq(talleres.id, tallerId),
-  });
+  const [taller] = await db.select().from(talleres).where(eq(talleres.id, tallerId));
 
   if (!taller) return <p>Error cargando configuración</p>;
 

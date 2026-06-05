@@ -43,16 +43,22 @@ export async function getOrdenes(filtroEstado?: string) {
     );
   }
 
-  return db.query.ordenesTrabajo.findMany({
-    where: and(...conditions),
-    with: {
-      vehiculo: true,
-      cliente: true,
-      lineas: true,
-      asignado: true,
-    },
-    orderBy: desc(ordenesTrabajo.createdAt),
-  });
+  const ordenes = await db.select().from(ordenesTrabajo)
+    .where(and(...conditions))
+    .orderBy(desc(ordenesTrabajo.createdAt));
+
+  // Fetch relations for each order
+  const results = await Promise.all(ordenes.map(async (o) => {
+    const [vehiculo] = await db.select().from(vehiculos).where(eq(vehiculos.id, o.vehiculoId));
+    const [cliente] = await db.select().from(clientes).where(eq(clientes.id, o.clienteId));
+    const lineas = await db.select().from(lineasOrden).where(eq(lineasOrden.ordenId, o.id));
+    const asignado = o.asignadoA
+      ? (await db.select().from(usuarios).where(eq(usuarios.id, o.asignadoA)))[0] ?? null
+      : null;
+    return { ...o, vehiculo: vehiculo ?? null, cliente: cliente ?? null, lineas, asignado };
+  }));
+
+  return results;
 }
 
 export async function getOrden(id: string) {
@@ -567,16 +573,17 @@ export async function getMaintenanceAlerts(
   const db = getDb();
 
   // Get previous orders for this vehicle, sorted by date desc
-  const previousOrders = await db.query.ordenesTrabajo.findMany({
-    where: and(
+  const previousOrdersRaw = await db.select().from(ordenesTrabajo)
+    .where(and(
       eq(ordenesTrabajo.tallerId, tallerId),
       eq(ordenesTrabajo.vehiculoId, vehiculoId)
-    ),
-    with: {
-      lineas: true,
-    },
-    orderBy: desc(ordenesTrabajo.fechaEntrada),
-  });
+    ))
+    .orderBy(desc(ordenesTrabajo.fechaEntrada));
+
+  const previousOrders = await Promise.all(previousOrdersRaw.map(async (o) => {
+    const lineas = await db.select().from(lineasOrden).where(eq(lineasOrden.ordenId, o.id));
+    return { ...o, lineas };
+  }));
 
   return checkMaintenanceAlerts(kmActual, previousOrders);
 }

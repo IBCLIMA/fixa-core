@@ -24,9 +24,7 @@ export async function GET(request: NextRequest) {
     const db = getDb();
 
     // Verificar que el cliente pertenece al taller
-    const cliente = await db.query.clientes.findFirst({
-      where: and(eq(clientes.id, clienteId), eq(clientes.tallerId, tallerId)),
-    });
+    const [cliente] = await db.select().from(clientes).where(and(eq(clientes.id, clienteId), eq(clientes.tallerId, tallerId)));
 
     if (!cliente) {
       return NextResponse.json({ error: "Cliente no encontrado" }, { status: 404 });

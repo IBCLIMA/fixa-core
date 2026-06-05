@@ -12,9 +12,7 @@ export async function getTallerIdFromAuth() {
 
   const db = getDb();
 
-  const usuario = await db.query.usuarios.findFirst({
-    where: eq(usuarios.clerkUserId, userId),
-  });
+  const [usuario] = await db.select().from(usuarios).where(eq(usuarios.clerkUserId, userId));
 
   if (usuario) {
     return { tallerId: usuario.tallerId, usuarioId: usuario.id, clerkUserId: userId, rol: usuario.rol };
@@ -26,12 +24,10 @@ export async function getTallerIdFromAuth() {
 
   if (inviteToken) {
     // Look up valid, unused, non-expired invite token
-    const invite = await db.query.inviteTokens.findFirst({
-      where: and(
-        eq(inviteTokens.token, inviteToken),
-        eq(inviteTokens.usado, false),
-      ),
-    });
+    const [invite] = await db.select().from(inviteTokens).where(and(
+      eq(inviteTokens.token, inviteToken),
+      eq(inviteTokens.usado, false),
+    ));
 
     if (invite && new Date(invite.expiresAt) > new Date()) {
       // Mark token as used
@@ -117,9 +113,7 @@ export async function checkTrialStatus(): Promise<{
 
   const db = getDb();
 
-  const usuario = await db.query.usuarios.findFirst({
-    where: eq(usuarios.clerkUserId, userId),
-  });
+  const [usuario] = await db.select().from(usuarios).where(eq(usuarios.clerkUserId, userId));
   if (!usuario) return { activo: false, plan: "none", daysLeft: 0, bloqueado: false };
 
   const [taller] = await db

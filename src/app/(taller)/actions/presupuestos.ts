@@ -12,9 +12,7 @@ export async function crearPresupuestoDesdeOrden(ordenId: string) {
   const db = getDb();
 
   // Obtener orden
-  const orden = await db.query.ordenesTrabajo.findFirst({
-    where: and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)),
-  });
+  const [orden] = await db.select().from(ordenesTrabajo).where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
   if (!orden) throw new Error("Orden no encontrada");
 
   // Obtener líneas de la orden
@@ -78,9 +76,7 @@ export async function getPresupuesto(id: string) {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  const presupuesto = await db.query.presupuestos.findFirst({
-    where: and(eq(presupuestos.id, id), eq(presupuestos.tallerId, tallerId)),
-  });
+  const [presupuesto] = await db.select().from(presupuestos).where(and(eq(presupuestos.id, id), eq(presupuestos.tallerId, tallerId)));
   if (!presupuesto) return null;
 
   const lineas = await db
@@ -125,9 +121,7 @@ export async function agregarLineaPresupuesto(data: {
   const db = getDb();
 
   // Verify ownership
-  const presupuesto = await db.query.presupuestos.findFirst({
-    where: and(eq(presupuestos.id, data.presupuestoId), eq(presupuestos.tallerId, tallerId)),
-  });
+  const [presupuesto] = await db.select().from(presupuestos).where(and(eq(presupuestos.id, data.presupuestoId), eq(presupuestos.tallerId, tallerId)));
   if (!presupuesto) throw new Error("Presupuesto no encontrado");
 
   await db.insert(lineasPresupuesto).values({
@@ -149,9 +143,7 @@ export async function eliminarLineaPresupuesto(lineaId: string, presupuestoId: s
   const db = getDb();
 
   // Verify ownership
-  const presupuesto = await db.query.presupuestos.findFirst({
-    where: and(eq(presupuestos.id, presupuestoId), eq(presupuestos.tallerId, tallerId)),
-  });
+  const [presupuesto] = await db.select().from(presupuestos).where(and(eq(presupuestos.id, presupuestoId), eq(presupuestos.tallerId, tallerId)));
   if (!presupuesto) throw new Error("Presupuesto no encontrado");
 
   await db.delete(lineasPresupuesto).where(eq(lineasPresupuesto.id, lineaId));
@@ -164,9 +156,7 @@ export async function cambiarEstadoPresupuesto(id: string, estado: "borrador" | 
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  const presupuesto = await db.query.presupuestos.findFirst({
-    where: and(eq(presupuestos.id, id), eq(presupuestos.tallerId, tallerId)),
-  });
+  const [presupuesto] = await db.select().from(presupuestos).where(and(eq(presupuestos.id, id), eq(presupuestos.tallerId, tallerId)));
   if (!presupuesto) throw new Error("Presupuesto no encontrado");
 
   await db
