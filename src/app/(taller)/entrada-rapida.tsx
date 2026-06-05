@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { buscarPorMatricula, crearOrdenRapida, crearTodoRapido } from "./actions/rapida";
 import { buscarClientes } from "./actions/busqueda";
+import { MarcaAutocomplete, ModeloAutocomplete } from "@/components/vehicle-autocomplete";
 import { toast } from "sonner";
 
 type Resultado = Awaited<ReturnType<typeof buscarPorMatricula>>[number];
@@ -30,6 +31,9 @@ export function EntradaRapida() {
   const [telefonoCliente, setTelefonoCliente] = useState("");
   const [clientesMatch, setClientesMatch] = useState<ClienteMatch[]>([]);
   const [clienteSeleccionado, setClienteSeleccionado] = useState<ClienteMatch | null>(null);
+  const [marcaValue, setMarcaValue] = useState("");
+  const [modeloValue, setModeloValue] = useState("");
+  const [modelosSugeridos, setModelosSugeridos] = useState<string[]>([]);
 
   useEffect(() => {
     if (nombreCliente.length < 2 || clienteSeleccionado) { setClientesMatch([]); return; }
@@ -177,11 +181,23 @@ export function EntradaRapida() {
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1.5">
                     <Label className="text-xs font-bold text-stone-500">Marca</Label>
-                    <Input name="marca" placeholder="Seat" className="h-11 rounded-xl" />
+                    <MarcaAutocomplete
+                      value={marcaValue}
+                      onChange={setMarcaValue}
+                      onModeloChange={setModelosSugeridos}
+                      name="marca"
+                      className="h-11 rounded-xl"
+                    />
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs font-bold text-stone-500">Modelo</Label>
-                    <Input name="modelo" placeholder="León" className="h-11 rounded-xl" />
+                    <ModeloAutocomplete
+                      value={modeloValue}
+                      onChange={setModeloValue}
+                      modelos={modelosSugeridos}
+                      name="modelo"
+                      className="h-11 rounded-xl"
+                    />
                   </div>
                 </div>
                 <div className="space-y-1.5">
