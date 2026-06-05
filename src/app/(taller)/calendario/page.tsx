@@ -1,6 +1,6 @@
 import { CalendarDays, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import Link from "next/link";
-import { getCitasSemana } from "../actions/citas";
+import { getCitasSemana, getCapacidadTaller, getOrdenesPorDiaSemana, getEntregasSemana, getDiasBloqueadosSemana } from "../actions/citas";
 import { CalendarioView } from "./calendario-view";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { CopyLinkBox } from "../configuracion/copy-link-box";
@@ -40,7 +40,13 @@ export default async function CalendarioPage({
   const params = await searchParams;
   const { tallerId } = await getTallerIdFromAuth();
   const week = getWeekDates(params.semana);
-  const citas = await getCitasSemana(week.start, week.end);
+  const [citas, capacidadDiaria, ordenesPorDia, entregas, diasBloqueados] = await Promise.all([
+    getCitasSemana(week.start, week.end),
+    getCapacidadTaller(),
+    getOrdenesPorDiaSemana(week.start, week.end),
+    getEntregasSemana(week.start, week.end),
+    getDiasBloqueadosSemana(week.start, week.end),
+  ]);
   const citaUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com"}/cita/${tallerId}`;
 
   // Calcular semanas anterior y siguiente
@@ -97,7 +103,15 @@ export default async function CalendarioPage({
         </div>
       </div>
 
-      <CalendarioView days={week.days.map((d) => d.toISOString())} citas={citas} totalCitas={totalCitas} />
+      <CalendarioView
+        days={week.days.map((d) => d.toISOString())}
+        citas={citas}
+        totalCitas={totalCitas}
+        capacidadDiaria={capacidadDiaria}
+        ordenesPorDia={ordenesPorDia}
+        entregas={entregas}
+        diasBloqueados={diasBloqueados}
+      />
 
       {/* Cita online */}
       <div className="flex items-center gap-3 rounded-xl bg-orange-50 border border-orange-200 p-3">
