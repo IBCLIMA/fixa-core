@@ -623,40 +623,29 @@ export function PresupuestoPDF({ data }: { data: PresupuestoPDFData }) {
           </Text>
         </View>
 
-        {/* ── BOTTOM: SIGNATURES + QR ── */}
-        <View style={s.bottomRow}>
-          {/* Signatures */}
-          <View style={s.sigContainer}>
-            <View style={s.sigBlock}>
-              <View style={{ height: 22 }} />
-              <View style={s.sigLine} />
-              <Text style={s.sigLabel}>Acepto el presupuesto</Text>
-            </View>
-            <View style={s.sigBlock}>
-              <View style={{ height: 22 }} />
-              <View style={s.sigLine} />
-              <Text style={s.sigLabel}>Renuncio al presupuesto</Text>
+        {/* ── QR CTA ── */}
+        {data.qrDataUrl && data.publicUrl && (
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginTop: 14, backgroundColor: c.brandLight, borderRadius: 4, padding: 10 }}>
+            <Image src={data.qrDataUrl} style={{ width: 36, height: 36 }} />
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 8, fontFamily: FB, color: c.brand, marginBottom: 2 }}>Acepta este presupuesto online</Text>
+              <Text style={{ fontSize: 6.5, color: c.muted }}>{data.publicUrl}</Text>
             </View>
           </View>
+        )}
 
-          {/* QR CTA */}
-          {data.qrDataUrl && data.publicUrl && (
-            <View style={s.qrCard}>
-              <Image
-                src={data.qrDataUrl}
-                style={{ width: 38, height: 38 }}
-              />
-              <View style={s.qrTextWrap}>
-                <Text style={s.qrTitle}>Acepta online</Text>
-                <Text style={s.qrUrl}>
-                  Escanea el QR o visita:
-                </Text>
-                <Text style={[s.qrUrl, { fontFamily: FB, color: c.brand }]}>
-                  {data.publicUrl}
-                </Text>
-              </View>
-            </View>
-          )}
+        {/* ── SIGNATURES ── */}
+        <View style={{ flexDirection: "row", marginTop: 16, gap: 30 }}>
+          <View style={s.sigBlock}>
+            <View style={{ height: 20 }} />
+            <View style={s.sigLine} />
+            <Text style={s.sigLabel}>Acepto el presupuesto</Text>
+          </View>
+          <View style={s.sigBlock}>
+            <View style={{ height: 20 }} />
+            <View style={s.sigLine} />
+            <Text style={s.sigLabel}>Renuncio al presupuesto</Text>
+          </View>
         </View>
 
         {/* ── THANK YOU ── */}
