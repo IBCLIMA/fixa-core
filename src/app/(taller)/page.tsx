@@ -14,6 +14,7 @@ import {
   Users,
   Settings,
   Lightbulb,
+  FileText,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -202,6 +203,11 @@ export default async function PanelDelDia() {
         </div>
         <div className="flex items-center gap-2">
           <TourGuiado />
+          <Link href="/presupuestos/nuevo">
+            <Button variant="outline" className="rounded-full">
+              <FileText className="mr-1.5 h-4 w-4" />Presupuesto
+            </Button>
+          </Link>
           <div id="btn-entrada-rapida"><EntradaRapida /></div>
         </div>
       </div>

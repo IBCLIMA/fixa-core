@@ -72,6 +72,9 @@ export default async function PresupuestosPage({
           <h1 className="text-2xl font-extrabold tracking-tight">Presupuestos</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Presupuestos enviados a tus clientes.</p>
         </div>
+        <Link href="/presupuestos/nuevo">
+          <Button className="rounded-full"><Plus className="mr-1.5 h-4 w-4" />Nuevo presupuesto</Button>
+        </Link>
       </div>
 
       {presupuestosList.length === 0 ? (
