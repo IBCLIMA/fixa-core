@@ -9,6 +9,7 @@ import { usuarios } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { InvitarUsuarioDialog } from "./invitar-dialog";
 import { AnadirOperarioDialog } from "./anadir-operario-dialog";
+import { UsuarioActions } from "./usuario-actions";
 
 
 const rolLabels: Record<string, string> = {
@@ -31,9 +32,11 @@ const rolIcons: Record<string, typeof Shield> = {
 
 export default async function EquipoPage() {
   let tallerId: string;
+  let currentUsuarioId: string;
   try {
     const auth = await requireRole(["admin"]);
     tallerId = auth.tallerId;
+    currentUsuarioId = auth.usuarioId;
   } catch {
     redirect("/");
   }
@@ -74,7 +77,11 @@ export default async function EquipoPage() {
                     </p>
                   </div>
                 </div>
-                <Badge className={rolColors[u.rol]}>{rolLabels[u.rol]}</Badge>
+                <UsuarioActions
+                  usuarioId={u.id}
+                  rolActual={u.rol}
+                  isCurrentUser={u.id === currentUsuarioId}
+                />
               </CardContent>
             </Card>
           );
