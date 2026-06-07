@@ -274,6 +274,10 @@ export const presupuestos = pgTable("presupuestos", {
   validezDias: integer("validez_dias").default(30),
   notas: text("notas"),
   tokenPublico: text("token_publico").unique(),
+  // Acceptance tracking (legal proof)
+  aceptadoAt: timestamp("aceptado_at"),
+  aceptadoIp: text("aceptado_ip"),
+  aceptadoTexto: text("aceptado_texto"), // Snapshot of what the client accepted
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
