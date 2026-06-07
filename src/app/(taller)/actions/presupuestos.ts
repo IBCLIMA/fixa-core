@@ -152,6 +152,37 @@ export async function eliminarLineaPresupuesto(lineaId: string, presupuestoId: s
   revalidatePath("/presupuestos");
 }
 
+export async function editarLineaPresupuesto(data: {
+  id: string;
+  presupuestoId: string;
+  descripcion: string;
+  cantidad: number;
+  precioUnitario: number;
+  descuentoPct?: number;
+  ivaPct?: number;
+}) {
+  const { tallerId } = await getTallerIdFromAuth();
+  const db = getDb();
+
+  // Verify ownership
+  const [presupuesto] = await db.select().from(presupuestos).where(and(eq(presupuestos.id, data.presupuestoId), eq(presupuestos.tallerId, tallerId)));
+  if (!presupuesto) throw new Error("Presupuesto no encontrado");
+
+  await db
+    .update(lineasPresupuesto)
+    .set({
+      descripcion: data.descripcion,
+      cantidad: String(data.cantidad),
+      precioUnitario: String(data.precioUnitario),
+      descuentoPct: data.descuentoPct ? String(data.descuentoPct) : "0",
+      ivaPct: data.ivaPct ? String(data.ivaPct) : "21",
+    })
+    .where(eq(lineasPresupuesto.id, data.id));
+
+  revalidatePath(`/presupuestos/${data.presupuestoId}`);
+  revalidatePath("/presupuestos");
+}
+
 export async function cambiarEstadoPresupuesto(id: string, estado: "borrador" | "enviado" | "aceptado" | "rechazado" | "expirado") {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
