@@ -40,7 +40,7 @@ export default async function CalendarioPage({
   const params = await searchParams;
   const { tallerId } = await getTallerIdFromAuth();
   const week = getWeekDates(params.semana);
-  const [citas, capacidadDiaria, ordenesPorDia, entregas, diasBloqueados] = await Promise.all([
+  const [citas, tallerConfig, ordenesPorDia, entregas, diasBloqueados] = await Promise.all([
     getCitasSemana(week.start, week.end),
     getCapacidadTaller(),
     getOrdenesPorDiaSemana(week.start, week.end),
@@ -107,7 +107,8 @@ export default async function CalendarioPage({
         days={week.days.map((d) => d.toISOString())}
         citas={citas}
         totalCitas={totalCitas}
-        capacidadDiaria={capacidadDiaria}
+        capacidadDiaria={tallerConfig.capacidadDiaria}
+        trabajaSabados={tallerConfig.trabajaSabados}
         ordenesPorDia={ordenesPorDia}
         entregas={entregas}
         diasBloqueados={diasBloqueados}

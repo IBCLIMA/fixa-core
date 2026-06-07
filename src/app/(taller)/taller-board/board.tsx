@@ -47,7 +47,7 @@ function DraggableCard({ orden, nextLabel, nextState, onMove }: {
           </Link>
           <span className="text-[10px] text-stone-400">{timeAgo(orden.fechaEntrada)}</span>
         </div>
-        <p className="text-xs text-stone-500 mb-1">{[orden.marca, orden.modelo].filter(Boolean).join(" ") || "—"}</p>
+        <p className="text-sm font-semibold text-stone-600 mb-1">{[orden.marca, orden.modelo].filter(Boolean).join(" ") || "—"}</p>
         {orden.descripcionCliente && (
           <p className="text-xs text-stone-700 line-clamp-2 mb-2">{orden.descripcionCliente}</p>
         )}

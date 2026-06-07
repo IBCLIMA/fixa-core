@@ -184,7 +184,7 @@ export default async function OrdenesPage({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-bold">{o.matricula}</span>
-                    <span className="text-xs text-muted-foreground">{o.marca} {o.modelo}</span>
+                    <span className="text-sm font-semibold text-stone-600">{o.marca} {o.modelo}</span>
                   </div>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <p className="text-xs text-muted-foreground">{o.clienteNombre}</p>

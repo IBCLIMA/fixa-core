@@ -52,6 +52,7 @@ interface CalendarioViewProps {
   citas: Cita[];
   totalCitas: number;
   capacidadDiaria: number;
+  trabajaSabados: boolean;
   ordenesPorDia: Record<string, number>;
   entregas: Entrega[];
   diasBloqueados: DiaBloqueado[];
@@ -67,7 +68,7 @@ const citaColors = [
   { border: "border-l-rose-500", bg: "bg-rose-50", text: "text-rose-700", time: "text-rose-600" },
 ];
 
-export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, ordenesPorDia, entregas, diasBloqueados }: CalendarioViewProps) {
+export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, trabajaSabados, ordenesPorDia, entregas, diasBloqueados }: CalendarioViewProps) {
   const [showForm, setShowForm] = useState(false);
   const [showDayMenu, setShowDayMenu] = useState(false);
   const [showBlockForm, setShowBlockForm] = useState(false);
@@ -379,10 +380,15 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, orden
           const date = new Date(dayIso);
           const dateStr = date.toISOString().split("T")[0];
           const isToday = dateStr === hoy;
+          const isSunday = i === 6;
+          const isSaturday = i === 5;
           const isWeekend = i >= 5;
           const dayCitas = citas.filter((c) => c.fecha === dateStr);
           const dayEntregas = getDayEntregas(dateStr);
-          const blocked = getBlockedDay(dateStr);
+          const isNonWorkingDay = isSunday || (isSaturday && !trabajaSabados);
+          const blocked = isNonWorkingDay
+            ? { id: isSunday ? "sunday" : "saturday", fecha: dateStr, motivo: isSunday ? "Domingo" : "Sábado no laborable" }
+            : getBlockedDay(dateStr);
           const dayOrdenes = getDayCapacity(dateStr);
 
           return (

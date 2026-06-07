@@ -132,11 +132,14 @@ export async function getCapacidadTaller() {
   const db = getDb();
 
   const [taller] = await db
-    .select({ capacidadDiaria: talleres.capacidadDiaria })
+    .select({ capacidadDiaria: talleres.capacidadDiaria, trabajaSabados: talleres.trabajaSabados })
     .from(talleres)
     .where(eq(talleres.id, tallerId));
 
-  return taller?.capacidadDiaria ?? 4;
+  return {
+    capacidadDiaria: taller?.capacidadDiaria ?? 4,
+    trabajaSabados: taller?.trabajaSabados ?? false,
+  };
 }
 
 export async function getOrdenesPorDiaSemana(fechaInicio: string, fechaFin: string) {

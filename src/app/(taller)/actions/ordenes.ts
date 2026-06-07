@@ -197,13 +197,19 @@ export async function cambiarEstadoOrden(id: string, nuevoEstado: EstadoOrden) {
     details: { estadoAnterior: orden.estado, estadoNuevo: nuevoEstado },
   });
 
-  // Notification when order is ready
+  // Notification when order is ready — include plate + client + vehicle for the mechanic
   if (nuevoEstado === "listo") {
+    const [veh] = await db.select({ matricula: vehiculos.matricula, marca: vehiculos.marca, modelo: vehiculos.modelo }).from(vehiculos).where(eq(vehiculos.id, orden.vehiculoId));
+    const [cli] = await db.select({ nombre: clientes.nombre }).from(clientes).where(eq(clientes.id, orden.clienteId));
+    const plate = veh?.matricula || "";
+    const vehicle = [veh?.marca, veh?.modelo].filter(Boolean).join(" ");
+    const client = cli?.nombre || "";
+
     createNotification({
       tallerId,
       tipo: "orden_lista",
-      titulo: `Orden OR-${orden.numero} lista`,
-      mensaje: `La orden OR-${orden.numero} ha sido marcada como lista para entrega.`,
+      titulo: `${plate} finalizado`,
+      mensaje: `${vehicle} de ${client} está listo para entregar.`,
       enlace: `/ordenes/${id}`,
     });
   }
