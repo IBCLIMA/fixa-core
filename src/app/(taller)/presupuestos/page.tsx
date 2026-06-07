@@ -82,10 +82,10 @@ export default async function PresupuestosPage({
           <FileText className="h-12 w-12 text-muted-foreground/20 mb-4" />
           <h3 className="text-lg font-bold">Aun no tienes presupuestos</h3>
           <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-            Los presupuestos se crean desde cada orden de trabajo. Abre una orden, anade lineas de trabajo y genera el presupuesto para enviar al cliente.
+            Crea un presupuesto para enviar al cliente antes de empezar una reparacion, o generalo directamente desde una orden de trabajo.
           </p>
-          <Link href="/ordenes" className="mt-4">
-            <Button className="rounded-xl h-11"><ClipboardList className="mr-1.5 h-4 w-4" />Ir a ordenes</Button>
+          <Link href="/presupuestos/nuevo" className="mt-4">
+            <Button className="rounded-xl h-11"><Plus className="mr-1.5 h-4 w-4" />Nuevo presupuesto</Button>
           </Link>
         </div>
       ) : (

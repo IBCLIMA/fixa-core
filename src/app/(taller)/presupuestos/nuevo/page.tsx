@@ -18,6 +18,7 @@ type Linea = {
   descripcion: string;
   cantidad: number;
   precioUnitario: number;
+  ivaPct: number;
   referencia?: string;
 };
 
@@ -30,7 +31,7 @@ export default function NuevoPresupuestoPage() {
   const [lineas, setLineas] = useState<Linea[]>([]);
 
   function addLinea() {
-    setLineas([...lineas, { tipo: "mano_obra", descripcion: "", cantidad: 1, precioUnitario: 0 }]);
+    setLineas([...lineas, { tipo: "mano_obra", descripcion: "", cantidad: 1, precioUnitario: 0, ivaPct: 21 }]);
   }
 
   function updateLinea(i: number, field: keyof Linea, value: any) {
@@ -44,12 +45,12 @@ export default function NuevoPresupuestoPage() {
   }
 
   function applyTemplate(template: typeof serviceTemplates[number]) {
-    setLineas([...lineas, ...template.lines.map((l) => ({ ...l }))]);
+    setLineas([...lineas, ...template.lines.map((l) => ({ ...l, ivaPct: 21 }))]);
     toast.success(`Plantilla "${template.name}" aplicada`);
   }
 
   const totalBase = lineas.reduce((sum, l) => sum + l.cantidad * l.precioUnitario, 0);
-  const totalIva = totalBase * 0.21;
+  const totalIva = lineas.reduce((sum, l) => sum + l.cantidad * l.precioUnitario * (l.ivaPct / 100), 0);
   const totalFinal = totalBase + totalIva;
 
   async function handleSubmit(formData: FormData) {
@@ -65,7 +66,14 @@ export default function NuevoPresupuestoPage() {
           marca: marca || undefined,
           modelo: modelo || undefined,
           descripcion: (formData.get("descripcion") as string) || undefined,
-          lineas: lineas.filter((l) => l.descripcion.trim()),
+          lineas: lineas.filter((l) => l.descripcion.trim()).map((l) => ({
+            tipo: l.tipo,
+            descripcion: l.descripcion,
+            cantidad: l.cantidad,
+            precioUnitario: l.precioUnitario,
+            ivaPct: l.ivaPct,
+            ...(l.referencia ? { referencia: l.referencia } : {}),
+          })),
         }),
       });
 
@@ -192,7 +200,7 @@ export default function NuevoPresupuestoPage() {
                       className="h-9 rounded-lg text-sm font-mono"
                     />
                   )}
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-3 gap-2">
                     <div>
                       <label className="text-[10px] text-stone-400">Cantidad</label>
                       <Input type="number" value={l.cantidad} onChange={(e) => updateLinea(i, "cantidad", Number(e.target.value))} className="h-9 rounded-lg text-sm" min={0} step={0.25} />
@@ -201,14 +209,18 @@ export default function NuevoPresupuestoPage() {
                       <label className="text-[10px] text-stone-400">Precio unitario (EUR)</label>
                       <Input type="number" value={l.precioUnitario} onChange={(e) => updateLinea(i, "precioUnitario", Number(e.target.value))} className="h-9 rounded-lg text-sm" min={0} step={0.5} />
                     </div>
+                    <div>
+                      <label className="text-[10px] text-stone-400">IVA %</label>
+                      <Input type="number" value={l.ivaPct} onChange={(e) => updateLinea(i, "ivaPct", Number(e.target.value))} className="h-9 rounded-lg text-sm" min={0} step={1} />
+                    </div>
                   </div>
                 </div>
               ))}
 
               {/* Totals */}
               <div className="text-right space-y-1 pt-2">
-                <p className="text-sm text-stone-500">Base: {totalBase.toFixed(2)}EUR</p>
-                <p className="text-sm text-stone-500">IVA 21%: {totalIva.toFixed(2)}EUR</p>
+                <p className="text-sm text-stone-500">Base imponible: {totalBase.toFixed(2)}EUR</p>
+                <p className="text-sm text-stone-500">IVA: {totalIva.toFixed(2)}EUR</p>
                 <p className="text-lg font-bold">Total: {totalFinal.toFixed(2)}EUR</p>
               </div>
             </div>
