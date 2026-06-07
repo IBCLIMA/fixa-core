@@ -5,83 +5,355 @@ const FB = "Helvetica-Bold";
 
 // Premium color palette — minimal, intentional
 const c = {
-  black: "#171717",
-  dark: "#525252",
-  muted: "#A3A3A3",
-  light: "#D4D4D4",
-  line: "#E5E5E5",
-  bg: "#FAFAFA",
+  black: "#1A1A1A",
+  dark: "#404040",
+  muted: "#8C8C8C",
+  subtle: "#B3B3B3",
+  line: "#E8E8E8",
+  bg: "#F7F7F7",
   white: "#FFFFFF",
   brand: "#EA580C",
+  brandLight: "#FFF7ED",
   green: "#16A34A",
+  greenLight: "#F0FDF4",
 };
 
 const s = StyleSheet.create({
-  page: { fontFamily: F, fontSize: 8.5, color: c.black, padding: 40, paddingTop: 0, paddingBottom: 45 },
-  bar: { position: "absolute", top: 0, left: 0, right: 0, height: 3, backgroundColor: c.brand },
+  // Page
+  page: {
+    fontFamily: F,
+    fontSize: 9,
+    color: c.dark,
+    paddingHorizontal: 44,
+    paddingTop: 0,
+    paddingBottom: 50,
+  },
 
-  // Header
-  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginTop: 20, marginBottom: 24 },
-  logoRow: { flexDirection: "row", alignItems: "flex-start", gap: 10, flex: 1 },
-  tallerName: { fontSize: 18, fontFamily: FB, color: c.black },
-  tallerInfo: { fontSize: 8, color: c.dark, lineHeight: 1.5, marginTop: 2 },
-  presLabel: { fontSize: 8, color: c.muted, textTransform: "uppercase" as any, letterSpacing: 2, textAlign: "right" as any },
-  presDate: { fontSize: 8, color: c.dark, textAlign: "right" as any, marginTop: 4 },
-  presValid: { fontSize: 7.5, color: c.muted, textAlign: "right" as any, marginTop: 2 },
+  // Top accent bar
+  bar: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 3,
+    backgroundColor: c.brand,
+  },
 
-  // Divider
-  divider: { borderBottomWidth: 0.5, borderBottomColor: c.line, marginBottom: 20 },
+  // ─── HEADER ───
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginTop: 28,
+    marginBottom: 18,
+  },
+  logoRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+    flex: 1,
+  },
+  tallerName: {
+    fontSize: 16,
+    fontFamily: FB,
+    color: c.black,
+    letterSpacing: 0.2,
+  },
+  tallerInfo: {
+    fontSize: 7.5,
+    color: c.muted,
+    lineHeight: 1.5,
+    marginTop: 2,
+  },
+  presCol: {
+    alignItems: "flex-end" as any,
+  },
+  presLabel: {
+    fontSize: 7,
+    fontFamily: FB,
+    color: c.muted,
+    textTransform: "uppercase" as any,
+    letterSpacing: 2.5,
+  },
+  presDate: {
+    fontSize: 8,
+    color: c.dark,
+    textAlign: "right" as any,
+    marginTop: 5,
+  },
+  presValid: {
+    fontSize: 7,
+    color: c.muted,
+    textAlign: "right" as any,
+    marginTop: 2,
+  },
 
-  // Data blocks
-  row2: { flexDirection: "row", gap: 24, marginBottom: 20 },
-  col: { flex: 1 },
-  sectionLabel: { fontSize: 7, fontFamily: FB, color: c.muted, textTransform: "uppercase" as any, letterSpacing: 1.5, borderBottomWidth: 0.5, borderBottomColor: c.line, paddingBottom: 4, marginBottom: 8 },
-  fieldLabel: { fontSize: 7, color: c.muted, marginBottom: 1 },
-  fieldValue: { fontSize: 9, fontFamily: FB, color: c.black, marginBottom: 6 },
+  // ─── THIN RULE ───
+  rule: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: c.line,
+    marginBottom: 16,
+  },
 
-  // Plate
-  plate: { alignSelf: "flex-start" as any, borderWidth: 1.5, borderColor: c.black, borderRadius: 4, paddingHorizontal: 14, paddingVertical: 5, marginBottom: 8 },
-  plateText: { fontSize: 15, fontFamily: FB, letterSpacing: 2.5 },
+  // ─── TWO-COLUMN LAYOUT ───
+  row2: {
+    flexDirection: "row",
+    gap: 30,
+    marginBottom: 16,
+  },
+  col: {
+    flex: 1,
+  },
+  sectionLabel: {
+    fontSize: 6.5,
+    fontFamily: FB,
+    color: c.muted,
+    textTransform: "uppercase" as any,
+    letterSpacing: 1.8,
+    marginBottom: 8,
+  },
+  fieldLabel: {
+    fontSize: 6.5,
+    color: c.subtle,
+    marginBottom: 1,
+  },
+  fieldValue: {
+    fontSize: 9,
+    color: c.black,
+    marginBottom: 5,
+  },
+  fieldValueBold: {
+    fontSize: 9,
+    fontFamily: FB,
+    color: c.black,
+    marginBottom: 5,
+  },
 
-  // Description
-  descBox: { backgroundColor: c.bg, borderRadius: 6, padding: 14, marginBottom: 20 },
-  descLabel: { fontSize: 7, fontFamily: FB, color: c.muted, textTransform: "uppercase" as any, letterSpacing: 1, marginBottom: 6 },
-  descText: { fontSize: 9, color: c.dark, lineHeight: 1.6 },
+  // ─── PLATE ───
+  plate: {
+    alignSelf: "flex-start" as any,
+    borderWidth: 1.5,
+    borderColor: c.black,
+    borderRadius: 3,
+    paddingHorizontal: 14,
+    paddingVertical: 4,
+    marginBottom: 6,
+  },
+  plateText: {
+    fontSize: 14,
+    fontFamily: FB,
+    letterSpacing: 2.5,
+    color: c.black,
+  },
 
-  // Table
-  tableHead: { flexDirection: "row", backgroundColor: c.bg, paddingVertical: 6, paddingHorizontal: 10, borderBottomWidth: 0.5, borderBottomColor: c.line },
-  th: { fontSize: 7, fontFamily: FB, color: c.muted, textTransform: "uppercase" as any, letterSpacing: 0.8 },
-  tableRow: { flexDirection: "row", paddingVertical: 8, paddingHorizontal: 10, borderBottomWidth: 0.5, borderBottomColor: "#F0F0F0" },
-  tdDesc: { fontSize: 9, color: c.black },
-  tdDetail: { fontSize: 7, color: c.muted, marginTop: 2 },
-  tdAmount: { fontSize: 9, fontFamily: FB, color: c.black, textAlign: "right" as any },
+  // ─── DESCRIPTION BOX ───
+  descBox: {
+    backgroundColor: c.bg,
+    borderRadius: 4,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginBottom: 16,
+  },
+  descLabel: {
+    fontSize: 6.5,
+    fontFamily: FB,
+    color: c.muted,
+    textTransform: "uppercase" as any,
+    letterSpacing: 1.2,
+    marginBottom: 5,
+  },
+  descText: {
+    fontSize: 8.5,
+    color: c.dark,
+    lineHeight: 1.6,
+  },
 
-  // Total card
-  totalCard: { alignSelf: "flex-end" as any, width: 200, backgroundColor: c.bg, borderRadius: 6, padding: 14, marginTop: 12 },
-  totalRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 3 },
-  totalLabel: { fontSize: 8, color: c.dark },
-  totalValue: { fontSize: 8, color: c.dark },
-  totalDivider: { borderBottomWidth: 1, borderBottomColor: c.line, marginVertical: 6 },
-  totalFinalLabel: { fontSize: 9, color: c.dark },
-  totalFinalValue: { fontSize: 16, fontFamily: FB, color: c.black },
+  // ─── TABLE ───
+  tableHead: {
+    flexDirection: "row",
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderBottomWidth: 0.75,
+    borderBottomColor: c.dark,
+  },
+  th: {
+    fontSize: 6.5,
+    fontFamily: FB,
+    color: c.muted,
+    textTransform: "uppercase" as any,
+    letterSpacing: 0.8,
+  },
+  tableRow: {
+    flexDirection: "row",
+    paddingVertical: 7,
+    paddingHorizontal: 10,
+    borderBottomWidth: 0.5,
+    borderBottomColor: c.line,
+  },
+  tdDesc: {
+    fontSize: 8.5,
+    color: c.black,
+  },
+  tdDetail: {
+    fontSize: 6.5,
+    color: c.subtle,
+    marginTop: 2,
+  },
+  tdAmount: {
+    fontSize: 8.5,
+    fontFamily: FB,
+    color: c.black,
+    textAlign: "right" as any,
+  },
 
-  // Guarantee
-  guarantee: { backgroundColor: "#F9FAFB", borderRadius: 6, padding: 12, marginTop: 20 },
-  guaranteeText: { fontSize: 7.5, color: c.dark, lineHeight: 1.6 },
+  // ─── TOTAL CARD ───
+  totalCard: {
+    alignSelf: "flex-end" as any,
+    width: 210,
+    backgroundColor: c.bg,
+    borderLeftWidth: 3,
+    borderLeftColor: c.brand,
+    borderRadius: 4,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    marginTop: 10,
+  },
+  totalRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 3,
+  },
+  totalLabel: {
+    fontSize: 7.5,
+    color: c.muted,
+  },
+  totalValue: {
+    fontSize: 7.5,
+    color: c.dark,
+  },
+  totalDivider: {
+    borderBottomWidth: 0.75,
+    borderBottomColor: c.line,
+    marginVertical: 5,
+  },
+  totalFinalRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end" as any,
+  },
+  totalFinalLabel: {
+    fontSize: 8.5,
+    color: c.dark,
+    fontFamily: FB,
+  },
+  totalFinalValue: {
+    fontSize: 18,
+    fontFamily: FB,
+    color: c.black,
+  },
+
+  // ─── GUARANTEE ───
+  guarantee: {
+    marginTop: 14,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderTopWidth: 0.5,
+    borderTopColor: c.line,
+  },
+  guaranteeTitle: {
+    fontSize: 6.5,
+    fontFamily: FB,
+    color: c.muted,
+    textTransform: "uppercase" as any,
+    letterSpacing: 1.2,
+    marginBottom: 4,
+  },
+  guaranteeBullet: {
+    fontSize: 7,
+    color: c.muted,
+    lineHeight: 1.5,
+    marginBottom: 1,
+  },
+
+  // ─── BOTTOM SECTION: SIGNATURES + QR ───
+  bottomRow: {
+    flexDirection: "row",
+    marginTop: 16,
+    gap: 20,
+    alignItems: "flex-end" as any,
+  },
 
   // Signatures
-  sigRow: { flexDirection: "row", justifyContent: "space-between", marginTop: 28, gap: 40 },
-  sigBlock: { flex: 1, alignItems: "center" as any },
-  sigLine: { borderBottomWidth: 0.5, borderBottomColor: c.muted, width: "100%", marginBottom: 4 },
-  sigLabel: { fontSize: 7, color: c.muted },
+  sigContainer: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 20,
+  },
+  sigBlock: {
+    flex: 1,
+    alignItems: "center" as any,
+  },
+  sigLine: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: c.muted,
+    width: "100%",
+    marginBottom: 3,
+  },
+  sigLabel: {
+    fontSize: 6.5,
+    color: c.muted,
+  },
 
-  // QR
-  qrRow: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 16 },
-  qrText: { fontSize: 7, color: c.muted, lineHeight: 1.4 },
+  // QR section
+  qrCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: c.brandLight,
+    borderRadius: 4,
+    padding: 8,
+    paddingHorizontal: 10,
+  },
+  qrTextWrap: {
+    flex: 1,
+  },
+  qrTitle: {
+    fontSize: 7.5,
+    fontFamily: FB,
+    color: c.brand,
+    marginBottom: 1,
+  },
+  qrUrl: {
+    fontSize: 6,
+    color: c.muted,
+    lineHeight: 1.3,
+  },
 
-  // Footer
-  footer: { position: "absolute", bottom: 16, left: 40, right: 40, borderTopWidth: 0.5, borderTopColor: c.line, paddingTop: 6 },
-  footerText: { fontSize: 6, color: c.muted, textAlign: "center" as any, lineHeight: 1.5 },
+  // ─── THANK YOU ───
+  thanksText: {
+    fontSize: 7.5,
+    color: c.muted,
+    textAlign: "center" as any,
+    marginTop: 14,
+    fontStyle: "italic" as any,
+  },
+
+  // ─── FOOTER ───
+  footer: {
+    position: "absolute",
+    bottom: 16,
+    left: 44,
+    right: 44,
+    borderTopWidth: 0.5,
+    borderTopColor: c.line,
+    paddingTop: 5,
+  },
+  footerText: {
+    fontSize: 5.5,
+    color: c.subtle,
+    textAlign: "center" as any,
+    lineHeight: 1.5,
+  },
 });
 
 export type PresupuestoPDFData = {
@@ -117,17 +389,27 @@ export type PresupuestoPDFData = {
 };
 
 function fmt(d: string | Date): string {
-  return new Date(d).toLocaleDateString("es-ES", { day: "2-digit", month: "long", year: "numeric" });
+  return new Date(d).toLocaleDateString("es-ES", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
 }
 
 function fmtShort(d: Date): string {
-  return d.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return d.toLocaleDateString("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 }
 
 export function PresupuestoPDF({ data }: { data: PresupuestoPDFData }) {
+  // ── Calculations ──
   let totalBase = 0;
   let totalIva = 0;
   let totalDescuento = 0;
+
   const lineasCalc = data.lineas.map((l) => {
     const qty = Number(l.cantidad);
     const price = Number(l.precioUnitario);
@@ -141,8 +423,8 @@ export function PresupuestoPDF({ data }: { data: PresupuestoPDFData }) {
     totalDescuento += discAmount;
     return { ...l, base, discAmount, gross };
   });
-  const totalFinal = totalBase + totalIva;
 
+  const totalFinal = totalBase + totalIva;
   const created = new Date(data.fechaCreacion);
   const validUntil = new Date(created);
   validUntil.setDate(validUntil.getDate() + (data.validezDias || 30));
@@ -151,51 +433,95 @@ export function PresupuestoPDF({ data }: { data: PresupuestoPDFData }) {
   return (
     <Document>
       <Page size="A4" style={s.page}>
+        {/* Accent bar */}
         <View style={s.bar} fixed />
 
         {/* ── HEADER ── */}
         <View style={s.header}>
           <View style={s.logoRow}>
-            {data.tallerLogo && <Image src={data.tallerLogo} style={{ width: 44, height: 44, borderRadius: 6 }} />}
+            {data.tallerLogo && (
+              <Image
+                src={data.tallerLogo}
+                style={{ width: 42, height: 42, borderRadius: 4 }}
+              />
+            )}
             <View>
               <Text style={s.tallerName}>{data.tallerNombre}</Text>
               <Text style={s.tallerInfo}>
-                {[data.tallerCif && `CIF: ${data.tallerCif}`, data.tallerDireccion].filter(Boolean).join("\n")}
+                {[
+                  data.tallerCif && `CIF: ${data.tallerCif}`,
+                  data.tallerDireccion,
+                ]
+                  .filter(Boolean)
+                  .join("\n")}
               </Text>
               <Text style={s.tallerInfo}>
-                {[data.tallerTelefono, data.tallerEmail].filter(Boolean).join(" · ")}
+                {[data.tallerTelefono, data.tallerEmail]
+                  .filter(Boolean)
+                  .join("  ·  ")}
               </Text>
             </View>
           </View>
-          <View>
+          <View style={s.presCol}>
             <Text style={s.presLabel}>Presupuesto</Text>
             <Text style={s.presDate}>{fmt(data.fechaCreacion)}</Text>
-            <Text style={s.presValid}>Válido hasta {fmtShort(validUntil)}</Text>
+            <Text style={s.presValid}>
+              Validez hasta {fmtShort(validUntil)}
+            </Text>
           </View>
         </View>
 
-        <View style={s.divider} />
+        <View style={s.rule} />
 
-        {/* ── CLIENTE + VEHÍCULO ── */}
+        {/* ── CLIENT + VEHICLE ── */}
         <View style={s.row2}>
           <View style={s.col}>
             <Text style={s.sectionLabel}>Cliente</Text>
-            <Text style={s.fieldValue}>{data.clienteNombre}</Text>
-            {data.clienteTelefono && <><Text style={s.fieldLabel}>Teléfono</Text><Text style={s.fieldValue}>{data.clienteTelefono}</Text></>}
-            {data.clienteNif && <><Text style={s.fieldLabel}>NIF</Text><Text style={s.fieldValue}>{data.clienteNif}</Text></>}
-            {data.clienteDireccion && <><Text style={s.fieldLabel}>Dirección</Text><Text style={s.fieldValue}>{data.clienteDireccion}</Text></>}
+            <Text style={s.fieldValueBold}>{data.clienteNombre}</Text>
+            {data.clienteTelefono && (
+              <>
+                <Text style={s.fieldLabel}>Telefono</Text>
+                <Text style={s.fieldValue}>{data.clienteTelefono}</Text>
+              </>
+            )}
+            {data.clienteNif && (
+              <>
+                <Text style={s.fieldLabel}>NIF</Text>
+                <Text style={s.fieldValue}>{data.clienteNif}</Text>
+              </>
+            )}
+            {data.clienteDireccion && (
+              <>
+                <Text style={s.fieldLabel}>Direccion</Text>
+                <Text style={s.fieldValue}>{data.clienteDireccion}</Text>
+              </>
+            )}
           </View>
           <View style={s.col}>
-            <Text style={s.sectionLabel}>Vehículo</Text>
+            <Text style={s.sectionLabel}>Vehiculo</Text>
             {data.matricula && data.matricula !== "PENDIENTE" && (
-              <View style={s.plate}><Text style={s.plateText}>{data.matricula}</Text></View>
+              <View style={s.plate}>
+                <Text style={s.plateText}>{data.matricula}</Text>
+              </View>
             )}
-            {vehicleDesc && <Text style={s.fieldValue}>{vehicleDesc}{data.anio ? ` · ${data.anio}` : ""}</Text>}
-            {data.vin && <><Text style={s.fieldLabel}>VIN</Text><Text style={[s.fieldValue, { fontSize: 7.5 }]}>{data.vin}</Text></>}
+            {vehicleDesc && (
+              <Text style={s.fieldValueBold}>
+                {vehicleDesc}
+                {data.anio ? `  ·  ${data.anio}` : ""}
+              </Text>
+            )}
+            {data.vin && (
+              <>
+                <Text style={s.fieldLabel}>VIN</Text>
+                <Text style={[s.fieldValue, { fontSize: 7 }]}>
+                  {data.vin}
+                </Text>
+              </>
+            )}
           </View>
         </View>
 
-        {/* ── DESCRIPCIÓN ── */}
+        {/* ── DESCRIPTION ── */}
         {data.notas && (
           <View style={s.descBox}>
             <Text style={s.descLabel}>Motivo de la consulta</Text>
@@ -203,30 +529,55 @@ export function PresupuestoPDF({ data }: { data: PresupuestoPDFData }) {
           </View>
         )}
 
-        {/* ── TABLA ── */}
+        {/* ── TABLE ── */}
         {lineasCalc.length > 0 && (
           <View>
             <View style={s.tableHead}>
-              <Text style={[s.th, { width: "60%" }]}>Concepto</Text>
-              <Text style={[s.th, { width: "15%", textAlign: "center" as any }]}>Uds.</Text>
-              <Text style={[s.th, { width: "25%", textAlign: "right" as any }]}>Importe</Text>
+              <Text style={[s.th, { width: "58%" }]}>Concepto</Text>
+              <Text
+                style={[s.th, { width: "14%", textAlign: "center" as any }]}
+              >
+                Uds.
+              </Text>
+              <Text
+                style={[s.th, { width: "28%", textAlign: "right" as any }]}
+              >
+                Importe
+              </Text>
             </View>
             {lineasCalc.map((l, i) => (
               <View key={i} style={s.tableRow}>
-                <View style={{ width: "60%" }}>
+                <View style={{ width: "58%" }}>
                   <Text style={s.tdDesc}>{l.descripcion}</Text>
                   <Text style={s.tdDetail}>
-                    {l.tipo === "mano_obra" ? "Mano de obra" : l.tipo === "recambio" ? "Recambio" : "Otros"}
-                    {l.referencia ? ` · Ref: ${l.referencia}` : ""}
-                    {" · "}{Number(l.precioUnitario).toFixed(2)}€/ud
-                    {Number(l.descuentoPct || 0) > 0 ? ` · -${l.descuentoPct}% dto` : ""}
+                    {l.tipo === "mano_obra"
+                      ? "Mano de obra"
+                      : l.tipo === "recambio"
+                        ? "Recambio"
+                        : "Otros"}
+                    {l.referencia ? `  ·  Ref: ${l.referencia}` : ""}
+                    {"  ·  "}
+                    {Number(l.precioUnitario).toFixed(2)} EUR/ud
+                    {Number(l.descuentoPct || 0) > 0
+                      ? `  ·  -${l.descuentoPct}% dto`
+                      : ""}
                   </Text>
                 </View>
-                <Text style={[s.tdDesc, { width: "15%", textAlign: "center" as any }]}>{Number(l.cantidad)}</Text>
-                <Text style={[s.tdAmount, { width: "25%" }]}>{l.base.toFixed(2)} EUR</Text>
+                <Text
+                  style={[
+                    s.tdDesc,
+                    { width: "14%", textAlign: "center" as any },
+                  ]}
+                >
+                  {Number(l.cantidad)}
+                </Text>
+                <Text style={[s.tdAmount, { width: "28%" }]}>
+                  {l.base.toFixed(2)} EUR
+                </Text>
               </View>
             ))}
 
+            {/* ── TOTAL CARD ── */}
             <View style={s.totalCard}>
               <View style={s.totalRow}>
                 <Text style={s.totalLabel}>Base imponible</Text>
@@ -234,8 +585,12 @@ export function PresupuestoPDF({ data }: { data: PresupuestoPDFData }) {
               </View>
               {totalDescuento > 0 && (
                 <View style={s.totalRow}>
-                  <Text style={[s.totalLabel, { color: c.green }]}>Ahorro aplicado</Text>
-                  <Text style={[s.totalValue, { color: c.green }]}>-{totalDescuento.toFixed(2)} EUR</Text>
+                  <Text style={[s.totalLabel, { color: c.green }]}>
+                    Ahorro aplicado
+                  </Text>
+                  <Text style={[s.totalValue, { color: c.green }]}>
+                    -{totalDescuento.toFixed(2)} EUR
+                  </Text>
                 </View>
               )}
               <View style={s.totalRow}>
@@ -243,51 +598,81 @@ export function PresupuestoPDF({ data }: { data: PresupuestoPDFData }) {
                 <Text style={s.totalValue}>{totalIva.toFixed(2)} EUR</Text>
               </View>
               <View style={s.totalDivider} />
-              <View style={[s.totalRow, { alignItems: "flex-end" as any }]}>
-                <Text style={s.totalFinalLabel}>Total presupuesto</Text>
-                <Text style={s.totalFinalValue}>{totalFinal.toFixed(2)} EUR</Text>
+              <View style={s.totalFinalRow}>
+                <Text style={s.totalFinalLabel}>Total</Text>
+                <Text style={s.totalFinalValue}>
+                  {totalFinal.toFixed(2)} EUR
+                </Text>
               </View>
             </View>
           </View>
         )}
 
-        {/* ── GARANTÍA ── */}
+        {/* ── GUARANTEE ── */}
         <View style={s.guarantee}>
-          <Text style={s.guaranteeText}>
-            Garantía de 3 meses o 2.000 km en mano de obra y recambios (RD 1457/1986) · Recambios originales o equivalentes homologados · Las piezas sustituidas quedan a disposición del cliente
+          <Text style={s.guaranteeTitle}>Garantia incluida</Text>
+          <Text style={s.guaranteeBullet}>
+            ·{"  "}3 meses o 2.000 km en mano de obra y recambios (RD
+            1457/1986)
+          </Text>
+          <Text style={s.guaranteeBullet}>
+            ·{"  "}Recambios originales o equivalentes homologados
+          </Text>
+          <Text style={s.guaranteeBullet}>
+            ·{"  "}Piezas sustituidas a disposicion del cliente
           </Text>
         </View>
 
-        {/* ── FIRMAS ── */}
-        <View style={s.sigRow}>
-          <View style={s.sigBlock}>
-            <View style={{ height: 28 }} />
-            <View style={s.sigLine} />
-            <Text style={s.sigLabel}>Acepto el presupuesto</Text>
-          </View>
-          <View style={s.sigBlock}>
-            <View style={{ height: 28 }} />
-            <View style={s.sigLine} />
-            <Text style={s.sigLabel}>Renuncio al presupuesto</Text>
-          </View>
-        </View>
-
-        {/* ── QR ── */}
-        {data.qrDataUrl && data.publicUrl && (
-          <View style={s.qrRow}>
-            <Image src={data.qrDataUrl} style={{ width: 32, height: 32 }} />
-            <View>
-              <Text style={s.qrText}>También puedes aceptar este presupuesto online:</Text>
-              <Text style={[s.qrText, { fontFamily: FB, color: c.brand }]}>{data.publicUrl}</Text>
+        {/* ── BOTTOM: SIGNATURES + QR ── */}
+        <View style={s.bottomRow}>
+          {/* Signatures */}
+          <View style={s.sigContainer}>
+            <View style={s.sigBlock}>
+              <View style={{ height: 22 }} />
+              <View style={s.sigLine} />
+              <Text style={s.sigLabel}>Acepto el presupuesto</Text>
+            </View>
+            <View style={s.sigBlock}>
+              <View style={{ height: 22 }} />
+              <View style={s.sigLine} />
+              <Text style={s.sigLabel}>Renuncio al presupuesto</Text>
             </View>
           </View>
-        )}
+
+          {/* QR CTA */}
+          {data.qrDataUrl && data.publicUrl && (
+            <View style={s.qrCard}>
+              <Image
+                src={data.qrDataUrl}
+                style={{ width: 38, height: 38 }}
+              />
+              <View style={s.qrTextWrap}>
+                <Text style={s.qrTitle}>Acepta online</Text>
+                <Text style={s.qrUrl}>
+                  Escanea el QR o visita:
+                </Text>
+                <Text style={[s.qrUrl, { fontFamily: FB, color: c.brand }]}>
+                  {data.publicUrl}
+                </Text>
+              </View>
+            </View>
+          )}
+        </View>
+
+        {/* ── THANK YOU ── */}
+        <Text style={s.thanksText}>
+          Gracias por confiar en {data.tallerNombre}
+        </Text>
 
         {/* ── FOOTER ── */}
         <View style={s.footer} fixed>
           <Text style={s.footerText}>
-            Este presupuesto tiene una validez de {data.validezDias} días (mín. 12 hábiles según RD 1457/1986).
-            {"\n"}{data.tallerNombre}{data.tallerCif ? ` · CIF ${data.tallerCif}` : ""} · Generado con FIXA
+            Este presupuesto tiene una validez de {data.validezDias} dias (min.
+            12 habiles segun RD 1457/1986).
+            {"\n"}
+            {data.tallerNombre}
+            {data.tallerCif ? `  ·  CIF ${data.tallerCif}` : ""}
+            {"  ·  "}Generado con FIXA
           </Text>
         </View>
       </Page>
