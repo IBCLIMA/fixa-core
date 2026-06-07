@@ -157,6 +157,24 @@ export function ConfigForm({ taller }: { taller: Taller }) {
 
           <Separator />
 
+          <p className="text-xs font-bold text-stone-500 uppercase tracking-wider">Rama de actividad</p>
+          <div className="flex flex-wrap gap-3">
+            {RAMAS_ACTIVIDAD.map((rama) => (
+              <label key={rama.value} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={ramas.includes(rama.value)}
+                  onChange={() => toggleRama(rama.value)}
+                  className="accent-orange-500 h-5 w-5"
+                />
+                <span className="text-sm font-medium">{rama.label}</span>
+              </label>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground">Obligatorio en la OR segun RD 1457/1986. Aparecera en el PDF.</p>
+
+          <Separator />
+
           <p className="text-xs font-bold text-stone-500 uppercase tracking-wider">Otros</p>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">

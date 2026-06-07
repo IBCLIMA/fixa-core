@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { crearPresupuestoDesdeOrden } from "../../actions/presupuestos";
 import { toast } from "sonner";
 
 export function CrearPresupuestoBtn({ ordenId }: { ordenId: string }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   async function handleCrear() {
@@ -14,6 +16,7 @@ export function CrearPresupuestoBtn({ ordenId }: { ordenId: string }) {
     try {
       const p = await crearPresupuestoDesdeOrden(ordenId);
       toast.success(`Presupuesto PT-${p.numero} creado`);
+      router.push(`/presupuestos/${p.id}`);
     } catch {
       toast.error("Error al crear presupuesto");
     } finally {

@@ -100,7 +100,7 @@ function fmtTime(d: string | Date | null | undefined): string {
 const estadoMap: Record<string, string> = {
   recibido: "RECIBIDO", diagnostico: "DIAGNÓSTICO", presupuestado: "PRESUPUESTADO",
   aprobado: "APROBADO", en_reparacion: "EN REPARACIÓN", esperando_recambio: "ESP. RECAMBIO",
-  listo: "LISTO PARA ENTREGA", entregado: "ENTREGADO", cancelado: "CANCELADO",
+  listo: "FINALIZADO", entregado: "ENTREGADO", cancelado: "CANCELADO",
 };
 const combL: Record<string, string> = { gasolina: "Gas.", diesel: "Diésel", electrico: "Eléc.", hibrido: "Híb.", glp: "GLP" };
 const tipoL: Record<string, string> = { mecanica: "Mecánica", chapa: "Chapa", pintura: "Pintura", electricidad: "Electricidad", diagnostico: "Diagnóstico", mantenimiento: "Mantenimiento", pre_itv: "Pre-ITV", otro: "Otro" };

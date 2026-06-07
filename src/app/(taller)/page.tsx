@@ -354,7 +354,7 @@ export default async function PanelDelDia() {
                     </div>
                   </Link>
                   {o.clienteTelefono && (
-                    <a href={formatWhatsAppUrl(o.clienteTelefono!, `Hola ${o.clienteNombre?.split(" ")[0]}, tu coche ya está listo para recoger. Puedes pasar cuando quieras. ¡Un saludo!`)} target="_blank" className="flex h-11 items-center gap-1.5 rounded-xl bg-emerald-600 px-4 text-white text-xs font-bold hover:bg-emerald-500 transition-colors">
+                    <a href={formatWhatsAppUrl(o.clienteTelefono!, `Hola ${o.clienteNombre?.split(" ")[0]}, ya hemos terminado con tu coche. Puedes pasar a recogerlo cuando te venga bien. ¡Un saludo!`)} target="_blank" className="flex h-11 items-center gap-1.5 rounded-xl bg-emerald-600 px-4 text-white text-xs font-bold hover:bg-emerald-500 transition-colors">
                       <MessageSquare className="h-3 w-3" />Avisar
                     </a>
                   )}

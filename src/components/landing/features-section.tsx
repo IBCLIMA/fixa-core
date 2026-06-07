@@ -37,7 +37,7 @@ const heroFeatures = [
     visual: (
       <div className="mt-4 space-y-2">
         {[
-          { plate: "5678 DRS", status: "Listo", color: "bg-emerald-500" },
+          { plate: "5678 DRS", status: "Finalizado", color: "bg-emerald-500" },
           { plate: "7891 JNM", status: "En reparación", color: "bg-blue-500" },
           { plate: "6789 KMN", status: "Presupuestado", color: "bg-amber-500" },
         ].map((o) => (

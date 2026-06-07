@@ -177,7 +177,7 @@ const demoSteps = [
           <p className="text-[9px] text-stone-500">Ruido al frenar. Revisar pastillas y discos.</p>
         </div>
         {[
-          { m: "5678 DRS", s: "Listo", c: "bg-emerald-500" },
+          { m: "5678 DRS", s: "Finalizado", c: "bg-emerald-500" },
           { m: "7891 JNM", s: "En reparación", c: "bg-blue-500" },
         ].map((o) => (
           <div key={o.m} className="flex items-center justify-between rounded-lg bg-white border border-stone-100 p-2.5">

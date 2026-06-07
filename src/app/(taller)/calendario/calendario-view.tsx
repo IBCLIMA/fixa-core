@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Clock, X, CalendarDays, Truck, Ban, Zap, Phone, ArrowRight } from "lucide-react";
+import { Plus, Clock, X, CalendarDays, Truck, Ban, Phone, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { EntradaRapida } from "../entrada-rapida";
 
 interface Cita {
   id: string;
@@ -231,15 +232,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
               <Plus className="mr-1 h-3 w-3" />
               Nueva cita
             </Button>
-            <Link href="/ordenes/nueva">
-              <Button
-                size="sm"
-                className="rounded-xl text-xs h-8 bg-orange-500 hover:bg-orange-600 text-white"
-              >
-                <Zap className="mr-1 h-3 w-3" />
-                Entrada rapida
-              </Button>
-            </Link>
+            <EntradaRapida />
           </div>
         </div>
 

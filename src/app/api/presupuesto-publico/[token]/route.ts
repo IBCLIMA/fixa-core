@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/db";
-import { presupuestos, ordenesTrabajo } from "@/db/schema";
+import { presupuestos, ordenesTrabajo, clientes, vehiculos } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { createNotification } from "@/lib/notify";
 
 export async function POST(
   request: Request,
@@ -45,6 +46,34 @@ export async function POST(
       .update(ordenesTrabajo)
       .set({ estado: "aprobado", updatedAt: new Date() })
       .where(eq(ordenesTrabajo.id, presupuesto.ordenId));
+  }
+
+  // Notify the workshop about the client's response
+  try {
+    const [cliente] = await db.select({ nombre: clientes.nombre }).from(clientes).where(eq(clientes.id, presupuesto.clienteId));
+    const [vehiculo] = await db.select({ matricula: vehiculos.matricula }).from(vehiculos).where(eq(vehiculos.id, presupuesto.vehiculoId));
+    const clienteNombre = cliente?.nombre || "Cliente";
+    const matricula = vehiculo?.matricula || "";
+
+    if (estado === "aceptado") {
+      createNotification({
+        tallerId: presupuesto.tallerId,
+        tipo: "presupuesto_aceptado",
+        titulo: `PT-${presupuesto.numero} aceptado`,
+        mensaje: `${clienteNombre} ha aceptado el presupuesto para ${matricula}. Puedes proceder con la reparacion.`,
+        enlace: `/presupuestos/${presupuesto.id}`,
+      });
+    } else {
+      createNotification({
+        tallerId: presupuesto.tallerId,
+        tipo: "presupuesto_rechazado",
+        titulo: `PT-${presupuesto.numero} rechazado`,
+        mensaje: `${clienteNombre} ha rechazado el presupuesto para ${matricula}.`,
+        enlace: `/presupuestos/${presupuesto.id}`,
+      });
+    }
+  } catch (e) {
+    console.error("Error creating notification for presupuesto response:", e);
   }
 
   return NextResponse.json({ ok: true, estado });

@@ -47,7 +47,7 @@ export function AsignarMecanico({
       onValueChange={handleChange}
       disabled={loading}
     >
-      <SelectTrigger className="h-9 rounded-xl text-sm w-full">
+      <SelectTrigger className="h-11 rounded-xl text-sm w-full">
         <SelectValue placeholder="Sin asignar" />
       </SelectTrigger>
       <SelectContent>

@@ -43,26 +43,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const dayOfWeek = fechaDate.getDay();
-    if (dayOfWeek === 0 || dayOfWeek === 6) {
-      return NextResponse.json(
-        { error: "No se pueden solicitar citas en fin de semana." },
-        { status: 400 }
-      );
-    }
-
-    // Verify taller exists
+    // Verify taller exists and get config
     const db = getDb();
-    const taller = await db
-      .select({ id: talleres.id })
+    const [tallerData] = await db
+      .select({ id: talleres.id, trabajaSabados: talleres.trabajaSabados })
       .from(talleres)
       .where(eq(talleres.id, tallerId))
       .limit(1);
 
-    if (!taller[0]) {
+    if (!tallerData) {
       return NextResponse.json(
         { error: "Taller no encontrado." },
         { status: 404 }
+      );
+    }
+
+    const dayOfWeek = fechaDate.getDay();
+    // Always block Sundays
+    if (dayOfWeek === 0) {
+      return NextResponse.json(
+        { error: "No abrimos los domingos." },
+        { status: 400 }
+      );
+    }
+    // Block Saturdays only if workshop doesn't work Saturdays
+    if (dayOfWeek === 6 && !tallerData.trabajaSabados) {
+      return NextResponse.json(
+        { error: "No abrimos los sabados." },
+        { status: 400 }
       );
     }
 
