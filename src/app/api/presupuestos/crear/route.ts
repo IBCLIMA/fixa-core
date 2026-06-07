@@ -99,6 +99,7 @@ export async function POST(request: Request) {
             descripcion: l.descripcion.trim(),
             cantidad: String(l.cantidad || 1),
             precioUnitario: String(l.precioUnitario || 0),
+            ivaPct: l.ivaPct != null ? String(l.ivaPct) : "21",
             referencia: l.referencia || null,
           }))
         );

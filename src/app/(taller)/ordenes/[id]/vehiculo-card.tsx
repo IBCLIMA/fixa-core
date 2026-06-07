@@ -35,6 +35,8 @@ export function VehiculoCard({
   const [modelosSugeridos, setModelosSugeridos] = useState<string[]>([]);
   const [anio, setAnio] = useState(vehiculo?.anio ? String(vehiculo.anio) : "");
   const [color, setColor] = useState(vehiculo?.color || "");
+  const [vin, setVin] = useState(vehiculo?.vin || "");
+  const [combustible, setCombustible] = useState(vehiculo?.combustible || "");
 
   if (!vehiculo) return null;
 
@@ -49,6 +51,8 @@ export function VehiculoCard({
           modelo: modelo.trim(),
           anio: anio ? Number(anio) : null,
           color: color.trim(),
+          vin: vin.trim() || null,
+          combustible: combustible.trim() || null,
         }),
       });
       if (!res.ok) throw new Error();
@@ -112,6 +116,25 @@ export function VehiculoCard({
                 <Label className="text-[10px] text-stone-400">Color</Label>
                 <Input value={color} onChange={(e) => setColor(e.target.value)} placeholder="Blanco" className="h-9 rounded-lg text-sm" />
               </div>
+              <div className="space-y-1">
+                <Label className="text-[10px] text-stone-400">VIN / Bastidor</Label>
+                <Input value={vin} onChange={(e) => setVin(e.target.value)} placeholder="VF1..." className="h-9 rounded-lg text-sm font-mono" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[10px] text-stone-400">Combustible</Label>
+                <select
+                  value={combustible}
+                  onChange={(e) => setCombustible(e.target.value)}
+                  className="flex h-9 w-full rounded-lg border border-input bg-background px-3 text-sm"
+                >
+                  <option value="">Sin especificar</option>
+                  <option value="gasolina">Gasolina</option>
+                  <option value="diesel">Diésel</option>
+                  <option value="electrico">Eléctrico</option>
+                  <option value="hibrido">Híbrido</option>
+                  <option value="glp">GLP</option>
+                </select>
+              </div>
             </div>
             <div className="flex gap-2 pt-1">
               <button onClick={guardar} disabled={loading} className="flex items-center gap-1 text-xs font-bold text-white bg-stone-800 hover:bg-stone-700 px-3 py-1.5 rounded-full">
@@ -128,6 +151,16 @@ export function VehiculoCard({
             <p className="text-muted-foreground">
               {[vehiculo.marca, vehiculo.modelo, vehiculo.anio].filter(Boolean).join(" · ")}
             </p>
+            {(vehiculo.color || vehiculo.combustible) && (
+              <p className="text-muted-foreground">
+                {[vehiculo.color, vehiculo.combustible ? vehiculo.combustible.charAt(0).toUpperCase() + vehiculo.combustible.slice(1) : null].filter(Boolean).join(" · ")}
+              </p>
+            )}
+            {vehiculo.vin && (
+              <p className="text-muted-foreground font-mono text-xs">
+                VIN: {vehiculo.vin}
+              </p>
+            )}
             {kmEntrada && (
               <p className="text-muted-foreground">
                 Entrada: {kmEntrada.toLocaleString("es-ES")} km
