@@ -4,10 +4,13 @@ import { ArrowLeft, Car, User, FileText, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { getPresupuesto } from "../../actions/presupuestos";
+import { getPrecioHora } from "../../actions/ordenes";
 import { PrintButton } from "../../ordenes/[id]/print-button";
 import { CambiarEstadoPresupuesto } from "./cambiar-estado-presupuesto";
+import { LineasPresupuesto } from "./lineas-presupuesto";
+import { AgregarLineaPresupuesto } from "./agregar-linea-presupuesto";
+import { TemplateSelectorPresupuesto } from "./template-selector-presupuesto";
 import { formatWhatsAppUrl } from "@/lib/utils";
 
 const estadoLabels: Record<string, string> = {
@@ -36,21 +39,7 @@ export default async function PresupuestoDetallePage({
   if (!presupuesto) return notFound();
 
   const lineas = presupuesto.lineas || [];
-  const totalBase = lineas.reduce((sum, l) => {
-    const qty = Number(l.cantidad);
-    const price = Number(l.precioUnitario);
-    const disc = Number(l.descuentoPct || 0);
-    return sum + qty * price * (1 - disc / 100);
-  }, 0);
-  const totalIva = lineas.reduce((sum, l) => {
-    const qty = Number(l.cantidad);
-    const price = Number(l.precioUnitario);
-    const disc = Number(l.descuentoPct || 0);
-    const iva = Number(l.ivaPct || 21);
-    const base = qty * price * (1 - disc / 100);
-    return sum + base * (iva / 100);
-  }, 0);
-  const totalFinal = totalBase + totalIva;
+  const precioHora = await getPrecioHora().catch(() => 0);
 
   const appUrl =
     process.env.NEXT_PUBLIC_APP_URL ||
@@ -213,69 +202,14 @@ export default async function PresupuestoDetallePage({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {lineas.length > 0 ? (
-            <div className="space-y-2">
-              {lineas.map((linea) => {
-                const base =
-                  Number(linea.cantidad) *
-                  Number(linea.precioUnitario) *
-                  (1 - Number(linea.descuentoPct || 0) / 100);
-                return (
-                  <div
-                    key={linea.id}
-                    className="flex items-center justify-between rounded-xl bg-muted/50 px-3 py-2.5"
-                  >
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-[10px]">
-                          {linea.tipo === "mano_obra"
-                            ? "M.O."
-                            : linea.tipo === "recambio"
-                              ? "Recambio"
-                              : "Otros"}
-                        </Badge>
-                        <span className="text-sm font-medium">
-                          {linea.descripcion}
-                        </span>
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {Number(linea.cantidad)} x{" "}
-                        {Number(linea.precioUnitario).toFixed(2)}EUR
-                        {Number(linea.descuentoPct || 0) > 0 &&
-                          ` (-${linea.descuentoPct}%)`}
-                        {" - IVA "}
-                        {linea.ivaPct}%
-                      </p>
-                    </div>
-                    <span className="text-sm font-bold">
-                      {base.toFixed(2)}EUR
-                    </span>
-                  </div>
-                );
-              })}
+          <LineasPresupuesto presupuestoId={presupuesto.id} lineas={lineas} />
 
-              <Separator className="my-3" />
-
-              <div className="space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Base imponible</span>
-                  <span>{totalBase.toFixed(2)}EUR</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">IVA</span>
-                  <span>{totalIva.toFixed(2)}EUR</span>
-                </div>
-                <div className="flex justify-between text-base font-bold pt-1">
-                  <span>Total</span>
-                  <span>{totalFinal.toFixed(2)}EUR</span>
-                </div>
-              </div>
+          <div className="flex gap-2 mt-4 no-print">
+            <div className="flex-1">
+              <AgregarLineaPresupuesto presupuestoId={presupuesto.id} precioHora={precioHora} />
             </div>
-          ) : (
-            <p className="text-sm text-muted-foreground text-center py-6">
-              Sin lineas en este presupuesto
-            </p>
-          )}
+            <TemplateSelectorPresupuesto presupuestoId={presupuesto.id} />
+          </div>
         </CardContent>
       </Card>
 
