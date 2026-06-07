@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
-import { clientes, vehiculos, presupuestos } from "@/db/schema";
+import { clientes, vehiculos, presupuestos, lineasPresupuesto } from "@/db/schema";
 import { eq, and, ilike, sql } from "drizzle-orm";
 import { randomBytes } from "crypto";
 
@@ -87,6 +87,23 @@ export async function POST(request: Request) {
         tokenPublico: randomBytes(16).toString("hex"),
       })
       .returning();
+
+    // Create lines if provided
+    if (body.lineas && Array.isArray(body.lineas) && body.lineas.length > 0) {
+      const validLineas = body.lineas.filter((l: any) => l.descripcion?.trim());
+      if (validLineas.length > 0) {
+        await db.insert(lineasPresupuesto).values(
+          validLineas.map((l: any) => ({
+            presupuestoId: presupuesto.id,
+            tipo: l.tipo || "mano_obra",
+            descripcion: l.descripcion.trim(),
+            cantidad: String(l.cantidad || 1),
+            precioUnitario: String(l.precioUnitario || 0),
+            referencia: l.referencia || null,
+          }))
+        );
+      }
+    }
 
     return NextResponse.json({ id: presupuesto.id, numero: presupuesto.numero });
   } catch (e) {
