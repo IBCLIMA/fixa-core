@@ -442,7 +442,7 @@ export function PresupuestoPDF({ data }: { data: PresupuestoPDFData }) {
             {data.tallerLogo && (
               <Image
                 src={data.tallerLogo}
-                style={{ width: 42, height: 42, borderRadius: 4 }}
+                style={{ height: 36, maxWidth: 120 }}
               />
             )}
             <View>

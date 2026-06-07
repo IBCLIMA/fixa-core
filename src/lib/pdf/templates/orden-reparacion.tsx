@@ -124,7 +124,7 @@ export function OrdenReparacionPDF({ data }: { data: OrdenPDFData }) {
         {/* ── HEADER ── */}
         <View style={s.hdr}>
           <View style={{ flex: 1, flexDirection: "row", alignItems: "flex-start", gap: 8 }}>
-            {data.tallerLogo && <Image src={data.tallerLogo} style={{ width: 40, height: 40, borderRadius: 4 }} />}
+            {data.tallerLogo && <Image src={data.tallerLogo} style={{ height: 36, maxWidth: 120 }} />}
             <View style={{ flex: 1 }}>
             <Text style={s.hName}>{data.tallerNombre}</Text>
             <Text style={s.hInfo}>{[data.tallerCif && `CIF: ${data.tallerCif}`, data.tallerDireccion].filter(Boolean).join(" · ")}</Text>
