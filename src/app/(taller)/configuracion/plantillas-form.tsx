@@ -43,44 +43,53 @@ function LineaEditor({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {lineas.map((l, i) => (
-        <div key={i} className="flex items-center gap-2">
-          <select
-            value={l.tipo}
-            onChange={(e) => updateLinea(i, "tipo", e.target.value)}
-            className="h-9 rounded-lg border border-input bg-background px-2 text-xs w-24 shrink-0"
-          >
-            <option value="mano_obra">M. obra</option>
-            <option value="recambio">Recambio</option>
-            <option value="otros">Otros</option>
-          </select>
+        <div key={i} className="rounded-xl border border-stone-200 bg-stone-50/50 p-3 space-y-2">
+          <div className="flex items-center justify-between">
+            <select
+              value={l.tipo}
+              onChange={(e) => updateLinea(i, "tipo", e.target.value)}
+              className="h-9 rounded-lg border border-input bg-white px-2 text-sm"
+            >
+              <option value="mano_obra">Mano de obra</option>
+              <option value="recambio">Recambio</option>
+              <option value="otros">Otros</option>
+            </select>
+            <button onClick={() => removeLinea(i)} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
           <Input
             value={l.descripcion}
             onChange={(e) => updateLinea(i, "descripcion", e.target.value)}
-            placeholder="Descripción"
-            className="h-9 rounded-lg text-xs flex-1"
+            placeholder="Descripción del trabajo o recambio"
+            className="h-10 rounded-lg text-sm"
           />
-          <Input
-            type="number"
-            value={l.cantidad}
-            onChange={(e) => updateLinea(i, "cantidad", Number(e.target.value))}
-            className="h-9 rounded-lg text-xs w-16"
-            min={0}
-            step={0.25}
-          />
-          <Input
-            type="number"
-            value={l.precioUnitario}
-            onChange={(e) => updateLinea(i, "precioUnitario", Number(e.target.value))}
-            className="h-9 rounded-lg text-xs w-20"
-            min={0}
-            step={0.5}
-            placeholder="€"
-          />
-          <button onClick={() => removeLinea(i)} className="text-red-400 hover:text-red-600 shrink-0">
-            <Trash2 className="h-3.5 w-3.5" />
-          </button>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-[10px] text-stone-400">Cantidad</label>
+              <Input
+                type="number"
+                value={l.cantidad}
+                onChange={(e) => updateLinea(i, "cantidad", Number(e.target.value))}
+                className="h-9 rounded-lg text-sm"
+                min={0}
+                step={0.25}
+              />
+            </div>
+            <div>
+              <label className="text-[10px] text-stone-400">Precio unitario (EUR)</label>
+              <Input
+                type="number"
+                value={l.precioUnitario}
+                onChange={(e) => updateLinea(i, "precioUnitario", Number(e.target.value))}
+                className="h-9 rounded-lg text-sm"
+                min={0}
+                step={0.5}
+              />
+            </div>
+          </div>
         </div>
       ))}
       <Button variant="outline" size="sm" onClick={addLinea} className="rounded-full text-xs">
@@ -164,7 +173,7 @@ export function PlantillasForm({ plantillasIniciales }: { plantillasIniciales: P
                 <Plus className="mr-1 h-3.5 w-3.5" />Nueva plantilla
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-lg">
+            <DialogContent className="max-w-xl">
               <DialogHeader>
                 <DialogTitle>{editando ? "Editar plantilla" : "Nueva plantilla"}</DialogTitle>
               </DialogHeader>
