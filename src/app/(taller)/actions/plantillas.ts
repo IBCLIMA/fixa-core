@@ -11,6 +11,8 @@ export type LineaPlantilla = {
   descripcion: string;
   cantidad: number;
   precioUnitario: number;
+  ivaPct?: number;
+  referencia?: string;
 };
 
 export async function getPlantillas() {

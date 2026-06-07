@@ -31,7 +31,7 @@ function LineaEditor({
   onChange: (lineas: LineaPlantilla[]) => void;
 }) {
   function addLinea() {
-    onChange([...lineas, { tipo: "mano_obra", descripcion: "", cantidad: 1, precioUnitario: 0 }]);
+    onChange([...lineas, { tipo: "mano_obra", descripcion: "", cantidad: 1, precioUnitario: 0, ivaPct: 21 }]);
   }
   function removeLinea(i: number) {
     onChange(lineas.filter((_, idx) => idx !== i));
@@ -41,6 +41,12 @@ function LineaEditor({
     updated[i] = { ...updated[i], [field]: value };
     onChange(updated);
   }
+
+  const totalBase = lineas.reduce((sum, l) => sum + l.cantidad * l.precioUnitario, 0);
+  const totalIva = lineas.reduce((sum, l) => {
+    const base = l.cantidad * l.precioUnitario;
+    return sum + base * ((l.ivaPct ?? 21) / 100);
+  }, 0);
 
   return (
     <div className="space-y-3">
@@ -66,7 +72,15 @@ function LineaEditor({
             placeholder="Descripción del trabajo o recambio"
             className="h-10 rounded-lg text-sm"
           />
-          <div className="grid grid-cols-2 gap-2">
+          {l.tipo === "recambio" && (
+            <Input
+              value={l.referencia || ""}
+              onChange={(e) => updateLinea(i, "referencia", e.target.value)}
+              placeholder="Referencia del recambio (ej: 0986494128)"
+              className="h-9 rounded-lg text-sm font-mono"
+            />
+          )}
+          <div className="grid grid-cols-3 gap-2">
             <div>
               <label className="text-[10px] text-stone-400">Cantidad</label>
               <Input
@@ -79,7 +93,7 @@ function LineaEditor({
               />
             </div>
             <div>
-              <label className="text-[10px] text-stone-400">Precio unitario (EUR)</label>
+              <label className="text-[10px] text-stone-400">Precio unit. (EUR)</label>
               <Input
                 type="number"
                 value={l.precioUnitario}
@@ -89,12 +103,32 @@ function LineaEditor({
                 step={0.5}
               />
             </div>
+            <div>
+              <label className="text-[10px] text-stone-400">IVA %</label>
+              <Input
+                type="number"
+                value={l.ivaPct ?? 21}
+                onChange={(e) => updateLinea(i, "ivaPct", Number(e.target.value))}
+                className="h-9 rounded-lg text-sm"
+                min={0}
+                max={100}
+              />
+            </div>
           </div>
         </div>
       ))}
       <Button variant="outline" size="sm" onClick={addLinea} className="rounded-full text-xs">
         <Plus className="h-3 w-3 mr-1" />Añadir línea
       </Button>
+
+      {/* Total estimado en tiempo real */}
+      {lineas.length > 0 && (
+        <div className="text-right pt-2 border-t border-stone-100 space-y-0.5">
+          <p className="text-xs text-stone-400">Base: {totalBase.toFixed(2)}EUR</p>
+          <p className="text-xs text-stone-400">IVA: {totalIva.toFixed(2)}EUR</p>
+          <p className="text-sm font-bold text-stone-700">Total: {(totalBase + totalIva).toFixed(2)}EUR</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -176,6 +210,9 @@ export function PlantillasForm({ plantillasIniciales }: { plantillasIniciales: P
             <DialogContent className="max-w-xl">
               <DialogHeader>
                 <DialogTitle>{editando ? "Editar plantilla" : "Nueva plantilla"}</DialogTitle>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Crea una plantilla para aplicarla rápidamente en órdenes y presupuestos. Así no escribes lo mismo cada vez.
+                </p>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
