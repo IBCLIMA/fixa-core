@@ -173,7 +173,7 @@ export default async function PresupuestoDetallePage({
           <a
             href={formatWhatsAppUrl(
               presupuesto.cliente.telefono,
-              `Hola ${presupuesto.cliente.nombre.split(" ")[0]}, te enviamos el presupuesto PT-${presupuesto.numero} para tu vehiculo ${presupuesto.vehiculo?.matricula || ""}. Puedes verlo aqui: ${publicUrl}`
+              `Hola ${presupuesto.cliente.nombre.split(" ")[0]},\n\nTe enviamos el presupuesto para tu ${presupuesto.vehiculo?.marca || ""} ${presupuesto.vehiculo?.modelo || ""} (${presupuesto.vehiculo?.matricula || ""}).\n\nPuedes verlo y aceptarlo aquí:\n${publicUrl}\n\nSi tienes alguna duda, no dudes en contactarnos.\n\n¡Un saludo!`
             )}
             target="_blank"
           >
