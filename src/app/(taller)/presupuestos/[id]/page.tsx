@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Car, User, FileText, MessageSquare } from "lucide-react";
+import { ArrowLeft, Car, User, FileText, MessageSquare, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -168,6 +168,11 @@ export default async function PresupuestoDetallePage({
 
       {/* Actions */}
       <div className="flex flex-wrap gap-2 no-print">
+        <a href={`/api/presupuestos/${presupuesto.id}/pdf`} target="_blank">
+          <Button className="rounded-full bg-stone-900 hover:bg-stone-800 text-white">
+            <Printer className="mr-1.5 h-4 w-4" />Descargar PDF
+          </Button>
+        </a>
         <PrintButton />
         {presupuesto.cliente?.telefono && (
           <a
