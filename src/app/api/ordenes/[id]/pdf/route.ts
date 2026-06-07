@@ -81,6 +81,7 @@ export async function GET(
       tallerTelefono: taller.telefono,
       tallerEmail: taller.email,
       tallerRegistro: taller.registroIndustrial,
+      tallerLogo: taller.logoUrl,
       tallerRama: taller.ramaActividad,
       numero: orden.numero,
       estado: orden.estado,

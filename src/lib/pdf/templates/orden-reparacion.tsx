@@ -75,7 +75,7 @@ const s = StyleSheet.create({
 
 export type OrdenPDFData = {
   tallerNombre: string; tallerCif?: string | null; tallerDireccion?: string | null;
-  tallerTelefono?: string | null; tallerEmail?: string | null; tallerRegistro?: string | null;
+  tallerTelefono?: string | null; tallerEmail?: string | null; tallerRegistro?: string | null; tallerLogo?: string | null;
   tallerRama?: string[] | null;
   numero: number; estado: string; fechaEntrada: string | Date; fechaEstimada?: string | Date | null;
   descripcionCliente?: string | null; diagnostico?: string | null; observacionesEntrada?: string | null;
@@ -123,12 +123,14 @@ export function OrdenReparacionPDF({ data }: { data: OrdenPDFData }) {
 
         {/* ── HEADER ── */}
         <View style={s.hdr}>
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, flexDirection: "row", alignItems: "flex-start", gap: 8 }}>
+            {data.tallerLogo && <Image src={data.tallerLogo} style={{ width: 40, height: 40, borderRadius: 4 }} />}
+            <View style={{ flex: 1 }}>
             <Text style={s.hName}>{data.tallerNombre}</Text>
             <Text style={s.hInfo}>{[data.tallerCif && `CIF: ${data.tallerCif}`, data.tallerDireccion].filter(Boolean).join(" · ")}</Text>
             <Text style={s.hInfo}>{[data.tallerTelefono, data.tallerEmail].filter(Boolean).join(" · ")}</Text>
             {data.tallerRegistro && <Text style={s.hInfo}>Reg. Industrial: {data.tallerRegistro}</Text>}
-          </View>
+          </View></View>
           <View>
             <Text style={s.orLbl}>Orden de reparación</Text>
             <Text style={s.orNum}>OR-{data.numero}</Text>

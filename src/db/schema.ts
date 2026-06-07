@@ -113,6 +113,7 @@ export const talleres = pgTable("talleres", {
   codigoPostal: text("codigo_postal"),
   ciudad: text("ciudad"),
   provincia: text("provincia"),
+  logoUrl: text("logo_url"),
   registroIndustrial: text("registro_industrial"),
   ramaActividad: text("rama_actividad").array(),
   precioHora: numeric("precio_hora", { precision: 10, scale: 2 }).default("40.00"),

@@ -19,6 +19,7 @@ interface Taller {
   registroIndustrial: string | null;
   ramaActividad: string[] | null;
   precioHora: string | null;
+  logoUrl: string | null;
   horarioApertura: string | null;
   horarioCierre: string | null;
   trabajaSabados: boolean | null;
@@ -38,6 +39,8 @@ export function ConfigForm({ taller }: { taller: Taller }) {
   const [loading, setLoading] = useState(false);
   const [ramas, setRamas] = useState<string[]>(taller.ramaActividad || []);
   const [sabados, setSabados] = useState(taller.trabajaSabados || false);
+  const [logoUrl, setLogoUrl] = useState(taller.logoUrl || "");
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   function toggleRama(value: string) {
     setRamas((prev) =>
@@ -85,6 +88,47 @@ export function ConfigForm({ taller }: { taller: Taller }) {
       </CardHeader>
       <CardContent>
         <form action={handleSubmit} className="space-y-4">
+          {/* Logo */}
+          <div className="flex items-center gap-4 pb-2">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border-2 border-dashed border-stone-200 bg-stone-50 overflow-hidden">
+              {logoUrl ? (
+                <img src={logoUrl} alt="Logo" className="h-full w-full object-contain" />
+              ) : (
+                <span className="text-[10px] text-stone-300 text-center">Logo</span>
+              )}
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs font-bold text-stone-500">Logo del taller</p>
+              <p className="text-[10px] text-stone-400">Aparece en presupuestos, ORs y documentos. PNG o JPG, máx 2MB.</p>
+              <label className="inline-flex items-center gap-1 text-xs font-medium text-orange-600 hover:text-orange-700 cursor-pointer">
+                {uploadingLogo ? "Subiendo..." : logoUrl ? "Cambiar" : "Subir logo"}
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setUploadingLogo(true);
+                    try {
+                      const fd = new FormData();
+                      fd.append("file", file);
+                      const res = await fetch("/api/taller/logo", { method: "POST", body: fd });
+                      if (!res.ok) throw new Error();
+                      const data = await res.json();
+                      setLogoUrl(data.url);
+                      toast.success("Logo subido");
+                    } catch {
+                      toast.error("Error al subir el logo");
+                    } finally {
+                      setUploadingLogo(false);
+                    }
+                  }}
+                />
+              </label>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2 space-y-1.5">
               <Label htmlFor="nombre">Nombre del taller *</Label>
