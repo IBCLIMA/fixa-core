@@ -16,6 +16,7 @@ type Linea = {
   precioUnitario: string;
   descuentoPct: string | null;
   ivaPct: string;
+  referencia?: string | null;
 };
 
 export function LineasList({ ordenId, lineas }: { ordenId: string; lineas: Linea[] }) {
@@ -151,6 +152,11 @@ export function LineasList({ ordenId, lineas }: { ordenId: string; lineas: Linea
                   {linea.tipo === "mano_obra" ? "M.O." : linea.tipo === "recambio" ? "Recambio" : "Otros"}
                 </Badge>
                 <span className="text-sm font-medium">{linea.descripcion}</span>
+                {linea.referencia && (
+                  <span className="text-[10px] font-mono text-stone-400 bg-stone-100 px-1.5 py-0.5 rounded">
+                    Ref: {linea.referencia}
+                  </span>
+                )}
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
                 {Number(linea.cantidad)} × {Number(linea.precioUnitario).toFixed(2)}€

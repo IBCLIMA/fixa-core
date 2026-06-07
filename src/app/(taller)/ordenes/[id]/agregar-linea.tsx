@@ -32,7 +32,10 @@ export function AgregarLineaForm({ ordenId, precioHora = 0 }: { ordenId: string;
         cantidad: Number(formData.get("cantidad") || 1),
         precioUnitario: Number(formData.get("precio") || 0),
         ivaPct: Number(formData.get("iva") || 21),
-        ...(tipo === "recambio" ? { tipoPieza } : {}),
+        ...(tipo === "recambio" ? {
+          tipoPieza,
+          referencia: (formData.get("referencia") as string) || undefined,
+        } : {}),
       });
       toast.success("Línea añadida");
       setOpen(false);
@@ -85,25 +88,31 @@ export function AgregarLineaForm({ ordenId, precioHora = 0 }: { ordenId: string;
           <Input name="iva" type="number" defaultValue="21" className="h-11 rounded-xl" />
         </div>
       </div>
-      {tipo === "recambio" && (
-        <div className="space-y-1">
-          <Label className="text-xs">Tipo de pieza</Label>
-          <Select value={tipoPieza} onValueChange={(v) => setTipoPieza(v as typeof tipoPieza)}>
-            <SelectTrigger className="h-11 rounded-xl">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="nueva">Nueva</SelectItem>
-              <SelectItem value="reconstruida">Reconstruida</SelectItem>
-              <SelectItem value="usada">Usada</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      )}
       <div className="space-y-1">
         <Label className="text-xs">Descripcion <span className="text-red-500">*</span></Label>
         <Input name="descripcion" placeholder="Cambio pastillas de freno..." required className="h-11 rounded-xl" autoFocus />
       </div>
+      {tipo === "recambio" && (
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <Label className="text-xs">Referencia</Label>
+            <Input name="referencia" placeholder="Ej: 0986494128" className="h-11 rounded-xl font-mono" />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-xs">Tipo de pieza</Label>
+            <Select value={tipoPieza} onValueChange={(v) => setTipoPieza(v as typeof tipoPieza)}>
+              <SelectTrigger className="h-11 rounded-xl">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="nueva">Nueva</SelectItem>
+                <SelectItem value="reconstruida">Reconstruida</SelectItem>
+                <SelectItem value="usada">Usada</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
           <Label className="text-xs">Cantidad</Label>

@@ -228,6 +228,7 @@ export async function agregarLineaOrden(data: {
   descuentoPct?: number;
   ivaPct?: number;
   tipoPieza?: "nueva" | "reconstruida" | "usada";
+  referencia?: string;
 }) {
   const { tallerId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
@@ -251,6 +252,7 @@ export async function agregarLineaOrden(data: {
       descuentoPct: data.descuentoPct ? String(data.descuentoPct) : "0",
       ivaPct: data.ivaPct ? String(data.ivaPct) : "21",
       tipoPieza: data.tipoPieza || "nueva",
+      referencia: data.referencia || null,
     })
     .returning();
 

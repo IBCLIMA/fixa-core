@@ -252,6 +252,7 @@ export const lineasOrden = pgTable("lineas_orden", {
     .default("21")
     .notNull(),
   tipoPieza: text("tipo_pieza").default("nueva"), // 'nueva' | 'reconstruida' | 'usada'
+  referencia: text("referencia"), // Part reference number for traceability
   esAveriaOculta: boolean("es_averia_oculta").default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -295,6 +296,7 @@ export const lineasPresupuesto = pgTable("lineas_presupuesto", {
   ivaPct: numeric("iva_pct", { precision: 5, scale: 2 })
     .default("21")
     .notNull(),
+  referencia: text("referencia"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
