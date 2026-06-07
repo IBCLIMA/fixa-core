@@ -36,6 +36,7 @@ export async function PUT(request: Request) {
       registroIndustrial: body.registroIndustrial || null,
       ramaActividad: body.ramaActividad || null,
       precioHora: body.precioHora || null,
+      ...(body.mensajesWhatsapp !== undefined ? { mensajesWhatsapp: body.mensajesWhatsapp } : {}),
       horarioApertura: body.horarioApertura || "08:00",
       horarioCierre: body.horarioCierre || "18:00",
       trabajaSabados: body.trabajaSabados ?? false,

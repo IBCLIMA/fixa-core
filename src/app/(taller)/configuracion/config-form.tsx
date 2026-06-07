@@ -99,7 +99,8 @@ export function ConfigForm({ taller }: { taller: Taller }) {
             </div>
             <div className="space-y-1">
               <p className="text-xs font-bold text-stone-500">Logo del taller</p>
-              <p className="text-[10px] text-stone-400">Aparece en presupuestos, ORs y documentos. PNG o JPG, máx 2MB.</p>
+              <p className="text-[10px] text-stone-400">Aparece en presupuestos, ORs y documentos que envías a clientes.</p>
+              <p className="text-[10px] text-stone-300">Recomendado: PNG con fondo transparente, mín. 200x200px. Formatos: PNG, JPG, WebP, SVG. Máx 2MB.</p>
               <label className="inline-flex items-center gap-1 text-xs font-medium text-orange-600 hover:text-orange-700 cursor-pointer">
                 {uploadingLogo ? "Subiendo..." : logoUrl ? "Cambiar" : "Subir logo"}
                 <input

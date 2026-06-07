@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { ConfigForm } from "./config-form";
 import { CopyLinkBox } from "./copy-link-box";
 import { PlantillasForm } from "./plantillas-form";
+import { MensajesWhatsapp } from "./mensajes-whatsapp";
 import { getPlantillas, type LineaPlantilla } from "../actions/plantillas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,9 @@ export default async function ConfiguracionPage() {
           lineas: p.lineas as LineaPlantilla[],
         }))}
       />
+
+      {/* Mensajes WhatsApp */}
+      <MensajesWhatsapp mensajesActuales={(taller.mensajesWhatsapp as Record<string, string>) || {}} />
 
       {/* Enlace de cita online */}
       <Card>

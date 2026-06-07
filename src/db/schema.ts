@@ -114,6 +114,7 @@ export const talleres = pgTable("talleres", {
   ciudad: text("ciudad"),
   provincia: text("provincia"),
   logoUrl: text("logo_url"),
+  mensajesWhatsapp: jsonb("mensajes_whatsapp").default("{}"), // { estado, informe, presupuesto, resena, averia }
   registroIndustrial: text("registro_industrial"),
   ramaActividad: text("rama_actividad").array(),
   precioHora: numeric("precio_hora", { precision: 10, scale: 2 }).default("40.00"),
