@@ -168,12 +168,11 @@ export default async function PresupuestoDetallePage({
 
       {/* Actions */}
       <div className="flex flex-wrap gap-2 no-print">
-        <a href={`/api/presupuestos/${presupuesto.id}/pdf`} target="_blank">
+        <a href={`/presupuesto/${presupuesto.tokenPublico}`} target="_blank">
           <Button className="rounded-full bg-stone-900 hover:bg-stone-800 text-white">
-            <Printer className="mr-1.5 h-4 w-4" />Descargar PDF
+            <FileText className="mr-1.5 h-4 w-4" />Ver como cliente
           </Button>
         </a>
-        <PrintButton />
         {presupuesto.cliente?.telefono && (
           <a
             href={formatWhatsAppUrl(
@@ -196,6 +195,11 @@ export default async function PresupuestoDetallePage({
             </Button>
           </Link>
         )}
+        <a href={`/api/presupuestos/${presupuesto.id}/pdf`} target="_blank">
+          <Button variant="ghost" className="rounded-full text-xs text-muted-foreground">
+            <Printer className="mr-1 h-3.5 w-3.5" />PDF
+          </Button>
+        </a>
       </div>
 
       {/* Lineas */}
