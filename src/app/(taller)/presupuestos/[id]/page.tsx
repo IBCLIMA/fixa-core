@@ -8,6 +8,7 @@ import { getPresupuesto } from "../../actions/presupuestos";
 import { getPrecioHora } from "../../actions/ordenes";
 import { PrintButton } from "../../ordenes/[id]/print-button";
 import { CambiarEstadoPresupuesto } from "./cambiar-estado-presupuesto";
+import { DescripcionPresupuesto } from "./descripcion-presupuesto";
 import { LineasPresupuesto } from "./lineas-presupuesto";
 import { AgregarLineaPresupuesto } from "./agregar-linea-presupuesto";
 import { TemplateSelectorPresupuesto } from "./template-selector-presupuesto";
@@ -202,6 +203,16 @@ export default async function PresupuestoDetallePage({
         </a>
       </div>
 
+      {/* Descripción del trabajo */}
+      <Card>
+        <CardContent className="p-4">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
+            Descripción del trabajo
+          </p>
+          <DescripcionPresupuesto presupuestoId={presupuesto.id} notasActuales={presupuesto.notas} />
+        </CardContent>
+      </Card>
+
       {/* Lineas */}
       <Card>
         <CardHeader className="pb-3">
@@ -221,18 +232,6 @@ export default async function PresupuestoDetallePage({
           </div>
         </CardContent>
       </Card>
-
-      {/* Notas */}
-      {presupuesto.notas && (
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
-              Notas
-            </p>
-            <p className="text-sm">{presupuesto.notas}</p>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Public link */}
       <div className="no-print">
