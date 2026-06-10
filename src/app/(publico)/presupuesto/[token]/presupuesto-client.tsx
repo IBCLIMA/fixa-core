@@ -146,6 +146,27 @@ export function PresupuestoClient(props: PresupuestoClientProps) {
           </motion.div>
         )}
 
+        {/* ── CÓMO FUNCIONA ── */}
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-10">
+          <p className="text-[10px] font-semibold text-stone-300 uppercase tracking-[0.2em] mb-4">¿Cómo funciona?</p>
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { step: "1", title: "Aceptas", desc: "Aprueba el presupuesto desde aquí", color: "from-orange-500 to-orange-600" },
+              { step: "2", title: "Traes el coche", desc: "Déjalo en el taller en la fecha acordada", color: "from-blue-500 to-blue-600" },
+              { step: "3", title: "Reparamos", desc: "Te informamos del progreso", color: "from-violet-500 to-violet-600" },
+              { step: "4", title: "¡Listo!", desc: "Te avisamos para que lo recojas", color: "from-emerald-500 to-emerald-600" },
+            ].map((item) => (
+              <div key={item.step} className="text-center">
+                <div className={`mx-auto w-10 h-10 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white font-bold text-sm mb-2 shadow-sm`}>
+                  {item.step}
+                </div>
+                <p className="text-xs font-semibold text-stone-700 leading-tight">{item.title}</p>
+                <p className="text-[10px] text-stone-400 mt-0.5 leading-tight hidden sm:block">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
         {/* ── LÍNEAS ── */}
         <motion.div initial="hidden" animate="visible" variants={stagger} className="mb-8">
           <p className="text-[10px] font-semibold text-stone-300 uppercase tracking-[0.2em] mb-4">Detalle del presupuesto</p>
@@ -228,15 +249,41 @@ export function PresupuestoClient(props: PresupuestoClientProps) {
           </div>
         </motion.div>
 
+        {/* ── FAQ ── */}
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-10">
+          <p className="text-[10px] font-semibold text-stone-300 uppercase tracking-[0.2em] mb-4">Preguntas frecuentes</p>
+          <div className="space-y-3">
+            {[
+              { q: "¿Qué pasa si aparecen más averías?", a: "Te avisaremos antes de hacer cualquier trabajo adicional. Nada se hace sin tu aprobación previa." },
+              { q: "¿Puedo traer mis propias piezas?", a: "Sí, aunque la garantía solo cubre los recambios suministrados por el taller." },
+              { q: "¿Cuánto tiempo tardará?", a: "Te informaremos de la fecha estimada de entrega cuando traigas el vehículo." },
+            ].map((item) => (
+              <div key={item.q} className="rounded-xl bg-white border border-stone-100 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+                <p className="font-semibold text-stone-800 text-sm mb-1">{item.q}</p>
+                <p className="text-xs text-stone-500 leading-relaxed">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
         {/* ── TALLER INFO ── */}
         {taller && (
           <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-8">
-            <div className="rounded-2xl bg-stone-50 p-5 text-center">
-              <p className="font-bold text-stone-700 mb-1">{taller.nombre}</p>
-              {taller.telefono && <p className="text-sm text-stone-400 mb-3">{taller.telefono}</p>}
-              <p className="text-xs text-stone-400 leading-relaxed">
-                Confía en profesionales. Estamos a tu disposición para cualquier consulta sobre este presupuesto.
-              </p>
+            <div className="p-1.5 rounded-[1.25rem] bg-gradient-to-br from-stone-100/60 to-stone-200/30 ring-1 ring-stone-200/40">
+              <div className="rounded-[calc(1.25rem-0.375rem)] bg-white p-6 text-center shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+                {taller.logoUrl ? (
+                  <img src={taller.logoUrl} alt="" className="h-12 w-auto mx-auto mb-3 rounded-lg" />
+                ) : (
+                  <div className="mx-auto h-12 w-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white font-bold text-lg mb-3 shadow-lg shadow-orange-500/20">
+                    {taller.nombre?.[0]}
+                  </div>
+                )}
+                <p className="font-bold text-stone-800 mb-1">{taller.nombre}</p>
+                {taller.telefono && <p className="text-sm text-stone-400 mb-3">{taller.telefono}</p>}
+                <p className="text-xs text-stone-400 leading-relaxed max-w-xs mx-auto">
+                  Confía en profesionales. Estamos a tu disposición para cualquier consulta sobre este presupuesto.
+                </p>
+              </div>
             </div>
           </motion.div>
         )}
