@@ -129,11 +129,20 @@ export function PresupuestoClient(props: PresupuestoClientProps) {
           </div>
         </motion.div>
 
-        {/* ── MOTIVO ── */}
+        {/* ── QUÉ VAMOS A HACER ── */}
         {notas && (
-          <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-8">
-            <p className="text-[10px] font-semibold text-stone-300 uppercase tracking-[0.2em] mb-2">Motivo de la consulta</p>
-            <p className="text-stone-600 leading-relaxed">{notas}</p>
+          <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-10">
+            <div className="p-1.5 rounded-[1.25rem] bg-gradient-to-br from-orange-50/80 to-orange-100/30 ring-1 ring-orange-200/40">
+              <div className="rounded-[calc(1.25rem-0.375rem)] bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="h-8 w-8 rounded-xl bg-orange-50 flex items-center justify-center">
+                    <svg className="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                  </div>
+                  <p className="font-bold text-stone-900">¿Qué vamos a hacer?</p>
+                </div>
+                <p className="text-stone-600 leading-relaxed">{notas}</p>
+              </div>
+            </div>
           </motion.div>
         )}
 
@@ -192,21 +201,45 @@ export function PresupuestoClient(props: PresupuestoClientProps) {
           </div>
         </motion.div>
 
-        {/* ── TRUST ── */}
-        <motion.div initial="hidden" animate="visible" variants={fadeUp} className="grid grid-cols-3 gap-3 mb-8">
-          {[
-            { path: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z", label: "Sin compromiso", bg: "bg-emerald-50", color: "text-emerald-500" },
-            { path: "M5 13l4 4L19 7", label: "Garantía incluida", bg: "bg-blue-50", color: "text-blue-500" },
-            { path: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z", label: "Datos protegidos", bg: "bg-violet-50", color: "text-violet-500" },
-          ].map((item) => (
-            <div key={item.label} className="text-center">
-              <div className={`mx-auto w-11 h-11 rounded-xl ${item.bg} ${item.color} flex items-center justify-center mb-2 shadow-sm`}>
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={item.path} /></svg>
+        {/* ── INCLUIDO ── */}
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-10">
+          <div className="p-1.5 rounded-[1.25rem] bg-gradient-to-br from-emerald-50/60 to-blue-50/30 ring-1 ring-emerald-200/30">
+            <div className="rounded-[calc(1.25rem-0.375rem)] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+              <p className="font-bold text-stone-900 mb-4">Incluido en tu presupuesto</p>
+              <div className="space-y-3">
+                {[
+                  { icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z", title: "Garantía de 3 meses", desc: "Mano de obra y recambios cubiertos durante 3 meses o 2.000 km.", color: "text-emerald-500 bg-emerald-50" },
+                  { icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4", title: "Recambios homologados", desc: "Utilizamos piezas originales o equivalentes de calidad certificada.", color: "text-blue-500 bg-blue-50" },
+                  { icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z", title: "Presupuesto sin compromiso", desc: "No tienes obligación de aceptar. Si tienes dudas, llámanos.", color: "text-violet-500 bg-violet-50" },
+                  { icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z", title: "Tus datos están protegidos", desc: "Cumplimos con el RGPD. Tu información es confidencial.", color: "text-stone-500 bg-stone-50" },
+                ].map((item) => (
+                  <div key={item.title} className="flex items-start gap-3">
+                    <div className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${item.color} shadow-sm`}>
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={item.icon} /></svg>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-stone-800 text-sm">{item.title}</p>
+                      <p className="text-xs text-stone-400 mt-0.5 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <p className="text-[10px] text-stone-400 font-medium leading-tight">{item.label}</p>
             </div>
-          ))}
+          </div>
         </motion.div>
+
+        {/* ── TALLER INFO ── */}
+        {taller && (
+          <motion.div initial="hidden" animate="visible" variants={fadeUp} className="mb-8">
+            <div className="rounded-2xl bg-stone-50 p-5 text-center">
+              <p className="font-bold text-stone-700 mb-1">{taller.nombre}</p>
+              {taller.telefono && <p className="text-sm text-stone-400 mb-3">{taller.telefono}</p>}
+              <p className="text-xs text-stone-400 leading-relaxed">
+                Confía en profesionales. Estamos a tu disposición para cualquier consulta sobre este presupuesto.
+              </p>
+            </div>
+          </motion.div>
+        )}
 
         {validezFecha && (
           <motion.div initial="hidden" animate="visible" variants={fadeUp} className="text-center mb-4">
