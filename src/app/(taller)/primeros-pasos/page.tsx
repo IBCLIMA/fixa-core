@@ -125,6 +125,19 @@ export default function PrimerosPasosPage() {
         ))}
       </div>
 
+      <Card className="border-orange-200 bg-orange-50/50">
+        <CardContent className="p-4 text-center space-y-2">
+          <p className="font-bold text-orange-900">Un último consejo</p>
+          <p className="text-sm text-orange-800">
+            Instala FIXA en tu móvil para tenerla como una app, con avisos al instante
+            cuando un cliente acepte un presupuesto.
+          </p>
+          <Link href="/instalar" className="inline-block text-sm font-bold text-orange-600 hover:underline">
+            Ver cómo instalarla (30 segundos) →
+          </Link>
+        </CardContent>
+      </Card>
+
       <Card className="border-emerald-200 bg-emerald-50/50">
         <CardContent className="p-4 text-center space-y-2">
           <CheckCircle2 className="h-8 w-8 text-emerald-600 mx-auto" />

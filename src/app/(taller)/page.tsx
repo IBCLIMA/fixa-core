@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { EntradaRapida } from "./entrada-rapida";
 import { TourGuiado } from "./tour-guiado";
+import { InstallBanner } from "@/components/install-banner";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
 import { ordenesTrabajo, clientes, citas, vehiculos, talleres, presupuestos } from "@/db/schema";
@@ -270,6 +271,9 @@ export default async function PanelDelDia() {
           <div id="btn-entrada-rapida"><EntradaRapida /></div>
         </div>
       </div>
+
+      {/* Instalar PWA (solo móvil, solo si no está instalada) */}
+      <InstallBanner />
 
       {/* KPIs */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MessageSquare, Mail, Phone, BookOpen, Send, CheckCircle2 } from "lucide-react";
+import { MessageSquare, Mail, Phone, BookOpen, Send, CheckCircle2, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -94,6 +94,21 @@ export default function AyudaPage() {
                 <h3 className="font-bold text-sm">Primeros pasos</h3>
                 <p className="text-xs text-muted-foreground mt-0.5">Guía paso a paso</p>
                 <p className="text-xs text-violet-600 font-semibold mt-1">Ver guía →</p>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/instalar" className="block sm:col-span-2">
+          <Card className="hover:border-orange-300 hover:shadow-md transition-all duration-300 cursor-pointer h-full">
+            <CardContent className="p-5 flex items-start gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50">
+                <Smartphone className="h-6 w-6 text-orange-600" />
+              </div>
+              <div>
+                <h3 className="font-bold text-sm">Instala FIXA en tu móvil</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">Como una app: icono en pantalla de inicio y avisos al instante</p>
+                <p className="text-xs text-orange-600 font-semibold mt-1">Ver cómo (30 segundos) →</p>
               </div>
             </CardContent>
           </Card>
