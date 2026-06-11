@@ -65,6 +65,22 @@ export async function getCliente(id: string) {
   return { ...cliente, vehiculos: vehiculosConOrdenes };
 }
 
+/** Guarda la fecha de caducidad de la ITV (capturada de la pegatina/tarjeta ITV). */
+export async function actualizarFechaItv(vehiculoId: string, fechaItv: string) {
+  const { tallerId } = await getTallerIdFromAuth();
+  const db = getDb();
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(fechaItv)) throw new Error("Fecha no válida");
+
+  await db
+    .update(vehiculos)
+    .set({ fechaItv })
+    .where(and(eq(vehiculos.id, vehiculoId), eq(vehiculos.tallerId, tallerId)));
+
+  revalidatePath("/avisos");
+  revalidatePath("/ordenes");
+}
+
 export async function crearCliente(data: {
   nombre: string;
   telefono?: string;

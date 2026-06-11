@@ -62,6 +62,7 @@ export function EntradaRapida() {
         marca: (formData.get("marca") as string) || undefined,
         modelo: (formData.get("modelo") as string) || undefined,
         descripcionCliente: (formData.get("descripcion") as string) || undefined,
+        fechaItv: (formData.get("fechaItv") as string) || undefined,
       });
       toast.success(`OR-${orden.numero} creada`);
       setOpen(false);
@@ -84,6 +85,7 @@ export function EntradaRapida() {
         clienteId: seleccionado.clienteId!,
         kmEntrada: formData.get("km") ? Number(formData.get("km")) : undefined,
         descripcionCliente: (formData.get("descripcion") as string) || undefined,
+        fechaItv: (formData.get("fechaItv") as string) || undefined,
       });
       toast.success(`OR-${orden.numero} creada`);
       setOpen(false);
@@ -243,6 +245,12 @@ export function EntradaRapida() {
               <Textarea name="descripcion" placeholder="Le hace ruido al frenar, pierde líquido..." rows={2} className="rounded-xl" />
             </div>
 
+            {/* ITV (opcional, de la pegatina del parabrisas) */}
+            <div className="space-y-1">
+              <Label className="text-xs font-bold text-stone-500">Fecha caducidad ITV (pegatina del parabrisas) · opcional</Label>
+              <Input name="fechaItv" type="date" className="h-11 rounded-xl" />
+            </div>
+
             {/* Actions */}
             <div className="flex gap-2 pt-1">
               <Button type="submit" className="flex-1 h-12 rounded-xl font-bold text-sm" disabled={loading}>
@@ -272,14 +280,20 @@ export function EntradaRapida() {
               )}
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-stone-500">Km de entrada</Label>
-              <Input
-                name="km"
-                type="number"
-                placeholder={seleccionado.km ? String(seleccionado.km) : "87500"}
-                className="h-11 rounded-xl"
-              />
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-stone-500">Km de entrada</Label>
+                <Input
+                  name="km"
+                  type="number"
+                  placeholder={seleccionado.km ? String(seleccionado.km) : "87500"}
+                  className="h-11 rounded-xl"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-stone-500">Fecha caducidad ITV · opcional</Label>
+                <Input name="fechaItv" type="date" className="h-11 rounded-xl" />
+              </div>
             </div>
 
             <div className="space-y-1.5">

@@ -27,6 +27,7 @@ import { VehiculoCard } from "./vehiculo-card";
 import { PrintButton } from "./print-button";
 import { CobrarDialog } from "./cobrar-dialog";
 import { EntregarDialog } from "./entregar-dialog";
+import { ItvAlert } from "./itv-alert";
 import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { getUserRole, getTallerIdFromAuth } from "@/lib/auth";
@@ -178,6 +179,15 @@ export default async function OrdenDetallePage({
           matricula={orden.vehiculo?.matricula}
         />
       </div>
+
+      {/* Aviso ITV: el coche está aquí — capturar la fecha o aprovechar la pre-ITV */}
+      {orden.vehiculo && orden.estado !== "entregado" && orden.estado !== "cancelado" && (
+        <ItvAlert
+          vehiculoId={orden.vehiculo.id}
+          fechaItv={orden.vehiculo.fechaItv}
+          anio={orden.vehiculo.anio}
+        />
+      )}
 
       {/* Descripción y diagnóstico */}
       <EditarDiagnostico

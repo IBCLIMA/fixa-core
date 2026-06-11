@@ -40,10 +40,19 @@ export async function crearOrdenRapida(data: {
   descripcionCliente?: string;
   fechaEstimada?: string;
   motivoDeposito?: string;
+  fechaItv?: string;
 }) {
   const { tallerId, usuarioId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
   const { sql } = await import("drizzle-orm");
+
+  // Si el mecánico apunta la fecha ITV (pegatina), actualizar la ficha del vehículo
+  if (data.fechaItv) {
+    await db
+      .update(vehiculos)
+      .set({ fechaItv: data.fechaItv })
+      .where(and(eq(vehiculos.id, data.vehiculoId), eq(vehiculos.tallerId, tallerId)));
+  }
 
   const [orden] = await db
     .insert(ordenesTrabajo)
@@ -94,6 +103,7 @@ export async function crearTodoRapido(data: {
   descripcionCliente?: string;
   fechaEstimada?: string;
   motivoDeposito?: string;
+  fechaItv?: string;
 }) {
   const { tallerId, usuarioId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
@@ -118,6 +128,7 @@ export async function crearTodoRapido(data: {
       matricula: data.matricula.toUpperCase().replace(/[\s\-]/g, ""),
       marca: data.marca || null,
       modelo: data.modelo || null,
+      fechaItv: data.fechaItv || null,
     })
     .returning();
 

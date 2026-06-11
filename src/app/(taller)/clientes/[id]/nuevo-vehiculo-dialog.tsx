@@ -107,7 +107,7 @@ export function NuevoVehiculoDialog({ clienteId }: { clienteId: string }) {
               <Input id="vin" name="vin" placeholder="WVWZZZ..." className="h-11 rounded-xl" />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="fechaItv">Próxima ITV</Label>
+              <Label htmlFor="fechaItv">Fecha caducidad ITV</Label>
               <Input id="fechaItv" name="fechaItv" type="date" className="h-11 rounded-xl" />
             </div>
           </div>

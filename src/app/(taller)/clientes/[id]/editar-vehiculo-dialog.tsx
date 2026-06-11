@@ -111,7 +111,7 @@ export function EditarVehiculoDialog({ vehiculo }: Props) {
             </div>
             <div className="space-y-1.5"><Label>Color</Label><Input name="color" defaultValue={vehiculo.color || ""} className="h-11 rounded-xl" /></div>
             <div className="space-y-1.5"><Label>VIN</Label><Input name="vin" defaultValue={vehiculo.vin || ""} className="h-11 rounded-xl" /></div>
-            <div className="space-y-1.5"><Label>Próxima ITV</Label><Input name="fechaItv" type="date" defaultValue={vehiculo.fechaItv || ""} className="h-11 rounded-xl" /></div>
+            <div className="space-y-1.5"><Label>Fecha caducidad ITV</Label><Input name="fechaItv" type="date" defaultValue={vehiculo.fechaItv || ""} className="h-11 rounded-xl" /></div>
           </div>
           <Button type="submit" className="w-full h-11 rounded-xl" disabled={loading}>{loading ? "Guardando..." : "Guardar cambios"}</Button>
         </form>
