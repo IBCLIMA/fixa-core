@@ -1,9 +1,9 @@
-import { Bell, MessageSquare, Check, Plus, RefreshCw, Car } from "lucide-react";
+import { Bell, MessageSquare, Check, Plus, RefreshCw, Car, UserX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { getAvisos } from "../actions/avisos";
+import { getAvisos, getClientesInactivos } from "../actions/avisos";
 import { AvisosActions } from "./avisos-actions";
 import { formatWhatsAppUrl } from "@/lib/utils";
 
@@ -19,7 +19,10 @@ const tipoColors: Record<string, string> = {
 };
 
 export default async function AvisosPage() {
-  const avisosList = await getAvisos();
+  const [avisosList, clientesInactivos] = await Promise.all([
+    getAvisos(),
+    getClientesInactivos().catch(() => []),
+  ]);
   const pendientes = avisosList.filter((a) => !a.enviado);
   const enviados = avisosList.filter((a) => a.enviado);
 
@@ -73,8 +76,56 @@ export default async function AvisosPage() {
         </div>
       )}
 
+      {/* Clientes inactivos — oportunidad de reactivación */}
+      {clientesInactivos.length > 0 && (
+        <div>
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
+            Clientes que no vienen hace más de un año ({clientesInactivos.length})
+          </p>
+          <p className="text-xs text-muted-foreground mb-3">
+            Un mensaje amable recupera clientes: revisión, cambio de aceite o pre-ITV.
+          </p>
+          <div className="space-y-2">
+            {clientesInactivos.map((c) => {
+              const meses = Math.floor((Date.now() - new Date(c.ultimaVisita).getTime()) / (30 * 86400000));
+              return (
+                <Card key={c.clienteId} className="border-violet-200 bg-violet-50/30">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <Link href={`/clientes/${c.clienteId}`} className="flex items-center gap-3 min-w-0 flex-1">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-100">
+                          <UserX className="h-4 w-4 text-violet-600" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold truncate">{c.nombre}</p>
+                          <p className="text-xs text-muted-foreground">
+                            Última visita hace {meses} meses · {c.numOrdenes} {Number(c.numOrdenes) === 1 ? "orden" : "órdenes"}
+                          </p>
+                        </div>
+                      </Link>
+                      {c.telefono && (
+                        <a
+                          href={formatWhatsAppUrl(
+                            c.telefono,
+                            `Hola ${c.nombre?.split(" ")[0]}, ¡cuánto tiempo! Te escribimos del taller. ¿Cómo va el coche? Si le toca revisión, cambio de aceite o la ITV, dínoslo y te buscamos hueco esta semana. ¡Un saludo!`
+                          )}
+                          target="_blank"
+                          className="flex h-11 items-center gap-1.5 rounded-xl bg-violet-600 px-4 text-white text-xs font-bold hover:bg-violet-500 transition-colors shrink-0"
+                        >
+                          <MessageSquare className="h-3 w-3" />Contactar
+                        </a>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Estado vacío */}
-      {avisosList.length === 0 && (
+      {avisosList.length === 0 && clientesInactivos.length === 0 && (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-16 text-center">
           <Bell className="h-12 w-12 text-muted-foreground/20 mb-4" />
           <h3 className="text-lg font-bold">Sin avisos pendientes</h3>

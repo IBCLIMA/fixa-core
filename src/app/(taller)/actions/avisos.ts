@@ -1,7 +1,7 @@
 "use server";
 
 import { getDb } from "@/db";
-import { avisos, vehiculos, clientes } from "@/db/schema";
+import { avisos, vehiculos, clientes, ordenesTrabajo } from "@/db/schema";
 import { eq, and, desc, lte, sql } from "drizzle-orm";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -60,6 +60,33 @@ export async function getAvisosPendientes() {
       lte(avisos.fechaAviso, hoy)
     ))
     .orderBy(avisos.fechaAviso);
+}
+
+/**
+ * Clientes que no traen el coche desde hace más de 12 meses.
+ * Son la oportunidad de reactivación: un WhatsApp amable recupera trabajo.
+ */
+export async function getClientesInactivos() {
+  const { tallerId } = await getTallerIdFromAuth();
+  const db = getDb();
+
+  const rows = await db
+    .select({
+      clienteId: clientes.id,
+      nombre: clientes.nombre,
+      telefono: clientes.telefono,
+      ultimaVisita: sql<string>`MAX(${ordenesTrabajo.createdAt})`,
+      numOrdenes: sql<number>`COUNT(${ordenesTrabajo.id})`,
+    })
+    .from(clientes)
+    .innerJoin(ordenesTrabajo, eq(ordenesTrabajo.clienteId, clientes.id))
+    .where(and(eq(clientes.tallerId, tallerId), sql`${clientes.telefono} IS NOT NULL`))
+    .groupBy(clientes.id, clientes.nombre, clientes.telefono)
+    .having(sql`MAX(${ordenesTrabajo.createdAt}) < now() - interval '12 months'`)
+    .orderBy(sql`MAX(${ordenesTrabajo.createdAt})`)
+    .limit(30);
+
+  return rows;
 }
 
 export async function crearAviso(data: {

@@ -449,6 +449,87 @@ export async function anularPago(ordenId: string) {
   revalidatePath("/facturacion");
 }
 
+/**
+ * Flujo de entrega unificado: marca la orden como entregada, registra el cobro
+ * (opcional, generando documento) y devuelve el WhatsApp con informe + petición de reseña.
+ */
+export async function entregarOrden(
+  ordenId: string,
+  metodoPago?: "efectivo" | "tarjeta" | "transferencia" | "bizum" | "domiciliacion" | "otro"
+) {
+  const { tallerId, usuarioId, clerkUserId } = await getTallerIdFromAuth();
+  const db = getDb();
+
+  const [orden] = await db
+    .select()
+    .from(ordenesTrabajo)
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
+  if (!orden) throw new Error("Orden no encontrada");
+  if (orden.estado === "entregado") throw new Error("Esta orden ya está entregada");
+
+  // 1. Cobro + documento (antes de entregar, para que un fallo de cobro no deje estados a medias)
+  let documentoId: string | null = null;
+  if (metodoPago) {
+    const { generarDocumentoCobro } = await import("./documentos");
+    const doc = await generarDocumentoCobro(ordenId, metodoPago);
+    documentoId = doc.id;
+  }
+
+  // 2. Marcar entregada
+  await db
+    .update(ordenesTrabajo)
+    .set({ estado: "entregado", fechaEntrega: new Date(), updatedAt: new Date() })
+    .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
+
+  await db.insert(historialEstados).values({
+    ordenId,
+    estadoAnterior: orden.estado,
+    estadoNuevo: "entregado",
+    usuarioId,
+  });
+
+  logAudit({
+    tallerId,
+    userId: clerkUserId,
+    action: "update",
+    entityType: "orden",
+    entityId: ordenId,
+    details: { action: "entrega_unificada", estadoAnterior: orden.estado, cobrado: !!metodoPago, metodoPago },
+  });
+
+  // 3. WhatsApp: informe + petición de reseña en un solo mensaje
+  let whatsappUrl: string | null = null;
+  const [cliente] = await db.select().from(clientes).where(eq(clientes.id, orden.clienteId));
+  if (cliente?.telefono) {
+    const [vehiculo] = await db.select().from(vehiculos).where(eq(vehiculos.id, orden.vehiculoId));
+    const [taller] = await db.select().from(talleres).where(eq(talleres.id, tallerId));
+    const informeUrl = await getInformeUrl(ordenId);
+    const nombreCliente = cliente.nombre?.split(" ")[0] || "";
+    const vehiculoDesc = [vehiculo?.marca, vehiculo?.modelo].filter(Boolean).join(" ");
+
+    const mensaje = [
+      `Hola ${nombreCliente},`,
+      ``,
+      `¡Gracias por confiar en *${taller.nombre}*! Aquí tienes el informe de todo lo que le hemos hecho a tu ${vehiculoDesc} (${vehiculo?.matricula || ""}):`,
+      informeUrl,
+      ``,
+      ...(taller.googleReviewLink
+        ? [`Si has quedado contento con el servicio, nos ayudarías muchísimo con una reseña en Google:`, taller.googleReviewLink, ``]
+        : []),
+      `Cualquier cosa, aquí nos tienes. ¡Un saludo!`,
+    ].join("\n");
+
+    whatsappUrl = formatWhatsAppUrl(cliente.telefono, mensaje);
+  }
+
+  revalidatePath(`/ordenes/${ordenId}`);
+  revalidatePath("/ordenes");
+  revalidatePath("/facturacion");
+  revalidatePath("/");
+
+  return { whatsappUrl, documentoId };
+}
+
 export async function enviarSolicitudResena(ordenId: string) {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();

@@ -26,6 +26,7 @@ import { LineasList } from "./lineas-list";
 import { VehiculoCard } from "./vehiculo-card";
 import { PrintButton } from "./print-button";
 import { CobrarDialog } from "./cobrar-dialog";
+import { EntregarDialog } from "./entregar-dialog";
 import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { getUserRole, getTallerIdFromAuth } from "@/lib/auth";
@@ -226,8 +227,32 @@ export default async function OrdenDetallePage({
         />
       )}
 
-      {/* Cobro */}
-      {(orden.estado === "listo" || orden.estado === "entregado") && lineas.length > 0 && (
+      {/* Entrega unificada: entregar + cobrar + WhatsApp en un solo flujo */}
+      {orden.estado === "listo" && (
+        <Card className="no-print border-emerald-300 bg-emerald-50/60">
+          <CardContent className="p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-base font-extrabold text-emerald-900">Coche listo para entregar</p>
+                <p className="text-xs text-emerald-700 mt-0.5">
+                  Entrega, cobro y aviso al cliente en un solo paso.
+                </p>
+              </div>
+              <EntregarDialog
+                ordenId={orden.id}
+                totalFinal={totalFinal}
+                matricula={orden.vehiculo?.matricula}
+                clienteNombre={orden.cliente?.nombre}
+                tieneTelefono={!!orden.cliente?.telefono}
+                hayLineas={lineas.length > 0}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Cobro (para entregadas sin cobrar o consultar el documento) */}
+      {orden.estado === "entregado" && lineas.length > 0 && (
         <Card className="no-print border-emerald-200">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">

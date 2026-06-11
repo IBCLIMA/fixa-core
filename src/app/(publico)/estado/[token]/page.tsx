@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Car, Clock, CheckCircle2, CalendarCheck } from "lucide-react";
+import { Car, Clock, CheckCircle2, CalendarCheck, FileText, AlertTriangle, Receipt, ArrowRight } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getDb } from "@/db";
-import { ordenesTrabajo, vehiculos, clientes, talleres, historialEstados } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { ordenesTrabajo, vehiculos, clientes, talleres, historialEstados, presupuestos, averiasOcultas, documentosCobro } from "@/db/schema";
+import { eq, desc, and, inArray } from "drizzle-orm";
 import { estadoLabelsCliente as estadoLabels, estadoColors } from "@/lib/constants";
 
 const estadoSteps = ["recibido", "diagnostico", "presupuestado", "aprobado", "en_reparacion", "listo", "entregado"];
@@ -44,12 +44,43 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
 
   const currentStepIndex = estadoSteps.indexOf(o.estado);
 
-  // Historial
-  const historial = await db
-    .select()
-    .from(historialEstados)
-    .where(eq(historialEstados.ordenId, o.id))
-    .orderBy(desc(historialEstados.createdAt));
+  // Historial + acciones pendientes del cliente (hub: todo desde un solo link)
+  const [historial, [presupuestoPendiente], averiasPendientes, [documento]] = await Promise.all([
+    db
+      .select()
+      .from(historialEstados)
+      .where(eq(historialEstados.ordenId, o.id))
+      .orderBy(desc(historialEstados.createdAt)),
+    db
+      .select({
+        id: presupuestos.id,
+        numero: presupuestos.numero,
+        estado: presupuestos.estado,
+        tokenPublico: presupuestos.tokenPublico,
+      })
+      .from(presupuestos)
+      .where(and(
+        eq(presupuestos.ordenId, o.id),
+        inArray(presupuestos.estado, ["enviado", "borrador"])
+      ))
+      .orderBy(desc(presupuestos.createdAt))
+      .limit(1),
+    db
+      .select({
+        id: averiasOcultas.id,
+        descripcion: averiasOcultas.descripcion,
+        tokenAprobacion: averiasOcultas.tokenAprobacion,
+      })
+      .from(averiasOcultas)
+      .where(and(eq(averiasOcultas.ordenId, o.id), eq(averiasOcultas.estado, "pendiente"))),
+    db
+      .select({ id: documentosCobro.id, tokenPublico: documentosCobro.tokenPublico, numero: documentosCobro.numero })
+      .from(documentosCobro)
+      .where(eq(documentosCobro.ordenId, o.id))
+      .limit(1),
+  ]);
+
+  const informeDisponible = o.estado === "listo" || o.estado === "entregado";
 
   return (
     <div className="min-h-screen bg-background">
@@ -76,6 +107,85 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
             </p>
           )}
         </div>
+
+        {/* ── Acciones pendientes (hub) ── */}
+        {presupuestoPendiente?.tokenPublico && (
+          <Link href={`/presupuesto/${presupuestoPendiente.tokenPublico}`} className="block">
+            <Card className="border-orange-300 bg-gradient-to-br from-orange-50 to-amber-50/50 hover:border-orange-400 transition-colors shadow-sm">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-500 shadow-sm shadow-orange-500/30">
+                    <FileText className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-extrabold text-orange-900">Tienes un presupuesto pendiente</p>
+                    <p className="text-xs text-orange-700 mt-0.5">Revísalo y acéptalo online en un minuto</p>
+                  </div>
+                  <ArrowRight className="h-5 w-5 text-orange-500 shrink-0" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        )}
+
+        {averiasPendientes.map((a) =>
+          a.tokenAprobacion ? (
+            <Link key={a.id} href={`/aprobar/${a.tokenAprobacion}`} className="block">
+              <Card className="border-amber-300 bg-amber-50/60 hover:border-amber-400 transition-colors shadow-sm">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-500 shadow-sm shadow-amber-500/30">
+                      <AlertTriangle className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-extrabold text-amber-900">Hemos encontrado algo más</p>
+                      <p className="text-xs text-amber-700 mt-0.5 truncate">{a.descripcion} — necesitamos tu aprobación</p>
+                    </div>
+                    <ArrowRight className="h-5 w-5 text-amber-500 shrink-0" />
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ) : null
+        )}
+
+        {informeDisponible && (
+          <Link href={`/informe/${token}`} className="block">
+            <Card className="border-emerald-200 bg-emerald-50/50 hover:border-emerald-300 transition-colors shadow-sm">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-600 shadow-sm shadow-emerald-600/30">
+                    <CheckCircle2 className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-extrabold text-emerald-900">Informe de la reparación</p>
+                    <p className="text-xs text-emerald-700 mt-0.5">Todo lo que le hemos hecho a tu coche, con fotos</p>
+                  </div>
+                  <ArrowRight className="h-5 w-5 text-emerald-500 shrink-0" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        )}
+
+        {documento?.tokenPublico && (
+          <Link href={`/documento/${documento.tokenPublico}`} className="block">
+            <Card className="border-stone-200 hover:border-stone-300 transition-colors">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-stone-700">
+                    <Receipt className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-extrabold">Justificante de cobro</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">DOC-{String(documento.numero).padStart(4, "0")}</p>
+                  </div>
+                  <ArrowRight className="h-5 w-5 text-muted-foreground shrink-0" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        )}
 
         {/* Progreso */}
         <Card>

@@ -24,8 +24,8 @@ import { EntradaRapida } from "./entrada-rapida";
 import { TourGuiado } from "./tour-guiado";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
-import { ordenesTrabajo, clientes, citas, vehiculos, talleres } from "@/db/schema";
-import { eq, and, count, sql, desc, sum } from "drizzle-orm";
+import { ordenesTrabajo, clientes, citas, vehiculos, talleres, presupuestos } from "@/db/schema";
+import { eq, and, count, sql, desc, sum, lt } from "drizzle-orm";
 import { estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { getVehicleAbandonment, type VehicleAbandonment } from "@/lib/vehicle-alerts";
@@ -68,6 +68,8 @@ export default async function PanelDelDia() {
   let facturacionHoyResult: any = { total: 0 };
   let citasManana: any[] = [];
   let vehiculosAbandonados: VehicleAbandonment[] = [];
+  let presupuestosSinRespuesta: any[] = [];
+  let recambiosAtascados: any[] = [];
 
   try {
   const [
@@ -185,6 +187,56 @@ export default async function PanelDelDia() {
     console.error("Vehicle abandonment query error:", e);
   }
 
+  // Presupuestos enviados sin respuesta (dinero parado)
+  try {
+    presupuestosSinRespuesta = await db
+      .select({
+        id: presupuestos.id,
+        numero: presupuestos.numero,
+        createdAt: presupuestos.createdAt,
+        tokenPublico: presupuestos.tokenPublico,
+        matricula: vehiculos.matricula,
+        marca: vehiculos.marca,
+        modelo: vehiculos.modelo,
+        clienteNombre: clientes.nombre,
+        clienteTelefono: clientes.telefono,
+      })
+      .from(presupuestos)
+      .leftJoin(vehiculos, eq(presupuestos.vehiculoId, vehiculos.id))
+      .leftJoin(clientes, eq(presupuestos.clienteId, clientes.id))
+      .where(and(eq(presupuestos.tallerId, tallerId), eq(presupuestos.estado, "enviado")))
+      .orderBy(presupuestos.createdAt)
+      .limit(8);
+  } catch (e) {
+    console.error("Presupuestos sin respuesta query error:", e);
+  }
+
+  // Órdenes esperando recambio más de 4 días (atascadas)
+  try {
+    const hace4Dias = new Date();
+    hace4Dias.setDate(hace4Dias.getDate() - 4);
+    recambiosAtascados = await db
+      .select({
+        id: ordenesTrabajo.id,
+        numero: ordenesTrabajo.numero,
+        updatedAt: ordenesTrabajo.updatedAt,
+        matricula: vehiculos.matricula,
+        clienteNombre: clientes.nombre,
+      })
+      .from(ordenesTrabajo)
+      .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
+      .leftJoin(clientes, eq(ordenesTrabajo.clienteId, clientes.id))
+      .where(and(
+        eq(ordenesTrabajo.tallerId, tallerId),
+        eq(ordenesTrabajo.estado, "esperando_recambio"),
+        lt(ordenesTrabajo.updatedAt, hace4Dias)
+      ))
+      .orderBy(ordenesTrabajo.updatedAt)
+      .limit(8);
+  } catch (e) {
+    console.error("Recambios atascados query error:", e);
+  }
+
   const cobrosPendientes = cobrosPendientesResult?.count ?? 0;
   const entregadasHoy = entregadasHoyResult?.count ?? 0;
   const facturacionHoy = Number(facturacionHoyResult?.total || 0);
@@ -193,6 +245,12 @@ export default async function PanelDelDia() {
   const totalClientes = clientesResult?.count ?? 0;
 
   const fechaHoy = new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
+
+  const appUrl =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+  const diasDesde = (fecha: string | Date) =>
+    Math.floor((Date.now() - new Date(fecha).getTime()) / 86400000);
 
   return (
     <div className="space-y-6">
@@ -398,6 +456,88 @@ export default async function PanelDelDia() {
                     </a>
                   )}
                 </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Presupuestos sin respuesta — dinero parado */}
+      {presupuestosSinRespuesta.length > 0 && (
+        <Card className="border-blue-200 bg-blue-50/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base text-blue-800 flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Presupuestos sin respuesta ({presupuestosSinRespuesta.length})
+            </CardTitle>
+            <p className="text-xs text-blue-700 mt-1">
+              El cliente aún no ha contestado. Un recordatorio amable suele cerrar la venta.
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {presupuestosSinRespuesta.map((p) => {
+                const dias = diasDesde(p.createdAt);
+                return (
+                  <div key={p.id} className="flex items-center justify-between rounded-xl bg-white border border-blue-200 p-3">
+                    <Link href={`/presupuestos/${p.id}`} className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-bold">{p.matricula}</p>
+                          <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${dias >= 3 ? "text-red-700 bg-red-100" : "text-blue-700 bg-blue-100"}`}>
+                            {dias === 0 ? "hoy" : `hace ${dias} ${dias === 1 ? "día" : "días"}`}
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground truncate">{p.clienteNombre} · PT-{p.numero}</p>
+                      </div>
+                    </Link>
+                    {p.clienteTelefono && (
+                      <a
+                        href={formatWhatsAppUrl(
+                          p.clienteTelefono,
+                          `Hola ${p.clienteNombre?.split(" ")[0]}, ¿pudiste ver el presupuesto de tu ${[p.marca, p.modelo].filter(Boolean).join(" ") || "vehículo"}? Puedes verlo y aceptarlo aquí:\n${appUrl}/presupuesto/${p.tokenPublico}\n\nSi tienes cualquier duda, dímelo. ¡Un saludo!`
+                        )}
+                        target="_blank"
+                        className="flex h-11 items-center gap-1.5 rounded-xl bg-blue-600 px-4 text-white text-xs font-bold hover:bg-blue-500 transition-colors shrink-0"
+                      >
+                        <MessageSquare className="h-3 w-3" />Recordar
+                      </a>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Esperando recambio demasiado tiempo */}
+      {recambiosAtascados.length > 0 && (
+        <Card className="border-red-200 bg-red-50/40">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base text-red-800 flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              Esperando recambio demasiado tiempo ({recambiosAtascados.length})
+            </CardTitle>
+            <p className="text-xs text-red-700 mt-1">
+              Más de 4 días parados. Reclama el pedido al proveedor o avisa al cliente del retraso.
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {recambiosAtascados.map((o) => (
+                <Link key={o.id} href={`/ordenes/${o.id}`} className="flex items-center justify-between rounded-xl bg-white border border-red-200 p-3 hover:border-red-300 transition-colors">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold">{o.matricula}</p>
+                      <span className="text-xs font-bold text-red-700 bg-red-100 px-1.5 py-0.5 rounded-full">
+                        {diasDesde(o.updatedAt)} días
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{o.clienteNombre} · OR-{o.numero}</p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                </Link>
               ))}
             </div>
           </CardContent>
