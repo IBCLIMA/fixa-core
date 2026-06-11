@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Smartphone, Share, SquarePlus, Bell, Chrome, MoreVertical } from "lucide-react";
+import { ArrowLeft, Smartphone, Share, SquarePlus, Bell, Globe, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -74,7 +74,7 @@ export default function InstalarPage() {
         <CardContent className="p-5 space-y-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600">
-              <Chrome className="h-5 w-5 text-white" />
+              <Globe className="h-5 w-5 text-white" />
             </div>
             <div>
               <p className="font-extrabold">Android</p>
