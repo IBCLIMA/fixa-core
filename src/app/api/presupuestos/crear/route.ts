@@ -67,13 +67,6 @@ export async function POST(request: Request) {
       vehiculoId = newVehiculo.id;
     }
 
-    // Get next presupuesto number
-    const [maxResult] = await db
-      .select({ max: sql<number>`COALESCE(MAX(${presupuestos.numero}), 0)` })
-      .from(presupuestos)
-      .where(eq(presupuestos.tallerId, tallerId));
-    const numero = (maxResult?.max ?? 0) + 1;
-
     // Create presupuesto (no ordenId — independent)
     const [presupuesto] = await db
       .insert(presupuestos)
@@ -81,27 +74,36 @@ export async function POST(request: Request) {
         tallerId,
         vehiculoId,
         clienteId,
-        numero,
+        // Atomic: next number computed inside the INSERT (no SELECT MAX race window)
+        numero: sql<number>`(SELECT COALESCE(MAX(${presupuestos.numero}), 0) + 1 FROM ${presupuestos} WHERE ${presupuestos.tallerId} = ${tallerId})`,
         estado: "borrador",
         notas: descripcion || null,
         tokenPublico: randomBytes(16).toString("hex"),
       })
       .returning();
 
-    // Create lines if provided
+    // Create lines if provided (validated: tipo whitelist + numeric coercion within sane ranges)
     if (body.lineas && Array.isArray(body.lineas) && body.lineas.length > 0) {
-      const validLineas = body.lineas.filter((l: any) => l.descripcion?.trim());
+      const tiposValidos = ["mano_obra", "recambio", "otros"];
+      const validLineas = body.lineas.filter(
+        (l: any) => typeof l?.descripcion === "string" && l.descripcion.trim()
+      );
       if (validLineas.length > 0) {
         await db.insert(lineasPresupuesto).values(
-          validLineas.map((l: any) => ({
-            presupuestoId: presupuesto.id,
-            tipo: l.tipo || "mano_obra",
-            descripcion: l.descripcion.trim(),
-            cantidad: String(l.cantidad || 1),
-            precioUnitario: String(l.precioUnitario || 0),
-            ivaPct: l.ivaPct != null ? String(l.ivaPct) : "21",
-            referencia: l.referencia || null,
-          }))
+          validLineas.map((l: any) => {
+            const cantidad = Math.max(0, Number(l.cantidad) || 1);
+            const precio = Math.max(0, Number(l.precioUnitario) || 0);
+            const iva = Math.min(100, Math.max(0, Number(l.ivaPct ?? 21) || 0));
+            return {
+              presupuestoId: presupuesto.id,
+              tipo: tiposValidos.includes(l.tipo) ? l.tipo : "mano_obra",
+              descripcion: l.descripcion.trim(),
+              cantidad: String(cantidad),
+              precioUnitario: String(precio),
+              ivaPct: String(iva),
+              referencia: typeof l.referencia === "string" ? l.referencia : null,
+            };
+          })
         );
       }
     }

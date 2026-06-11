@@ -21,13 +21,6 @@ export async function crearPresupuestoDesdeOrden(ordenId: string) {
     .from(lineasOrden)
     .where(eq(lineasOrden.ordenId, ordenId));
 
-  // Get next quote number (unique index prevents duplicates)
-  const [maxResult] = await db
-    .select({ max: sql<number>`COALESCE(MAX(${presupuestos.numero}), 0)` })
-    .from(presupuestos)
-    .where(eq(presupuestos.tallerId, tallerId));
-
-  const numero = (maxResult?.max ?? 0) + 1;
   const token = randomBytes(16).toString("hex");
 
   // Crear presupuesto
@@ -38,7 +31,8 @@ export async function crearPresupuestoDesdeOrden(ordenId: string) {
       tallerId,
       vehiculoId: orden.vehiculoId,
       clienteId: orden.clienteId,
-      numero,
+      // Atomic: next number computed inside the INSERT (no SELECT MAX race window)
+      numero: sql<number>`(SELECT COALESCE(MAX(${presupuestos.numero}), 0) + 1 FROM ${presupuestos} WHERE ${presupuestos.tallerId} = ${tallerId})`,
       estado: "borrador",
       tokenPublico: token,
     })
@@ -146,7 +140,10 @@ export async function eliminarLineaPresupuesto(lineaId: string, presupuestoId: s
   const [presupuesto] = await db.select().from(presupuestos).where(and(eq(presupuestos.id, presupuestoId), eq(presupuestos.tallerId, tallerId)));
   if (!presupuesto) throw new Error("Presupuesto no encontrado");
 
-  await db.delete(lineasPresupuesto).where(eq(lineasPresupuesto.id, lineaId));
+  await db.delete(lineasPresupuesto).where(and(
+    eq(lineasPresupuesto.id, lineaId),
+    eq(lineasPresupuesto.presupuestoId, presupuestoId)
+  ));
 
   revalidatePath(`/presupuestos/${presupuestoId}`);
   revalidatePath("/presupuestos");
@@ -177,7 +174,10 @@ export async function editarLineaPresupuesto(data: {
       descuentoPct: data.descuentoPct ? String(data.descuentoPct) : "0",
       ivaPct: data.ivaPct ? String(data.ivaPct) : "21",
     })
-    .where(eq(lineasPresupuesto.id, data.id));
+    .where(and(
+      eq(lineasPresupuesto.id, data.id),
+      eq(lineasPresupuesto.presupuestoId, data.presupuestoId)
+    ));
 
   revalidatePath(`/presupuestos/${data.presupuestoId}`);
   revalidatePath("/presupuestos");

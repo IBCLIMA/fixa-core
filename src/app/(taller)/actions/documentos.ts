@@ -84,14 +84,6 @@ export async function generarDocumentoCobro(
 
   const totalFinal = baseImponible + totalIva;
 
-  // Get next sequential number for this workshop
-  const [maxResult] = await db
-    .select({ max: sql<number>`COALESCE(MAX(${documentosCobro.numero}), 0)` })
-    .from(documentosCobro)
-    .where(eq(documentosCobro.tallerId, tallerId));
-
-  const numero = (maxResult?.max ?? 0) + 1;
-
   // Generate public token
   const { randomBytes } = await import("crypto");
   const tokenPublico = randomBytes(16).toString("hex");
@@ -106,7 +98,8 @@ export async function generarDocumentoCobro(
       ordenId,
       clienteId: orden.clienteId,
       vehiculoId: orden.vehiculoId,
-      numero,
+      // Atomic: next number computed inside the INSERT (no SELECT MAX race window)
+      numero: sql<number>`(SELECT COALESCE(MAX(${documentosCobro.numero}), 0) + 1 FROM ${documentosCobro} WHERE ${documentosCobro.tallerId} = ${tallerId})`,
       tallerNombre: taller.nombre,
       tallerCif: taller.cif || null,
       tallerDireccion: taller.direccion || null,
@@ -150,7 +143,7 @@ export async function generarDocumentoCobro(
     action: "create",
     entityType: "documento_cobro",
     entityId: documento.id,
-    details: { numero, ordenId, total: totalFinal.toFixed(2), metodoPago },
+    details: { numero: documento.numero, ordenId, total: totalFinal.toFixed(2), metodoPago },
   });
 
   revalidatePath(`/ordenes/${ordenId}`);

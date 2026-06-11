@@ -47,18 +47,41 @@ export async function getOrdenes(filtroEstado?: string) {
     .where(and(...conditions))
     .orderBy(desc(ordenesTrabajo.createdAt));
 
-  // Fetch relations for each order
-  const results = await Promise.all(ordenes.map(async (o) => {
-    const [vehiculo] = await db.select().from(vehiculos).where(eq(vehiculos.id, o.vehiculoId));
-    const [cliente] = await db.select().from(clientes).where(eq(clientes.id, o.clienteId));
-    const lineas = await db.select().from(lineasOrden).where(eq(lineasOrden.ordenId, o.id));
-    const asignado = o.asignadoA
-      ? (await db.select().from(usuarios).where(eq(usuarios.id, o.asignadoA)))[0] ?? null
-      : null;
-    return { ...o, vehiculo: vehiculo ?? null, cliente: cliente ?? null, lineas, asignado };
-  }));
+  if (ordenes.length === 0) return [];
 
-  return results;
+  // Batch-fetch relations (4 queries total instead of 4 per order — Neon HTTP has no pooled connection)
+  const { inArray } = await import("drizzle-orm");
+  const vehiculoIds = [...new Set(ordenes.map((o) => o.vehiculoId))];
+  const clienteIds = [...new Set(ordenes.map((o) => o.clienteId))];
+  const ordenIds = ordenes.map((o) => o.id);
+  const asignadoIds = [...new Set(ordenes.map((o) => o.asignadoA).filter((x): x is string => !!x))];
+
+  const [vehiculosList, clientesList, lineasList, usuariosList] = await Promise.all([
+    db.select().from(vehiculos).where(inArray(vehiculos.id, vehiculoIds)),
+    db.select().from(clientes).where(inArray(clientes.id, clienteIds)),
+    db.select().from(lineasOrden).where(inArray(lineasOrden.ordenId, ordenIds)),
+    asignadoIds.length > 0
+      ? db.select().from(usuarios).where(inArray(usuarios.id, asignadoIds))
+      : Promise.resolve([] as (typeof usuarios.$inferSelect)[]),
+  ]);
+
+  const vehiculosMap = new Map(vehiculosList.map((v) => [v.id, v]));
+  const clientesMap = new Map(clientesList.map((c) => [c.id, c]));
+  const usuariosMap = new Map(usuariosList.map((u) => [u.id, u]));
+  const lineasMap = new Map<string, (typeof lineasList)[number][]>();
+  for (const l of lineasList) {
+    const arr = lineasMap.get(l.ordenId) ?? [];
+    arr.push(l);
+    lineasMap.set(l.ordenId, arr);
+  }
+
+  return ordenes.map((o) => ({
+    ...o,
+    vehiculo: vehiculosMap.get(o.vehiculoId) ?? null,
+    cliente: clientesMap.get(o.clienteId) ?? null,
+    lineas: lineasMap.get(o.id) ?? [],
+    asignado: o.asignadoA ? usuariosMap.get(o.asignadoA) ?? null : null,
+  }));
 }
 
 export async function getOrden(id: string) {
@@ -109,14 +132,6 @@ export async function crearOrden(data: {
   const { tallerId, usuarioId, clerkUserId } = await getTallerIdFromAuth();
   const db = getDb();
 
-  // Get next order number (unique index on taller_id+numero prevents duplicates)
-  const [maxResult] = await db
-    .select({ max: sql<number>`COALESCE(MAX(${ordenesTrabajo.numero}), 0)` })
-    .from(ordenesTrabajo)
-    .where(eq(ordenesTrabajo.tallerId, tallerId));
-
-  const numero = (maxResult?.max ?? 0) + 1;
-
   const { randomBytes } = await import("crypto");
   const tokenPublico = randomBytes(16).toString("hex");
 
@@ -126,7 +141,8 @@ export async function crearOrden(data: {
       tallerId,
       vehiculoId: data.vehiculoId,
       clienteId: data.clienteId,
-      numero,
+      // Atomic: next number computed inside the INSERT (no SELECT MAX race window)
+      numero: sql<number>`(SELECT COALESCE(MAX(${ordenesTrabajo.numero}), 0) + 1 FROM ${ordenesTrabajo} WHERE ${ordenesTrabajo.tallerId} = ${tallerId})`,
       estado: "recibido",
       kmEntrada: data.kmEntrada,
       descripcionCliente: data.descripcionCliente,
@@ -296,7 +312,10 @@ export async function editarLineaOrden(data: {
       descuentoPct: data.descuentoPct ? String(data.descuentoPct) : "0",
       ivaPct: data.ivaPct ? String(data.ivaPct) : "21",
     })
-    .where(eq(lineasOrden.id, data.id));
+    .where(and(
+      eq(lineasOrden.id, data.id),
+      eq(lineasOrden.ordenId, data.ordenId)
+    ));
 
   revalidatePath(`/ordenes/${data.ordenId}`);
 }
@@ -313,7 +332,10 @@ export async function eliminarLineaOrden(id: string, ordenId: string) {
 
   if (!orden) throw new Error("Orden no encontrada");
 
-  await db.delete(lineasOrden).where(eq(lineasOrden.id, id));
+  await db.delete(lineasOrden).where(and(
+    eq(lineasOrden.id, id),
+    eq(lineasOrden.ordenId, ordenId)
+  ));
 
   logAudit({
     tallerId,

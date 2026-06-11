@@ -160,10 +160,14 @@ export async function responderAveria(token: string, decision: "aprobada" | "rec
   if (!averia) throw new Error("Avería no encontrada");
   if (averia.estado !== "pendiente") throw new Error("Ya se ha respondido a esta solicitud");
 
-  await db
+  // Atomic conditional update: prevents double-respond race
+  const updated = await db
     .update(averiasOcultas)
     .set({ estado: decision, respondidoAt: new Date() })
-    .where(eq(averiasOcultas.id, averia.id));
+    .where(and(eq(averiasOcultas.id, averia.id), eq(averiasOcultas.estado, "pendiente")))
+    .returning({ id: averiasOcultas.id });
+
+  if (updated.length === 0) throw new Error("Ya se ha respondido a esta solicitud");
 
   // Notify the workshop
   await createNotification({

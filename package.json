@@ -52,7 +52,6 @@
     "velite": "^0.3.1"
   },
   "devDependencies": {
-    "@clerk/testing": "^2.0.29",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

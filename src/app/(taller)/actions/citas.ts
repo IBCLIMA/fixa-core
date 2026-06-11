@@ -17,14 +17,31 @@ export async function getCitasDelDia(fecha?: string) {
     .where(and(eq(citas.tallerId, tallerId), eq(citas.fecha, hoy)))
     .orderBy(citas.horaInicio);
 
-  // Fetch related clients and vehicles
-  const results = await Promise.all(citasList.map(async (c) => {
-    const [cliente] = c.clienteId ? await db.select().from(clientes).where(eq(clientes.id, c.clienteId)) : [null];
-    const [vehiculo] = c.vehiculoId ? await db.select().from(vehiculos).where(eq(vehiculos.id, c.vehiculoId)) : [null];
-    return { ...c, cliente: cliente ?? null, vehiculo: vehiculo ?? null };
-  }));
+  return hidratarCitas(citasList);
+}
 
-  return results;
+// Batch-fetch clients & vehicles for a list of citas (2 queries total, not 2 per cita)
+async function hidratarCitas(citasList: (typeof citas.$inferSelect)[]) {
+  if (citasList.length === 0) return [];
+  const db = getDb();
+  const { inArray } = await import("drizzle-orm");
+
+  const clienteIds = [...new Set(citasList.map((c) => c.clienteId).filter((x): x is string => !!x))];
+  const vehiculoIds = [...new Set(citasList.map((c) => c.vehiculoId).filter((x): x is string => !!x))];
+
+  const [clientesList, vehiculosList] = await Promise.all([
+    clienteIds.length > 0 ? db.select().from(clientes).where(inArray(clientes.id, clienteIds)) : Promise.resolve([] as (typeof clientes.$inferSelect)[]),
+    vehiculoIds.length > 0 ? db.select().from(vehiculos).where(inArray(vehiculos.id, vehiculoIds)) : Promise.resolve([] as (typeof vehiculos.$inferSelect)[]),
+  ]);
+
+  const clientesMap = new Map(clientesList.map((c) => [c.id, c]));
+  const vehiculosMap = new Map(vehiculosList.map((v) => [v.id, v]));
+
+  return citasList.map((c) => ({
+    ...c,
+    cliente: c.clienteId ? clientesMap.get(c.clienteId) ?? null : null,
+    vehiculo: c.vehiculoId ? vehiculosMap.get(c.vehiculoId) ?? null : null,
+  }));
 }
 
 export async function getCitasSemana(fechaInicio: string, fechaFin: string) {
@@ -39,14 +56,7 @@ export async function getCitasSemana(fechaInicio: string, fechaFin: string) {
     ))
     .orderBy(citas.fecha, citas.horaInicio);
 
-  // Fetch related clients and vehicles
-  const results = await Promise.all(citasList.map(async (c) => {
-    const [cliente] = c.clienteId ? await db.select().from(clientes).where(eq(clientes.id, c.clienteId)) : [null];
-    const [vehiculo] = c.vehiculoId ? await db.select().from(vehiculos).where(eq(vehiculos.id, c.vehiculoId)) : [null];
-    return { ...c, cliente: cliente ?? null, vehiculo: vehiculo ?? null };
-  }));
-
-  return results;
+  return hidratarCitas(citasList);
 }
 
 export async function contarCitasHoy() {
@@ -253,20 +263,14 @@ export async function crearOrdenDesdeCita(citaId: string) {
   }
 
   // 4. Create order
-  const [maxResult] = await db
-    .select({ max: sql<number>`COALESCE(MAX(${ordenesTrabajo.numero}), 0)` })
-    .from(ordenesTrabajo)
-    .where(eq(ordenesTrabajo.tallerId, tallerId));
-
-  const numero = (maxResult?.max ?? 0) + 1;
-
   const [orden] = await db
     .insert(ordenesTrabajo)
     .values({
       tallerId,
       vehiculoId: vehiculoId!,
       clienteId: clienteId!,
-      numero,
+      // Atomic: next number computed inside the INSERT (no SELECT MAX race window)
+      numero: sql<number>`(SELECT COALESCE(MAX(${ordenesTrabajo.numero}), 0) + 1 FROM ${ordenesTrabajo} WHERE ${ordenesTrabajo.tallerId} = ${tallerId})`,
       estado: "recibido",
       descripcionCliente: cita.motivo || null,
       motivoDeposito: "reparacion",

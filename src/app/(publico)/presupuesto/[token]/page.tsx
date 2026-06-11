@@ -8,7 +8,7 @@ import {
   clientes,
   talleres,
 } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { PresupuestoClient } from "./presupuesto-client";
 
 interface PageProps {
@@ -58,6 +58,16 @@ export default async function PresupuestoPublicoPage({ params }: PageProps) {
     .limit(1);
 
   if (!presupuesto) return notFound();
+
+  // Traceability: first time the client opens the link, the quote moves borrador → enviado
+  // (the workshop sees it left "draft" without having to flip the state manually)
+  if (presupuesto.estado === "borrador") {
+    await db
+      .update(presupuestos)
+      .set({ estado: "enviado" })
+      .where(and(eq(presupuestos.id, presupuesto.id), eq(presupuestos.estado, "borrador")));
+    presupuesto.estado = "enviado";
+  }
 
   const [taller] = await db
     .select({

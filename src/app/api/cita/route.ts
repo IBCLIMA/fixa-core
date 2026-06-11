@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/db";
-import { citas, talleres } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { citas, talleres, diasBloqueados } from "@/db/schema";
+import { eq, and, ne, count } from "drizzle-orm";
 import { rateLimit } from "@/lib/rate-limit";
 import { createNotification } from "@/lib/notify";
 
@@ -31,6 +31,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate field types, lengths and phone format
+    if (typeof nombre !== "string" || typeof telefono !== "string" || typeof motivo !== "string" || typeof fecha !== "string"
+      || nombre.trim().length < 2 || nombre.length > 120 || motivo.length > 1000) {
+      return NextResponse.json({ error: "Datos no válidos." }, { status: 400 });
+    }
+    const telefonoLimpio = telefono.trim();
+    if (!/^[+]?[\d\s\-().]{7,20}$/.test(telefonoLimpio)) {
+      return NextResponse.json({ error: "El teléfono no parece válido." }, { status: 400 });
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+      return NextResponse.json({ error: "Fecha no válida." }, { status: 400 });
+    }
+
     // Validate date is in the future and not a weekend
     const fechaDate = new Date(fecha + "T00:00:00");
     const today = new Date();
@@ -46,7 +59,7 @@ export async function POST(request: NextRequest) {
     // Verify taller exists and get config
     const db = getDb();
     const [tallerData] = await db
-      .select({ id: talleres.id, trabajaSabados: talleres.trabajaSabados })
+      .select({ id: talleres.id, trabajaSabados: talleres.trabajaSabados, capacidadDiaria: talleres.capacidadDiaria })
       .from(talleres)
       .where(eq(talleres.id, tallerId))
       .limit(1);
@@ -74,6 +87,37 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Server-side check: blocked days (the form also checks, but never trust the client)
+    const [diaBloqueado] = await db
+      .select({ id: diasBloqueados.id })
+      .from(diasBloqueados)
+      .where(and(eq(diasBloqueados.tallerId, tallerId), eq(diasBloqueados.fecha, fecha)))
+      .limit(1);
+    if (diaBloqueado) {
+      return NextResponse.json(
+        { error: "El taller no tiene disponibilidad ese día. Elige otra fecha." },
+        { status: 400 }
+      );
+    }
+
+    // Server-side check: daily capacity
+    if (tallerData.capacidadDiaria) {
+      const [citasDia] = await db
+        .select({ total: count() })
+        .from(citas)
+        .where(and(
+          eq(citas.tallerId, tallerId),
+          eq(citas.fecha, fecha),
+          ne(citas.estado, "cancelada")
+        ));
+      if ((citasDia?.total ?? 0) >= tallerData.capacidadDiaria) {
+        return NextResponse.json(
+          { error: "No quedan huecos para ese día. Elige otra fecha." },
+          { status: 400 }
+        );
+      }
+    }
+
     // Map hora preferida to horaInicio
     let horaInicio: string | undefined;
     if (horaPreferida === "manana") horaInicio = "09:00";
@@ -82,8 +126,8 @@ export async function POST(request: NextRequest) {
     // Create cita
     await db.insert(citas).values({
       tallerId,
-      nombreCliente: nombre,
-      telefonoCliente: telefono,
+      nombreCliente: nombre.trim(),
+      telefonoCliente: telefonoLimpio,
       fecha,
       horaInicio,
       motivo: `${motivo}${matricula ? ` | Matrícula: ${matricula}` : ""}${horaPreferida ? ` | Horario: ${horaPreferida === "manana" ? "Mañana (9-13h)" : horaPreferida === "tarde" ? "Tarde (15-19h)" : "Indiferente"}` : ""}`,

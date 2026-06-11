@@ -28,13 +28,21 @@ export async function getClientes(busqueda?: string) {
     .where(and(...conditions))
     .orderBy(desc(clientes.createdAt));
 
-  // Fetch vehicles for each client
-  const results = await Promise.all(clientesList.map(async (c) => {
-    const vehs = await db.select().from(vehiculos).where(eq(vehiculos.clienteId, c.id));
-    return { ...c, vehiculos: vehs };
-  }));
+  // Batch-fetch vehicles for all clients (1 query, not 1 per client)
+  if (clientesList.length === 0) return [];
+  const { inArray } = await import("drizzle-orm");
+  const vehiculosList = await db.select().from(vehiculos)
+    .where(inArray(vehiculos.clienteId, clientesList.map((c) => c.id)));
 
-  return results;
+  const vehiculosPorCliente = new Map<string, (typeof vehiculosList)[number][]>();
+  for (const v of vehiculosList) {
+    if (!v.clienteId) continue;
+    const arr = vehiculosPorCliente.get(v.clienteId) ?? [];
+    arr.push(v);
+    vehiculosPorCliente.set(v.clienteId, arr);
+  }
+
+  return clientesList.map((c) => ({ ...c, vehiculos: vehiculosPorCliente.get(c.id) ?? [] }));
 }
 
 export async function getCliente(id: string) {

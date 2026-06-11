@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/db";
 import { presupuestos, ordenesTrabajo, clientes, vehiculos, lineasPresupuesto, talleres, historialEstados } from "@/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { eq, and, inArray, sql } from "drizzle-orm";
 import { createNotification } from "@/lib/notify";
+import { rateLimit } from "@/lib/rate-limit";
 import { randomBytes } from "crypto";
 
 export async function POST(
@@ -10,10 +11,26 @@ export async function POST(
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params;
-  const body = await request.json();
+
+  // Get client IP for rate limiting + legal tracking
+  const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || request.headers.get("x-real-ip")
+    || "unknown";
+
+  const { success } = rateLimit(`presupuesto-publico:${clientIp}`, 10, 60 * 1000);
+  if (!success) {
+    return NextResponse.json({ error: "Demasiadas solicitudes" }, { status: 429 });
+  }
+
+  let body: { estado?: string };
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Petición no válida" }, { status: 400 });
+  }
   const { estado } = body;
 
-  if (!["aceptado", "rechazado"].includes(estado)) {
+  if (estado !== "aceptado" && estado !== "rechazado") {
     return NextResponse.json({ error: "Estado no válido" }, { status: 400 });
   }
 
@@ -35,30 +52,46 @@ export async function POST(
     );
   }
 
-  // Get client IP for legal tracking
-  const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
-    || request.headers.get("x-real-ip")
-    || "unknown";
+  // Validate expiry (validezDias from creation date)
+  if (presupuesto.validezDias) {
+    const expiresAt = new Date(presupuesto.createdAt);
+    expiresAt.setDate(expiresAt.getDate() + presupuesto.validezDias);
+    if (new Date() > expiresAt) {
+      await db
+        .update(presupuestos)
+        .set({ estado: "expirado" })
+        .where(and(
+          eq(presupuestos.id, presupuesto.id),
+          inArray(presupuestos.estado, ["enviado", "borrador"])
+        ));
+      return NextResponse.json(
+        { error: "Este presupuesto ha expirado. Contacta con el taller para renovarlo." },
+        { status: 400 }
+      );
+    }
+  }
 
-  // Get presupuesto lines for the acceptance record
+  // Get presupuesto lines for the acceptance record (rounded per line, in cents, to avoid float drift)
   const lineas = await db.select().from(lineasPresupuesto).where(eq(lineasPresupuesto.presupuestoId, presupuesto.id));
-  const totalBase = lineas.reduce((sum, l) => {
-    const base = Number(l.cantidad) * Number(l.precioUnitario) * (1 - Number(l.descuentoPct || 0) / 100);
+  const round2 = (n: number) => Math.round(n * 100) / 100;
+  const totalBase = round2(lineas.reduce((sum, l) => {
+    const base = round2(Number(l.cantidad) * Number(l.precioUnitario) * (1 - Number(l.descuentoPct || 0) / 100));
     return sum + base;
-  }, 0);
-  const totalIva = lineas.reduce((sum, l) => {
-    const base = Number(l.cantidad) * Number(l.precioUnitario) * (1 - Number(l.descuentoPct || 0) / 100);
-    return sum + base * (Number(l.ivaPct || 21) / 100);
-  }, 0);
-  const totalFinal = totalBase + totalIva;
+  }, 0));
+  const totalIva = round2(lineas.reduce((sum, l) => {
+    const base = round2(Number(l.cantidad) * Number(l.precioUnitario) * (1 - Number(l.descuentoPct || 0) / 100));
+    return sum + round2(base * (Number(l.ivaPct || 21) / 100));
+  }, 0));
+  const totalFinal = round2(totalBase + totalIva);
 
   // Build acceptance text (legal snapshot of what was accepted)
   const acceptanceText = estado === "aceptado"
     ? `ACEPTACIÓN DE PRESUPUESTO\n\nEl cliente acepta el presupuesto PT-${presupuesto.numero} por un importe total de ${totalFinal.toFixed(2)} EUR (IVA incluido), y autoriza al taller a realizar los trabajos descritos.\n\nDetalle:\n${lineas.map(l => `- ${l.descripcion}: ${(Number(l.cantidad) * Number(l.precioUnitario)).toFixed(2)} EUR`).join("\n")}\n\nBase: ${totalBase.toFixed(2)} EUR\nIVA: ${totalIva.toFixed(2)} EUR\nTotal: ${totalFinal.toFixed(2)} EUR\n\nFecha: ${new Date().toLocaleString("es-ES")}\nIP: ${clientIp}`
     : `RECHAZO DE PRESUPUESTO\n\nEl cliente rechaza el presupuesto PT-${presupuesto.numero}.\n\nFecha: ${new Date().toLocaleString("es-ES")}\nIP: ${clientIp}`;
 
-  // Update presupuesto with acceptance data
-  await db
+  // Atomic conditional update: only transitions if still pending.
+  // A concurrent/duplicate request gets 0 rows back and stops here (prevents double-accept + duplicate OR creation).
+  const updated = await db
     .update(presupuestos)
     .set({
       estado,
@@ -66,7 +99,18 @@ export async function POST(
       aceptadoIp: clientIp,
       aceptadoTexto: acceptanceText,
     })
-    .where(eq(presupuestos.id, presupuesto.id));
+    .where(and(
+      eq(presupuestos.id, presupuesto.id),
+      inArray(presupuestos.estado, ["enviado", "borrador"])
+    ))
+    .returning({ id: presupuestos.id });
+
+  if (updated.length === 0) {
+    return NextResponse.json(
+      { error: "Este presupuesto ya ha sido respondido" },
+      { status: 400 }
+    );
+  }
 
   // Get client and vehicle info for notifications
   const [cliente] = await db.select({ nombre: clientes.nombre, telefono: clientes.telefono }).from(clientes).where(eq(clientes.id, presupuesto.clienteId));
@@ -78,32 +122,33 @@ export async function POST(
   if (estado === "aceptado") {
     // If presupuesto has an existing OR → move it to "en_reparacion"
     if (presupuesto.ordenId) {
-      await db
+      const movidas = await db
         .update(ordenesTrabajo)
         .set({ estado: "en_reparacion", updatedAt: new Date() })
-        .where(eq(ordenesTrabajo.id, presupuesto.ordenId));
+        .where(and(
+          eq(ordenesTrabajo.id, presupuesto.ordenId),
+          eq(ordenesTrabajo.tallerId, presupuesto.tallerId)
+        ))
+        .returning({ id: ordenesTrabajo.id });
 
-      await db.insert(historialEstados).values({
-        ordenId: presupuesto.ordenId,
-        estadoAnterior: "presupuestado",
-        estadoNuevo: "en_reparacion",
-      });
+      if (movidas.length > 0) {
+        await db.insert(historialEstados).values({
+          ordenId: presupuesto.ordenId,
+          estadoAnterior: "presupuestado",
+          estadoNuevo: "en_reparacion",
+        });
+      }
     }
     // If presupuesto is independent (no OR) → create a new OR automatically
     else {
-      const [maxResult] = await db
-        .select({ max: sql<number>`COALESCE(MAX(${ordenesTrabajo.numero}), 0)` })
-        .from(ordenesTrabajo)
-        .where(eq(ordenesTrabajo.tallerId, presupuesto.tallerId));
-      const numero = (maxResult?.max ?? 0) + 1;
-
       const [nuevaOrden] = await db
         .insert(ordenesTrabajo)
         .values({
           tallerId: presupuesto.tallerId,
           vehiculoId: presupuesto.vehiculoId,
           clienteId: presupuesto.clienteId,
-          numero,
+          // Atomic: compute next number inside the INSERT itself (no SELECT MAX race window)
+          numero: sql<number>`(SELECT COALESCE(MAX(${ordenesTrabajo.numero}), 0) + 1 FROM ${ordenesTrabajo} WHERE ${ordenesTrabajo.tallerId} = ${presupuesto.tallerId})`,
           estado: "en_reparacion",
           descripcionCliente: presupuesto.notas || `Presupuesto PT-${presupuesto.numero} aceptado`,
           tokenPublico: randomBytes(16).toString("hex"),

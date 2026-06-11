@@ -45,21 +45,13 @@ export async function crearOrdenRapida(data: {
   const db = getDb();
   const { sql } = await import("drizzle-orm");
 
-  // Get next order number (unique index prevents duplicates)
-  const [maxResult] = await db
-    .select({ max: sql<number>`COALESCE(MAX(${ordenesTrabajo.numero}), 0)` })
-    .from(ordenesTrabajo)
-    .where(eq(ordenesTrabajo.tallerId, tallerId));
-
-  const numero = (maxResult?.max ?? 0) + 1;
-
   const [orden] = await db
     .insert(ordenesTrabajo)
     .values({
       tallerId,
       vehiculoId: data.vehiculoId,
       clienteId: data.clienteId,
-      numero,
+      numero: sql<number>`(SELECT COALESCE(MAX(${ordenesTrabajo.numero}), 0) + 1 FROM ${ordenesTrabajo} WHERE ${ordenesTrabajo.tallerId} = ${tallerId})`,
       estado: "recibido",
       kmEntrada: data.kmEntrada,
       descripcionCliente: data.descripcionCliente,
@@ -129,21 +121,13 @@ export async function crearTodoRapido(data: {
     })
     .returning();
 
-  // 3. Create order
-  const [maxResult] = await db
-    .select({ max: sql<number>`COALESCE(MAX(${ordenesTrabajo.numero}), 0)` })
-    .from(ordenesTrabajo)
-    .where(eq(ordenesTrabajo.tallerId, tallerId));
-
-  const numero = (maxResult?.max ?? 0) + 1;
-
   const [orden] = await db
     .insert(ordenesTrabajo)
     .values({
       tallerId,
       vehiculoId: vehiculo.id,
       clienteId: cliente.id,
-      numero,
+      numero: sql<number>`(SELECT COALESCE(MAX(${ordenesTrabajo.numero}), 0) + 1 FROM ${ordenesTrabajo} WHERE ${ordenesTrabajo.tallerId} = ${tallerId})`,
       estado: "recibido",
       descripcionCliente: data.descripcionCliente || null,
       fechaEstimada: data.fechaEstimada ? new Date(data.fechaEstimada) : undefined,

@@ -35,7 +35,7 @@ export function ClienteCard({
     }
     setLoading(true);
     try {
-      const res = await fetch(`/api/clientes/${cliente!.id}/telefono`, {
+      const res = await fetch(`/api/clientes/${cliente!.id}/datos`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

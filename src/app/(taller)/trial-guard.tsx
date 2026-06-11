@@ -3,7 +3,7 @@ import { checkTrialStatus, getSuperAdmin } from "@/lib/auth";
 
 export async function TrialGuard({ pathname }: { pathname: string }) {
   // No bloquear estas rutas aunque el trial haya expirado
-  const exemptRoutes = ["/trial-expirado", "/configuracion", "/ayuda", "/admin", "/bienvenida"];
+  const exemptRoutes = ["/trial-expirado", "/pendiente-aprobacion", "/configuracion", "/ayuda", "/admin", "/bienvenida"];
   if (exemptRoutes.some((r) => pathname.startsWith(r))) return null;
 
   // Superadmin nunca se bloquea
@@ -13,7 +13,8 @@ export async function TrialGuard({ pathname }: { pathname: string }) {
   const status = await checkTrialStatus();
 
   if (status.bloqueado) {
-    redirect("/trial-expirado");
+    // Cuenta pendiente de aprobación ≠ trial expirado: mensajes distintos
+    redirect(status.plan === "pendiente" ? "/pendiente-aprobacion" : "/trial-expirado");
   }
 
   return null;
