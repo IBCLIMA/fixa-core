@@ -27,6 +27,7 @@ interface Taller {
   horarioSabadoApertura: string | null;
   horarioSabadoCierre: string | null;
   capacidadDiaria: number | null;
+  recordatorioCitas: boolean | null;
 }
 
 const RAMAS_ACTIVIDAD = [
@@ -40,6 +41,7 @@ export function ConfigForm({ taller }: { taller: Taller }) {
   const [loading, setLoading] = useState(false);
   const [ramas, setRamas] = useState<string[]>(taller.ramaActividad || []);
   const [sabados, setSabados] = useState(taller.trabajaSabados || false);
+  const [recordatorioCitas, setRecordatorioCitas] = useState(taller.recordatorioCitas ?? true);
   const [logoUrl, setLogoUrl] = useState(taller.logoUrl || "");
   const [uploadingLogo, setUploadingLogo] = useState(false);
 
@@ -71,6 +73,7 @@ export function ConfigForm({ taller }: { taller: Taller }) {
           horarioSabadoCierre: formData.get("horarioSabadoCierre"),
           capacidadDiaria: formData.get("capacidadDiaria") ? Number(formData.get("capacidadDiaria")) : 4,
           ramaActividad: ramas,
+          recordatorioCitas,
         }),
       });
       if (!res.ok) throw new Error();
@@ -199,6 +202,30 @@ export function ConfigForm({ taller }: { taller: Taller }) {
                 </div>
               </>
             )}
+          </div>
+
+          <Separator />
+
+          <p className="text-xs font-bold text-stone-500 uppercase tracking-wider">Recordatorios de cita</p>
+          <div className="rounded-xl border border-border p-3.5 space-y-2">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={recordatorioCitas}
+                onChange={(e) => setRecordatorioCitas(e.target.checked)}
+                className="accent-orange-500 h-5 w-5 mt-0.5 shrink-0"
+              />
+              <div>
+                <span className="text-sm font-bold">Avisarme cada tarde de las citas de mañana</span>
+                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                  Si está activado, cada día sobre las 18:00 FIXA te enviará una notificación con
+                  las citas del día siguiente. Desde el panel podrás mandar a cada cliente un
+                  recordatorio por WhatsApp con un solo toque (el mensaje va ya escrito).
+                  Sirve para reducir los clientes que no se presentan. Si te resulta pesado,
+                  desactívalo aquí y FIXA no te avisará.
+                </p>
+              </div>
+            </label>
           </div>
 
           <Separator />

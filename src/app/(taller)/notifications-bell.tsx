@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Bell, Check, CheckCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { PushToggle } from "@/components/push-toggle";
 
 type Notification = {
   id: string;
@@ -170,6 +171,7 @@ export function NotificationsBell() {
               ))
             )}
           </div>
+          <PushToggle />
         </div>
       )}
     </div>

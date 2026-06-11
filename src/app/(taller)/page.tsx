@@ -166,6 +166,7 @@ export default async function PanelDelDia() {
       .select({
         id: citas.id,
         nombreCliente: citas.nombreCliente,
+        telefonoCliente: citas.telefonoCliente,
         horaInicio: citas.horaInicio,
         motivo: citas.motivo,
       })
@@ -688,7 +689,19 @@ export default async function PanelDelDia() {
                   <div key={c.id} className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2 text-sm">
                     {c.horaInicio && <span className="font-mono text-xs text-muted-foreground bg-background px-1.5 py-0.5 rounded">{String(c.horaInicio).slice(0, 5)}</span>}
                     <span className="font-medium">{c.nombreCliente}</span>
-                    {c.motivo && <span className="text-muted-foreground truncate">{c.motivo}</span>}
+                    {c.motivo && <span className="text-muted-foreground truncate flex-1">{c.motivo}</span>}
+                    {c.telefonoCliente && (
+                      <a
+                        href={formatWhatsAppUrl(
+                          c.telefonoCliente,
+                          `Hola ${c.nombreCliente?.split(" ")[0]}, te recordamos tu cita de mañana${c.horaInicio ? ` a las ${String(c.horaInicio).slice(0, 5)}` : ""} en el taller. Si no puedes venir, avísanos y te buscamos otro hueco. ¡Hasta mañana!`
+                        )}
+                        target="_blank"
+                        className="ml-auto shrink-0 inline-flex h-8 items-center gap-1 rounded-lg bg-emerald-600 px-2.5 text-white text-[11px] font-bold hover:bg-emerald-500 transition-colors"
+                      >
+                        <MessageSquare className="h-3 w-3" />Recordar
+                      </a>
+                    )}
                   </div>
                 ))}
               </div>

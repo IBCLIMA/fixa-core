@@ -136,6 +136,7 @@ export const talleres = pgTable("talleres", {
   activo: boolean("activo").default(true).notNull(),
   dpaAcceptedAt: timestamp("dpa_accepted_at"),
   googleReviewLink: text("google_review_link"),
+  recordatorioCitas: boolean("recordatorio_citas").default(true).notNull(),
   newsletterConsent: boolean("newsletter_consent").default(false).notNull(),
   newsletterConsentAt: timestamp("newsletter_consent_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -372,6 +373,21 @@ export const fotosOrden = pgTable("fotos_orden", {
   esVideo: boolean("es_video").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+// Suscripciones web push (un dispositivo = una fila)
+export const pushSubscriptions = pgTable("push_subscriptions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tallerId: uuid("taller_id")
+    .references(() => talleres.id, { onDelete: "cascade" })
+    .notNull(),
+  usuarioId: uuid("usuario_id").references(() => usuarios.id, { onDelete: "cascade" }),
+  endpoint: text("endpoint").unique().notNull(),
+  p256dh: text("p256dh").notNull(),
+  auth: text("auth").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => [
+  index("idx_push_subs_taller").on(table.tallerId),
+]);
 
 // Rate limiting distribuido (contador atómico compartido entre instancias de Vercel)
 export const rateLimits = pgTable("rate_limits", {

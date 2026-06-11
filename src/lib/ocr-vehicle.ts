@@ -41,6 +41,25 @@ export async function extractVehicleData(
   return parseVehicleText(rawText);
 }
 
+/**
+ * OCR ligero: solo busca una matrícula española en la foto
+ * (para apuntar con la cámara a la placa del coche).
+ */
+export async function extractMatriculaFromImage(
+  file: File | Blob,
+  onProgress?: (progress: number) => void
+): Promise<string | null> {
+  const result = await Tesseract.recognize(file, "spa", {
+    logger: (m) => {
+      if (m.status === "recognizing text" && onProgress) {
+        onProgress(Math.round(m.progress * 100));
+      }
+    },
+  });
+  const plate = extractMatricula(result.data.text.replace(/[ \t]+/g, " "));
+  return plate ? plate.replace(/[\s\-]/g, "").toUpperCase() : null;
+}
+
 function parseVehicleText(text: string): VehicleOCRResult {
   // Normalize text: remove extra spaces, normalize line endings
   const normalized = text

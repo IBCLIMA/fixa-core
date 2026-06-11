@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { buscarPorMatricula, crearOrdenRapida, crearTodoRapido } from "./actions/rapida";
 import { MarcaAutocomplete, ModeloAutocomplete } from "@/components/vehicle-autocomplete";
+import { MatriculaScanner } from "@/components/matricula-scanner";
 import { toast } from "sonner";
 
 type Resultado = Awaited<ReturnType<typeof buscarPorMatricula>>[number];
@@ -122,15 +123,18 @@ export function EntradaRapida() {
         {/* ═══ STEP 1: Search plate ═══ */}
         {!seleccionado && !vehiculoNoEncontrado && (
           <div className="space-y-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
-              <Input
-                placeholder="Ej: 1234ABC"
-                value={matricula}
-                onChange={(e) => setMatricula(e.target.value.toUpperCase().replace(/[\s\-]/g, ""))}
-                className="pl-9 h-14 rounded-xl text-xl font-bold tracking-widest uppercase text-center"
-                autoFocus
-              />
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
+                <Input
+                  placeholder="Ej: 1234ABC"
+                  value={matricula}
+                  onChange={(e) => setMatricula(e.target.value.toUpperCase().replace(/[\s\-]/g, ""))}
+                  className="pl-9 h-14 rounded-xl text-xl font-bold tracking-widest uppercase text-center"
+                  autoFocus
+                />
+              </div>
+              <MatriculaScanner onDetect={setMatricula} />
             </div>
 
             {buscando && (

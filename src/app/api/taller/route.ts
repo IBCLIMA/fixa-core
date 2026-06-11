@@ -43,6 +43,7 @@ export async function PUT(request: Request) {
       horarioSabadoApertura: body.horarioSabadoApertura || "09:00",
       horarioSabadoCierre: body.horarioSabadoCierre || "13:00",
       capacidadDiaria: body.capacidadDiaria ? Number(body.capacidadDiaria) : 4,
+      ...(body.recordatorioCitas !== undefined ? { recordatorioCitas: body.recordatorioCitas === true } : {}),
     };
 
     if (body.dpaAceptado) {

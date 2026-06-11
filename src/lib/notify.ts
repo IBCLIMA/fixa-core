@@ -1,5 +1,6 @@
 import { getDb } from "@/db";
 import { notificaciones } from "@/db/schema";
+import { sendPushToTaller } from "@/lib/push";
 
 export async function createNotification(params: {
   tallerId: string;
@@ -25,4 +26,11 @@ export async function createNotification(params: {
     .catch((err) => {
       console.error("[notify] Error creating notification:", err);
     });
+
+  // Web push a los dispositivos del taller (también fire-and-forget)
+  sendPushToTaller(params.tallerId, {
+    title: params.titulo,
+    body: params.mensaje,
+    url: params.enlace || "/",
+  }).catch(() => {});
 }
