@@ -21,7 +21,15 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { tallerId, nombre, telefono, motivo, fecha, horaPreferida, matricula } = body;
+    const { tallerId, nombre, telefono, motivo, fecha, horaPreferida, matricula, consentimiento } = body;
+
+    // RGPD: el consentimiento explícito es obligatorio para tratar los datos
+    if (consentimiento !== true) {
+      return NextResponse.json(
+        { error: "Debes aceptar la política de privacidad para solicitar la cita." },
+        { status: 400 }
+      );
+    }
 
     // Validate required fields
     if (!tallerId || !nombre || !telefono || !motivo || !fecha) {
@@ -128,6 +136,7 @@ export async function POST(request: NextRequest) {
       tallerId,
       nombreCliente: nombre.trim(),
       telefonoCliente: telefonoLimpio,
+      consentimientoAt: new Date(),
       fecha,
       horaInicio,
       motivo: `${motivo}${matricula ? ` | Matrícula: ${matricula}` : ""}${horaPreferida ? ` | Horario: ${horaPreferida === "manana" ? "Mañana (9-13h)" : horaPreferida === "tarde" ? "Tarde (15-19h)" : "Indiferente"}` : ""}`,

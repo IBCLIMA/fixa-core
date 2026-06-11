@@ -30,6 +30,7 @@ export function BookingForm({
   const [motivo, setMotivo] = useState("");
   const [fecha, setFecha] = useState("");
   const [horaPreferida, setHoraPreferida] = useState("indiferente");
+  const [consentimiento, setConsentimiento] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -90,12 +91,12 @@ export function BookingForm({
           motivo,
           fecha,
           horaPreferida,
+          consentimiento,
         }),
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
+        const data = await res.json().catch(() => ({ error: "" }));
         setError(data.error || "Error al solicitar la cita.");
         return;
       }
@@ -248,6 +249,26 @@ export function BookingForm({
                 <option value="tarde">Tarde (15:00 - {horarioCierre})</option>
                 <option value="indiferente">Me da igual</option>
               </select>
+            </div>
+
+            {/* Consentimiento RGPD */}
+            <div className="flex items-start gap-2.5">
+              <input
+                type="checkbox"
+                required
+                id="consentimiento-rgpd"
+                checked={consentimiento}
+                onChange={(e) => setConsentimiento(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-orange-600 cursor-pointer"
+              />
+              <label htmlFor="consentimiento-rgpd" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
+                Acepto que el taller trate mis datos (nombre, teléfono y matrícula) para
+                gestionar esta solicitud de cita, según la{" "}
+                <a href="/privacidad" target="_blank" className="text-orange-600 underline underline-offset-2">
+                  política de privacidad
+                </a>
+                . <span className="text-red-500">*</span>
+              </label>
             </div>
 
             {error && (

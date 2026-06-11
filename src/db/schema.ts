@@ -165,7 +165,9 @@ export const clientes = pgTable("clientes", {
   direccion: text("direccion"),
   notas: text("notas"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => [
+  index("idx_clientes_taller").on(table.tallerId),
+]);
 
 export const vehiculos = pgTable("vehiculos", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -186,7 +188,10 @@ export const vehiculos = pgTable("vehiculos", {
   fechaItv: date("fecha_itv"),
   notas: text("notas"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => [
+  index("idx_vehiculos_taller_matricula").on(table.tallerId, table.matricula),
+  index("idx_vehiculos_cliente").on(table.clienteId),
+]);
 
 export const ordenesTrabajo = pgTable("ordenes_trabajo", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -232,7 +237,12 @@ export const ordenesTrabajo = pgTable("ordenes_trabajo", {
   notasPago: text("notas_pago"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+}, (table) => [
+  index("idx_ordenes_taller_estado").on(table.tallerId, table.estado),
+  index("idx_ordenes_taller_created").on(table.tallerId, table.createdAt),
+  index("idx_ordenes_vehiculo").on(table.vehiculoId),
+  index("idx_ordenes_cliente").on(table.clienteId),
+]);
 
 export const lineasOrden = pgTable("lineas_orden", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -257,7 +267,9 @@ export const lineasOrden = pgTable("lineas_orden", {
   referencia: text("referencia"), // Part reference number for traceability
   esAveriaOculta: boolean("es_averia_oculta").default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => [
+  index("idx_lineas_orden_orden").on(table.ordenId),
+]);
 
 export const presupuestos = pgTable("presupuestos", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -281,7 +293,10 @@ export const presupuestos = pgTable("presupuestos", {
   aceptadoIp: text("aceptado_ip"),
   aceptadoTexto: text("aceptado_texto"), // Snapshot of what the client accepted
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => [
+  index("idx_presupuestos_taller_estado").on(table.tallerId, table.estado),
+  index("idx_presupuestos_orden").on(table.ordenId),
+]);
 
 export const lineasPresupuesto = pgTable("lineas_presupuesto", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -304,7 +319,9 @@ export const lineasPresupuesto = pgTable("lineas_presupuesto", {
     .notNull(),
   referencia: text("referencia"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => [
+  index("idx_lineas_presupuesto_presupuesto").on(table.presupuestoId),
+]);
 
 export const citas = pgTable("citas", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -321,8 +338,11 @@ export const citas = pgTable("citas", {
   motivo: text("motivo"),
   estado: estadoCitaEnum("estado").default("programada").notNull(),
   notas: text("notas"),
+  consentimientoAt: timestamp("consentimiento_at"), // RGPD: cuándo aceptó el cliente el tratamiento de datos (citas online)
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => [
+  index("idx_citas_taller_fecha").on(table.tallerId, table.fecha),
+]);
 
 export const avisos = pgTable("avisos", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -406,7 +426,9 @@ export const notificaciones = pgTable("notificaciones", {
   leida: boolean("leida").default(false).notNull(),
   enlace: text("enlace"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => [
+  index("idx_notificaciones_taller_created").on(table.tallerId, table.createdAt),
+]);
 
 export const recordatoriosMantenimiento = pgTable("recordatorios_mantenimiento", {
   id: uuid("id").defaultRandom().primaryKey(),

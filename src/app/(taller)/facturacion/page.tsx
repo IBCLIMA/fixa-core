@@ -112,35 +112,38 @@ export default async function FacturacionPage() {
     .from(usuarios)
     .where(eq(usuarios.tallerId, tallerId));
 
-  const comisionesData = await Promise.all(
-    mecanicosConComision.map(async (mec) => {
-      const [result] = await db
-        .select({
-          numOrdenes: sql<number>`count(*)`,
-          totalFacturado: sql<number>`COALESCE(SUM((SELECT SUM(CAST(cantidad AS NUMERIC) * CAST(precio_unitario AS NUMERIC) * (1 + CAST(iva_pct AS NUMERIC) / 100)) FROM lineas_orden WHERE lineas_orden.orden_id = ${ordenesTrabajo.id})), 0)`,
-        })
-        .from(ordenesTrabajo)
-        .where(
-          and(
-            eq(ordenesTrabajo.tallerId, tallerId),
-            eq(ordenesTrabajo.asignadoA, mec.id),
-            eq(ordenesTrabajo.estado, "entregado"),
-            eq(ordenesTrabajo.pagado, true),
-            gte(ordenesTrabajo.fechaEntrega, new Date(primerDiaMes))
-          )
-        );
-
-      const pct = Number(mec.comisionPct ?? 0);
-      const totalFact = Number(result?.totalFacturado ?? 0);
-      return {
-        ...mec,
-        numOrdenes: Number(result?.numOrdenes ?? 0),
-        totalFacturado: totalFact,
-        comisionGanada: totalFact * (pct / 100),
-        comisionPctNum: pct,
-      };
+  // Single GROUP BY query (1 query, not 1 per mechanic)
+  const comisionesPorMecanico = await db
+    .select({
+      asignadoA: ordenesTrabajo.asignadoA,
+      numOrdenes: sql<number>`count(*)`,
+      totalFacturado: sql<number>`COALESCE(SUM((SELECT SUM(CAST(cantidad AS NUMERIC) * CAST(precio_unitario AS NUMERIC) * (1 + CAST(iva_pct AS NUMERIC) / 100)) FROM lineas_orden WHERE lineas_orden.orden_id = ${ordenesTrabajo.id})), 0)`,
     })
-  );
+    .from(ordenesTrabajo)
+    .where(
+      and(
+        eq(ordenesTrabajo.tallerId, tallerId),
+        eq(ordenesTrabajo.estado, "entregado"),
+        eq(ordenesTrabajo.pagado, true),
+        gte(ordenesTrabajo.fechaEntrega, new Date(primerDiaMes))
+      )
+    )
+    .groupBy(ordenesTrabajo.asignadoA);
+
+  const comisionesMap = new Map(comisionesPorMecanico.map((r) => [r.asignadoA, r]));
+
+  const comisionesData = mecanicosConComision.map((mec) => {
+    const result = comisionesMap.get(mec.id);
+    const pct = Number(mec.comisionPct ?? 0);
+    const totalFact = Number(result?.totalFacturado ?? 0);
+    return {
+      ...mec,
+      numOrdenes: Number(result?.numOrdenes ?? 0),
+      totalFacturado: totalFact,
+      comisionGanada: totalFact * (pct / 100),
+      comisionPctNum: pct,
+    };
+  });
 
   // Only show mechanics that have a commission set or have orders
   const comisionesVisibles = comisionesData.filter(
