@@ -32,58 +32,6 @@ type EstadoOrden =
   | "entregado"
   | "cancelado";
 
-export async function getOrdenes(filtroEstado?: string) {
-  const { tallerId } = await getTallerIdFromAuth();
-  const db = getDb();
-
-  const conditions = [eq(ordenesTrabajo.tallerId, tallerId)];
-  if (filtroEstado && filtroEstado !== "todas") {
-    conditions.push(
-      eq(ordenesTrabajo.estado, filtroEstado as EstadoOrden)
-    );
-  }
-
-  const ordenes = await db.select().from(ordenesTrabajo)
-    .where(and(...conditions))
-    .orderBy(desc(ordenesTrabajo.createdAt));
-
-  if (ordenes.length === 0) return [];
-
-  // Batch-fetch relations (4 queries total instead of 4 per order — Neon HTTP has no pooled connection)
-  const { inArray } = await import("drizzle-orm");
-  const vehiculoIds = [...new Set(ordenes.map((o) => o.vehiculoId))];
-  const clienteIds = [...new Set(ordenes.map((o) => o.clienteId))];
-  const ordenIds = ordenes.map((o) => o.id);
-  const asignadoIds = [...new Set(ordenes.map((o) => o.asignadoA).filter((x): x is string => !!x))];
-
-  const [vehiculosList, clientesList, lineasList, usuariosList] = await Promise.all([
-    db.select().from(vehiculos).where(inArray(vehiculos.id, vehiculoIds)),
-    db.select().from(clientes).where(inArray(clientes.id, clienteIds)),
-    db.select().from(lineasOrden).where(inArray(lineasOrden.ordenId, ordenIds)),
-    asignadoIds.length > 0
-      ? db.select().from(usuarios).where(inArray(usuarios.id, asignadoIds))
-      : Promise.resolve([] as (typeof usuarios.$inferSelect)[]),
-  ]);
-
-  const vehiculosMap = new Map(vehiculosList.map((v) => [v.id, v]));
-  const clientesMap = new Map(clientesList.map((c) => [c.id, c]));
-  const usuariosMap = new Map(usuariosList.map((u) => [u.id, u]));
-  const lineasMap = new Map<string, (typeof lineasList)[number][]>();
-  for (const l of lineasList) {
-    const arr = lineasMap.get(l.ordenId) ?? [];
-    arr.push(l);
-    lineasMap.set(l.ordenId, arr);
-  }
-
-  return ordenes.map((o) => ({
-    ...o,
-    vehiculo: vehiculosMap.get(o.vehiculoId) ?? null,
-    cliente: clientesMap.get(o.clienteId) ?? null,
-    lineas: lineasMap.get(o.id) ?? [],
-    asignado: o.asignadoA ? usuariosMap.get(o.asignadoA) ?? null : null,
-  }));
-}
-
 export async function getOrden(id: string) {
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
@@ -187,6 +135,19 @@ export async function cambiarEstadoOrden(id: string, nuevoEstado: EstadoOrden) {
     .where(and(eq(ordenesTrabajo.id, id), eq(ordenesTrabajo.tallerId, tallerId)));
 
   if (!orden) throw new Error("Orden no encontrada");
+
+  // Validate target state against the workshop's active workflow (cancelado always allowed)
+  if (nuevoEstado !== "cancelado") {
+    const { getActivePhases } = await import("@/lib/workflow");
+    const [tallerConfig] = await db
+      .select({ flujoTaller: talleres.flujoTaller })
+      .from(talleres)
+      .where(eq(talleres.id, tallerId));
+    const activePhases = getActivePhases(tallerConfig?.flujoTaller);
+    if (!activePhases.includes(nuevoEstado)) {
+      throw new Error(`El estado "${nuevoEstado}" no existe en el flujo de trabajo de tu taller`);
+    }
+  }
 
   await db
     .update(ordenesTrabajo)

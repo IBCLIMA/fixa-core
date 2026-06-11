@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { AlertTriangle, Check, X, Phone, Car, Wrench, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -138,10 +139,12 @@ export function AprobarAveriaClient({
 
               {/* Photo if exists */}
               {averia.fotoUrl && (
-                <img
+                <Image
                   src={averia.fotoUrl}
                   alt="Foto de la avería"
-                  className="w-full rounded-xl border"
+                  width={800}
+                  height={600}
+                  className="w-full h-auto rounded-xl border"
                 />
               )}
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface LineaData {
@@ -92,7 +93,7 @@ export function PresupuestoClient(props: PresupuestoClientProps) {
         <motion.div initial="hidden" animate="visible" variants={fadeUp} className="flex items-center gap-3 mb-14">
           {taller?.logoUrl ? (
             <div className="p-1.5 rounded-2xl bg-white/80 shadow-sm shadow-stone-200/50 ring-1 ring-stone-200/30">
-              <img src={taller.logoUrl} alt="" className="h-9 w-auto max-w-[90px] rounded-xl" />
+              <Image src={taller.logoUrl} alt={`Logo de ${taller.nombre}`} width={90} height={36} className="h-9 w-auto max-w-[90px] rounded-xl" />
             </div>
           ) : (
             <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-orange-500/20 ring-1 ring-orange-600/20">
@@ -272,7 +273,7 @@ export function PresupuestoClient(props: PresupuestoClientProps) {
             <div className="p-1.5 rounded-[1.25rem] bg-gradient-to-br from-stone-100/60 to-stone-200/30 ring-1 ring-stone-200/40">
               <div className="rounded-[calc(1.25rem-0.375rem)] bg-white p-6 text-center shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
                 {taller.logoUrl ? (
-                  <img src={taller.logoUrl} alt="" className="h-12 w-auto mx-auto mb-3 rounded-lg" />
+                  <Image src={taller.logoUrl} alt={`Logo de ${taller.nombre}`} width={120} height={48} className="h-12 w-auto mx-auto mb-3 rounded-lg" />
                 ) : (
                   <div className="mx-auto h-12 w-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white font-bold text-lg mb-3 shadow-lg shadow-orange-500/20">
                     {taller.nombre?.[0]}

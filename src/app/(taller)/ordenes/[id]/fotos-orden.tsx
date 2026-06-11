@@ -150,10 +150,12 @@ export function FotosOrden({ ordenId, fotos: initialFotos }: { ordenId: string; 
                 target="_blank"
                 className="relative aspect-square rounded-xl overflow-hidden bg-muted hover:opacity-90 transition-opacity"
               >
-                <img
+                <Image
                   src={foto.url}
                   alt={foto.descripcion || "Foto del vehiculo"}
-                  className="h-full w-full object-cover"
+                  fill
+                  sizes="(max-width: 640px) 33vw, 150px"
+                  className="object-cover"
                 />
               </a>
             )

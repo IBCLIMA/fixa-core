@@ -17,7 +17,7 @@ export async function POST(
     || request.headers.get("x-real-ip")
     || "unknown";
 
-  const { success } = rateLimit(`presupuesto-publico:${clientIp}`, 10, 60 * 1000);
+  const { success } = await rateLimit(`presupuesto-publico:${clientIp}`, 10, 60 * 1000);
   if (!success) {
     return NextResponse.json({ error: "Demasiadas solicitudes" }, { status: 429 });
   }

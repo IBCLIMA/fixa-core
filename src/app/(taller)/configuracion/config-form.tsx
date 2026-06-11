@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -92,7 +93,7 @@ export function ConfigForm({ taller }: { taller: Taller }) {
           <div className="flex items-center gap-4 pb-2">
             <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border-2 border-dashed border-stone-200 bg-stone-50 overflow-hidden">
               {logoUrl ? (
-                <img src={logoUrl} alt="Logo" className="h-full w-full object-contain" />
+                <Image src={logoUrl} alt="Logo" width={64} height={64} className="h-full w-full object-contain" />
               ) : (
                 <span className="text-[10px] text-stone-300 text-center">Logo</span>
               )}

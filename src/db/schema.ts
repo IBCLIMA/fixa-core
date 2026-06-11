@@ -373,6 +373,13 @@ export const fotosOrden = pgTable("fotos_orden", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Rate limiting distribuido (contador atómico compartido entre instancias de Vercel)
+export const rateLimits = pgTable("rate_limits", {
+  key: text("key").primaryKey(),
+  count: integer("count").default(1).notNull(),
+  resetAt: timestamp("reset_at").notNull(),
+});
+
 export const historialEstados = pgTable("historial_estados", {
   id: uuid("id").defaultRandom().primaryKey(),
   ordenId: uuid("orden_id")

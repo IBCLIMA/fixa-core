@@ -195,11 +195,11 @@ export async function cambiarEstadoPresupuesto(id: string, estado: "borrador" | 
     .set({ estado })
     .where(and(eq(presupuestos.id, id), eq(presupuestos.tallerId, tallerId)));
 
-  // If accepted, update order status to "aprobado" (filter by tallerId for multi-tenant safety)
+  // If accepted, move the order to "en_reparacion" (same as public acceptance flow)
   if (estado === "aceptado" && presupuesto.ordenId) {
     await db
       .update(ordenesTrabajo)
-      .set({ estado: "aprobado", updatedAt: new Date() })
+      .set({ estado: "en_reparacion", updatedAt: new Date() })
       .where(and(eq(ordenesTrabajo.id, presupuesto.ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
   }
 

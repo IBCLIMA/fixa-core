@@ -3,6 +3,7 @@
 import { cambiarEstadoOrden } from "../../actions/ordenes";
 import { toast } from "sonner";
 import { estadoLabels, estadoColors } from "@/lib/constants";
+import { getColumnForState } from "@/lib/workflow";
 
 type Estado =
   | "recibido"
@@ -14,11 +15,6 @@ type Estado =
   | "listo"
   | "entregado"
   | "cancelado";
-
-const allEstados: Estado[] = [
-  "recibido", "diagnostico", "presupuestado", "aprobado",
-  "en_reparacion", "esperando_recambio", "listo", "entregado", "cancelado",
-];
 
 // Add hover variant for interactive buttons
 const estadoHoverColors: Record<string, string> = {
@@ -33,41 +29,34 @@ const estadoHoverColors: Record<string, string> = {
   cancelado: "hover:bg-zinc-200",
 };
 
-// Forward transitions (primary actions)
-const forwardTransitions: Record<string, string[]> = {
-  recibido: ["diagnostico", "en_reparacion", "cancelado"],
-  diagnostico: ["presupuestado", "en_reparacion", "cancelado"],
-  presupuestado: ["aprobado", "cancelado"],
-  aprobado: ["en_reparacion", "esperando_recambio"],
-  en_reparacion: ["esperando_recambio", "listo"],
-  esperando_recambio: ["en_reparacion", "listo"],
-  listo: ["entregado"],
-  entregado: [],
-  cancelado: [],
-};
-
-// Backward transitions (corrections / undo)
-const backwardTransitions: Record<string, string[]> = {
-  recibido: [],
-  diagnostico: ["recibido"],
-  presupuestado: ["diagnostico"],
-  aprobado: ["presupuestado", "diagnostico"],
-  en_reparacion: ["diagnostico", "aprobado"],
-  esperando_recambio: ["en_reparacion"],
-  listo: ["en_reparacion"],
-  entregado: ["listo"],
-  cancelado: ["recibido"],
-};
-
 export function CambiarEstadoButtons({
   ordenId,
   estadoActual,
+  activePhases,
 }: {
   ordenId: string;
   estadoActual: string;
+  activePhases: string[];
 }) {
-  const forward = forwardTransitions[estadoActual] || [];
-  const backward = backwardTransitions[estadoActual] || [];
+  // Derive transitions from the workshop's active workflow (not hardcoded)
+  let forward: string[] = [];
+  let backward: string[] = [];
+
+  if (estadoActual === "cancelado") {
+    backward = [activePhases[0]];
+  } else {
+    // If the order sits in a state outside the active flow (legacy / preset change),
+    // anchor it to the nearest active column
+    const anchor = activePhases.includes(estadoActual)
+      ? estadoActual
+      : getColumnForState(estadoActual, activePhases);
+    const idx = activePhases.indexOf(anchor);
+
+    if (idx < activePhases.length - 1) forward.push(activePhases[idx + 1]);
+    // Allow cancelling while not finished/delivered
+    if (anchor !== "listo" && anchor !== "entregado") forward.push("cancelado");
+    if (idx > 0) backward.push(activePhases[idx - 1]);
+  }
 
   async function handleCambio(nuevoEstado: Estado) {
     const label = estadoLabels[nuevoEstado] || nuevoEstado;

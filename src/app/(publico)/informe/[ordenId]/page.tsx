@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -338,13 +339,14 @@ export default async function InformePublicoPage({
                     href={f.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block aspect-square rounded-xl overflow-hidden bg-muted"
+                    className="relative block aspect-square rounded-xl overflow-hidden bg-muted"
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={f.url}
                       alt={f.descripcion || "Foto del vehículo"}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform"
+                      fill
+                      sizes="(max-width: 640px) 50vw, 200px"
+                      className="object-cover hover:scale-105 transition-transform"
                     />
                   </a>
                 ))}

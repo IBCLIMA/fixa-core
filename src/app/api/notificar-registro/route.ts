@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
       request.headers.get("x-real-ip") ||
       "unknown";
 
-    const { success } = rateLimit(ip, 3, 60 * 60 * 1000);
+    const { success } = await rateLimit(ip, 3, 60 * 60 * 1000);
     if (!success) {
       return NextResponse.json(
         { error: "Demasiadas solicitudes" },

@@ -28,8 +28,12 @@ import { PrintButton } from "./print-button";
 import { CobrarDialog } from "./cobrar-dialog";
 import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
-import { getUserRole } from "@/lib/auth";
+import { getUserRole, getTallerIdFromAuth } from "@/lib/auth";
 import { getInspeccion } from "../../actions/inspecciones";
+import { getActivePhases } from "@/lib/workflow";
+import { getDb } from "@/db";
+import { talleres } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 export default async function OrdenDetallePage({
   params,
@@ -40,6 +44,15 @@ export default async function OrdenDetallePage({
 
   const orden = await getOrden(id);
   if (!orden) return notFound();
+
+  // Active workflow phases for this workshop (drives the state-change buttons)
+  const { tallerId } = await getTallerIdFromAuth();
+  const db = getDb();
+  const [tallerConfig] = await db
+    .select({ flujoTaller: talleres.flujoTaller })
+    .from(talleres)
+    .where(eq(talleres.id, tallerId));
+  const activePhases = getActivePhases(tallerConfig?.flujoTaller);
 
   let rol: "admin" | "mecanico" | "recepcion" = "mecanico";
   let inspecciones: any[] = [];
@@ -323,7 +336,7 @@ export default async function OrdenDetallePage({
 
       {/* Cambiar estado */}
       <div className="no-print rounded-xl bg-muted/50 border border-border px-4 py-3 space-y-3">
-        <CambiarEstadoButtons ordenId={orden.id} estadoActual={orden.estado} />
+        <CambiarEstadoButtons ordenId={orden.id} estadoActual={orden.estado} activePhases={activePhases} />
         {orden.cliente?.telefono && orden.tokenPublico && (
           <a
             href={formatWhatsAppUrl(
