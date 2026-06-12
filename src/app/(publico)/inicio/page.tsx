@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/landing/hero-section";
 import { VideoDemoSection } from "@/components/landing/video-demo-section";
 import { ProblemSection } from "@/components/landing/problem-section";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
+import { ObjectionsSection } from "@/components/landing/objections-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { Footer } from "@/components/landing/footer";
 import { FloatingCta } from "@/components/landing/floating-cta";
@@ -39,6 +40,7 @@ export default function LandingPage() {
       <VideoDemoSection />
       <ProblemSection />
       <HowItWorksSection />
+      <ObjectionsSection />
       <CtaSection />
       <Footer />
       <FloatingCta />

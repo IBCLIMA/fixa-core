@@ -82,6 +82,8 @@ export function CookieBanner() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", damping: 25, stiffness: 200 }}
+          role="dialog"
+          aria-label="Preferencias de cookies"
           className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:max-w-md z-[60]"
         >
           <div className="rounded-2xl bg-white border border-stone-200/60 shadow-2xl shadow-black/10 p-5 space-y-4">

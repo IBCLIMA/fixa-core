@@ -42,7 +42,7 @@ export function Footer() {
             <div className="flex flex-col gap-2">
               <a href="mailto:sergi@ibclima.com" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">sergi@ibclima.com</a>
               <a href="tel:+34611433218" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">611 433 218</a>
-              <a href="https://wa.me/34611433218" target="_blank" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">WhatsApp</a>
+              <a href="https://wa.me/34611433218" target="_blank" rel="noopener noreferrer" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">WhatsApp</a>
             </div>
           </div>
         </div>

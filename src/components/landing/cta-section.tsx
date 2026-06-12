@@ -6,19 +6,23 @@ import { Button } from "@/components/ui/button";
 import Aurora from "@/components/ui/aurora";
 import BlurText from "@/components/ui/blur-text";
 import { AnimatedSection } from "./animated-section";
+import { useReducedMotion } from "framer-motion";
 
 export function CtaSection() {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <section className="relative overflow-hidden min-h-[500px] flex items-center">
-      {/* Aurora WebGL background */}
+      {/* Aurora WebGL background (off si reduced motion) */}
       <div className="absolute inset-0 bg-stone-950">
-        <Aurora
-          colorStops={["#F97316", "#3B82F6", "#F97316"]}
-          amplitude={1.2}
-          blend={0.6}
-          speed={0.8}
-          className="opacity-60"
-        />
+        {!prefersReducedMotion && (
+          <Aurora
+            colorStops={["#F97316", "#3B82F6", "#F97316"]}
+            amplitude={1.2}
+            blend={0.6}
+            speed={0.8}
+            className="opacity-60"
+          />
+        )}
       </div>
 
       {/* Overlay for readability */}
@@ -50,7 +54,7 @@ export function CtaSection() {
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
               </Button>
             </Link>
-            <a href="https://wa.me/34611433218?text=Hola%2C%20quiero%20información%20sobre%20FIXA" target="_blank">
+            <a href="https://wa.me/34611433218?text=Hola%2C%20quiero%20información%20sobre%20FIXA" target="_blank" rel="noopener noreferrer">
               <Button
                 size="lg"
                 variant="outline"

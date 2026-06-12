@@ -98,7 +98,7 @@ export default function WebParaTalleresPage() {
           Que tus clientes te encuentren antes que a la competencia.
         </p>
         <div className="flex flex-col items-center gap-3 mt-8 sm:flex-row sm:justify-center">
-          <a href="https://wa.me/34611433218?text=Hola%2C%20me%20interesa%20una%20web%20para%20mi%20taller" target="_blank">
+          <a href="https://wa.me/34611433218?text=Hola%2C%20me%20interesa%20una%20web%20para%20mi%20taller" target="_blank" rel="noopener noreferrer">
             <Button size="lg" className="rounded-full bg-stone-900 text-white hover:bg-stone-800 font-bold h-14 px-8 text-base shadow-xl cursor-pointer group">
               Pedir presupuesto gratis
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -192,7 +192,7 @@ export default function WebParaTalleresPage() {
                     </div>
                   ))}
                 </div>
-                <a href="https://wa.me/34611433218?text=Hola%2C%20me%20interesa%20el%20plan%20de%20web%20para%20talleres" target="_blank">
+                <a href="https://wa.me/34611433218?text=Hola%2C%20me%20interesa%20el%20plan%20de%20web%20para%20talleres" target="_blank" rel="noopener noreferrer">
                   <Button className={`w-full rounded-full font-bold h-12 cursor-pointer ${
                     p.popular
                       ? "bg-orange-500 text-white hover:bg-orange-400 shadow-lg shadow-orange-500/20"
@@ -221,7 +221,7 @@ export default function WebParaTalleresPage() {
             El 80% de los clientes buscan talleres en Google antes de ir. Si no estás, no existes.
           </p>
           <div className="flex flex-col items-center gap-4 mt-8 sm:flex-row sm:justify-center">
-            <a href="https://wa.me/34611433218?text=Hola%2C%20quiero%20una%20web%20para%20mi%20taller" target="_blank">
+            <a href="https://wa.me/34611433218?text=Hola%2C%20quiero%20una%20web%20para%20mi%20taller" target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-14 px-10 text-base shadow-xl shadow-orange-500/30 cursor-pointer group">
                 Pedir presupuesto gratis
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />

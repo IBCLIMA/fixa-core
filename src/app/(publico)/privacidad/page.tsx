@@ -81,7 +81,7 @@ export default function PrivacidadPage() {
 
         <h2>11. Contacto</h2>
         <p>Para cualquier consulta sobre privacidad: <strong>sergi@ibclima.com</strong></p>
-        <p>Autoridad de control: Agencia Española de Protección de Datos (AEPD) — <a href="https://www.aepd.es" target="_blank">www.aepd.es</a></p>
+        <p>Autoridad de control: Agencia Española de Protección de Datos (AEPD) — <a href="https://www.aepd.es" target="_blank" rel="noopener noreferrer">www.aepd.es</a></p>
       </main>
     </div>
   );

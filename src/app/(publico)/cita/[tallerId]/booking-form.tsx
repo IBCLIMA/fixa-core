@@ -264,7 +264,7 @@ export function BookingForm({
               <label htmlFor="consentimiento-rgpd" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
                 Acepto que el taller trate mis datos (nombre, teléfono y matrícula) para
                 gestionar esta solicitud de cita, según la{" "}
-                <a href="/privacidad" target="_blank" className="text-orange-600 underline underline-offset-2">
+                <a href="/privacidad" target="_blank" rel="noopener noreferrer" className="text-orange-600 underline underline-offset-2">
                   política de privacidad
                 </a>
                 . <span className="text-red-500">*</span>

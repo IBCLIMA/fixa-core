@@ -59,7 +59,7 @@ export function Navbar() {
               Acceder
             </Link>
             <Link href="/sign-up" className="ml-1">
-              <Button className="rounded-full bg-stone-900 text-white hover:bg-stone-800 font-semibold shadow-lg shadow-stone-900/10 text-sm h-9 px-5 cursor-pointer">
+              <Button className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-semibold shadow-lg shadow-orange-500/20 text-sm h-9 px-5 cursor-pointer">
                 Probar gratis
                 <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
               </Button>

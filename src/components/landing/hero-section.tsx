@@ -16,15 +16,17 @@ export function HeroSection() {
 
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-      {/* Threads WebGL background - interactive flowing lines */}
-      <div className="absolute inset-0 opacity-20">
-        <Threads
-          color={[0.976, 0.451, 0.086]}
-          amplitude={1.2}
-          distance={0.3}
-          enableMouseInteraction={true}
-        />
-      </div>
+      {/* Threads WebGL background - interactive flowing lines (off si reduced motion) */}
+      {!prefersReducedMotion && (
+        <div className="absolute inset-0 opacity-20">
+          <Threads
+            color={[0.976, 0.451, 0.086]}
+            amplitude={1.2}
+            distance={0.3}
+            enableMouseInteraction={true}
+          />
+        </div>
+      )}
       {/* Gradient overlay for depth */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(249,115,22,0.08),transparent)]" />
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#faf9f7] to-transparent" />
@@ -48,21 +50,16 @@ export function HeroSection() {
               </span>
             </motion.div>
 
-            <motion.h1
-              variants={variants}
-              initial="hidden"
-              animate="visible"
-              transition={{ ...TRANSITION_DEFAULT, delay: 0.1 }}
-              className="text-[2.75rem] font-extrabold tracking-tight text-stone-900 md:text-6xl lg:text-[4.25rem] leading-[1.05]"
-            >
-              Deja de gestionar
+            {/* H1 server-visible (sin opacity:0) para LCP — la animación va en los elementos secundarios */}
+            <h1 className="text-[2.75rem] font-extrabold tracking-tight text-stone-900 md:text-6xl lg:text-[4.25rem] leading-[1.05]">
+              Deja de perder horas
               <br />
-              tu taller con
+              respondiendo
               <br />
               <span className="hero-shimmer bg-gradient-to-r from-orange-500 via-amber-400 to-orange-600 bg-clip-text text-transparent bg-[length:200%_100%]">
-                papel y WhatsApp.
+                &ldquo;¿está listo mi coche?&rdquo;
               </span>
-            </motion.h1>
+            </h1>
 
             <motion.p
               variants={variants}
@@ -71,8 +68,9 @@ export function HeroSection() {
               transition={{ ...TRANSITION_DEFAULT, delay: 0.2 }}
               className="text-lg text-stone-500 mt-6 leading-relaxed max-w-[480px]"
             >
-              Órdenes, citas, avisos ITV, presupuestos y WhatsApp integrado.
-              Todo desde el móvil. Creado por mecánicos para mecánicos.
+              Tu cliente ve el estado de su coche sin llamarte. Órdenes en 10
+              segundos, presupuestos que se aceptan online y avisos de ITV
+              automáticos. Creado dentro de un taller real.
             </motion.p>
 
             <motion.div
@@ -85,7 +83,7 @@ export function HeroSection() {
               <Link href="/sign-up">
                 <Button
                   size="lg"
-                  className="rounded-full bg-stone-900 text-white hover:bg-stone-800 font-bold h-14 px-8 text-base shadow-2xl shadow-stone-900/20 hover:shadow-stone-900/30 transition-shadow cursor-pointer group"
+                  className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-14 px-8 text-base shadow-2xl shadow-orange-500/25 hover:shadow-orange-500/35 transition-shadow cursor-pointer group"
                 >
                   Empezar 14 días gratis
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -109,7 +107,7 @@ export function HeroSection() {
               transition={{ ...TRANSITION_DEFAULT, delay: 0.4 }}
               className="flex items-center gap-6 mt-8 text-sm text-stone-400 flex-wrap"
             >
-              {["Sin permanencia", "Setup gratuito", "Creado por mecánicos"].map((text) => (
+              {["Sin tarjeta", "Sin permanencia", "Creado por mecánicos"].map((text) => (
                 <span key={text} className="flex items-center gap-1.5">
                   <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                   {text}
@@ -263,7 +261,7 @@ function HeroMockupSequence({ prefersReducedMotion, mockupVariants }: { prefersR
             <div className="flex-1 mx-6">
               <div className="h-6 bg-stone-100/80 rounded-lg max-w-[200px] mx-auto flex items-center justify-center gap-1.5">
                 <div className="h-3 w-3 rounded-full bg-emerald-400/60" />
-                <span className="text-[10px] text-stone-400 font-medium">fixa.es</span>
+                <span className="text-[10px] text-stone-400 font-medium">fixataller.es</span>
               </div>
             </div>
           </div>

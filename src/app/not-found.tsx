@@ -12,8 +12,8 @@ export default function NotFound() {
         </div>
         <div>
           <h1 className="text-6xl font-extrabold text-stone-200">404</h1>
-          <p className="text-lg font-bold text-stone-900 mt-2">Pagina no encontrada</p>
-          <p className="text-sm text-muted-foreground mt-1">La pagina que buscas no existe o ha sido movida.</p>
+          <p className="text-lg font-bold text-stone-900 mt-2">Esta página se nos ha quedado en el elevador</p>
+          <p className="text-sm text-muted-foreground mt-1">No existe o la hemos movido. Pero arreglamos cosas a diario: te llevamos de vuelta.</p>
         </div>
         <div className="flex flex-col gap-3">
           <Link href="/">
@@ -39,7 +39,7 @@ export default function NotFound() {
             </a>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground">FIXA by Ibanez Clima</p>
+        <p className="text-xs text-muted-foreground">FIXA by Ibañez Clima</p>
       </div>
     </div>
   );

@@ -328,7 +328,7 @@ export function PresupuestoClient(props: PresupuestoClientProps) {
                 >Aprobar presupuesto</motion.button>
                 <div className="flex items-center justify-between px-1">
                   {taller?.telefono ? (
-                    <a href={`https://wa.me/${taller.telefono.replace(/\D/g, "")}?text=${encodeURIComponent(`Hola, tengo una duda sobre el presupuesto para mi ${vehicleDesc}`)}`} target="_blank"
+                    <a href={`https://wa.me/${taller.telefono.replace(/\D/g, "")}?text=${encodeURIComponent(`Hola, tengo una duda sobre el presupuesto para mi ${vehicleDesc}`)}`} target="_blank" rel="noopener noreferrer"
                       className="text-sm text-stone-400 hover:text-orange-500 transition-colors font-medium">Tengo dudas →</a>
                   ) : <span />}
                   <button onClick={() => setStep("reject")} className="text-sm text-stone-300 hover:text-red-400 transition-colors">No deseo reparar</button>

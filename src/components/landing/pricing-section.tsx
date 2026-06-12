@@ -78,11 +78,18 @@ export function PricingSection() {
                 <h3 className={`font-bold text-lg ${p.popular ? "text-white" : "text-stone-900"}`}>{p.nombre}</h3>
                 <p className={`text-sm mt-1 ${p.popular ? "text-stone-400" : "text-stone-500"}`}>{p.desc}</p>
 
-                <div className="flex items-baseline gap-1 mt-6 mb-8">
+                <div className="flex items-baseline gap-1 mt-6 mb-3">
                   <span className={`text-5xl font-extrabold tracking-tight ${p.popular ? "text-white" : "text-stone-900"}`}>
                     {p.precio}€
                   </span>
                   <span className={`text-sm ${p.popular ? "text-stone-400" : "text-stone-400"}`}>/mes</span>
+                </div>
+
+                <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold mb-6 ${
+                  p.popular ? "bg-emerald-500/15 text-emerald-400" : "bg-emerald-50 text-emerald-700"
+                }`}>
+                  <Check className="h-3 w-3" />
+                  14 días gratis · sin tarjeta
                 </div>
 
                 <div className="space-y-3 mb-8">
@@ -113,7 +120,7 @@ export function PricingSection() {
 
         <AnimatedSection delay={0.3} className="text-center mt-8">
           <p className="text-sm text-stone-400">
-            IVA no incluido · Facturación mensual · Cancela cuando quieras
+            Sin permanencia: cancela el mes que quieras · Facturación mensual · Precios sin IVA
           </p>
         </AnimatedSection>
       </div>

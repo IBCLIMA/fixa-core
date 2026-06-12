@@ -1,13 +1,35 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, X, Maximize2 } from "lucide-react";
+import { Play, X, Maximize2, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { AnimatedSection } from "./animated-section";
 
 export function VideoDemoSection() {
   const [isOpen, setIsOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const previewRef = useRef<HTMLVideoElement>(null);
+
+  // El vídeo (3.6MB) solo se descarga y reproduce al entrar en viewport
+  useEffect(() => {
+    const el = previewRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (!el.src) el.src = el.dataset.src || "";
+          el.play().catch(() => {});
+        } else {
+          el.pause();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const openVideo = () => {
     setIsOpen(true);
@@ -40,14 +62,15 @@ export function VideoDemoSection() {
               onClick={openVideo}
               className="relative rounded-2xl overflow-hidden cursor-pointer group shadow-2xl shadow-black/10"
             >
-              {/* Video thumbnail/preview - autoplay muted */}
+              {/* Video preview: lazy via IntersectionObserver (data-src) */}
               <video
-                src="/demo/fixa-demo.webm"
+                ref={previewRef}
+                data-src="/demo/fixa-demo.webm"
                 muted
                 loop
                 playsInline
-                autoPlay
-                className="w-full rounded-2xl"
+                preload="none"
+                className="w-full rounded-2xl bg-stone-100"
                 style={{ aspectRatio: "16/9", objectFit: "cover" }}
               />
 
@@ -71,6 +94,21 @@ export function VideoDemoSection() {
               {/* Border glow */}
               <div className="absolute inset-0 rounded-2xl border border-white/10 pointer-events-none" />
             </div>
+          </AnimatedSection>
+
+          {/* CTA tras el vídeo: el momento de máxima intención */}
+          <AnimatedSection delay={0.3} className="text-center mt-10">
+            <p className="text-stone-500 mb-4">¿Te ha gustado? Pruébalo con tu propio taller.</p>
+            <Link href="/sign-up">
+              <Button
+                size="lg"
+                className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-12 px-8 shadow-lg shadow-orange-500/20 cursor-pointer group"
+              >
+                Empezar 14 días gratis
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+              </Button>
+            </Link>
+            <p className="text-xs text-stone-400 mt-3">Sin tarjeta · Sin permanencia</p>
           </AnimatedSection>
         </div>
       </section>

@@ -41,7 +41,7 @@ export function ProblemSection() {
 
       <div className="mx-auto max-w-6xl px-6 py-20 lg:py-28 relative z-10">
         <AnimatedSection className="text-center mb-14">
-          <span className="inline-flex items-center gap-2 rounded-full border border-red-200/80 bg-red-50/80 px-4 py-1.5 text-xs font-semibold text-red-700 mb-4">
+          <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
             El problema
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">

@@ -94,6 +94,42 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <MDXContent code={post.body} />
       </div>
 
+      {/* Enlazado interno: posts relacionados + páginas de producto */}
+      {(() => {
+        const relacionados = getAllPosts()
+          .filter((p) => p.slug !== slug && p.category === post.category)
+          .slice(0, 2);
+        return (
+          <div className="mt-12 rounded-2xl border border-stone-200/60 bg-white/60 p-6">
+            <p className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-4">Te puede servir</p>
+            <ul className="space-y-2.5 text-sm">
+              {relacionados.map((p) => (
+                <li key={p.slug}>
+                  <Link href={`/blog/${p.slug}`} className="text-stone-700 font-medium hover:text-orange-600 transition-colors">
+                    {p.title} →
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link href="/funciones/ordenes-de-trabajo" className="text-stone-700 font-medium hover:text-orange-600 transition-colors">
+                  Cómo crear órdenes de trabajo en 10 segundos con FIXA →
+                </Link>
+              </li>
+              <li>
+                <Link href="/funciones/whatsapp-taller" className="text-stone-700 font-medium hover:text-orange-600 transition-colors">
+                  WhatsApp integrado para avisar a tus clientes sin llamadas →
+                </Link>
+              </li>
+              <li>
+                <Link href="/precios" className="text-stone-700 font-medium hover:text-orange-600 transition-colors">
+                  Planes y precios de FIXA: desde 29€/mes sin permanencia →
+                </Link>
+              </li>
+            </ul>
+          </div>
+        );
+      })()}
+
       {/* CTA at bottom */}
       <div className="mt-16 rounded-2xl bg-stone-900 p-8 text-center">
         <h3 className="text-2xl font-bold text-white mb-2">¿Listo para digitalizar tu taller?</h3>
