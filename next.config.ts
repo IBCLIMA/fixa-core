@@ -32,6 +32,29 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    // Dominios secundarios → canónico fixataller.es (301 para consolidar el SEO)
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "fixataller.com" }],
+        destination: "https://fixataller.es/:path*",
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.fixataller.com" }],
+        destination: "https://fixataller.es/:path*",
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.fixataller.es" }],
+        destination: "https://fixataller.es/:path*",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

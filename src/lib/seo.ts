@@ -1,10 +1,8 @@
 /**
  * Única fuente de verdad para el dominio público de FIXA.
- * Cuando fixa.es esté conectado a Vercel, todo el SEO (canonicals, sitemap,
- * robots, OG) apunta ya al sitio correcto. Hasta entonces puede sobreescribirse
- * con NEXT_PUBLIC_SITE_URL.
+ * Dominio principal: fixataller.es (fixataller.com y www redirigen a él).
  */
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://fixa.es";
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://fixataller.es";
 
 export const SITE_NAME = "FIXA";
 

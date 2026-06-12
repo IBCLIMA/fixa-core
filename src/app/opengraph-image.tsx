@@ -107,7 +107,7 @@ export default function OgImage() {
             Desde 29€/mes
           </div>
           <div style={{ color: "#a8a29e", fontSize: "26px", display: "flex" }}>
-            14 días gratis · fixa.es
+            14 días gratis · fixataller.es
           </div>
         </div>
       </div>

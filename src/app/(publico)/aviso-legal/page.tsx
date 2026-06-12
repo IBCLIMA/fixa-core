@@ -21,7 +21,7 @@ export default function AvisoLegalPage() {
           <li><strong>Actividad:</strong> Desarrollo y comercialización del software de gestión FIXA</li>
           <li><strong>Email de contacto:</strong> sergi@ibclima.com</li>
           <li><strong>Teléfono:</strong> 611 433 218</li>
-          <li><strong>Dominio:</strong> fixa.es</li>
+          <li><strong>Dominio:</strong> fixataller.es</li>
         </ul>
         <p className="text-sm text-muted-foreground italic">Nota: Los datos fiscales completos (NIF/CIF, domicilio social, datos registrales) se facilitarán previa solicitud al email de contacto, conforme a la normativa vigente.</p>
 
