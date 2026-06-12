@@ -41,17 +41,15 @@ export default function Page() {
             </div>
 
             <div className="rounded-2xl bg-white/[0.04] border border-white/[0.06] p-6">
-              <div className="flex gap-1 mb-3">
-                {[...Array(5)].map((_, i) => (<Star key={i} className="h-4 w-4 text-amber-400 fill-amber-400" />))}
-              </div>
               <p className="text-stone-300 text-sm leading-relaxed">
-                &ldquo;Antes perdía 2 horas al día con llamadas. Ahora los clientes miran el estado solos desde el móvil. Es otra vida.&rdquo;
+                &ldquo;Construimos FIXA porque la necesitábamos en nuestro propio taller.
+                Cada función se prueba aquí, con las manos manchadas, antes de llegar a la tuya.&rdquo;
               </p>
               <div className="flex items-center gap-3 mt-4">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-white font-bold text-sm">CM</div>
+                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-white font-bold text-sm">IC</div>
                 <div>
-                  <p className="text-sm font-bold text-white">Carlos M.</p>
-                  <p className="text-xs text-stone-500">Taller El Maño · Zaragoza</p>
+                  <p className="text-sm font-bold text-white">Ibañez Clima</p>
+                  <p className="text-xs text-stone-500">El taller donde nació FIXA · desde 2010</p>
                 </div>
               </div>
             </div>
