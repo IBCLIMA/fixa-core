@@ -4,6 +4,12 @@ import { NextResponse } from "next/server";
 const isPublicRoute = createRouteMatcher([
   "/",
   "/inicio",
+  // SEO/PWA: imprescindible que sean públicos para crawlers
+  "/sitemap.xml",
+  "/robots.txt",
+  "/manifest.json",
+  "/opengraph-image(.*)",
+  "/twitter-image(.*)",
   "/blog(.*)",
   "/funciones(.*)",
   "/precios(.*)",
