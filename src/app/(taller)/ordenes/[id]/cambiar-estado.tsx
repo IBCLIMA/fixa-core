@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { cambiarEstadoOrden } from "../../actions/ordenes";
 import { toast } from "sonner";
 import { estadoLabels, estadoColors } from "@/lib/constants";
 import { getColumnForState } from "@/lib/workflow";
+import { useConfirm } from "@/components/confirm-dialog";
 
 type Estado =
   | "recibido"
@@ -58,19 +61,37 @@ export function CambiarEstadoButtons({
     if (idx > 0) backward.push(activePhases[idx - 1]);
   }
 
+  const { confirm, ConfirmUI } = useConfirm();
+  const [pendiente, setPendiente] = useState<string | null>(null);
+
   async function handleCambio(nuevoEstado: Estado) {
     const label = estadoLabels[nuevoEstado] || nuevoEstado;
     if (nuevoEstado === "entregado" || nuevoEstado === "cancelado") {
-      if (!window.confirm(`Seguro que quieres marcar como "${label}"?`)) return;
+      const ok = await confirm({
+        title: `¿Marcar como "${label}"?`,
+        description: nuevoEstado === "cancelado"
+          ? "La orden se cancelará. Podrás reactivarla más adelante si hace falta."
+          : "El coche quedará registrado como entregado al cliente.",
+        confirmText: label,
+        destructive: nuevoEstado === "cancelado",
+      });
+      if (!ok) return;
+    } else if (backward.includes(nuevoEstado)) {
+      const ok = await confirm({
+        title: `¿Volver al estado "${label}"?`,
+        description: "Usa esto solo para corregir un cambio hecho por error.",
+        confirmText: "Volver",
+      });
+      if (!ok) return;
     }
-    if (backward.includes(nuevoEstado)) {
-      if (!window.confirm(`¿Volver al estado "${label}"?`)) return;
-    }
+    setPendiente(nuevoEstado);
     try {
       await cambiarEstadoOrden(ordenId, nuevoEstado);
       toast.success(`Estado cambiado a: ${label}`);
     } catch {
       toast.error("Error al cambiar estado");
+    } finally {
+      setPendiente(null);
     }
   }
 
@@ -93,8 +114,10 @@ export function CambiarEstadoButtons({
             <button
               key={estado}
               onClick={() => handleCambio(estado as Estado)}
-              className={`px-4 py-3 rounded-full text-sm font-bold min-h-[44px] transition-all ${estadoColors[estado] || ""} ${estadoHoverColors[estado] || ""} hover:opacity-100 opacity-80`}
+              disabled={pendiente !== null}
+              className={`inline-flex items-center gap-1.5 px-4 py-3 rounded-full text-sm font-bold min-h-[44px] cursor-pointer transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${estadoColors[estado] || ""} ${estadoHoverColors[estado] || ""} hover:opacity-100 opacity-80`}
             >
+              {pendiente === estado && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               {estadoLabels[estado]}
             </button>
           ))}
@@ -109,8 +132,10 @@ export function CambiarEstadoButtons({
             <button
               key={estado}
               onClick={() => handleCambio(estado as Estado)}
-              className="px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground border border-border hover:bg-muted transition-colors"
+              disabled={pendiente !== null}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground border border-border cursor-pointer hover:bg-muted active:scale-95 transition-all disabled:opacity-50"
             >
+              {pendiente === estado && <Loader2 className="h-3 w-3 animate-spin" />}
               ← {estadoLabels[estado]}
             </button>
           ))}
@@ -122,6 +147,8 @@ export function CambiarEstadoButtons({
           Estado final alcanzado.
         </p>
       )}
+
+      {ConfirmUI}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { FixaLogo } from "@/components/ui/fixa-logo";
+import { MediaGallery } from "@/components/media-lightbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getDb } from "@/db";
@@ -332,25 +332,14 @@ export default async function InformePublicoPage({
                   Fotos
                 </p>
               </div>
-              <div className="grid grid-cols-3 gap-2">
-                {fotos.map((f) => (
-                  <a
-                    key={f.id}
-                    href={f.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="relative block aspect-square rounded-xl overflow-hidden bg-muted"
-                  >
-                    <Image
-                      src={f.url}
-                      alt={f.descripcion || "Foto del vehículo"}
-                      fill
-                      sizes="(max-width: 640px) 50vw, 200px"
-                      className="object-cover hover:scale-105 transition-transform"
-                    />
-                  </a>
-                ))}
-              </div>
+              <MediaGallery
+                items={fotos.map((f) => ({
+                  id: f.id,
+                  url: f.url,
+                  descripcion: f.descripcion,
+                  esVideo: f.esVideo ?? false,
+                }))}
+              />
             </CardContent>
           </Card>
         )}

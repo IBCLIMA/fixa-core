@@ -1,7 +1,10 @@
 "use client";
 
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { cambiarEstadoPresupuesto } from "../../actions/presupuestos";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/confirm-dialog";
 
 type EstadoPresupuesto = "borrador" | "enviado" | "aceptado" | "rechazado" | "expirado";
 
@@ -32,16 +35,30 @@ export function CambiarEstadoPresupuesto({
   const nextStates = validTransitions[estadoActual] || [];
   const availableButtons = flujo.filter((f) => nextStates.includes(f.estado));
 
+  const { confirm, ConfirmUI } = useConfirm();
+  const [pendiente, setPendiente] = useState<string | null>(null);
+
   async function handleCambio(nuevoEstado: EstadoPresupuesto) {
     const info = flujo.find((f) => f.estado === nuevoEstado);
     if (nuevoEstado === "aceptado" || nuevoEstado === "rechazado") {
-      if (!window.confirm(`Cambiar estado a "${info?.label}"?`)) return;
+      const ok = await confirm({
+        title: `¿Marcar el presupuesto como "${info?.label}"?`,
+        description: nuevoEstado === "aceptado"
+          ? "La orden asociada pasará a reparación. Úsalo si el cliente te lo ha confirmado en persona o por teléfono."
+          : "Registra que el cliente ha rechazado este presupuesto.",
+        confirmText: info?.label,
+        destructive: nuevoEstado === "rechazado",
+      });
+      if (!ok) return;
     }
+    setPendiente(nuevoEstado);
     try {
       await cambiarEstadoPresupuesto(presupuestoId, nuevoEstado);
       toast.success(`Estado cambiado a: ${info?.label}`);
     } catch {
       toast.error("Error al cambiar estado");
+    } finally {
+      setPendiente(null);
     }
   }
 
@@ -62,8 +79,10 @@ export function CambiarEstadoPresupuesto({
             <button
               key={f.estado}
               onClick={() => handleCambio(f.estado)}
-              className={`px-4 py-3 rounded-full text-sm font-bold min-h-[44px] transition-all ${f.color} hover:opacity-100 opacity-80`}
+              disabled={pendiente !== null}
+              className={`inline-flex items-center gap-1.5 px-4 py-3 rounded-full text-sm font-bold min-h-[44px] cursor-pointer transition-all active:scale-95 disabled:opacity-50 ${f.color} hover:opacity-100 opacity-80`}
             >
+              {pendiente === f.estado && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               {f.label}
             </button>
           ))}
@@ -73,6 +92,7 @@ export function CambiarEstadoPresupuesto({
           Estado final alcanzado. No hay cambios disponibles.
         </p>
       )}
+      {ConfirmUI}
     </div>
   );
 }

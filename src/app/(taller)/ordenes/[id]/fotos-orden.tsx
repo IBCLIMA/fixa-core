@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Camera, Plus, X, Image as ImageIcon, Video, Play } from "lucide-react";
+import { Camera, Plus, X, Image as ImageIcon, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import Image from "next/image";
+import { MediaGallery } from "@/components/media-lightbox";
 
 interface Foto {
   id: string;
@@ -115,52 +115,7 @@ export function FotosOrden({ ordenId, fotos: initialFotos }: { ordenId: string; 
       </div>
 
       {fotos.length > 0 ? (
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-          {fotos.map((foto) =>
-            foto.esVideo ? (
-              <a
-                key={foto.id}
-                href={foto.url}
-                target="_blank"
-                className="relative aspect-square rounded-xl overflow-hidden bg-muted hover:opacity-90 transition-opacity group"
-              >
-                <video
-                  src={foto.url}
-                  className="h-full w-full object-cover"
-                  muted
-                  preload="metadata"
-                />
-                {/* Play button overlay */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-lg">
-                    <Play className="h-5 w-5 text-zinc-800 ml-0.5" />
-                  </div>
-                </div>
-                {/* Video badge */}
-                <div className="absolute top-1.5 left-1.5">
-                  <span className="inline-flex items-center gap-0.5 rounded-full bg-black/60 px-1.5 py-0.5 text-[9px] font-bold text-white">
-                    <Video className="h-2.5 w-2.5" />VIDEO
-                  </span>
-                </div>
-              </a>
-            ) : (
-              <a
-                key={foto.id}
-                href={foto.url}
-                target="_blank"
-                className="relative aspect-square rounded-xl overflow-hidden bg-muted hover:opacity-90 transition-opacity"
-              >
-                <Image
-                  src={foto.url}
-                  alt={foto.descripcion || "Foto del vehiculo"}
-                  fill
-                  sizes="(max-width: 640px) 33vw, 150px"
-                  className="object-cover"
-                />
-              </a>
-            )
-          )}
-        </div>
+        <MediaGallery items={fotos} />
       ) : (
         <div className="rounded-xl border border-dashed border-border p-6 text-center">
           <ImageIcon className="h-6 w-6 text-muted-foreground/30 mx-auto mb-2" />

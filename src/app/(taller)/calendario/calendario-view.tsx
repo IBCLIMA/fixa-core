@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { crearCita, eliminarCita, crearOrdenDesdeCita, bloquearDia, desbloquearDia } from "../actions/citas";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/confirm-dialog";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -77,6 +78,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
   const [loading, setLoading] = useState(false);
   const [llegadaLoading, setLlegadaLoading] = useState<string | null>(null);
   const router = useRouter();
+  const { confirm, ConfirmUI } = useConfirm();
 
   const hoy = new Date().toISOString().split("T")[0];
 
@@ -128,7 +130,13 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
   }
 
   async function handleEliminar(id: string) {
-    if (!window.confirm("Eliminar esta cita?")) return;
+    const ok = await confirm({
+      title: "¿Eliminar esta cita?",
+      description: "El cliente no recibirá ningún aviso. Si quieres avisarle, hazlo antes por WhatsApp.",
+      confirmText: "Eliminar",
+      destructive: true,
+    });
+    if (!ok) return;
     try {
       await eliminarCita(id);
       toast.success("Cita eliminada");
@@ -208,6 +216,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
 
   return (
     <>
+      {ConfirmUI}
       {/* ── Feature 5: Today section ──────────────────────────────── */}
       <div className="rounded-xl border-2 border-orange-200 bg-gradient-to-br from-orange-50/80 to-white p-4 shadow-sm shadow-orange-500/5">
         <div className="flex items-center justify-between mb-3">
