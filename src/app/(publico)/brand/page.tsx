@@ -80,6 +80,110 @@ function LogoD({ size = 64 }: { size?: number }) {
   );
 }
 
+/* ───────── Variantes de B (La Tuerca) ───────── */
+
+function HexBase({ size, children, rx = false, id }: { size: number; children: React.ReactNode; rx?: boolean; id: string }) {
+  // rx=true: esquinas redondeadas via stroke gordo con linejoin round
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40">
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#f97316" /><stop offset="100%" stopColor="#ea580c" />
+        </linearGradient>
+      </defs>
+      {rx ? (
+        <path d="M20 4l13 7.5v17L20 36 7 28.5v-17L20 4z" fill={`url(#${id})`} stroke={`url(#${id})`} strokeWidth="5" strokeLinejoin="round" />
+      ) : (
+        <path d="M20 1.5l15.6 9v19L20 38.5l-15.6-9v-19L20 1.5z" fill={`url(#${id})`} />
+      )}
+      {children}
+    </svg>
+  );
+}
+
+function B1({ size = 64 }: { size?: number }) {
+  // Original: hexágono puro + F
+  return (
+    <HexBase size={size} id="b1">
+      <path d="M14.5 11h11.5v4h-7v4h6v4h-6v6h-4.5V11z" fill="white" />
+    </HexBase>
+  );
+}
+
+function B2({ size = 64 }: { size?: number }) {
+  // Esquinas redondeadas (más amable, más "app")
+  return (
+    <HexBase size={size} id="b2" rx>
+      <path d="M14.5 11h11.5v4h-7v4h6v4h-6v6h-4.5V11z" fill="white" />
+    </HexBase>
+  );
+}
+
+function B3({ size = 64 }: { size?: number }) {
+  // Facetada: mitad superior con brillo, como metal mecanizado
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40">
+      <defs>
+        <linearGradient id="b3" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#f97316" /><stop offset="100%" stopColor="#ea580c" />
+        </linearGradient>
+      </defs>
+      <path d="M20 4l13 7.5v17L20 36 7 28.5v-17L20 4z" fill="url(#b3)" stroke="url(#b3)" strokeWidth="5" strokeLinejoin="round" />
+      <path d="M20 1.6l15.5 9-15.5 9-15.5-9 15.5-9z" fill="white" fillOpacity="0.12" />
+      <path d="M14.5 11h11.5v4h-7v4h6v4h-6v6h-4.5V11z" fill="white" />
+    </svg>
+  );
+}
+
+function B4({ size = 64 }: { size?: number }) {
+  // Tuerca real: anillo hexagonal con la F dentro del "agujero"
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40">
+      <defs>
+        <linearGradient id="b4" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#f97316" /><stop offset="100%" stopColor="#ea580c" />
+        </linearGradient>
+      </defs>
+      <path d="M20 2.5l14.8 8.5v18L20 37.5 5.2 29v-18L20 2.5zm0 5.5l-10 5.8v12.4l10 5.8 10-5.8V13.8L20 8z" fill="url(#b4)" fillRule="evenodd" />
+      <path d="M15.5 13h9.5v3.4h-5.8v3h5v3.4h-5v4.6h-3.7V13z" fill="url(#b4)" />
+    </svg>
+  );
+}
+
+function B5({ size = 64 }: { size?: number }) {
+  // Oscura: hexágono negro neumático + F naranja (merch, fondos claros)
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40">
+      <path d="M20 4l13 7.5v17L20 36 7 28.5v-17L20 4z" fill="#1c1917" stroke="#1c1917" strokeWidth="5" strokeLinejoin="round" />
+      <path d="M14.5 11h11.5v4h-7v4h6v4h-6v6h-4.5V11z" fill="#f97316" />
+    </svg>
+  );
+}
+
+function B6({ size = 64 }: { size?: number }) {
+  // Rotada 90º (lados planos arriba/abajo, como tuerca vista de frente en banco)
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40">
+      <defs>
+        <linearGradient id="b6" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#f97316" /><stop offset="100%" stopColor="#ea580c" />
+        </linearGradient>
+      </defs>
+      <path d="M11.5 7h17L37 20l-8.5 13h-17L3 20 11.5 7z" fill="url(#b6)" stroke="url(#b6)" strokeWidth="5" strokeLinejoin="round" />
+      <path d="M14.5 11h11.5v4h-7v4h6v4h-6v6h-4.5V11z" fill="white" />
+    </svg>
+  );
+}
+
+const variantesB = [
+  { id: "B1", nombre: "Tuerca pura", desc: "Hexágono afilado vertical. Industrial y serio.", Logo: B1 },
+  { id: "B2", nombre: "Tuerca amable", desc: "Esquinas redondeadas: misma fuerza, más cercana — encaja con el resto de la app (todo es redondeado).", Logo: B2 },
+  { id: "B3", nombre: "Tuerca mecanizada", desc: "Como la B2 con una faceta de brillo arriba: sensación de metal torneado, más premium.", Logo: B3 },
+  { id: "B4", nombre: "Tuerca real (anillo)", desc: "El hexágono es un anillo, como una tuerca de verdad. Concepto puro, pero más fina a tamaños pequeños.", Logo: B4 },
+  { id: "B5", nombre: "Negro neumático", desc: "Variante oscura con F naranja: para merchandising, furgoneta y fondos donde el naranja no funcione.", Logo: B5 },
+  { id: "B6", nombre: "Tuerca horizontal", desc: "Rotada 90º (lados planos arriba): más estable y ancha, como una tuerca apoyada en el banco.", Logo: B6 },
+];
+
 const candidatos = [
   { id: "A", nombre: "Actual — F + X llave", desc: "El que tenemos. La X-llave es original pero se embarra a tamaños pequeños.", Logo: LogoA },
   { id: "B", nombre: "La Tuerca", desc: "Hexágono (tuerca) + F rotunda. Legible hasta en 16px, conecta con el patrón de marca, silueta única en el dock.", Logo: LogoB },
@@ -94,6 +198,47 @@ export default function BrandPage() {
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight">Exploración de marca FIXA</h1>
           <p className="text-stone-500 mt-1">Página interna (no indexada). Elige candidato y lo despliego en toda la marca: web, app, PWA, OG, favicon y PDFs.</p>
+        </div>
+
+        {/* ── Variantes de B: La Tuerca a fondo ── */}
+        <div className="rounded-2xl bg-orange-50 border-2 border-orange-200 p-6">
+          <h2 className="text-xl font-extrabold text-orange-900">Variantes de B — La Tuerca</h2>
+          <p className="text-sm text-orange-700 mt-1">Seis formas de la misma idea. Fíjate en los 16px y en cuál querrías ver cada mañana en tu móvil.</p>
+        </div>
+
+        {variantesB.map(({ id, nombre, desc, Logo }) => (
+          <div key={id} className="rounded-2xl bg-white border border-stone-200 p-6">
+            <div className="flex items-baseline gap-3 mb-1">
+              <span className="text-2xl font-extrabold text-orange-600">{id}</span>
+              <h2 className="text-lg font-bold">{nombre}</h2>
+            </div>
+            <p className="text-sm text-stone-500 mb-6">{desc}</p>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="rounded-xl border border-stone-200 p-6 flex items-end gap-6 bg-[#faf9f7]">
+                <div className="text-center"><Logo size={64} /><p className="text-[10px] text-stone-400 mt-1">64</p></div>
+                <div className="text-center"><Logo size={40} /><p className="text-[10px] text-stone-400 mt-1">40</p></div>
+                <div className="text-center"><Logo size={24} /><p className="text-[10px] text-stone-400 mt-1">24</p></div>
+                <div className="text-center"><Logo size={16} /><p className="text-[10px] text-stone-400 mt-1">16 (favicon)</p></div>
+                <div className="flex items-center gap-2 ml-auto">
+                  <Logo size={32} />
+                  <span className="text-xl font-extrabold tracking-tight text-stone-900">FIXA</span>
+                </div>
+              </div>
+              <div className="rounded-xl bg-stone-950 p-6 flex items-end gap-6">
+                <div className="text-center"><Logo size={64} /></div>
+                <div className="text-center"><Logo size={24} /></div>
+                <div className="flex items-center gap-2 ml-auto">
+                  <Logo size={32} />
+                  <span className="text-xl font-extrabold tracking-tight text-white">FIXA</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        <div className="rounded-2xl bg-stone-100 border border-stone-200 p-4">
+          <p className="text-sm text-stone-500 font-medium">Referencia: los otros candidatos descartables (A, C, D)</p>
         </div>
 
         {candidatos.map(({ id, nombre, desc, Logo }) => (
