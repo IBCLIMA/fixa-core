@@ -49,22 +49,19 @@ export default async function OgImage({ params }: { params: Promise<{ slug: stri
         {/* Header: logo + categoría */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div
-              style={{
-                width: "56px",
-                height: "56px",
-                borderRadius: "16px",
-                background: "linear-gradient(135deg, #f97316, #ea580c)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "white",
-                fontSize: "30px",
-                fontWeight: 800,
-              }}
-            >
-              F
-            </div>
+            <svg width="56" height="56" viewBox="0 0 40 40">
+              <defs>
+                <linearGradient id="bg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#f97316" />
+                  <stop offset="100%" stopColor="#ea580c" />
+                </linearGradient>
+              </defs>
+              <rect width="40" height="40" rx="10" fill="url(#bg)" />
+              <path d="M11 10h7.5v3h-4v3.5h3.5v3h-3.5v5h-3.5V10z" fill="white" fillOpacity="0.95" />
+              <path d="M21 10l3.2 5.5L21 21l2 1.2 3.2-5.5 3.2 5.5 2-1.2-3.2-5.5L31.4 10h-3.6l-1.6 2.8L24.6 10H21z" fill="white" fillOpacity="0.95" />
+              <path d="M23.2 24.5l-2.2 3.8v0c-.3.5-.1 1.1.4 1.4l1.7 1c.5.3 1.1.1 1.4-.4l2.2-3.8-1.8-1-1.7-1z" fill="white" fillOpacity="0.9" />
+              <path d="M28.8 24.5l2.2 3.8c.3.5.1 1.1-.4 1.4l-1.7 1c-.5.3-1.1.1-1.4-.4l-2.2-3.8 1.8-1 1.7-1z" fill="white" fillOpacity="0.9" />
+            </svg>
             <div style={{ color: "white", fontSize: "36px", fontWeight: 800, display: "flex" }}>FIXA</div>
           </div>
           {category && (

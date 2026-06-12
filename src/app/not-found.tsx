@@ -2,11 +2,13 @@ import Link from "next/link";
 import { ArrowLeft, Home, BookOpen, MessageCircle } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { Button } from "@/components/ui/button";
+import { SafetyStripe } from "@/components/ui/brand-texture";
 
 export default function NotFound() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="text-center space-y-6 max-w-sm">
+        <SafetyStripe className="rounded-full max-w-[120px] mx-auto" />
         <div className="mx-auto opacity-30">
           <FixaLogo size="lg" variant="icon" />
         </div>

@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { FixaLogo } from "@/components/ui/fixa-logo";
+import { SafetyStripe } from "@/components/ui/brand-texture";
 
 export function Footer() {
   return (
     <footer className="border-t border-stone-200/60 bg-white">
+      <SafetyStripe className="opacity-80" />
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 mb-8">
           {/* Brand */}
