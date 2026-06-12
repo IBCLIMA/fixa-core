@@ -69,7 +69,7 @@ export default async function ConfiguracionPage() {
           <p className="text-sm text-muted-foreground">
             Comparte este enlace con tus clientes para que puedan solicitar cita desde el móvil.
           </p>
-          <CopyLinkBox url={`${process.env.NEXT_PUBLIC_APP_URL || "https://fixa.es"}/cita/${taller.id}`} />
+          <CopyLinkBox url={`${process.env.NEXT_PUBLIC_APP_URL || "https://fixataller.es"}/cita/${taller.id}`} />
           <div className="flex items-center gap-2">
             <Link href={`/cita/${taller.id}`} target="_blank">
               <Button variant="outline" size="sm" className="rounded-full text-xs shrink-0">

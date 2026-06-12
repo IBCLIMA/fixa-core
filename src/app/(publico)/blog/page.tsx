@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/seo";
 import Link from "next/link";
 import { getAllPosts } from "@/lib/content";
 import { ArrowRight, Calendar } from "lucide-react";
@@ -10,7 +11,7 @@ import { WebServicesBanner } from "@/components/web-services-banner";
 export const metadata: Metadata = {
   title: "Blog — Gestión de talleres mecánicos",
   description: "Artículos sobre gestión de talleres, software, marketing para mecánicos, avisos ITV, y todo lo que necesitas para profesionalizar tu taller.",
-  alternates: { canonical: "https://fixa.es/blog" },
+  alternates: { canonical: `${SITE_URL}/blog` },
 };
 
 export default function BlogPage() {

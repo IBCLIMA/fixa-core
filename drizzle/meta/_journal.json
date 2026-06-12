@@ -15,6 +15,13 @@
       "when": 1781212363449,
       "tag": "0001_push-y-recordatorios",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1781303432876,
+      "tag": "0002_leads",
+      "breakpoints": true
     }
   ]
 }

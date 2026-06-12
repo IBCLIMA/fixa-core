@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Zap, Send, Search, MessageSquare, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { track } from "@vercel/analytics";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -80,7 +81,7 @@ export function HeroSection() {
               transition={{ ...TRANSITION_DEFAULT, delay: 0.3 }}
               className="flex flex-col gap-3 mt-10 sm:flex-row"
             >
-              <Link href="/sign-up">
+              <Link href="/sign-up" onClick={() => track("cta_hero")}>
                 <Button
                   size="lg"
                   className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-14 px-8 text-base shadow-2xl shadow-orange-500/25 hover:shadow-orange-500/35 transition-shadow cursor-pointer group"

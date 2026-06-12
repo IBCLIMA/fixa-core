@@ -5,6 +5,7 @@ import { esES } from "@clerk/localizations/es-ES";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { CookieBanner } from "@/components/cookie-banner";
+import { Analytics } from "@vercel/analytics/next";
 import { SITE_URL, ORGANIZATION_JSONLD } from "@/lib/seo";
 import "./globals.css";
 
@@ -86,6 +87,7 @@ export default function RootLayout({
           <TooltipProvider>{children}</TooltipProvider>
           <Toaster />
           <CookieBanner />
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>

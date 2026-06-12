@@ -389,6 +389,15 @@ export const pushSubscriptions = pgTable("push_subscriptions", {
   index("idx_push_subs_taller").on(table.tallerId),
 ]);
 
+// Leads de marketing (lead magnet: plantilla OR, newsletter…)
+export const leads = pgTable("leads", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  email: text("email").unique().notNull(),
+  fuente: text("fuente").default("plantilla-or").notNull(),
+  consentAt: timestamp("consent_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Rate limiting distribuido (contador atómico compartido entre instancias de Vercel)
 export const rateLimits = pgTable("rate_limits", {
   key: text("key").primaryKey(),

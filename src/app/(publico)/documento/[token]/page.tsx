@@ -207,7 +207,7 @@ export default async function DocumentoPublicoPage({
 
         {/* Footer */}
         <div className="text-center">
-          <p className="text-xs text-muted-foreground">Documento generado por FIXA — fixa.es</p>
+          <p className="text-xs text-muted-foreground">Documento generado por FIXA — fixataller.es</p>
         </div>
       </main>
     </div>

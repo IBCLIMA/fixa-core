@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar, Tag } from "lucide-react";
 import { getAllPosts, getPostBySlug } from "@/lib/content";
 import { MDXContent } from "@/components/mdx-content";
 import { WebServicesBanner } from "@/components/web-services-banner";
+import { LeadMagnetBox } from "@/components/lead-magnet-box";
 import { SITE_URL } from "@/lib/seo";
 
 export async function generateStaticParams() {
@@ -93,6 +94,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <div className="prose prose-stone prose-lg max-w-none">
         <MDXContent code={post.body} />
       </div>
+
+      {/* Lead magnet: plantilla OR a cambio de email */}
+      <LeadMagnetBox />
 
       {/* Enlazado interno: posts relacionados + páginas de producto */}
       {(() => {

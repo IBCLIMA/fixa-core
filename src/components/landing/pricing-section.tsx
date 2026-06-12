@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Check, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { track } from "@vercel/analytics";
 import { motion, useReducedMotion } from "framer-motion";
 import { AnimatedSection } from "./animated-section";
 import { TRANSITION_DEFAULT } from "./animation-config";
@@ -101,7 +102,7 @@ export function PricingSection() {
                   ))}
                 </div>
 
-                <Link href="/sign-up">
+                <Link href="/sign-up" onClick={() => track("cta_precios", { plan: p.nombre })}>
                   <Button
                     className={`w-full rounded-full font-bold h-12 cursor-pointer group ${
                       p.popular

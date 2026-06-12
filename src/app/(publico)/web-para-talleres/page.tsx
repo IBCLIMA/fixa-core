@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/seo";
 import Link from "next/link";
 import {
   Globe, Smartphone, Search, Zap, Shield, MessageSquare,
@@ -11,11 +12,11 @@ import { Button } from "@/components/ui/button";
 export const metadata: Metadata = {
   title: "Webs profesionales para talleres mecánicos — FIXA",
   description: "Diseñamos webs profesionales para talleres mecánicos. Moderna, rápida, optimizada para Google. Tu taller visible en internet desde 499€.",
-  alternates: { canonical: "https://fixa.es/web-para-talleres" },
+  alternates: { canonical: `${SITE_URL}/web-para-talleres` },
   openGraph: {
     title: "Webs profesionales para talleres — FIXA",
     description: "Tu taller merece una web profesional. Desde 499€.",
-    url: "https://fixa.es/web-para-talleres",
+    url: `${SITE_URL}/web-para-talleres`,
   },
 };
 

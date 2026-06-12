@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { track } from "@vercel/analytics";
 import Aurora from "@/components/ui/aurora";
 import BlurText from "@/components/ui/blur-text";
 import { AnimatedSection } from "./animated-section";
@@ -45,7 +46,7 @@ export function CtaSection() {
 
         <AnimatedSection delay={0.6}>
           <div className="flex flex-col items-center gap-4 mt-10 sm:flex-row sm:justify-center">
-            <Link href="/sign-up">
+            <Link href="/sign-up" onClick={() => track("cta_final")}>
               <Button
                 size="lg"
                 className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-14 px-10 text-base shadow-2xl shadow-orange-500/30 hover:shadow-orange-500/40 transition-all cursor-pointer group"

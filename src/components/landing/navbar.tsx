@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { track } from "@vercel/analytics";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -58,7 +59,7 @@ export function Navbar() {
             >
               Acceder
             </Link>
-            <Link href="/sign-up" className="ml-1">
+            <Link href="/sign-up" className="ml-1" onClick={() => track("cta_navbar")}>
               <Button className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-semibold shadow-lg shadow-orange-500/20 text-sm h-9 px-5 cursor-pointer">
                 Probar gratis
                 <ArrowRight className="ml-1.5 h-3.5 w-3.5" />

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, X, Maximize2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { track } from "@vercel/analytics";
 import { AnimatedSection } from "./animated-section";
 
 export function VideoDemoSection() {
@@ -99,7 +100,7 @@ export function VideoDemoSection() {
           {/* CTA tras el vídeo: el momento de máxima intención */}
           <AnimatedSection delay={0.3} className="text-center mt-10">
             <p className="text-stone-500 mb-4">¿Te ha gustado? Pruébalo con tu propio taller.</p>
-            <Link href="/sign-up">
+            <Link href="/sign-up" onClick={() => track("cta_video")}>
               <Button
                 size="lg"
                 className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-12 px-8 shadow-lg shadow-orange-500/20 cursor-pointer group"
