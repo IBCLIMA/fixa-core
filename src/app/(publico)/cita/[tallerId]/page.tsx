@@ -5,6 +5,10 @@ import { eq, and, gte, lte, sql } from "drizzle-orm";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { BookingForm } from "./booking-form";
 
+// Página privada de cliente (acceso por token): no indexable
+export const metadata = { robots: { index: false, follow: false } };
+
+
 export default async function CitaPublicaPage({ params }: { params: Promise<{ tallerId: string }> }) {
   const { tallerId } = await params;
   const db = getDb();

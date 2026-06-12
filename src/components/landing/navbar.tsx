@@ -31,7 +31,7 @@ export function Navbar() {
         )}
       >
         <div className="mx-auto max-w-6xl flex items-center justify-between px-6 h-14">
-          <Link href="/inicio">
+          <Link href="/">
             <FixaLogo size="md" />
           </Link>
 

@@ -8,6 +8,10 @@ import { getDb } from "@/db";
 import { documentosCobro } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
+// Página privada de cliente (acceso por token): no indexable
+export const metadata = { robots: { index: false, follow: false } };
+
+
 const metodoPagoLabels: Record<string, string> = {
   efectivo: "Efectivo",
   tarjeta: "Tarjeta",

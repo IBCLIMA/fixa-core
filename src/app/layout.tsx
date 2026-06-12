@@ -5,6 +5,7 @@ import { esES } from "@clerk/localizations/es-ES";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { CookieBanner } from "@/components/cookie-banner";
+import { SITE_URL, ORGANIZATION_JSONLD } from "@/lib/seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -24,26 +25,25 @@ export const metadata: Metadata = {
   },
   description:
     "Gestiona tu taller desde el móvil: órdenes de trabajo, citas, avisos ITV, WhatsApp integrado, presupuestos y portal del cliente. Desde 29€/mes. 14 días gratis.",
-  metadataBase: new URL("https://fixa.es"),
+  metadataBase: new URL(SITE_URL),
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "FIXA",
   },
+  // og:image y twitter:image se generan en src/app/opengraph-image.tsx (convención de archivo)
   openGraph: {
     title: "FIXA — El software que tu taller necesita",
     description: "Órdenes, citas, WhatsApp, presupuestos y avisos ITV. Todo desde el móvil por 29€/mes. Creado por mecánicos.",
     siteName: "FIXA",
     type: "website",
     locale: "es_ES",
-    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "FIXA — Software de gestión para talleres mecánicos",
     description: "Gestiona tu taller desde el móvil por 29€/mes. 14 días gratis.",
-    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -77,6 +77,10 @@ export default function RootLayout({
         <head>
           <link rel="apple-touch-icon" href="/icons/icon-192.png" />
           <meta name="theme-color" content="#f97316" />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSONLD) }}
+          />
         </head>
         <body className="min-h-full flex flex-col">
           <TooltipProvider>{children}</TooltipProvider>

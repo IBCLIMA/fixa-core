@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { getAllCities, getCityBySlug } from "@/lib/content";
 import { MDXContent } from "@/components/mdx-content";
 import { AnimatedSection } from "@/components/landing/animated-section";
+import { SITE_URL } from "@/lib/seo";
 
 export async function generateStaticParams() {
   return getAllCities().map((city) => ({ ciudad: city.slug }));
@@ -18,10 +19,11 @@ export async function generateMetadata({ params }: { params: Promise<{ ciudad: s
   return {
     title: `Software taller mecánico ${city.city} — FIXA | Desde 29€/mes`,
     description: `Gestiona tu taller mecánico en ${city.city} con FIXA. Órdenes de trabajo, citas, WhatsApp integrado y avisos ITV. 14 días gratis.`,
-    alternates: { canonical: `https://fixa.es/taller-${ciudad}` },
+    alternates: { canonical: `${SITE_URL}/taller/${ciudad}` },
     openGraph: {
       title: `Software para talleres en ${city.city} — FIXA`,
       description: `El software de gestión que usan los talleres de ${city.city}. Desde 29€/mes.`,
+      url: `${SITE_URL}/taller/${ciudad}`,
     },
   };
 }

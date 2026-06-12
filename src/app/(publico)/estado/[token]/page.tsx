@@ -9,6 +9,10 @@ import { ordenesTrabajo, vehiculos, clientes, talleres, historialEstados, presup
 import { eq, desc, and, inArray } from "drizzle-orm";
 import { estadoLabelsCliente as estadoLabels, estadoColors } from "@/lib/constants";
 
+// Página privada de cliente (acceso por token): no indexable
+export const metadata = { robots: { index: false, follow: false } };
+
+
 const estadoSteps = ["recibido", "diagnostico", "presupuestado", "aprobado", "en_reparacion", "listo", "entregado"];
 
 export default async function PortalClientePage({ params }: { params: Promise<{ token: string }> }) {

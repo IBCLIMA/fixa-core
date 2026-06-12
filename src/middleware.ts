@@ -29,6 +29,26 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
+  const { pathname } = req.nextUrl;
+
+  // SEO: /inicio se consolida en la raíz (308 permanente)
+  if (pathname === "/inicio") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url, 308);
+  }
+
+  // La raíz sirve la landing a anónimos (rewrite interno, la URL sigue siendo "/")
+  // y el panel del taller a usuarios autenticados.
+  if (pathname === "/") {
+    const { userId } = await auth();
+    if (!userId) {
+      const url = req.nextUrl.clone();
+      url.pathname = "/inicio";
+      return NextResponse.rewrite(url);
+    }
+  }
+
   // Persist invite token from sign-up URL into a cookie for later use
   if (req.nextUrl.pathname.startsWith("/sign-up")) {
     const inviteToken = req.nextUrl.searchParams.get("invite");

@@ -12,7 +12,7 @@ export default function Page() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_70%_at_80%_100%,rgba(249,115,22,0.06),transparent)]" />
 
         <div className="relative z-10 flex flex-col justify-between h-full p-12">
-          <Link href="/inicio"><FixaLogo size="md" theme="dark" /></Link>
+          <Link href="/"><FixaLogo size="md" theme="dark" /></Link>
 
           <div className="space-y-8 -mt-8">
             <div>
@@ -63,7 +63,7 @@ export default function Page() {
         <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-8 py-10">
           {/* Mobile header */}
           <div className="lg:hidden mb-8 text-center">
-            <Link href="/inicio"><FixaLogo size="lg" /></Link>
+            <Link href="/"><FixaLogo size="lg" /></Link>
             <h2 className="text-xl font-extrabold text-stone-900 mt-4">Accede a tu taller</h2>
           </div>
 
@@ -114,7 +114,7 @@ export default function Page() {
           </div>
 
           <div className="mt-6">
-            <Link href="/inicio" className="inline-flex items-center gap-2 text-sm text-stone-400 hover:text-stone-700 transition-colors">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm text-stone-400 hover:text-stone-700 transition-colors">
               <ArrowLeft className="h-4 w-4" />Volver a la web
             </Link>
           </div>

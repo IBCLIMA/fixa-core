@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar, Tag } from "lucide-react";
 import { getAllPosts, getPostBySlug } from "@/lib/content";
 import { MDXContent } from "@/components/mdx-content";
 import { WebServicesBanner } from "@/components/web-services-banner";
+import { SITE_URL } from "@/lib/seo";
 
 export async function generateStaticParams() {
   return getAllPosts().map((post) => ({ slug: post.slug }));
@@ -17,13 +18,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: post.title,
     description: post.description,
-    alternates: { canonical: `https://fixa.es/blog/${slug}` },
+    alternates: { canonical: `${SITE_URL}/blog/${slug}` },
     openGraph: {
       title: post.title,
       description: post.description,
       type: "article",
       publishedTime: post.date,
-      url: `https://fixa.es/blog/${slug}`,
+      url: `${SITE_URL}/blog/${slug}`,
     },
   };
 }
@@ -33,15 +34,34 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: post.title,
-    description: post.description,
-    datePublished: post.date,
-    author: { "@type": "Organization", name: "FIXA" },
-    publisher: { "@type": "Organization", name: "FIXA", url: "https://fixa.es" },
-  };
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: post.title,
+      description: post.description,
+      datePublished: post.date,
+      inLanguage: "es",
+      image: `${SITE_URL}/opengraph-image`,
+      mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${slug}` },
+      author: { "@type": "Organization", name: "FIXA", url: SITE_URL },
+      publisher: {
+        "@type": "Organization",
+        name: "FIXA",
+        url: SITE_URL,
+        logo: { "@type": "ImageObject", url: `${SITE_URL}/icons/icon-512.png` },
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blog` },
+        { "@type": "ListItem", position: 3, name: post.title, item: `${SITE_URL}/blog/${slug}` },
+      ],
+    },
+  ];
 
   return (
     <article className="mx-auto max-w-3xl px-6 py-16">

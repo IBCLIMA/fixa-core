@@ -39,6 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title,
     description: "Revisa y aprueba el presupuesto de reparación de tu vehículo.",
+    robots: { index: false, follow: false },
     openGraph: {
       title,
       description: "Revisa y aprueba el presupuesto de reparación de tu vehículo.",

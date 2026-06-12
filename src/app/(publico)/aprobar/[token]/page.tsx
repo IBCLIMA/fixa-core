@@ -2,6 +2,10 @@ import { notFound } from "next/navigation";
 import { getAveriaByToken } from "@/app/(taller)/actions/averias-ocultas";
 import { AprobarAveriaClient } from "./client";
 
+// Página privada de cliente (acceso por token): no indexable
+export const metadata = { robots: { index: false, follow: false } };
+
+
 export default async function AprobarAveriaPage({
   params,
 }: {

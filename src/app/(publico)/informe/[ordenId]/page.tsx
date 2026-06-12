@@ -16,6 +16,10 @@ import {
 import { eq } from "drizzle-orm";
 import { Car, Wrench, Camera, AlertTriangle, CheckCircle2, AlertCircle, Info } from "lucide-react";
 
+// Página privada de cliente (acceso por token): no indexable
+export const metadata = { robots: { index: false, follow: false } };
+
+
 const estadoInspeccionLabel: Record<string, string> = {
   bien: "Correcto",
   atencion: "Necesita atención",

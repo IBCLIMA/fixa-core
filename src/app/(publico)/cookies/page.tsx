@@ -6,7 +6,7 @@ export default function CookiesPage() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card px-6 py-4">
         <div className="mx-auto max-w-3xl flex items-center gap-2">
-          <Link href="/inicio"><FixaLogo size="sm" /></Link>
+          <Link href="/"><FixaLogo size="sm" /></Link>
         </div>
       </header>
 
