@@ -16,6 +16,7 @@ const sizes = {
 };
 
 function FixaIcon({ className }: { className?: string }) {
+  // "La Tuerca mecanizada": hexágono redondeado con faceta de brillo + F
   return (
     <svg
       viewBox="0 0 40 40"
@@ -30,32 +31,18 @@ function FixaIcon({ className }: { className?: string }) {
           <stop offset="100%" stopColor="#ea580c" />
         </linearGradient>
       </defs>
-      {/* Rounded square background */}
-      <rect width="40" height="40" rx="10" fill="url(#fixa-grad)" />
-      {/* F letter - bold, geometric */}
+      {/* Hexágono (tuerca) con esquinas redondeadas */}
       <path
-        d="M11 10h7.5v3h-4v3.5h3.5v3h-3.5v5h-3.5V10z"
-        fill="white"
-        fillOpacity="0.95"
+        d="M20 4l13 7.5v17L20 36 7 28.5v-17L20 4z"
+        fill="url(#fixa-grad)"
+        stroke="url(#fixa-grad)"
+        strokeWidth="5"
+        strokeLinejoin="round"
       />
-      {/* X as wrench - the key brand element */}
-      {/* Left arm of X (top-left to bottom-right) */}
-      <path
-        d="M21 10l3.2 5.5L21 21l2 1.2 3.2-5.5 3.2 5.5 2-1.2-3.2-5.5L31.4 10h-3.6l-1.6 2.8L24.6 10H21z"
-        fill="white"
-        fillOpacity="0.95"
-      />
-      {/* Wrench hex head at bottom of X */}
-      <path
-        d="M23.2 24.5l-2.2 3.8v0c-.3.5-.1 1.1.4 1.4l1.7 1c.5.3 1.1.1 1.4-.4l2.2-3.8-1.8-1-1.7-1z"
-        fill="white"
-        fillOpacity="0.9"
-      />
-      <path
-        d="M28.8 24.5l2.2 3.8c.3.5.1 1.1-.4 1.4l-1.7 1c-.5.3-1.1.1-1.4-.4l-2.2-3.8 1.8-1 1.7-1z"
-        fill="white"
-        fillOpacity="0.9"
-      />
+      {/* Faceta de brillo (metal mecanizado) */}
+      <path d="M20 1.6l15.5 9-15.5 9-15.5-9 15.5-9z" fill="white" fillOpacity="0.12" />
+      {/* F */}
+      <path d="M14.5 11h11.5v4h-7v4h6v4h-6v6h-4.5V11z" fill="white" />
     </svg>
   );
 }

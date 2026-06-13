@@ -5,9 +5,7 @@
       <stop offset="100%" stop-color="#ea580c"/>
     </linearGradient>
   </defs>
-  <rect width="40" height="40" rx="10" fill="url(#bg)"/>
-  <path d="M11 10h7.5v3h-4v3.5h3.5v3h-3.5v5h-3.5V10z" fill="white" fill-opacity="0.95"/>
-  <path d="M21 10l3.2 5.5L21 21l2 1.2 3.2-5.5 3.2 5.5 2-1.2-3.2-5.5L31.4 10h-3.6l-1.6 2.8L24.6 10H21z" fill="white" fill-opacity="0.95"/>
-  <path d="M23.2 24.5l-2.2 3.8v0c-.3.5-.1 1.1.4 1.4l1.7 1c.5.3 1.1.1 1.4-.4l2.2-3.8-1.8-1-1.7-1z" fill="white" fill-opacity="0.9"/>
-  <path d="M28.8 24.5l2.2 3.8c.3.5.1 1.1-.4 1.4l-1.7 1c-.5.3-1.1.1-1.4-.4l-2.2-3.8 1.8-1 1.7-1z" fill="white" fill-opacity="0.9"/>
+  <path d="M20 4l13 7.5v17L20 36 7 28.5v-17L20 4z" fill="url(#bg)" stroke="url(#bg)" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M20 1.6l15.5 9-15.5 9-15.5-9 15.5-9z" fill="white" fill-opacity="0.12"/>
+  <path d="M14.5 11h11.5v4h-7v4h6v4h-6v6h-4.5V11z" fill="white"/>
 </svg>
