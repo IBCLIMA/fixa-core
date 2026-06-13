@@ -123,7 +123,7 @@ function DeviceScene({ src, label, description, zoomDirection = "center" }: {
             <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
               <div style={{ height: 26, borderRadius: 7, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.04)", display: "flex", alignItems: "center", gap: 6, padding: "0 14px", minWidth: 240 }}>
                 <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#28c840" }} />
-                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontFamily: "ui-monospace, monospace" }}>fixa.es</span>
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontFamily: "ui-monospace, monospace" }}>fixataller.es</span>
               </div>
             </div>
           </div>
@@ -179,8 +179,18 @@ function LogoReveal() {
       <div style={{ position: "absolute", width: glowSize, height: glowSize, borderRadius: "50%", background: "radial-gradient(circle, rgba(249,115,22,0.5) 0%, transparent 70%)", opacity: glowOpacity, filter: "blur(40px)" }} />
       <div style={{ position: "absolute", width: glowSize * 0.6, height: glowSize * 0.6, borderRadius: "50%", border: "1px solid rgba(249,115,22,0.2)", opacity: glowOpacity }} />
 
-      <div style={{ transform: `scale(${pulse})`, width: 110, height: 110, borderRadius: 28, background: "linear-gradient(135deg, #f97316, #ea580c)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 20px 80px rgba(249,115,22,0.5)" }}>
-        <span style={{ fontSize: 48, fontWeight: 800, color: "white", fontFamily: FONT }}>FX</span>
+      {/* Tuerca mecanizada B3 */}
+      <div style={{ transform: `scale(${pulse})` }}>
+        <svg width="110" height="110" viewBox="0 0 40 40">
+          <defs>
+            <linearGradient id="vg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#f97316" /><stop offset="100%" stopColor="#ea580c" />
+            </linearGradient>
+          </defs>
+          <path d="M20 4l13 7.5v17L20 36 7 28.5v-17L20 4z" fill="url(#vg)" stroke="url(#vg)" strokeWidth="5" strokeLinejoin="round" />
+          <path d="M20 1.6l15.5 9-15.5 9-15.5-9 15.5-9z" fill="white" fillOpacity="0.12" />
+          <path d="M14.5 11h11.5v4h-7v4h6v4h-6v6h-4.5V11z" fill="white" />
+        </svg>
       </div>
 
       <div style={{ marginTop: 24, opacity: textEnter, fontSize: 72, fontWeight: 800, color: "white", letterSpacing: -4, fontFamily: FONT }}>FIXA</div>
@@ -206,8 +216,8 @@ export const FixaDemo: React.FC = () => {
             display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "0 80px",
           }}>
             <div style={{ width: 50, height: 3, borderRadius: 2, background: "linear-gradient(90deg, transparent, #f97316, transparent)", marginBottom: 28 }} />
-            <ShimmerText text="Cada día pierdes dinero" size={68} shimmerColor="#fbbf24" />
-            <ShimmerText text="gestionando tu taller a mano." size={68} color="#f97316" shimmerColor="#fff" delay={8} />
+            <ShimmerText text="Pierdes 2 horas al día" size={68} shimmerColor="#fbbf24" />
+            <ShimmerText text="respondiendo '¿está listo?'" size={68} color="#f97316" shimmerColor="#fff" delay={8} />
           </AbsoluteFill>
         </TransitionSeries.Sequence>
 
@@ -220,9 +230,9 @@ export const FixaDemo: React.FC = () => {
             display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 20, padding: "0 80px",
           }}>
             <FadeText text="EL PROBLEMA" size={13} color="#ef4444" delay={0} />
-            <ShimmerText text="El teléfono no para." size={56} color="#ef4444" shimmerColor="#fca5a5" delay={4} />
-            <ShimmerText text="Los clientes se van." size={56} color="#f59e0b" shimmerColor="#fde68a" delay={10} />
-            <ShimmerText text="Los ERPs cuestan una pasta." size={56} color="#525252" shimmerColor="#a8a29e" delay={16} />
+            <ShimmerText text="20 llamadas al día para nada." size={56} color="#ef4444" shimmerColor="#fca5a5" delay={4} />
+            <ShimmerText text="5 ITVs al mes que pierdes." size={56} color="#f59e0b" shimmerColor="#fde68a" delay={10} />
+            <ShimmerText text="Presupuestos a las 9 de la noche." size={56} color="#525252" shimmerColor="#a8a29e" delay={16} />
           </AbsoluteFill>
         </TransitionSeries.Sequence>
 
@@ -237,28 +247,28 @@ export const FixaDemo: React.FC = () => {
 
         {/* Scene 4: Dashboard 3D (3.5s) */}
         <TransitionSeries.Sequence durationInFrames={Math.round(3.5 * fps)}>
-          <DeviceScene src="dashboard.png" label="Tu taller, bajo control." description="Coches en taller · Citas · Listos para entregar" zoomDirection="center" />
+          <DeviceScene src="dashboard.png" label="Abres FIXA y tienes el día resuelto." description="Qué entra · Qué entregar · Quién no ha pagado" zoomDirection="center" />
         </TransitionSeries.Sequence>
 
         <TransitionSeries.Transition presentation={slide({ direction: "from-right" })} timing={linearTiming({ durationInFrames: 8 })} />
 
         {/* Scene 5: Orders 3D (3.5s) */}
         <TransitionSeries.Sequence durationInFrames={Math.round(3.5 * fps)}>
-          <DeviceScene src="ordenes.png" label="Matrícula. Orden. 10 segundos." description="Sin formularios · El mecánico más rápido del barrio" zoomDirection="left" />
+          <DeviceScene src="ordenes.png" label="Matrícula y en 10 segundos, hecho." description="Sin formularios de 20 campos · Legal según RD 1457/1986" zoomDirection="left" />
         </TransitionSeries.Sequence>
 
         <TransitionSeries.Transition presentation={slide({ direction: "from-left" })} timing={linearTiming({ durationInFrames: 8 })} />
 
         {/* Scene 6: Clients 3D (3s) */}
         <TransitionSeries.Sequence durationInFrames={3 * fps}>
-          <DeviceScene src="clientes.png" label="Tus clientes no vuelven a llamar." description="Ven el estado online · Tú trabajas sin interrupciones" zoomDirection="right" />
+          <DeviceScene src="clientes.png" label="El cliente mira su coche solo." description="Un enlace y deja de llamarte · Presupuesto que acepta online" zoomDirection="right" />
         </TransitionSeries.Sequence>
 
         <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: 8 })} />
 
         {/* Scene 7: Calendar 3D (2.5s) */}
         <TransitionSeries.Sequence durationInFrames={Math.round(2.5 * fps)}>
-          <DeviceScene src="calendario.png" label="Cero caos con las citas." description="Calendario visual · Disponibilidad al momento" zoomDirection="center" />
+          <DeviceScene src="calendario.png" label="La agenda que se llena sola." description="Citas online del cliente + avisos ITV automáticos" zoomDirection="center" />
         </TransitionSeries.Sequence>
 
         <TransitionSeries.Transition presentation={slide({ direction: "from-bottom" })} timing={linearTiming({ durationInFrames: 10 })} />
@@ -309,11 +319,11 @@ export const FixaDemo: React.FC = () => {
             })}
 
             <ShimmerText text="14 días gratis." size={68} shimmerColor="#fbbf24" />
-            <ShimmerText text="Sin excusas." size={68} color="#f97316" shimmerColor="#fff" delay={8} />
+            <ShimmerText text="Sin tarjeta. Sin excusas." size={68} color="#f97316" shimmerColor="#fff" delay={8} />
 
             <FadeText text="" delay={14} size={1}>
               <div style={{ marginTop: 36, padding: "20px 56px", borderRadius: 999, background: "linear-gradient(135deg, #f97316, #ea580c)", color: "white", fontSize: 28, fontWeight: 800, fontFamily: FONT, boxShadow: "0 20px 60px rgba(249,115,22,0.5)", letterSpacing: 1 }}>
-                fixa.es
+                fixataller.es
               </div>
             </FadeText>
 
