@@ -15,7 +15,7 @@ export default function PrivacidadPage() {
         <p><strong>Última actualización:</strong> Mayo 2026</p>
 
         <h2>1. Responsable del tratamiento</h2>
-        <p>FIXA es un producto de Ibañez Clima. Los datos son tratados como responsable del tratamiento conforme al Reglamento General de Protección de Datos (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD).</p>
+        <p>FIXA es un producto de Ibañez Clima (CIF: B25825761). Los datos son tratados como responsable del tratamiento conforme al Reglamento General de Protección de Datos (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD).</p>
 
         <h2>2. Datos que recopilamos</h2>
         <p>Recopilamos los siguientes datos para prestar el servicio de gestión de taller:</p>

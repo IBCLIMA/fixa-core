@@ -33,7 +33,7 @@ export default function TerminosPage() {
         <p>Los precios pueden ser actualizados con un preaviso mínimo de 30 días.</p>
 
         <h2>5. Forma de pago</h2>
-        <p>El pago se realiza mediante domiciliación bancaria SEPA con periodicidad mensual. El cliente facilita los datos de la cuenta bancaria para la domiciliación. La factura se emite desde Ibañez Clima.</p>
+        <p>El pago se realiza mediante domiciliación bancaria SEPA con periodicidad mensual. El cliente facilita los datos de la cuenta bancaria para la domiciliación. La factura se emite desde Ibañez Clima (CIF: B25825761).</p>
 
         <h2>6. Duración y cancelación</h2>
         <p>El contrato no tiene permanencia mínima. El cliente puede cancelar en cualquier momento notificándolo por escrito (email o WhatsApp). La cancelación surte efecto al final del período de facturación en curso.</p>

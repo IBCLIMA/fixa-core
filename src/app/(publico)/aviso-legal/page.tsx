@@ -18,12 +18,12 @@ export default function AvisoLegalPage() {
         <p>En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa:</p>
         <ul>
           <li><strong>Titular:</strong> Ibañez Clima</li>
+          <li><strong>CIF:</strong> B25825761</li>
           <li><strong>Actividad:</strong> Desarrollo y comercialización del software de gestión FIXA</li>
           <li><strong>Email de contacto:</strong> sergi@ibclima.com</li>
           <li><strong>Teléfono:</strong> 611 433 218</li>
           <li><strong>Dominio:</strong> fixataller.es</li>
         </ul>
-        <p className="text-sm text-muted-foreground italic">Nota: Los datos fiscales completos (NIF/CIF, domicilio social, datos registrales) se facilitarán previa solicitud al email de contacto, conforme a la normativa vigente.</p>
 
         <h2>2. Objeto</h2>
         <p>Este sitio web tiene como finalidad la promoción y comercialización de FIXA, un software de gestión en la nube (SaaS) dirigido a talleres mecánicos. A través de esta web se facilita información sobre el servicio, sus funcionalidades y precios, así como el acceso a la plataforma.</p>
