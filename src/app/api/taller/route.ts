@@ -64,48 +64,15 @@ export async function PUT(request: Request) {
     if (isNewWorkshop && process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY);
 
-      // Welcome email to the workshop
+      // Welcome email — estilo Isra Bravo: corto, directo, sin florituras
       if (body.email) {
+        const { emailBienvenida } = await import("@/lib/email-templates");
+        const tpl = emailBienvenida(body.nombre || "");
         resend.emails.send({
           from: "FIXA <onboarding@resend.dev>",
           to: body.email,
-          subject: "¡Bienvenido a FIXA! Tu prueba de 14 días empieza hoy",
-          html: `
-            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 0;">
-              <div style="background: linear-gradient(135deg, #f97316, #ea580c); padding: 32px; text-align: center; border-radius: 16px 16px 0 0;">
-                <h1 style="color: white; font-size: 28px; margin: 0; font-weight: 800; letter-spacing: -0.5px;">FIXA</h1>
-                <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0; font-size: 14px;">La herramienta del taller organizado</p>
-              </div>
-              <div style="background: white; padding: 32px; border: 1px solid #e7e5e4; border-top: none; border-radius: 0 0 16px 16px;">
-                <h2 style="color: #1c1917; font-size: 22px; margin: 0 0 16px;">Hola ${body.nombre || ""},</h2>
-                <p style="color: #57534e; font-size: 15px; line-height: 1.6; margin: 0 0 20px;">
-                  Bienvenido a FIXA. Tu cuenta ya est\u00e1 activa y tienes <strong>14 d\u00edas para probar todas las funciones sin compromiso</strong>.
-                </p>
-                <p style="color: #57534e; font-size: 15px; line-height: 1.6; margin: 0 0 12px; font-weight: 600;">
-                  Esto es lo que puedes hacer desde hoy:
-                </p>
-                <ul style="color: #57534e; font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0 0 24px;">
-                  <li>Crear \u00f3rdenes de trabajo en segundos</li>
-                  <li>Enviar el estado del coche al cliente por WhatsApp</li>
-                  <li>Portal online para que tu cliente vea su coche sin llamar</li>
-                  <li>Presupuestos profesionales con un clic</li>
-                  <li>Avisos autom\u00e1ticos de ITV y mantenimiento</li>
-                  <li>Gesti\u00f3n de citas y agenda del taller</li>
-                </ul>
-                <div style="text-align: center; margin: 28px 0;">
-                  <a href="https://fixa.ibclima.com" style="display: inline-block; background: linear-gradient(135deg, #f97316, #ea580c); color: white; text-decoration: none; padding: 14px 36px; border-radius: 50px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 14px rgba(249,115,22,0.3);">
-                    Entrar a FIXA
-                  </a>
-                </div>
-                <p style="color: #a8a29e; font-size: 13px; line-height: 1.6; margin: 24px 0 0; text-align: center;">
-                  \u00bfDudas? Escr\u00edbenos por <a href="https://wa.me/34644488029" style="color: #f97316; text-decoration: underline;">WhatsApp</a> y te ayudamos al momento.
-                </p>
-              </div>
-              <p style="color: #a8a29e; font-size: 11px; text-align: center; margin-top: 20px;">
-                FIXA by Iba\u00f1ez Clima
-              </p>
-            </div>
-          `,
+          subject: tpl.subject,
+          html: tpl.html,
         }).catch(() => {});
       }
 

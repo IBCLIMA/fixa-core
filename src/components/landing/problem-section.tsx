@@ -11,24 +11,24 @@ const problems = [
     color: "text-red-500",
     bg: "bg-red-500/10",
     accent: "border-red-200/50",
-    title: "El teléfono no para",
-    desc: '"¿Está listo mi coche?" — la misma pregunta 20 veces al día. Te saca de debajo del coche constantemente.',
+    title: "20 llamadas al día para nada",
+    desc: '"¿Está listo mi coche?" — la misma pregunta 20 veces. Te saca de debajo del coche, pierdes el hilo y son 2 horas diarias que no cobras a nadie.',
   },
   {
     icon: Timer,
     color: "text-amber-600",
     bg: "bg-amber-500/10",
     accent: "border-amber-200/50",
-    title: "Excel, papel y WhatsApp",
-    desc: "Presupuestos a mano, citas en la cabeza, facturas al final del día. Horas que no cobras.",
+    title: "Presupuestos a las 9 de la noche",
+    desc: "El presupuesto lo haces en casa con la calculadora. Si tardas un día más, el cliente ya se fue a otro. Cada hora de retraso es dinero perdido.",
   },
   {
     icon: Clock,
     color: "text-blue-500",
     bg: "bg-blue-500/10",
     accent: "border-blue-200/50",
-    title: "Clientes que desaparecen",
-    desc: "No les avisas de la ITV, no les recuerdas la revisión. Se van al taller de al lado.",
+    title: "ITVs que se te escapan",
+    desc: "Tienes 200 clientes con ITV. ¿Cuántos te han avisado de que les toca? Ninguno — y se la hacen en otro sitio. Son 5-10 pre-ITVs al mes que pierdes.",
   },
 ];
 
@@ -45,10 +45,11 @@ export function ProblemSection() {
             El problema
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-            El papel ya no funciona.
-            <br />
-            <span className="text-stone-400">Los ERPs cuestan una pasta.</span>
+            ¿Te suena alguno?
           </h2>
+          <p className="text-stone-500 mt-4 text-lg max-w-xl mx-auto">
+            Si tu taller pierde dinero, no es por los coches — es por la gestión.
+          </p>
         </AnimatedSection>
 
         <div className="grid gap-4 md:grid-cols-3 max-w-4xl mx-auto">

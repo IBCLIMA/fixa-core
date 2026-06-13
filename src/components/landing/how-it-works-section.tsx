@@ -8,18 +8,23 @@ import { TRANSITION_DEFAULT } from "./animation-config";
 const steps = [
   {
     step: "01",
-    title: "Importa tus clientes",
-    desc: "Sube un CSV con tu base de datos o créalos uno a uno. En 30 minutos todo migrado.",
+    title: "Regístrate y mete tus clientes",
+    desc: "Sin tarjeta. Si tienes los clientes en Excel, los subes en un CSV. Si no, los das de alta cuando entren — con la matrícula se quedan para siempre.",
   },
   {
     step: "02",
-    title: "Entra un coche → matrícula",
-    desc: "Escribe la matrícula, describe qué le pasa, crea la orden. 10 segundos.",
+    title: "Entra un coche → matrícula y listo",
+    desc: "Escribes la matrícula (o la escaneas con la cámara), describes qué le pasa, y la orden está creada en 10 segundos. Si ya vino antes, se autocompleta todo.",
   },
   {
     step: "03",
-    title: "Trabaja sin interrupciones",
-    desc: "El cliente ve el estado online. Tú solo cambias el estado y avisas con un toque.",
+    title: "Trabaja tranquilo — el cliente no te llama",
+    desc: "El cliente tiene un enlace donde ve el estado de su coche. Cuando acabas, un toque en WhatsApp: informe con fotos. Se acabó el '¿ya está listo?'.",
+  },
+  {
+    step: "04",
+    title: "Entrega, cobra y pide reseña — todo a la vez",
+    desc: "Pulsas 'Entregar', cobras y FIXA envía al cliente el informe + petición de reseña en un solo WhatsApp. Un minuto en vez de cuatro pantallas.",
   },
 ];
 

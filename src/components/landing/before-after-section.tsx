@@ -6,17 +6,17 @@ import { AnimatedSection } from "./animated-section";
 import { TRANSITION_DEFAULT } from "./animation-config";
 
 const before = [
-  { icon: PhoneOff, text: "20 llamadas al día: ¿está listo?" },
-  { icon: Clock, text: "Presupuestos a las 9 de la noche" },
-  { icon: FileX, text: "Citas apuntadas en post-its" },
-  { icon: PhoneOff, text: "Clientes que se van sin avisar" },
+  { icon: PhoneOff, text: "Te llaman 20 veces: '¿ya está listo?'" },
+  { icon: Clock, text: "Haces presupuestos en casa a las 9 de la noche" },
+  { icon: FileX, text: "Las citas están en tu cabeza o en un post-it" },
+  { icon: PhoneOff, text: "Pierdes 5 ITVs al mes sin enterarte" },
 ];
 
 const after = [
-  { icon: Smartphone, text: "El cliente ve el estado online" },
-  { icon: ClipboardList, text: "Presupuesto en 2 toques desde la orden" },
-  { icon: Bell, text: "Avisos ITV automáticos que generan trabajo" },
-  { icon: MessageSquare, text: "WhatsApp listo con un clic" },
+  { icon: Smartphone, text: "El cliente mira el estado solo — no llama" },
+  { icon: ClipboardList, text: "Presupuesto hecho y enviado en 2 minutos" },
+  { icon: Bell, text: "FIXA te dice qué ITVs caducan este mes" },
+  { icon: MessageSquare, text: "WhatsApp al cliente con un toque — mensaje ya escrito" },
 ];
 
 export function BeforeAfterSection() {
@@ -32,8 +32,11 @@ export function BeforeAfterSection() {
             El cambio
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-            Un día en tu taller
+            Mismo taller. Otro día.
           </h2>
+          <p className="text-stone-500 mt-4 text-lg max-w-xl mx-auto">
+            No es que trabajes más — es que dejas de perder tiempo en lo que no factura.
+          </p>
         </AnimatedSection>
 
         <div className="grid md:grid-cols-2 gap-6">
