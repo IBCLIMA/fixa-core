@@ -1,5 +1,5 @@
 import {
-  AbsoluteFill, Img, interpolate, useCurrentFrame, useVideoConfig,
+  AbsoluteFill, Audio, Img, interpolate, useCurrentFrame, useVideoConfig,
   spring, staticFile, Sequence,
 } from "remotion";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
@@ -46,88 +46,81 @@ function ShimmerText({ text, size = 64, delay = 0, color = "#fff", shimmerColor 
 
 // ─── Phone Mockup (simulated mobile recording) ──────────
 
-function PhoneMockup({ src, scrollPct = 0, label, sub }: {
-  src: string; scrollPct?: number; label: string; sub: string;
+function LaptopMockup({ src, label, sub }: {
+  src: string; label: string; sub: string;
 }) {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
-  const enter = spring({ frame, fps, config: { damping: 20, stiffness: 50 } });
-  const scale = interpolate(enter, [0, 1], [0.88, 1]);
-  const y = interpolate(enter, [0, 1], [60, 0]);
-
-  // Slow scroll dentro del mockup (simula un dedo scrolleando)
-  const scrollY = interpolate(frame, [20, durationInFrames - 10], [0, scrollPct], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-
-  // Label
-  const labelEnter = spring({ frame: frame - 15, fps, config: { damping: 20 } });
+  const enter = spring({ frame, fps, config: { damping: 22, stiffness: 60 } });
+  const rotateX = interpolate(enter, [0, 1], [12, 2]);
+  const translateZ = interpolate(enter, [0, 1], [-200, 0]);
+  const scale = interpolate(enter, [0, 1], [0.85, 1]);
+  const kbScale = interpolate(frame, [0, durationInFrames], [1, 1.06], { extrapolateRight: "clamp" });
+  const labelEnter = spring({ frame: frame - 12, fps, config: { damping: 20 } });
 
   return (
     <AbsoluteFill style={{
-      background: "radial-gradient(ellipse 70% 50% at 50% 45%, #1a0a00 0%, #050505 65%)",
-      display: "flex", alignItems: "center", justifyContent: "center", perspective: 1000,
+      background: "radial-gradient(ellipse 80% 60% at 50% 40%, #1c1917 0%, #0c0a09 70%)",
+      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+      perspective: 1200,
     }}>
-      {/* Glow detrás del teléfono */}
+      {/* Glow naranja */}
       <div style={{
-        position: "absolute", width: 400, height: 700, borderRadius: 50,
-        background: "radial-gradient(circle, rgba(249,115,22,0.2) 0%, transparent 70%)",
-        filter: "blur(60px)",
+        position: "absolute", width: 600, height: 400, borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%)",
+        filter: "blur(80px)", top: "20%",
       }} />
 
       <div style={{
-        transform: `translateY(${y}px) scale(${scale})`,
-        width: 375, position: "relative",
+        transform: `perspective(1200px) rotateX(${rotateX}deg) translateZ(${translateZ}px) scale(${scale})`,
+        transformStyle: "preserve-3d", width: "85%", maxWidth: 1500,
       }}>
-        {/* Phone frame */}
+        {/* Laptop bezel */}
         <div style={{
-          borderRadius: 40, overflow: "hidden",
-          boxShadow: "0 30px 100px rgba(0,0,0,0.8), 0 0 0 3px rgba(255,255,255,0.08)",
-          background: "#111",
+          background: "linear-gradient(180deg, #292524 0%, #1c1917 100%)",
+          borderRadius: "14px 14px 0 0", padding: "10px 16px 0",
+          boxShadow: "0 -2px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)",
         }}>
-          {/* Status bar */}
-          <div style={{
-            height: 44, background: "#111", display: "flex", alignItems: "center", justifyContent: "center",
-            position: "relative",
-          }}>
-            <div style={{ width: 120, height: 28, borderRadius: 14, background: "#000", position: "absolute" }} />
-            <span style={{ position: "absolute", left: 24, fontSize: 13, color: "white", fontWeight: 600, fontFamily: FONT }}>9:41</span>
-          </div>
-
-          {/* Screenshot con scroll */}
-          <div style={{ height: 750, overflow: "hidden" }}>
-            <div style={{ transform: `translateY(-${scrollY}%)`, transition: "transform 0.1s" }}>
-              <Img src={staticFile(`demo/screenshots/${src}`)} style={{ width: 375, display: "block" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 4px", marginBottom: 2 }}>
+            <div style={{ display: "flex", gap: 6 }}>
+              {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
+                <div key={c} style={{ width: 10, height: 10, borderRadius: "50%", background: c, opacity: 0.85 }} />
+              ))}
+            </div>
+            <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+              <div style={{ height: 26, borderRadius: 7, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.04)", display: "flex", alignItems: "center", gap: 6, padding: "0 14px", minWidth: 220 }}>
+                <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#28c840" }} />
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontFamily: "ui-monospace, monospace" }}>fixataller.es</span>
+              </div>
             </div>
           </div>
-
-          {/* Home indicator */}
-          <div style={{ height: 28, background: "#111", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ width: 120, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.3)" }} />
+          <div style={{ overflow: "hidden", borderRadius: "0 0 4px 4px" }}>
+            <div style={{ transform: `scale(${kbScale})`, transformOrigin: "center top" }}>
+              <Img src={staticFile(`demo/screenshots/${src}`)} style={{ width: "100%", display: "block" }} />
+            </div>
           </div>
         </div>
-
-        {/* Simulated finger tap (pulso naranja) */}
         <div style={{
-          position: "absolute", top: "35%", left: "55%",
-          width: 44, height: 44, borderRadius: "50%",
-          background: "rgba(249,115,22,0.3)", border: "2px solid rgba(249,115,22,0.6)",
-          opacity: interpolate(frame, [25, 35, 45, 55], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
-          transform: `scale(${interpolate(frame, [25, 35], [0.5, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })})`,
-        }} />
+          height: 14, background: "linear-gradient(180deg, #1c1917 0%, #0f0f12 100%)",
+          borderRadius: "0 0 14px 14px", boxShadow: "0 8px 30px rgba(0,0,0,0.5)",
+        }}>
+          <div style={{ width: 80, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.08)", margin: "5px auto 0" }} />
+        </div>
       </div>
 
-      {/* Floating label */}
+      {/* Label */}
       <div style={{
-        position: "absolute", bottom: 50, left: "50%",
+        position: "absolute", bottom: 40, left: "50%",
         transform: `translateX(-50%) translateY(${interpolate(labelEnter, [0, 1], [20, 0])}px)`,
         opacity: labelEnter,
         background: "rgba(12,10,9,0.85)", backdropFilter: "blur(20px)",
         border: "1px solid rgba(255,255,255,0.08)",
-        borderRadius: 16, padding: "14px 28px",
+        borderRadius: 16, padding: "16px 32px",
         display: "flex", flexDirection: "column", alignItems: "center",
         boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
       }}>
-        <div style={{ fontSize: 24, fontWeight: 800, color: "#fff", fontFamily: FONT, letterSpacing: -0.5 }}>{label}</div>
-        <div style={{ fontSize: 14, color: "#78716c", fontFamily: FONT, marginTop: 4 }}>{sub}</div>
+        <div style={{ fontSize: 28, fontWeight: 800, color: "#fff", fontFamily: FONT, letterSpacing: -1 }}>{label}</div>
+        <div style={{ fontSize: 16, color: "#78716c", fontFamily: FONT, marginTop: 4 }}>{sub}</div>
       </div>
     </AbsoluteFill>
   );
@@ -228,6 +221,7 @@ export const FixaDemo: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#050505" }}>
+      <Audio src={staticFile("demo/bg-music-30s.mp3")} volume={0.35} />
       <TransitionSeries>
         {/* 1. Hook (3s) */}
         <TransitionSeries.Sequence durationInFrames={3 * fps}>
@@ -259,28 +253,28 @@ export const FixaDemo: React.FC = () => {
 
         {/* 4. Panel del día — phone mockup con scroll (3.5s) */}
         <TransitionSeries.Sequence durationInFrames={Math.round(3.5 * fps)}>
-          <PhoneMockup src="dashboard.png" scrollPct={15} label="Tu día resuelto al abrir." sub="Citas · Entregas · Presupuestos pendientes" />
+          <LaptopMockup src="dashboard.png" label="Tu día resuelto al abrir." sub="Citas · Entregas · Presupuestos pendientes" />
         </TransitionSeries.Sequence>
 
         <TransitionSeries.Transition presentation={slide({ direction: "from-left" })} timing={linearTiming({ durationInFrames: 8 })} />
 
         {/* 5. Órdenes (3s) */}
         <TransitionSeries.Sequence durationInFrames={3 * fps}>
-          <PhoneMockup src="ordenes.png" scrollPct={10} label="Cada coche, controlado." sub="Estado, matrícula, mecánico — de un vistazo" />
+          <LaptopMockup src="ordenes.png" label="Cada coche, controlado." sub="Estado, matrícula, mecánico — de un vistazo" />
         </TransitionSeries.Sequence>
 
         <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: 8 })} />
 
         {/* 6. Clientes (2.5s) */}
         <TransitionSeries.Sequence durationInFrames={Math.round(2.5 * fps)}>
-          <PhoneMockup src="clientes.png" scrollPct={8} label="El cliente no te llama." sub="Ve su coche online · Acepta el presupuesto desde el sofá" />
+          <LaptopMockup src="clientes.png" label="El cliente no te llama." sub="Ve su coche online · Acepta el presupuesto desde el sofá" />
         </TransitionSeries.Sequence>
 
         <TransitionSeries.Transition presentation={slide({ direction: "from-bottom" })} timing={linearTiming({ durationInFrames: 8 })} />
 
         {/* 7. Calendario (2.5s) */}
         <TransitionSeries.Sequence durationInFrames={Math.round(2.5 * fps)}>
-          <PhoneMockup src="calendario.png" scrollPct={5} label="La agenda que se llena sola." sub="Citas online + avisos ITV automáticos" />
+          <LaptopMockup src="calendario.png" label="La agenda que se llena sola." sub="Citas online + avisos ITV automáticos" />
         </TransitionSeries.Sequence>
 
         <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: 10 })} />
