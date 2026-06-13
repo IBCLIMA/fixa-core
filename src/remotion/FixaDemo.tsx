@@ -1,6 +1,6 @@
 import {
-  AbsoluteFill, Audio, Img, interpolate, useCurrentFrame, useVideoConfig,
-  spring, staticFile, Sequence, Easing,
+  AbsoluteFill, Img, interpolate, useCurrentFrame, useVideoConfig,
+  spring, staticFile, Sequence,
 } from "remotion";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { slide } from "@remotion/transitions/slide";
@@ -8,7 +8,18 @@ import { fade } from "@remotion/transitions/fade";
 
 const FONT = "system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
 
-// ─── Shimmer Text ────────────────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────
+
+function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const enter = spring({ frame: frame - delay, fps, config: { damping: 22 } });
+  return (
+    <div style={{ opacity: enter, transform: `translateY(${interpolate(enter, [0, 1], [18, 0])}px)` }}>
+      {children}
+    </div>
+  );
+}
 
 function ShimmerText({ text, size = 64, delay = 0, color = "#fff", shimmerColor = "#f97316" }: {
   text: string; size?: number; delay?: number; color?: string; shimmerColor?: string;
@@ -22,148 +33,162 @@ function ShimmerText({ text, size = 64, delay = 0, color = "#fff", shimmerColor 
 
   return (
     <div style={{
-      opacity: enter,
-      filter: `blur(${blur}px)`,
-      transform: `translateY(${y}px)`,
-      fontSize: size,
-      fontWeight: 800,
-      fontFamily: FONT,
-      letterSpacing: -3,
-      lineHeight: 1.05,
-      textAlign: "center",
+      opacity: enter, filter: `blur(${blur}px)`, transform: `translateY(${y}px)`,
+      fontSize: size, fontWeight: 800, fontFamily: FONT, letterSpacing: -3, lineHeight: 1.05, textAlign: "center",
       backgroundImage: `linear-gradient(90deg, ${color} 0%, ${color} 40%, ${shimmerColor} 50%, ${color} 60%, ${color} 100%)`,
-      backgroundSize: "200% 100%",
-      backgroundPosition: `${shimmerPos}% center`,
-      WebkitBackgroundClip: "text",
-      backgroundClip: "text",
-      WebkitTextFillColor: "transparent",
+      backgroundSize: "200% 100%", backgroundPosition: `${shimmerPos}% center`,
+      WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent",
     }}>
       {text}
     </div>
   );
 }
 
-function FadeText({ text, size = 22, delay = 0, color = "#78716c", children }: {
-  text: string; size?: number; delay?: number; color?: string; children?: React.ReactNode;
-}) {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const enter = spring({ frame: frame - delay, fps, config: { damping: 25 } });
-  return (
-    <div style={{ opacity: enter, transform: `translateY(${interpolate(enter, [0, 1], [12, 0])}px)`, fontSize: size, color, fontFamily: FONT, textAlign: "center", fontWeight: 500 }}>
-      {children || text}
-    </div>
-  );
-}
+// ─── Phone Mockup (simulated mobile recording) ──────────
 
-// ─── 3D Device Mockup ────────────────────────────────────
-
-function DeviceScene({ src, label, description, zoomDirection = "center" }: {
-  src: string; label: string; description: string; zoomDirection?: "center" | "left" | "right";
+function PhoneMockup({ src, scrollPct = 0, label, sub }: {
+  src: string; scrollPct?: number; label: string; sub: string;
 }) {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
+  const enter = spring({ frame, fps, config: { damping: 20, stiffness: 50 } });
+  const scale = interpolate(enter, [0, 1], [0.88, 1]);
+  const y = interpolate(enter, [0, 1], [60, 0]);
 
-  // 3D perspective entrance
-  const enter = spring({ frame, fps, config: { damping: 22, stiffness: 60 } });
-  const rotateX = interpolate(enter, [0, 1], [15, 2]);
-  const rotateY = interpolate(enter, [0, 1], [zoomDirection === "left" ? -8 : zoomDirection === "right" ? 8 : 0, 0]);
-  const translateZ = interpolate(enter, [0, 1], [-200, 0]);
-  const scale = interpolate(enter, [0, 1], [0.85, 1]);
-
-  // Slow Ken Burns
-  const kbScale = interpolate(frame, [0, durationInFrames], [1, 1.08], { extrapolateRight: "clamp" });
+  // Slow scroll dentro del mockup (simula un dedo scrolleando)
+  const scrollY = interpolate(frame, [20, durationInFrames - 10], [0, scrollPct], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   // Label
-  const labelEnter = spring({ frame: frame - 12, fps, config: { damping: 20 } });
+  const labelEnter = spring({ frame: frame - 15, fps, config: { damping: 20 } });
 
   return (
     <AbsoluteFill style={{
-      background: "radial-gradient(ellipse 80% 60% at 50% 40%, #111 0%, #050505 70%)",
-      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      perspective: 1200,
+      background: "radial-gradient(ellipse 70% 50% at 50% 45%, #1a0a00 0%, #050505 65%)",
+      display: "flex", alignItems: "center", justifyContent: "center", perspective: 1000,
     }}>
-      {/* Ambient particles */}
-      {[...Array(6)].map((_, i) => {
-        const x = 15 + (i * 67 + 23) % 70;
-        const y = 10 + (i * 43 + 17) % 70;
-        const delay = i * 0.5;
-        const particleOpacity = interpolate(frame, [delay * fps, delay * fps + 30], [0, 0.15], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-        return (
-          <div key={i} style={{
-            position: "absolute", left: `${x}%`, top: `${y}%`,
-            width: 4, height: 4, borderRadius: "50%",
-            background: "#f97316", opacity: particleOpacity,
-            filter: "blur(1px)",
-            transform: `translateY(${Math.sin((frame + i * 20) / 30) * 15}px)`,
-          }} />
-        );
-      })}
-
-      {/* 3D Device */}
+      {/* Glow detrás del teléfono */}
       <div style={{
-        transform: `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(${translateZ}px) scale(${scale})`,
-        transformStyle: "preserve-3d",
-        width: "82%", maxWidth: 1500,
+        position: "absolute", width: 400, height: 700, borderRadius: 50,
+        background: "radial-gradient(circle, rgba(249,115,22,0.2) 0%, transparent 70%)",
+        filter: "blur(60px)",
+      }} />
+
+      <div style={{
+        transform: `translateY(${y}px) scale(${scale})`,
+        width: 375, position: "relative",
       }}>
-        {/* Laptop top bezel */}
+        {/* Phone frame */}
         <div style={{
-          background: "linear-gradient(180deg, #2a2a2e 0%, #1a1a1e 100%)",
-          borderRadius: "14px 14px 0 0",
-          padding: "10px 16px 0",
-          boxShadow: "0 -2px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)",
+          borderRadius: 40, overflow: "hidden",
+          boxShadow: "0 30px 100px rgba(0,0,0,0.8), 0 0 0 3px rgba(255,255,255,0.08)",
+          background: "#111",
         }}>
-          {/* Browser chrome */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 4px", marginBottom: 2 }}>
-            <div style={{ display: "flex", gap: 6 }}>
-              {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
-                <div key={c} style={{ width: 10, height: 10, borderRadius: "50%", background: c, opacity: 0.9 }} />
-              ))}
-            </div>
-            <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-              <div style={{ height: 26, borderRadius: 7, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.04)", display: "flex", alignItems: "center", gap: 6, padding: "0 14px", minWidth: 240 }}>
-                <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#28c840" }} />
-                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontFamily: "ui-monospace, monospace" }}>fixataller.es</span>
-              </div>
+          {/* Status bar */}
+          <div style={{
+            height: 44, background: "#111", display: "flex", alignItems: "center", justifyContent: "center",
+            position: "relative",
+          }}>
+            <div style={{ width: 120, height: 28, borderRadius: 14, background: "#000", position: "absolute" }} />
+            <span style={{ position: "absolute", left: 24, fontSize: 13, color: "white", fontWeight: 600, fontFamily: FONT }}>9:41</span>
+          </div>
+
+          {/* Screenshot con scroll */}
+          <div style={{ height: 750, overflow: "hidden" }}>
+            <div style={{ transform: `translateY(-${scrollY}%)`, transition: "transform 0.1s" }}>
+              <Img src={staticFile(`demo/screenshots/${src}`)} style={{ width: 375, display: "block" }} />
             </div>
           </div>
 
-          {/* Screenshot */}
-          <div style={{ overflow: "hidden", borderRadius: "0 0 4px 4px" }}>
-            <div style={{ transform: `scale(${kbScale})`, transformOrigin: "center center" }}>
-              <Img src={staticFile(`demo/screenshots/${src}`)} style={{ width: "100%", display: "block" }} />
-            </div>
+          {/* Home indicator */}
+          <div style={{ height: 28, background: "#111", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: 120, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.3)" }} />
           </div>
         </div>
 
-        {/* Laptop bottom (keyboard hint) */}
+        {/* Simulated finger tap (pulso naranja) */}
         <div style={{
-          height: 14, background: "linear-gradient(180deg, #1a1a1e 0%, #0f0f12 100%)",
-          borderRadius: "0 0 14px 14px",
-          boxShadow: "0 8px 30px rgba(0,0,0,0.5)",
-        }}>
-          <div style={{ width: 80, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.08)", margin: "5px auto 0" }} />
-        </div>
+          position: "absolute", top: "35%", left: "55%",
+          width: 44, height: 44, borderRadius: "50%",
+          background: "rgba(249,115,22,0.3)", border: "2px solid rgba(249,115,22,0.6)",
+          opacity: interpolate(frame, [25, 35, 45, 55], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
+          transform: `scale(${interpolate(frame, [25, 35], [0.5, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })})`,
+        }} />
       </div>
 
-      {/* Floating label card */}
+      {/* Floating label */}
       <div style={{
-        position: "absolute", bottom: 40, left: "50%", transform: `translateX(-50%) translateY(${interpolate(labelEnter, [0, 1], [20, 0])}px)`,
+        position: "absolute", bottom: 50, left: "50%",
+        transform: `translateX(-50%) translateY(${interpolate(labelEnter, [0, 1], [20, 0])}px)`,
         opacity: labelEnter,
         background: "rgba(12,10,9,0.85)", backdropFilter: "blur(20px)",
         border: "1px solid rgba(255,255,255,0.08)",
-        borderRadius: 16, padding: "16px 32px",
+        borderRadius: 16, padding: "14px 28px",
         display: "flex", flexDirection: "column", alignItems: "center",
         boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
       }}>
-        <div style={{ fontSize: 28, fontWeight: 800, color: "#fff", fontFamily: FONT, letterSpacing: -1 }}>{label}</div>
-        <div style={{ fontSize: 16, color: "#78716c", fontFamily: FONT, marginTop: 4 }}>{description}</div>
+        <div style={{ fontSize: 24, fontWeight: 800, color: "#fff", fontFamily: FONT, letterSpacing: -0.5 }}>{label}</div>
+        <div style={{ fontSize: 14, color: "#78716c", fontFamily: FONT, marginTop: 4 }}>{sub}</div>
       </div>
     </AbsoluteFill>
   );
 }
 
-// ─── Logo Reveal with Glow ───────────────────────────────
+// ─── Typing scene (matrícula que se escribe) ─────────────
+
+function TypingScene() {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const enter = spring({ frame, fps, config: { damping: 22 } });
+
+  const text = "1234ABC";
+  const charsPerSec = 6;
+  const revealed = Math.min(text.length, Math.floor(((frame - 20) / fps) * charsPerSec));
+  const typed = revealed > 0 ? text.slice(0, revealed) : "";
+  const cursorOn = Math.floor((frame / fps) * 3) % 2 === 0;
+
+  return (
+    <AbsoluteFill style={{
+      background: "radial-gradient(ellipse 70% 50% at 50% 45%, #1a0a00 0%, #050505 65%)",
+      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+    }}>
+      <FadeIn>
+        <div style={{ fontSize: 18, color: "#78716c", fontFamily: FONT, marginBottom: 20, fontWeight: 600, textTransform: "uppercase", letterSpacing: 3 }}>
+          ENTRADA RÁPIDA
+        </div>
+      </FadeIn>
+
+      {/* Input simulado */}
+      <FadeIn delay={8}>
+        <div style={{
+          width: 420, height: 90, borderRadius: 20, background: "rgba(255,255,255,0.05)",
+          border: "2px solid rgba(249,115,22,0.4)", display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: "0 0 40px rgba(249,115,22,0.1)",
+        }}>
+          <span style={{
+            fontSize: 52, fontWeight: 800, fontFamily: "ui-monospace, monospace",
+            color: "white", letterSpacing: 12,
+          }}>
+            {typed}
+            {cursorOn && <span style={{ color: "#f97316", marginLeft: 2 }}>|</span>}
+          </span>
+        </div>
+      </FadeIn>
+
+      <FadeIn delay={60}>
+        <div style={{
+          marginTop: 24, padding: "12px 28px", borderRadius: 999,
+          background: "linear-gradient(135deg, #f97316, #ea580c)",
+          color: "white", fontSize: 18, fontWeight: 700, fontFamily: FONT,
+          boxShadow: "0 10px 30px rgba(249,115,22,0.4)",
+        }}>
+          Orden creada en 10 segundos
+        </div>
+      </FadeIn>
+    </AbsoluteFill>
+  );
+}
+
+// ─── Logo Reveal ─────────────────────────────────────────
 
 function LogoReveal() {
   const frame = useCurrentFrame();
@@ -175,11 +200,8 @@ function LogoReveal() {
 
   return (
     <AbsoluteFill style={{ background: "radial-gradient(ellipse 60% 60% at 50% 50%, #1a0800 0%, #050505 70%)", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-      {/* Expanding glow ring */}
       <div style={{ position: "absolute", width: glowSize, height: glowSize, borderRadius: "50%", background: "radial-gradient(circle, rgba(249,115,22,0.5) 0%, transparent 70%)", opacity: glowOpacity, filter: "blur(40px)" }} />
-      <div style={{ position: "absolute", width: glowSize * 0.6, height: glowSize * 0.6, borderRadius: "50%", border: "1px solid rgba(249,115,22,0.2)", opacity: glowOpacity }} />
 
-      {/* Tuerca mecanizada B3 */}
       <div style={{ transform: `scale(${pulse})` }}>
         <svg width="110" height="110" viewBox="0 0 40 40">
           <defs>
@@ -194,7 +216,7 @@ function LogoReveal() {
       </div>
 
       <div style={{ marginTop: 24, opacity: textEnter, fontSize: 72, fontWeight: 800, color: "white", letterSpacing: -4, fontFamily: FONT }}>FIXA</div>
-      <div style={{ marginTop: 8, opacity: textEnter, fontSize: 20, color: "#78716c", fontFamily: FONT, letterSpacing: 2, textTransform: "uppercase" }}>Gestión de taller</div>
+      <div style={{ marginTop: 8, opacity: textEnter, fontSize: 18, color: "#78716c", fontFamily: FONT, letterSpacing: 4, textTransform: "uppercase" }}>El partner del taller pequeño</div>
     </AbsoluteFill>
   );
 }
@@ -206,10 +228,8 @@ export const FixaDemo: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#050505" }}>
-      <Audio src={staticFile("demo/bg-music-30s.mp3")} volume={0.4} />
-
       <TransitionSeries>
-        {/* Scene 1: Hook (3s) */}
+        {/* 1. Hook (3s) */}
         <TransitionSeries.Sequence durationInFrames={3 * fps}>
           <AbsoluteFill style={{
             background: "radial-gradient(ellipse 80% 60% at 50% 40%, #1a0a00 0%, #050505 65%)",
@@ -223,111 +243,89 @@ export const FixaDemo: React.FC = () => {
 
         <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: 8 })} />
 
-        {/* Scene 2: Pain (3.5s) */}
-        <TransitionSeries.Sequence durationInFrames={Math.round(3.5 * fps)}>
-          <AbsoluteFill style={{
-            background: "radial-gradient(ellipse 50% 50% at 30% 50%, rgba(239,68,68,0.06) 0%, transparent 60%), radial-gradient(ellipse 50% 50% at 70% 50%, rgba(245,158,11,0.04) 0%, transparent 60%), #050505",
-            display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 20, padding: "0 80px",
-          }}>
-            <FadeText text="EL PROBLEMA" size={13} color="#ef4444" delay={0} />
-            <ShimmerText text="20 llamadas al día para nada." size={56} color="#ef4444" shimmerColor="#fca5a5" delay={4} />
-            <ShimmerText text="5 ITVs al mes que pierdes." size={56} color="#f59e0b" shimmerColor="#fde68a" delay={10} />
-            <ShimmerText text="Presupuestos a las 9 de la noche." size={56} color="#525252" shimmerColor="#a8a29e" delay={16} />
-          </AbsoluteFill>
-        </TransitionSeries.Sequence>
-
-        <TransitionSeries.Transition presentation={slide({ direction: "from-bottom" })} timing={linearTiming({ durationInFrames: 10 })} />
-
-        {/* Scene 3: Logo (2.5s) */}
-        <TransitionSeries.Sequence durationInFrames={Math.round(2.5 * fps)}>
+        {/* 2. Logo (2s) */}
+        <TransitionSeries.Sequence durationInFrames={2 * fps}>
           <LogoReveal />
-        </TransitionSeries.Sequence>
-
-        <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: 10 })} />
-
-        {/* Scene 4: Dashboard 3D (3.5s) */}
-        <TransitionSeries.Sequence durationInFrames={Math.round(3.5 * fps)}>
-          <DeviceScene src="dashboard.png" label="Abres FIXA y tienes el día resuelto." description="Qué entra · Qué entregar · Quién no ha pagado" zoomDirection="center" />
-        </TransitionSeries.Sequence>
-
-        <TransitionSeries.Transition presentation={slide({ direction: "from-right" })} timing={linearTiming({ durationInFrames: 8 })} />
-
-        {/* Scene 5: Orders 3D (3.5s) */}
-        <TransitionSeries.Sequence durationInFrames={Math.round(3.5 * fps)}>
-          <DeviceScene src="ordenes.png" label="Matrícula y en 10 segundos, hecho." description="Sin formularios de 20 campos · Legal según RD 1457/1986" zoomDirection="left" />
-        </TransitionSeries.Sequence>
-
-        <TransitionSeries.Transition presentation={slide({ direction: "from-left" })} timing={linearTiming({ durationInFrames: 8 })} />
-
-        {/* Scene 6: Clients 3D (3s) */}
-        <TransitionSeries.Sequence durationInFrames={3 * fps}>
-          <DeviceScene src="clientes.png" label="El cliente mira su coche solo." description="Un enlace y deja de llamarte · Presupuesto que acepta online" zoomDirection="right" />
         </TransitionSeries.Sequence>
 
         <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: 8 })} />
 
-        {/* Scene 7: Calendar 3D (2.5s) */}
-        <TransitionSeries.Sequence durationInFrames={Math.round(2.5 * fps)}>
-          <DeviceScene src="calendario.png" label="La agenda que se llena sola." description="Citas online del cliente + avisos ITV automáticos" zoomDirection="center" />
+        {/* 3. Typing matrícula (3.5s) */}
+        <TransitionSeries.Sequence durationInFrames={Math.round(3.5 * fps)}>
+          <TypingScene />
         </TransitionSeries.Sequence>
 
-        <TransitionSeries.Transition presentation={slide({ direction: "from-bottom" })} timing={linearTiming({ durationInFrames: 10 })} />
+        <TransitionSeries.Transition presentation={slide({ direction: "from-right" })} timing={linearTiming({ durationInFrames: 8 })} />
 
-        {/* Scene 8: Price (3s) */}
+        {/* 4. Panel del día — phone mockup con scroll (3.5s) */}
+        <TransitionSeries.Sequence durationInFrames={Math.round(3.5 * fps)}>
+          <PhoneMockup src="dashboard.png" scrollPct={15} label="Tu día resuelto al abrir." sub="Citas · Entregas · Presupuestos pendientes" />
+        </TransitionSeries.Sequence>
+
+        <TransitionSeries.Transition presentation={slide({ direction: "from-left" })} timing={linearTiming({ durationInFrames: 8 })} />
+
+        {/* 5. Órdenes (3s) */}
+        <TransitionSeries.Sequence durationInFrames={3 * fps}>
+          <PhoneMockup src="ordenes.png" scrollPct={10} label="Cada coche, controlado." sub="Estado, matrícula, mecánico — de un vistazo" />
+        </TransitionSeries.Sequence>
+
+        <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: 8 })} />
+
+        {/* 6. Clientes (2.5s) */}
+        <TransitionSeries.Sequence durationInFrames={Math.round(2.5 * fps)}>
+          <PhoneMockup src="clientes.png" scrollPct={8} label="El cliente no te llama." sub="Ve su coche online · Acepta el presupuesto desde el sofá" />
+        </TransitionSeries.Sequence>
+
+        <TransitionSeries.Transition presentation={slide({ direction: "from-bottom" })} timing={linearTiming({ durationInFrames: 8 })} />
+
+        {/* 7. Calendario (2.5s) */}
+        <TransitionSeries.Sequence durationInFrames={Math.round(2.5 * fps)}>
+          <PhoneMockup src="calendario.png" scrollPct={5} label="La agenda que se llena sola." sub="Citas online + avisos ITV automáticos" />
+        </TransitionSeries.Sequence>
+
+        <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: 10 })} />
+
+        {/* 8. Precio (3s) */}
         <TransitionSeries.Sequence durationInFrames={3 * fps}>
           <AbsoluteFill style={{
             background: "radial-gradient(ellipse 60% 50% at 50% 50%, #1a0800 0%, #050505 65%)",
-            display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 8,
+            display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
           }}>
-            {/* Glow rings */}
             <div style={{ position: "absolute", width: 400, height: 400, borderRadius: "50%", border: "1px solid rgba(249,115,22,0.12)" }} />
-            <div style={{ position: "absolute", width: 550, height: 550, borderRadius: "50%", border: "1px solid rgba(249,115,22,0.06)" }} />
-
-            <FadeText text="Menos que un cambio de aceite" size={24} />
+            <FadeIn><div style={{ fontSize: 22, color: "#78716c", fontFamily: FONT }}>Menos que un cambio de aceite</div></FadeIn>
             <ShimmerText text="29€/mes" size={120} color="#f97316" shimmerColor="#fbbf24" delay={6} />
-            <FadeText text="" delay={14} size={1}>
+            <FadeIn delay={14}>
               <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
-                {["Sin permanencia", "Sin sorpresas", "Setup gratuito"].map((t) => (
+                {["Sin tarjeta", "Sin permanencia", "14 días gratis"].map((t) => (
                   <div key={t} style={{ padding: "7px 16px", borderRadius: 999, border: "1px solid rgba(249,115,22,0.2)", background: "rgba(249,115,22,0.06)", fontSize: 13, color: "#f97316", fontWeight: 600, fontFamily: FONT }}>
                     {t}
                   </div>
                 ))}
               </div>
-            </FadeText>
+            </FadeIn>
           </AbsoluteFill>
         </TransitionSeries.Sequence>
 
         <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: 10 })} />
 
-        {/* Scene 9: CTA (3.5s) */}
+        {/* 9. CTA final (3.5s) */}
         <TransitionSeries.Sequence durationInFrames={Math.round(3.5 * fps)}>
           <AbsoluteFill style={{
             background: "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(249,115,22,0.1) 0%, #050505 60%)",
             display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
           }}>
-            {/* Particles */}
-            {[...Array(12)].map((_, i) => {
-              const x = 10 + (i * 47 + 13) % 80;
-              const y = 10 + (i * 31 + 7) % 80;
-              return (
-                <div key={i} style={{
-                  position: "absolute", left: `${x}%`, top: `${y}%`,
-                  width: 3, height: 3, borderRadius: "50%", background: "#f97316",
-                  opacity: 0.12, filter: "blur(1px)",
-                }} />
-              );
-            })}
-
             <ShimmerText text="14 días gratis." size={68} shimmerColor="#fbbf24" />
             <ShimmerText text="Sin tarjeta. Sin excusas." size={68} color="#f97316" shimmerColor="#fff" delay={8} />
 
-            <FadeText text="" delay={14} size={1}>
+            <FadeIn delay={14}>
               <div style={{ marginTop: 36, padding: "20px 56px", borderRadius: 999, background: "linear-gradient(135deg, #f97316, #ea580c)", color: "white", fontSize: 28, fontWeight: 800, fontFamily: FONT, boxShadow: "0 20px 60px rgba(249,115,22,0.5)", letterSpacing: 1 }}>
                 fixataller.es
               </div>
-            </FadeText>
+            </FadeIn>
 
-            <FadeText text="El partner del taller pequeño." delay={22} size={16} color="#525252" />
+            <FadeIn delay={22}>
+              <div style={{ fontSize: 16, color: "#525252", fontFamily: FONT, marginTop: 16 }}>El partner del taller pequeño.</div>
+            </FadeIn>
           </AbsoluteFill>
         </TransitionSeries.Sequence>
       </TransitionSeries>
