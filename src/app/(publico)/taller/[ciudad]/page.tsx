@@ -32,6 +32,7 @@ export default async function CityPage({ params }: { params: Promise<{ ciudad: s
   const { ciudad } = await params;
   const city = getCityBySlug(ciudad);
   if (!city) notFound();
+  const allCities = getAllCities();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -93,6 +94,24 @@ export default async function CityPage({ params }: { params: Promise<{ ciudad: s
               <span className="text-stone-700">{f}</span>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Interlinking: otras ciudades */}
+      <div className="mb-12">
+        <p className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-4">FIXA también en</p>
+        <div className="flex flex-wrap gap-2">
+          {allCities
+            .filter((c) => c.slug !== ciudad)
+            .map((c) => (
+              <Link
+                key={c.slug}
+                href={`/taller/${c.slug}`}
+                className="rounded-full bg-white/70 border border-stone-200/50 px-4 py-1.5 text-sm font-medium text-stone-600 hover:border-orange-300 hover:text-orange-600 transition-colors"
+              >
+                {c.city}
+              </Link>
+            ))}
         </div>
       </div>
 

@@ -10,8 +10,8 @@ import { Footer } from "@/components/landing/footer";
 import { WebServicesBanner } from "@/components/web-services-banner";
 
 export const metadata: Metadata = {
-  title: "Funciones — FIXA | Órdenes, WhatsApp, ITV, Presupuestos y más",
-  description: "Todas las funciones de FIXA: órdenes de trabajo, WhatsApp integrado, avisos ITV automáticos, presupuestos, calendario de citas, portal del cliente y más.",
+  title: "Funciones — Órdenes en 10 seg, WhatsApp, ITV y presupuestos online",
+  description: "12 funciones para el taller que no tiene tiempo: órdenes por matrícula, presupuestos que se aceptan online, avisos ITV automáticos y el cliente que deja de llamar. Desde 29€/mes.",
   alternates: { canonical: `${SITE_URL}/funciones` },
   openGraph: {
     title: "Funciones de FIXA — Todo lo que tu taller necesita",
