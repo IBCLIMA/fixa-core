@@ -60,6 +60,11 @@ export async function PUT(request: Request) {
       .set(updateData)
       .where(eq(talleres.id, tallerId));
 
+    // Seed: datos de ejemplo para que la primera pantalla no esté vacía
+    if (isNewWorkshop) {
+      import("@/lib/seed-demo").then(({ seedDemoData }) => seedDemoData(tallerId)).catch(() => {});
+    }
+
     // Fire-and-forget: welcome email + admin notification for new workshops
     if (isNewWorkshop && process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY);

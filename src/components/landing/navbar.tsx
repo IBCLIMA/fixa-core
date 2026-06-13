@@ -40,9 +40,9 @@ export function Navbar() {
           <nav className="hidden sm:flex items-center gap-1">
             {[
               { label: "Funciones", href: "/funciones" },
+              { label: "Demo", href: "/demo" },
               { label: "Precios", href: "/precios" },
               { label: "Blog", href: "/blog" },
-              { label: "Nosotros", href: "/nosotros" },
             ].map((item) => (
               <Link
                 key={item.href}
@@ -91,6 +91,7 @@ export function Navbar() {
             <nav className="flex flex-col p-3">
               {[
                 { label: "Funciones", href: "/funciones" },
+                { label: "Demo", href: "/demo" },
                 { label: "Precios", href: "/precios" },
                 { label: "Blog", href: "/blog" },
                 { label: "Nosotros", href: "/nosotros" },

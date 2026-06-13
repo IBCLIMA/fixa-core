@@ -33,6 +33,7 @@ const isPublicRoute = createRouteMatcher([
   "/dpa",
   "/api/health",
   "/brand",
+  "/demo",
   "/api/lead",
   "/api/plantilla-or",
 ]);
