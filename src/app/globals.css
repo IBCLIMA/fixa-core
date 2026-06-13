@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "../styles/utils.css";
 @import "tw-animate-css";
+
+html {
+  scroll-behavior: smooth;
+}
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));

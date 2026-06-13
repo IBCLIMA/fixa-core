@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/landing/navbar";
 import { HeroSection } from "@/components/landing/hero-section";
+import { StatsBar } from "@/components/landing/stats-bar";
 import { VideoDemoSection } from "@/components/landing/video-demo-section";
 import { ProblemSection } from "@/components/landing/problem-section";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
 import { ObjectionsSection } from "@/components/landing/objections-section";
+import { PricingSection } from "@/components/landing/pricing-section";
+import { FaqSection } from "@/components/landing/faq-section";
+import { TestimonialsSection } from "@/components/landing/testimonials-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { Footer } from "@/components/landing/footer";
 import { FloatingCta } from "@/components/landing/floating-cta";
 import { SOFTWARE_JSONLD } from "@/lib/seo";
+import { faqs } from "@/components/landing/faq-data";
 
 export const metadata: Metadata = {
   title: "FIXA — Software de gestión para talleres mecánicos | Desde 29€/mes",
@@ -29,7 +34,18 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = SOFTWARE_JSONLD;
+const jsonLd = [
+  SOFTWARE_JSONLD,
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+];
 
 export default function LandingPage() {
   return (
@@ -37,10 +53,14 @@ export default function LandingPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Navbar />
       <HeroSection />
+      <StatsBar />
       <VideoDemoSection />
       <ProblemSection />
       <HowItWorksSection />
       <ObjectionsSection />
+      <TestimonialsSection />
+      <PricingSection />
+      <FaqSection />
       <CtaSection />
       <Footer />
       <FloatingCta />
