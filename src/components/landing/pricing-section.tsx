@@ -73,7 +73,7 @@ export function PricingSection() {
             Precios
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-            Sin sorpresas. Sin permanencia.
+            Menos que un cambio de aceite.
           </h2>
           <p className="text-stone-500 mt-4 text-lg">14 días gratis en todos los planes</p>
         </AnimatedSection>

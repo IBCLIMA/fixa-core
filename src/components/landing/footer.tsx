@@ -1,59 +1,112 @@
 import Link from "next/link";
+import { ArrowRight, MessageSquare, Phone, Mail } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { SafetyStripe } from "@/components/ui/brand-texture";
 
 export function Footer() {
   return (
-    <footer className="border-t border-stone-200/60 bg-white">
-      <SafetyStripe className="opacity-80" />
-      <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-          {/* Brand */}
+    <footer className="relative bg-stone-950 text-stone-400 overflow-hidden">
+      <SafetyStripe />
+
+      {/* CTA rápido antes del footer */}
+      <div className="border-b border-stone-800/60">
+        <div className="mx-auto max-w-6xl px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <FixaLogo size="sm" />
-            <p className="text-xs text-stone-400 mt-3 max-w-[200px]">
-              Software de gestión para talleres mecánicos. Creado por mecánicos.
+            <p className="text-xl font-extrabold text-white">
+              ¿Preparado para dejar el papel?
+            </p>
+            <p className="text-sm text-stone-500 mt-1">
+              14 días gratis. Sin tarjeta. Y si no te convence, lo borras tú solo.
             </p>
           </div>
+          <Link
+            href="/sign-up"
+            className="inline-flex items-center gap-2 rounded-full bg-orange-500 hover:bg-orange-400 text-white font-bold h-12 px-8 text-sm transition-colors shrink-0 group"
+          >
+            Empezar gratis
+            <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+        </div>
+      </div>
 
-          {/* Product */}
+      <div className="mx-auto max-w-6xl px-6 py-12">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 mb-10">
+          {/* Brand */}
           <div>
-            <p className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-3">Producto</p>
-            <div className="flex flex-col gap-2">
-              <Link href="/funciones" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">Funciones</Link>
-              <Link href="/precios" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">Precios</Link>
-              <Link href="/blog" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">Blog</Link>
-              <Link href="/nosotros" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">Sobre nosotros</Link>
+            <FixaLogo size="sm" theme="dark" />
+            <p className="text-sm text-stone-500 mt-4 max-w-[220px] leading-relaxed">
+              El software de gestión que nació dentro de un taller. Hecho por mecánicos, para mecánicos.
+            </p>
+            <div className="flex items-center gap-3 mt-5">
+              <a
+                href="https://wa.me/34611433218"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-9 w-9 items-center justify-center rounded-xl bg-stone-800 hover:bg-emerald-600 transition-colors"
+                aria-label="WhatsApp"
+              >
+                <MessageSquare className="h-4 w-4 text-stone-400 hover:text-white" />
+              </a>
+              <a
+                href="tel:+34611433218"
+                className="flex h-9 w-9 items-center justify-center rounded-xl bg-stone-800 hover:bg-orange-600 transition-colors"
+                aria-label="Teléfono"
+              >
+                <Phone className="h-4 w-4 text-stone-400" />
+              </a>
+              <a
+                href="mailto:sergi@ibclima.com"
+                className="flex h-9 w-9 items-center justify-center rounded-xl bg-stone-800 hover:bg-blue-600 transition-colors"
+                aria-label="Email"
+              >
+                <Mail className="h-4 w-4 text-stone-400" />
+              </a>
+            </div>
+          </div>
+
+          {/* Producto */}
+          <div>
+            <p className="text-xs font-bold text-stone-300 uppercase tracking-wider mb-4">Producto</p>
+            <div className="flex flex-col gap-2.5">
+              <Link href="/funciones" className="text-sm hover:text-white transition-colors">Funciones</Link>
+              <Link href="/demo" className="text-sm hover:text-white transition-colors">Demo</Link>
+              <Link href="/precios" className="text-sm hover:text-white transition-colors">Precios</Link>
+              <Link href="/blog" className="text-sm hover:text-white transition-colors">Blog</Link>
+              <Link href="/nosotros" className="text-sm hover:text-white transition-colors">Sobre nosotros</Link>
+            </div>
+          </div>
+
+          {/* Recursos */}
+          <div>
+            <p className="text-xs font-bold text-stone-300 uppercase tracking-wider mb-4">Recursos</p>
+            <div className="flex flex-col gap-2.5">
+              <Link href="/blog/obligaciones-legales-taller-mecanico" className="text-sm hover:text-white transition-colors">Obligaciones legales del taller</Link>
+              <Link href="/blog/plantilla-orden-de-trabajo-taller" className="text-sm hover:text-white transition-colors">Plantilla orden de trabajo</Link>
+              <Link href="/blog/avisos-itv-automaticos-taller" className="text-sm hover:text-white transition-colors">Avisos ITV automáticos</Link>
+              <Link href="/vs/fixa-vs-erp-taller" className="text-sm hover:text-white transition-colors">FIXA vs ERP</Link>
             </div>
           </div>
 
           {/* Legal */}
           <div>
-            <p className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-3">Legal</p>
-            <div className="flex flex-col gap-2">
-              <Link href="/aviso-legal" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">Aviso Legal</Link>
-              <Link href="/privacidad" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">Privacidad</Link>
-              <Link href="/cookies" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">Cookies</Link>
-              <Link href="/terminos" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">Términos</Link>
-            </div>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <p className="text-xs font-bold text-stone-900 uppercase tracking-wider mb-3">Contacto</p>
-            <div className="flex flex-col gap-2">
-              <a href="mailto:sergi@ibclima.com" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">sergi@ibclima.com</a>
-              <a href="tel:+34611433218" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">611 433 218</a>
-              <a href="https://wa.me/34611433218" target="_blank" rel="noopener noreferrer" className="text-sm text-stone-500 hover:text-stone-900 transition-colors">WhatsApp</a>
+            <p className="text-xs font-bold text-stone-300 uppercase tracking-wider mb-4">Legal</p>
+            <div className="flex flex-col gap-2.5">
+              <Link href="/aviso-legal" className="text-sm hover:text-white transition-colors">Aviso legal</Link>
+              <Link href="/privacidad" className="text-sm hover:text-white transition-colors">Privacidad</Link>
+              <Link href="/cookies" className="text-sm hover:text-white transition-colors">Cookies</Link>
+              <Link href="/terminos" className="text-sm hover:text-white transition-colors">Términos de uso</Link>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-stone-100 pt-6 flex flex-col items-center justify-between gap-3 sm:flex-row">
-          <span className="text-xs text-stone-400">© 2026 FIXA by Ibañez Clima. Todos los derechos reservados.</span>
-          <div className="flex items-center gap-4 text-xs text-stone-400">
-            <Link href="/sign-up" className="text-orange-600 font-semibold hover:text-orange-500 transition-colors">Probar gratis</Link>
-            <Link href="/sign-in" className="hover:text-stone-700 transition-colors">Acceder</Link>
+        {/* Bottom bar */}
+        <div className="border-t border-stone-800/60 pt-6 flex flex-col items-center justify-between gap-3 sm:flex-row">
+          <span className="text-xs text-stone-600">
+            © {new Date().getFullYear()} FIXA by Ibañez Clima (CIF: B25825761)
+          </span>
+          <div className="flex items-center gap-4 text-xs">
+            <Link href="/sign-up" className="text-orange-500 font-bold hover:text-orange-400 transition-colors">Probar gratis</Link>
+            <Link href="/sign-in" className="text-stone-500 hover:text-white transition-colors">Acceder</Link>
           </div>
         </div>
       </div>

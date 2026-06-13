@@ -51,7 +51,9 @@ export function HowItWorksSection() {
             Así de fácil
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-5xl">
-            Funcionando en 3 pasos
+            Más fácil que WhatsApp.
+            <br />
+            <span className="text-stone-500">Más útil que un ERP.</span>
           </h2>
         </AnimatedSection>
 

@@ -9,10 +9,10 @@ import { AnimatedSection } from "./animated-section";
  * y hasta que tengamos clientes de pago, lo que decimos se puede comprobar.
  */
 const stats = [
-  { icon: Wrench, valor: "Desde 2010", label: "Taller real detrás", color: "text-orange-600" },
-  { icon: Calendar, valor: "14 días", label: "Prueba gratis sin tarjeta", color: "text-blue-600" },
-  { icon: Shield, valor: "RD 1457/1986", label: "OR conforme a la ley", color: "text-emerald-600" },
-  { icon: CreditCard, valor: "29€/mes", label: "Sin permanencia", color: "text-violet-600" },
+  { icon: Wrench, valor: "10 seg", label: "Orden de trabajo creada", color: "text-orange-600" },
+  { icon: Calendar, valor: "0 llamadas", label: "El cliente mira su coche solo", color: "text-blue-600" },
+  { icon: Shield, valor: "Automático", label: "Avisos de ITV cada mes", color: "text-emerald-600" },
+  { icon: CreditCard, valor: "29€/mes", label: "Menos que media hora tuya", color: "text-violet-600" },
 ];
 
 export function StatsBar() {

@@ -47,18 +47,17 @@ export function HeroSection() {
                 <Zap className="h-3 w-3 text-white" />
               </span>
               <span className="text-xs font-semibold text-orange-700 tracking-wide">
-                Gestión de taller · Desde 29€/mes
+                El software que nació en un taller · 29€/mes
               </span>
             </motion.div>
 
-            {/* H1 server-visible (sin opacity:0) para LCP — la animación va en los elementos secundarios */}
             <h1 className="text-[2.75rem] font-extrabold tracking-tight text-stone-900 md:text-6xl lg:text-[4.25rem] leading-[1.05]">
-              Deja de perder horas
+              Tu taller.
               <br />
-              respondiendo
+              Tu móvil.
               <br />
               <span className="hero-shimmer bg-gradient-to-r from-orange-500 via-amber-400 to-orange-600 bg-clip-text text-transparent bg-[length:200%_100%]">
-                &ldquo;¿está listo mi coche?&rdquo;
+                Todo controlado.
               </span>
             </h1>
 
@@ -69,9 +68,9 @@ export function HeroSection() {
               transition={{ ...TRANSITION_DEFAULT, delay: 0.2 }}
               className="text-lg text-stone-500 mt-6 leading-relaxed max-w-[480px]"
             >
-              Tu cliente ve el estado de su coche sin llamarte. Órdenes en 10
-              segundos, presupuestos que se aceptan online y avisos de ITV
-              automáticos. Creado dentro de un taller real.
+              Escribes la matrícula y la orden está creada. El cliente ve su
+              coche online sin llamarte. Los avisos de ITV te traen trabajo
+              solo. 29€/mes. Hecho por un mecánico.
             </motion.p>
 
             <motion.div

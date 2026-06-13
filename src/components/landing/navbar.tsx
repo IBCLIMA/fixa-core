@@ -107,12 +107,13 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="p-2 pt-1">
-                <Link href="/sign-up" onClick={() => setMobileOpen(false)}>
-                  <Button className="w-full rounded-full bg-stone-900 text-white hover:bg-stone-800 font-semibold shadow-lg h-11 cursor-pointer">
-                    Probar gratis
+                <Link href="/sign-up" onClick={() => { setMobileOpen(false); track("cta_navbar"); }}>
+                  <Button className="w-full rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold shadow-lg shadow-orange-500/20 h-12 cursor-pointer text-base">
+                    Empezar gratis
                     <ArrowRight className="ml-1.5 h-4 w-4" />
                   </Button>
                 </Link>
+                <p className="text-center text-[11px] text-stone-400 mt-2">Sin tarjeta · Sin permanencia</p>
               </div>
             </nav>
           </motion.div>

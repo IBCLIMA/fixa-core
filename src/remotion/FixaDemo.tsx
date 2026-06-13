@@ -236,8 +236,8 @@ export const FixaDemo: React.FC = () => {
             display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "0 80px",
           }}>
             <div style={{ width: 50, height: 3, borderRadius: 2, background: "linear-gradient(90deg, transparent, #f97316, transparent)", marginBottom: 28 }} />
-            <ShimmerText text="Pierdes 2 horas al día" size={68} shimmerColor="#fbbf24" />
-            <ShimmerText text="respondiendo '¿está listo?'" size={68} color="#f97316" shimmerColor="#fff" delay={8} />
+            <ShimmerText text="Tu taller. Tu móvil." size={72} shimmerColor="#fbbf24" />
+            <ShimmerText text="Todo controlado." size={72} color="#f97316" shimmerColor="#fff" delay={8} />
           </AbsoluteFill>
         </TransitionSeries.Sequence>
 

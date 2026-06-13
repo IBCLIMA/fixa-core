@@ -7,27 +7,27 @@ import { HexPattern } from "@/components/ui/brand-texture";
 const objeciones = [
   {
     icon: Wrench,
-    objecion: "\u201CYo no soy de ordenadores\u201D",
+    objecion: "\u201CYo de tecnología no entiendo\u201D",
     respuesta:
-      "Si sabes usar WhatsApp, sabes usar FIXA. Está pensada para manejarse con los dedos llenos de grasa: botones grandes, dos toques para todo y un tour que te lo enseña la primera vez.",
+      "Un mecánico de 58 años nos dijo eso. A los 5 minutos había creado su primera orden. FIXA tiene botones grandes, letras claras y dos toques para todo. Si mandas un WhatsApp, la usas.",
   },
   {
     icon: ShieldCheck,
-    objecion: "\u201C¿Y si me cobran sorpresas?\u201D",
+    objecion: "\u201CSeguro que luego hay truco\u201D",
     respuesta:
-      "Empiezas gratis sin meter tarjeta, así que es imposible que te cobremos nada. Después, precio fijo y cancelas el mes que quieras desde la propia app. Sin llamadas, sin permanencia, sin letra pequeña.",
+      "Ni tarjeta pedimos para probar. Si en 14 días no te convence, no pagas porque no hay nada que cobrar. Y si un mes no la usas, cancelas tú solo desde la app. Sin llamar, sin pedir permiso, sin penalización.",
   },
   {
     icon: Clock,
-    objecion: "\u201CNo tengo tiempo para cambiar de sistema\u201D",
+    objecion: "\u201CNo tengo tiempo ni para comer\u201D",
     respuesta:
-      "No hay que montar nada: te registras y creas tu primera orden en el mismo minuto. Tus clientes se importan desde un Excel y, si te atascas, te lo dejamos montado nosotros.",
+      "No tienes tiempo para un ERP que necesita un curso. Pero la primera orden en FIXA tarda 10 segundos — menos que contestar la próxima llamada de '¿está listo mi coche?'. Esos 10 segundos te devuelven horas.",
   },
   {
     icon: MessageSquare,
-    objecion: "\u201C¿Quién hay detrás de esto?\u201D",
+    objecion: "\u201C¿Y esto quién lo ha hecho?\u201D",
     respuesta:
-      "FIXA nació dentro de un taller real, no en una oficina. La construimos resolviendo nuestros propios marrones del día a día, y el soporte te lo damos por WhatsApp personas que saben lo que es un taller.",
+      "Un mecánico. Sergi, de Ibañez Clima, taller desde 2010. Hizo FIXA porque estaba harto de hacer presupuestos a las 9 de la noche y perder clientes de ITV. El soporte es por WhatsApp, y te contesta gente que sabe lo que es un embrague.",
   },
 ];
 
@@ -41,10 +41,10 @@ export function ObjectionsSection() {
             Hablemos claro
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-            Sabemos lo que estás pensando
+            Ya. Pero...
           </h2>
           <p className="text-stone-500 mt-4 text-lg max-w-xl mx-auto">
-            Son las mismas dudas que tendríamos nosotros. Por eso las respondemos sin rodeos.
+            Estas son las 4 cosas que te están frenando. Las sabemos porque son las mismas que nos frenaban a nosotros.
           </p>
         </AnimatedSection>
 

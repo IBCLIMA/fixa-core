@@ -31,7 +31,7 @@ export function CtaSection() {
 
       <div className="mx-auto max-w-6xl px-6 py-24 lg:py-32 text-center relative z-10">
         <BlurText
-          text="Tu taller merece mejores herramientas."
+          text="Mañana a las 8 abres el taller. ¿Con papel o con FIXA?"
           className="text-4xl font-extrabold tracking-tight text-white md:text-6xl leading-[1.1] justify-center"
           delay={40}
           animateBy="words"
@@ -40,7 +40,7 @@ export function CtaSection() {
 
         <AnimatedSection delay={0.4}>
           <p className="text-stone-300 mt-6 max-w-md mx-auto text-lg leading-relaxed">
-            14 días gratis. Te lo dejamos montado. Importa tus clientes y empieza a trabajar sin papel.
+            Te registras en 1 minuto. Sin tarjeta. Y si no te convence, lo borras todo sin dar explicaciones.
           </p>
         </AnimatedSection>
 
