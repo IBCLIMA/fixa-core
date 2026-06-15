@@ -35,7 +35,7 @@ export function BeforeAfterSection() {
             Mismo taller. Otro día.
           </h2>
           <p className="text-stone-500 mt-4 text-lg max-w-xl mx-auto">
-            No es que trabajes más — es que dejas de perder tiempo en lo que no factura.
+            El mismo taller, las mismas horas. Pero sin el caos.
           </p>
         </AnimatedSection>
 

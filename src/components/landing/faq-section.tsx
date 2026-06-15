@@ -57,10 +57,10 @@ export function FaqSection() {
     <section id="faq" className="mx-auto max-w-6xl px-6 py-12 lg:py-16">
       <AnimatedSection className="text-center mb-12">
         <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
-          FAQ
+          Dudas
         </span>
         <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-          ¿Tienes dudas?
+          Antes de irte...
         </h2>
       </AnimatedSection>
 

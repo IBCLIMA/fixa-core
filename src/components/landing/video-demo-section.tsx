@@ -48,13 +48,13 @@ export function VideoDemoSection() {
         <div className="mx-auto max-w-5xl px-6 py-12 lg:py-16">
           <AnimatedSection className="text-center mb-12">
             <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
-              Demo en vivo
+              Míralo tú mismo
             </span>
             <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-              Mira FIXA en acción
+              Vale más verlo que leerlo
             </h2>
             <p className="text-stone-500 mt-4 text-lg">
-              30 segundos para ver cómo funciona tu nuevo taller digital.
+              30 segundos. Si no te convence, sigues haciendo scroll.
             </p>
           </AnimatedSection>
 
@@ -99,7 +99,7 @@ export function VideoDemoSection() {
 
           {/* CTA tras el vídeo: el momento de máxima intención */}
           <AnimatedSection delay={0.3} className="text-center mt-10">
-            <p className="text-stone-500 mb-4">¿Te ha gustado? Pruébalo con tu propio taller.</p>
+            <p className="text-stone-500 mb-4">Si te ha gustado con datos de ejemplo, imagina con los tuyos.</p>
             <Link href="/sign-up" onClick={() => track("cta_video")}>
               <Button
                 size="lg"

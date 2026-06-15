@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * Capturas REALES del producto — no mockups dibujados.
- * "Así es FIXA por dentro" genera más confianza que cualquier texto.
+ * "Sin retoques. Esto es lo que verás." genera más confianza que cualquier texto.
  */
 
 const pantallas = [
@@ -29,10 +29,10 @@ export function ScreenshotsSection() {
             Capturas reales
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-            Así es FIXA por dentro
+            Sin retoques. Esto es lo que verás.
           </h2>
           <p className="text-stone-500 mt-4 text-lg">
-            Sin retoques: estas son las pantallas que usarás cada día.
+            Las mismas pantallas que usamos nosotros cada día en nuestro taller.
           </p>
         </AnimatedSection>
 

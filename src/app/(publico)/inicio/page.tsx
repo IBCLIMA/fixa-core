@@ -20,7 +20,7 @@ import { faqs } from "@/components/landing/faq-data";
 export const metadata: Metadata = {
   title: "FIXA — Software de gestión para talleres mecánicos | Desde 29€/mes",
   description:
-    "Gestiona tu taller con órdenes de trabajo, citas, avisos ITV, WhatsApp integrado, presupuestos y portal del cliente. Creado por mecánicos. 14 días gratis.",
+    "Órdenes, presupuestos, citas, ITV y WhatsApp para tu taller. Desde el PC o el móvil. Creado por un ingeniero que lleva 15 años en talleres. 14 días gratis. Desde 29€/mes.",
   keywords: [
     "software taller mecánico", "gestión taller", "programa taller",
     "órdenes de trabajo taller", "app taller mecánico", "ERP taller mecánico",

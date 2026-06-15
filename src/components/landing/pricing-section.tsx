@@ -73,7 +73,7 @@ export function PricingSection() {
             Precios
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-            Menos que un cambio de aceite.
+            Menos que media hora de tu mano de obra.
           </h2>
           <p className="text-stone-500 mt-4 text-lg">14 días gratis en todos los planes</p>
         </AnimatedSection>
@@ -191,7 +191,7 @@ export function PricingSection() {
         {/* Tabla comparativa (skill: Comparison Table Focus) */}
         <AnimatedSection delay={0.4} className="mt-16">
           <h3 className="text-xl font-extrabold text-stone-900 text-center mb-6">
-            Compara los planes en detalle
+            Para los que quieren verlo con lupa
           </h3>
           <div className="overflow-x-auto rounded-2xl border border-stone-200/60 bg-white/70 backdrop-blur-sm">
             <table className="w-full min-w-[500px] text-sm">

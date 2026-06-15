@@ -56,7 +56,7 @@ export function CtaSection() {
 
         <AnimatedSection delay={0.7}>
           <p className="text-xs text-stone-400 mt-8">
-            Sin permanencia · Sin tarjeta de crédito · Setup gratuito
+            Sin permanencia · Sin tarjeta · Si no te gusta, lo borras y aquí no ha pasado nada
           </p>
         </AnimatedSection>
       </div>

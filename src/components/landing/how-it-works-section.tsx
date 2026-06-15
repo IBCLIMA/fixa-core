@@ -38,12 +38,12 @@ export function HowItWorksSection() {
       <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16 relative z-10">
         <AnimatedSection className="text-center mb-16">
           <span className="inline-flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/10 px-4 py-1.5 text-xs font-semibold text-orange-400 mb-4">
-            Así de fácil
+            Sin manuales
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-5xl">
-            Más fácil que WhatsApp.
+            Cuatro pasos.
             <br />
-            <span className="text-stone-500">Más útil que un ERP.</span>
+            <span className="text-stone-500">Y el primero tarda 10 segundos.</span>
           </h2>
         </AnimatedSection>
 
