@@ -13,6 +13,8 @@ import {
 import { buscarPorMatricula, crearOrdenRapida, crearTodoRapido } from "./actions/rapida";
 import { MarcaAutocomplete, ModeloAutocomplete } from "@/components/vehicle-autocomplete";
 import { MatriculaScanner } from "@/components/matricula-scanner";
+import { FichaScanner } from "./ordenes/nueva/ficha-scanner";
+import type { VehicleOCRResult } from "@/lib/ocr-vehicle";
 import { toast } from "sonner";
 
 type Resultado = Awaited<ReturnType<typeof buscarPorMatricula>>[number];
@@ -50,6 +52,13 @@ export function EntradaRapida() {
     setMatricula(""); setSeleccionado(null); setResultados([]);
     setBusquedaHecha(false); setShowNewForm(false);
     setMarcaValue(""); setModeloValue(""); setModelosSugeridos([]);
+  }
+
+  // Ficha técnica escaneada → rellenar todos los campos del vehículo
+  function handleFichaData(data: VehicleOCRResult) {
+    if (data.matricula) setMatricula(data.matricula.replace(/[\s\-]/g, ""));
+    if (data.marca) setMarcaValue(data.marca);
+    if (data.modelo) setModeloValue(data.modelo);
   }
 
   // Vehicle NOT found → create everything
@@ -196,6 +205,12 @@ export function EntradaRapida() {
                 <p className="text-xs text-orange-700">Rellena los datos para dar de alta cliente y vehículo</p>
               </div>
             </div>
+            {/* Escanear ficha técnica → rellena matrícula + marca + modelo */}
+            <FichaScanner onApply={(data) => {
+              handleFichaData(data);
+              toast.success("Datos extraídos de la ficha técnica");
+            }} />
+
             {/* Matrícula editable */}
             <div className="space-y-1">
               <Label className="text-xs font-bold text-stone-500">Matrícula *</Label>
