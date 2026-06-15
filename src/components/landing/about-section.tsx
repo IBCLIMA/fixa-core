@@ -17,9 +17,7 @@ export function AboutSection() {
             Sobre nosotros
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-            No somos una multinacional.
-            <br />
-            <span className="text-stone-400">Somos mecánicos como tú.</span>
+            ¿Quién ha hecho esto?
           </h2>
         </AnimatedSection>
 
@@ -47,34 +45,39 @@ export function AboutSection() {
                 </div>
               </div>
 
-              {/* Historia */}
+              {/* Historia — tono cercano, divertido, real */}
               <div className="space-y-4 pl-4 md:pl-0">
                 <p className="text-stone-600 leading-relaxed">
-                  Me llamo Sergi y soy mecánico. Llevo desde 2010 con Ibañez Clima, un taller
-                  de automoción donde hacemos de todo: mecánica, diagnosis, climatización, pre-ITV.
-                  Un taller de verdad, como el tuyo.
+                  Buenas, soy Sergi 👋 Ingeniero Industrial Mecánico, aunque lo
+                  que de verdad me define es que llevo desde 2010 al frente de{" "}
+                  <strong className="text-stone-900">Ibañez Clima</strong>, una empresa
+                  que da servicio a talleres mecánicos.
                 </p>
                 <p className="text-stone-600 leading-relaxed">
-                  FIXA nació porque me cansé de perder horas respondiendo llamadas de{" "}
-                  <em>&ldquo;¿está listo mi coche?&rdquo;</em>, de hacer presupuestos a las 9 de la noche
-                  y de olvidarme de avisar a clientes con la ITV vencida. El papel y el WhatsApp
-                  ya no daban más de sí.
+                  Eso significa que no conozco UN taller — conozco cientos.
+                  Y en todos he visto los mismos problemas: el teléfono que
+                  no para, los presupuestos a las 9 de la noche, las ITVs
+                  que se escapan y el papel que nunca aparece cuando hace falta.
                 </p>
                 <p className="text-stone-600 leading-relaxed">
-                  Así que construí el software que me hubiera gustado tener.{" "}
+                  Un día me harté y dije:{" "}
+                  <em className="text-stone-900">&ldquo;si ningún software del mercado
+                  funciona para un mecánico con las manos manchadas, lo hago yo.&rdquo;</em>{" "}
+                  Y lo hice. FIXA nació así: no en una oficina bonita, sino entre
+                  compresores, elevadores y recambios.
+                </p>
+                <p className="text-stone-600 leading-relaxed">
+                  Hoy la uso cada día con talleres reales. Si algo no funciona
+                  en el taller, no llega a la app.{" "}
                   <strong className="text-stone-900">
-                    Simple, barato y que funciona con las manos manchadas — desde el PC o el móvil.
-                  </strong>{" "}
-                  Lo uso cada día en mi propio taller. Si algo no funciona ahí, no llega a la app.
-                </p>
-                <p className="text-stone-900 font-bold text-lg">
-                  FIXA es la herramienta del mecánico, hecha por un mecánico.
+                    Así de simple. Así de real.
+                  </strong>
                 </p>
 
                 <div className="flex items-center gap-3 pt-4 border-t border-stone-200/50">
                   <div>
                     <p className="font-bold text-stone-900">Sergi Ibañez</p>
-                    <p className="text-sm text-stone-500">Fundador de FIXA · Mecánico en Ibañez Clima desde 2010</p>
+                    <p className="text-sm text-stone-500">Ingeniero Industrial Mecánico · Gerente de Ibañez Clima desde 2010 · Fundador de FIXA</p>
                   </div>
                 </div>
               </div>

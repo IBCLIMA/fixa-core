@@ -9,6 +9,7 @@ import { ObjectionsSection } from "@/components/landing/objections-section";
 import { PricingSection } from "@/components/landing/pricing-section";
 import { FaqSection } from "@/components/landing/faq-section";
 import { TestimonialsSection } from "@/components/landing/testimonials-section";
+import { AboutSection } from "@/components/landing/about-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { WebServicesBanner } from "@/components/web-services-banner";
 import { Footer } from "@/components/landing/footer";
@@ -60,6 +61,7 @@ export default function LandingPage() {
       <HowItWorksSection />
       <ObjectionsSection />
       <TestimonialsSection />
+      <AboutSection />
       <PricingSection />
       <FaqSection />
       <CtaSection />

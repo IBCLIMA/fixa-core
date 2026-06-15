@@ -229,7 +229,7 @@ export default function WebParaTalleresPage() {
               </Button>
             </a>
             <a href="tel:+34611433218">
-              <Button size="lg" variant="outline" className="rounded-full h-14 px-8 text-base font-semibold border-white/15 text-white hover:bg-white/5 cursor-pointer">
+              <Button size="lg" className="rounded-full h-14 px-8 text-base font-semibold bg-[#25D366] hover:bg-[#1fb959] text-white border-0 cursor-pointer">
                 <Phone className="mr-2 h-4 w-4" />
                 611 433 218
               </Button>
