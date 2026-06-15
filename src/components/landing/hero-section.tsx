@@ -52,10 +52,12 @@ export function HeroSection() {
             </motion.div>
 
             <h1 className="text-[2.75rem] font-extrabold tracking-tight text-stone-900 md:text-6xl lg:text-[4.25rem] leading-[1.05]">
-              Matrícula. Orden.
+              Gestiona tu taller
+              <br />
+              desde el móvil.
               <br />
               <span className="hero-shimmer bg-gradient-to-r from-orange-500 via-amber-400 to-orange-600 bg-clip-text text-transparent bg-[length:200%_100%]">
-                El cliente no llama.
+                Sin complicarte la vida.
               </span>
             </h1>
 
@@ -66,9 +68,9 @@ export function HeroSection() {
               transition={{ ...TRANSITION_DEFAULT, delay: 0.2 }}
               className="text-lg text-stone-500 mt-6 leading-relaxed max-w-[480px]"
             >
-              Creas la orden en 10 segundos. Tu cliente ve el estado de su
-              coche sin llamarte. Los avisos de ITV te generan trabajo solos.
-              Y el presupuesto se acepta online, desde el sofá del cliente.
+              Órdenes de trabajo, presupuestos, citas, avisos de ITV
+              y WhatsApp integrado. Todo en una app que funciona con
+              la matrícula y dos toques. Creado por mecánicos.
             </motion.p>
 
             <motion.div
