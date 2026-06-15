@@ -19,6 +19,12 @@ const objeciones = [
     respuesta:
       "No tienes tiempo para un ERP que necesita un curso. Pero la primera orden en FIXA tarda 10 segundos — menos que contestar la próxima llamada de '¿está listo mi coche?'. Esos 10 segundos te devuelven horas.",
   },
+  {
+    icon: MessageSquare,
+    objecion: "\u201CYa probé otro programa y no lo usaba nadie\u201D",
+    respuesta:
+      "Normal: la mayoría de programas de taller están pensados para la oficina, no para el mecánico. FIXA funciona desde el PC y desde el móvil, con las manos manchadas, sin formación. Si tu equipo usa WhatsApp, usa FIXA. Y si en 14 días no la usa nadie, la borras y no pagas nada.",
+  },
 ];
 
 export function ObjectionsSection() {
