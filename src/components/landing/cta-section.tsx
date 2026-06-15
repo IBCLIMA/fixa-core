@@ -15,7 +15,7 @@ export function CtaSection() {
       {/* Overlay for readability */}
       <div className="absolute inset-0 bg-stone-950/40" />
 
-      <div className="mx-auto max-w-6xl px-6 py-24 lg:py-32 text-center relative z-10">
+      <div className="mx-auto max-w-6xl px-6 py-14 lg:py-20 text-center relative z-10">
         <BlurText
           text="Mañana a las 8 abres el taller. ¿Con papel o con FIXA?"
           className="text-4xl font-extrabold tracking-tight text-white md:text-6xl leading-[1.1] justify-center"
@@ -45,7 +45,7 @@ export function CtaSection() {
               <Button
                 size="lg"
                 variant="outline"
-                className="rounded-full h-14 px-8 text-base font-semibold border-white/30 text-white hover:bg-white/10 cursor-pointer"
+                className="rounded-full h-14 px-8 text-base font-semibold bg-[#25D366] text-white hover:bg-[#1fb959] border-0 cursor-pointer"
               >
                 <Phone className="mr-2 h-4 w-4" />
                 Hablar por WhatsApp

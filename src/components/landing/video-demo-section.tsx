@@ -45,7 +45,7 @@ export function VideoDemoSection() {
   return (
     <>
       <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-5xl px-6 py-20 lg:py-28">
+        <div className="mx-auto max-w-5xl px-6 py-12 lg:py-16">
           <AnimatedSection className="text-center mb-12">
             <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
               Demo en vivo

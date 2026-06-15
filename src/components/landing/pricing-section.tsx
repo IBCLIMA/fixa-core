@@ -67,7 +67,7 @@ export function PricingSection() {
     <section id="precios" className="relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_100%,rgba(249,115,22,0.05),transparent)]" />
 
-      <div className="mx-auto max-w-6xl px-6 py-20 lg:py-28 relative z-10">
+      <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16 relative z-10">
         <AnimatedSection className="text-center mb-10">
           <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
             Precios

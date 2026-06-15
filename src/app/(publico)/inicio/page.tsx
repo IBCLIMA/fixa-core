@@ -10,6 +10,7 @@ import { PricingSection } from "@/components/landing/pricing-section";
 import { FaqSection } from "@/components/landing/faq-section";
 import { TestimonialsSection } from "@/components/landing/testimonials-section";
 import { CtaSection } from "@/components/landing/cta-section";
+import { WebServicesBanner } from "@/components/web-services-banner";
 import { Footer } from "@/components/landing/footer";
 import { FloatingCta } from "@/components/landing/floating-cta";
 import { SOFTWARE_JSONLD } from "@/lib/seo";
@@ -62,6 +63,7 @@ export default function LandingPage() {
       <PricingSection />
       <FaqSection />
       <CtaSection />
+      <WebServicesBanner />
       <Footer />
       <FloatingCta />
     </div>

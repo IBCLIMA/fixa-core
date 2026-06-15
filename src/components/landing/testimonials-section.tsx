@@ -1,7 +1,6 @@
 import { Wrench, CheckCircle2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { HexPattern } from "@/components/ui/brand-texture";
 
 /**
  * Prueba social HONESTA: aún no tenemos clientes de pago, así que no inventamos
@@ -19,8 +18,7 @@ const usosDiarios = [
 export function TestimonialsSection() {
   return (
     <section className="relative overflow-hidden">
-      <HexPattern />
-      <div className="mx-auto max-w-5xl px-6 py-20 lg:py-28 relative z-10">
+      <div className="mx-auto max-w-5xl px-6 py-12 lg:py-16 relative z-10">
         <div className="text-center mb-12">
           <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
             Sin testimonios de pago

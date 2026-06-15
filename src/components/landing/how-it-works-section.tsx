@@ -35,7 +35,7 @@ export function HowItWorksSection() {
       <div className="absolute inset-0 bg-stone-950" />
       <div className="absolute inset-0 bg-stone-950/30" />
 
-      <div className="mx-auto max-w-6xl px-6 py-20 lg:py-28 relative z-10">
+      <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16 relative z-10">
         <AnimatedSection className="text-center mb-16">
           <span className="inline-flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/10 px-4 py-1.5 text-xs font-semibold text-orange-400 mb-4">
             Así de fácil

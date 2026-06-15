@@ -21,7 +21,7 @@ export function HeroSection() {
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#faf9f7] to-transparent" />
 
       <div className="mx-auto max-w-6xl px-6 py-16 lg:py-0 relative z-10 w-full">
-        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-16 items-center">
           {/* Text */}
           <div>
             <motion.div
