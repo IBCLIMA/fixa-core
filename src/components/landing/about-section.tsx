@@ -52,7 +52,7 @@ export function AboutSection() {
                 <p className="text-stone-600 leading-relaxed">
                   Me llamo Sergi y soy mecánico. Llevo desde 2010 con Ibañez Clima, un taller
                   de automoción donde hacemos de todo: mecánica, diagnosis, climatización, pre-ITV.
-                  Un taller pequeño, como el tuyo.
+                  Un taller de verdad, como el tuyo.
                 </p>
                 <p className="text-stone-600 leading-relaxed">
                   FIXA nació porque me cansé de perder horas respondiendo llamadas de{" "}

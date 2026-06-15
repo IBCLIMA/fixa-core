@@ -47,17 +47,15 @@ export function HeroSection() {
                 <Zap className="h-3 w-3 text-white" />
               </span>
               <span className="text-xs font-semibold text-orange-700 tracking-wide">
-                El software que nació en un taller · 29€/mes
+                Hecho por mecánicos · Desde 29€/mes
               </span>
             </motion.div>
 
             <h1 className="text-[2.75rem] font-extrabold tracking-tight text-stone-900 md:text-6xl lg:text-[4.25rem] leading-[1.05]">
-              Tu taller.
-              <br />
-              Tu móvil.
+              Matrícula. Orden.
               <br />
               <span className="hero-shimmer bg-gradient-to-r from-orange-500 via-amber-400 to-orange-600 bg-clip-text text-transparent bg-[length:200%_100%]">
-                Todo controlado.
+                El cliente no llama.
               </span>
             </h1>
 
@@ -68,9 +66,9 @@ export function HeroSection() {
               transition={{ ...TRANSITION_DEFAULT, delay: 0.2 }}
               className="text-lg text-stone-500 mt-6 leading-relaxed max-w-[480px]"
             >
-              Escribes la matrícula y la orden está creada. El cliente ve su
-              coche online sin llamarte. Los avisos de ITV te traen trabajo
-              solo. 29€/mes. Hecho por un mecánico.
+              Creas la orden en 10 segundos. Tu cliente ve el estado de su
+              coche sin llamarte. Los avisos de ITV te generan trabajo solos.
+              Y el presupuesto se acepta online, desde el sofá del cliente.
             </motion.p>
 
             <motion.div

@@ -52,59 +52,51 @@ function LaptopMockup({ src, label, sub }: {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
   const enter = spring({ frame, fps, config: { damping: 22, stiffness: 60 } });
-  const rotateX = interpolate(enter, [0, 1], [12, 2]);
-  const translateZ = interpolate(enter, [0, 1], [-200, 0]);
-  const scale = interpolate(enter, [0, 1], [0.85, 1]);
-  const kbScale = interpolate(frame, [0, durationInFrames], [1, 1.06], { extrapolateRight: "clamp" });
+  const scale = interpolate(enter, [0, 1], [0.92, 1]);
+  const y = interpolate(enter, [0, 1], [40, 0]);
+  const kbScale = interpolate(frame, [0, durationInFrames], [1, 1.04], { extrapolateRight: "clamp" });
   const labelEnter = spring({ frame: frame - 12, fps, config: { damping: 20 } });
 
   return (
     <AbsoluteFill style={{
-      background: "radial-gradient(ellipse 80% 60% at 50% 40%, #1c1917 0%, #0c0a09 70%)",
+      background: "#0c0a09",
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      perspective: 1200,
     }}>
-      {/* Glow naranja */}
+      {/* Glow sutil */}
       <div style={{
-        position: "absolute", width: 600, height: 400, borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%)",
-        filter: "blur(80px)", top: "20%",
+        position: "absolute", width: 800, height: 300, borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%)",
+        filter: "blur(60px)", top: "10%",
       }} />
 
+      {/* Screenshot plano, grande, con borde mínimo — ocupa casi todo el frame */}
       <div style={{
-        transform: `perspective(1200px) rotateX(${rotateX}deg) translateZ(${translateZ}px) scale(${scale})`,
-        transformStyle: "preserve-3d", width: "85%", maxWidth: 1500,
+        transform: `translateY(${y}px) scale(${scale})`,
+        width: "96%", maxWidth: 1800,
       }}>
-        {/* Laptop bezel */}
+        {/* Mini browser bar */}
         <div style={{
-          background: "linear-gradient(180deg, #292524 0%, #1c1917 100%)",
-          borderRadius: "14px 14px 0 0", padding: "10px 16px 0",
-          boxShadow: "0 -2px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)",
+          background: "#1c1917",
+          borderRadius: "10px 10px 0 0", padding: "6px 12px",
+          display: "flex", alignItems: "center", gap: 6,
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 4px", marginBottom: 2 }}>
-            <div style={{ display: "flex", gap: 6 }}>
-              {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
-                <div key={c} style={{ width: 10, height: 10, borderRadius: "50%", background: c, opacity: 0.85 }} />
-              ))}
-            </div>
-            <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-              <div style={{ height: 26, borderRadius: 7, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.04)", display: "flex", alignItems: "center", gap: 6, padding: "0 14px", minWidth: 220 }}>
-                <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#28c840" }} />
-                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontFamily: "ui-monospace, monospace" }}>fixataller.es</span>
-              </div>
-            </div>
+          <div style={{ display: "flex", gap: 5 }}>
+            {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
+              <div key={c} style={{ width: 8, height: 8, borderRadius: "50%", background: c, opacity: 0.8 }} />
+            ))}
           </div>
-          <div style={{ overflow: "hidden", borderRadius: "0 0 4px 4px" }}>
-            <div style={{ transform: `scale(${kbScale})`, transformOrigin: "center top" }}>
-              <Img src={staticFile(`demo/screenshots/${src}`)} style={{ width: "100%", display: "block" }} />
+          <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+            <div style={{ height: 22, borderRadius: 6, background: "rgba(255,255,255,0.05)", display: "flex", alignItems: "center", gap: 5, padding: "0 10px" }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#28c840" }} />
+              <span style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", fontFamily: "ui-monospace" }}>fixataller.es</span>
             </div>
           </div>
         </div>
-        <div style={{
-          height: 14, background: "linear-gradient(180deg, #1c1917 0%, #0f0f12 100%)",
-          borderRadius: "0 0 14px 14px", boxShadow: "0 8px 30px rgba(0,0,0,0.5)",
-        }}>
-          <div style={{ width: 80, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.08)", margin: "5px auto 0" }} />
+        {/* Screenshot — llena el ancho */}
+        <div style={{ overflow: "hidden", borderRadius: "0 0 8px 8px", boxShadow: "0 20px 80px rgba(0,0,0,0.6)" }}>
+          <div style={{ transform: `scale(${kbScale})`, transformOrigin: "center top" }}>
+            <Img src={staticFile(`demo/screenshots/${src}`)} style={{ width: "100%", display: "block" }} />
+          </div>
         </div>
       </div>
 
@@ -209,7 +201,7 @@ function LogoReveal() {
       </div>
 
       <div style={{ marginTop: 24, opacity: textEnter, fontSize: 72, fontWeight: 800, color: "white", letterSpacing: -4, fontFamily: FONT }}>FIXA</div>
-      <div style={{ marginTop: 8, opacity: textEnter, fontSize: 18, color: "#78716c", fontFamily: FONT, letterSpacing: 4, textTransform: "uppercase" }}>El partner del taller pequeño</div>
+      <div style={{ marginTop: 8, opacity: textEnter, fontSize: 18, color: "#78716c", fontFamily: FONT, letterSpacing: 4, textTransform: "uppercase" }}>El software del mecánico</div>
     </AbsoluteFill>
   );
 }
@@ -230,8 +222,8 @@ export const FixaDemo: React.FC = () => {
             display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: "0 80px",
           }}>
             <div style={{ width: 50, height: 3, borderRadius: 2, background: "linear-gradient(90deg, transparent, #f97316, transparent)", marginBottom: 28 }} />
-            <ShimmerText text="Tu taller. Tu móvil." size={72} shimmerColor="#fbbf24" />
-            <ShimmerText text="Todo controlado." size={72} color="#f97316" shimmerColor="#fff" delay={8} />
+            <ShimmerText text="Matrícula. Orden." size={72} shimmerColor="#fbbf24" />
+            <ShimmerText text="El cliente no llama." size={72} color="#f97316" shimmerColor="#fff" delay={8} />
           </AbsoluteFill>
         </TransitionSeries.Sequence>
 
@@ -318,7 +310,7 @@ export const FixaDemo: React.FC = () => {
             </FadeIn>
 
             <FadeIn delay={22}>
-              <div style={{ fontSize: 16, color: "#525252", fontFamily: FONT, marginTop: 16 }}>El partner del taller pequeño.</div>
+              <div style={{ fontSize: 16, color: "#525252", fontFamily: FONT, marginTop: 16 }}>El software del mecánico.</div>
             </FadeIn>
           </AbsoluteFill>
         </TransitionSeries.Sequence>

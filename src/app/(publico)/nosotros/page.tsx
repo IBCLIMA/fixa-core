@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: "FIXA nace de Ibañez Clima, un taller real desde 2010. Construimos el software que nos hubiera gustado tener: simple, desde el móvil y sin humo.",
   alternates: { canonical: `${SITE_URL}/nosotros` },
   openGraph: {
-    title: "Sobre FIXA — El partner del taller pequeño",
+    title: "Sobre FIXA — El software del mecánico",
     description: "No somos una multinacional. Somos mecánicos como tú.",
     url: `${SITE_URL}/nosotros`,
   },

@@ -65,7 +65,7 @@ export default function OgImage() {
             display: "flex",
           }}
         >
-          El partner digital del taller pequeño
+          El software de gestión hecho por mecánicos
         </div>
         <div
           style={{
