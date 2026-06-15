@@ -19,12 +19,6 @@ const objeciones = [
     respuesta:
       "No tienes tiempo para un ERP que necesita un curso. Pero la primera orden en FIXA tarda 10 segundos — menos que contestar la próxima llamada de '¿está listo mi coche?'. Esos 10 segundos te devuelven horas.",
   },
-  {
-    icon: MessageSquare,
-    objecion: "\u201C¿Y esto quién lo ha hecho?\u201D",
-    respuesta:
-      "Un mecánico. Sergi, de Ibañez Clima, taller desde 2010. Hizo FIXA porque estaba harto de hacer presupuestos a las 9 de la noche y perder clientes de ITV. El soporte es por WhatsApp, y te contesta gente que sabe lo que es un embrague.",
-  },
 ];
 
 export function ObjectionsSection() {
