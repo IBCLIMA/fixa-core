@@ -13,7 +13,7 @@ import { HexPattern } from "@/components/ui/brand-texture";
  */
 
 const usosDiarios = [
-  "Cada orden de trabajo de nuestro taller se crea con FIXA, desde el móvil",
+  "Cada orden de trabajo de nuestro taller se crea con FIXA",
   "Nuestros clientes reciben su presupuesto por WhatsApp y lo aceptan online",
   "Los avisos de ITV salen de aquí — primero los sufrimos, luego los automatizamos",
   "Cada función nueva se prueba en nuestro mostrador antes de llegar a tu taller",

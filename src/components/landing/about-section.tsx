@@ -63,7 +63,7 @@ export function AboutSection() {
                 <p className="text-stone-600 leading-relaxed">
                   Así que construí el software que me hubiera gustado tener.{" "}
                   <strong className="text-stone-900">
-                    Simple, barato y que funciona desde el móvil con las manos manchadas.
+                    Simple, barato y que funciona con las manos manchadas — desde el PC o el móvil.
                   </strong>{" "}
                   Lo uso cada día en mi propio taller. Si algo no funciona ahí, no llega a la app.
                 </p>

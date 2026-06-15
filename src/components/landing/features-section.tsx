@@ -109,7 +109,7 @@ const smallFeatures = [
   { icon: Megaphone, color: "from-pink-500 to-pink-600", title: "Ofertas masivas", desc: "Promociones WhatsApp con un clic." },
   { icon: Camera, color: "from-teal-500 to-teal-600", title: "Fotos del vehículo", desc: "Protección ante reclamaciones." },
   { icon: Shield, color: "from-stone-500 to-stone-600", title: "Seguridad RGPD", desc: "Datos cifrados, backups diarios." },
-  { icon: Smartphone, color: "from-rose-500 to-rose-600", title: "App en el móvil", desc: "Instalable. Funciona offline." },
+  { icon: Smartphone, color: "from-rose-500 to-rose-600", title: "PC, tablet y móvil", desc: "Funciona en cualquier dispositivo. Instalable como app." },
 ];
 
 export function FeaturesSection() {

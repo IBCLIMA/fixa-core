@@ -9,7 +9,7 @@ import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Sobre nosotros — FIXA nació dentro de un taller real (desde 2010)",
-  description: "FIXA nace de Ibañez Clima, un taller real desde 2010. Construimos el software que nos hubiera gustado tener: simple, desde el móvil y sin humo.",
+  description: "FIXA nace de Ibañez Clima, un taller real desde 2010. Construimos el software que nos hubiera gustado tener: simple, sin formación y sin humo.",
   alternates: { canonical: `${SITE_URL}/nosotros` },
   openGraph: {
     title: "Sobre FIXA — El software del mecánico",

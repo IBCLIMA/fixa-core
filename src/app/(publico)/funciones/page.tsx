@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE_URL}/funciones` },
   openGraph: {
     title: "Funciones de FIXA — Todo lo que tu taller necesita",
-    description: "12 funciones para gestionar tu taller desde el móvil. Desde 29€/mes.",
+    description: "12 funciones para gestionar tu taller. Desde 29€/mes.",
     url: `${SITE_URL}/funciones`,
   },
 };

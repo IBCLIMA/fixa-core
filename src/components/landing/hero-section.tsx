@@ -52,12 +52,12 @@ export function HeroSection() {
             </motion.div>
 
             <h1 className="text-[2.75rem] font-extrabold tracking-tight text-stone-900 md:text-6xl lg:text-[4.25rem] leading-[1.05]">
-              Gestiona tu taller
+              El software de gestión
               <br />
-              desde el móvil.
+              que tu taller
               <br />
               <span className="hero-shimmer bg-gradient-to-r from-orange-500 via-amber-400 to-orange-600 bg-clip-text text-transparent bg-[length:200%_100%]">
-                Sin complicarte la vida.
+                de verdad va a usar.
               </span>
             </h1>
 
@@ -69,8 +69,8 @@ export function HeroSection() {
               className="text-lg text-stone-500 mt-6 leading-relaxed max-w-[480px]"
             >
               Órdenes de trabajo, presupuestos, citas, avisos de ITV
-              y WhatsApp integrado. Todo en una app que funciona con
-              la matrícula y dos toques. Creado por mecánicos.
+              y WhatsApp integrado. Desde el PC o desde el móvil,
+              con la matrícula y dos toques. Creado por mecánicos.
             </motion.p>
 
             <motion.div
