@@ -8,7 +8,7 @@ import { Wrench, Calendar, Shield, CreditCard } from "lucide-react";
 const stats = [
   { icon: Wrench, valor: "10 seg", label: "Orden de trabajo creada", color: "text-orange-600" },
   { icon: Calendar, valor: "0 llamadas", label: "El cliente mira su coche solo", color: "text-blue-600" },
-  { icon: Shield, valor: "Automático", label: "Avisos de ITV cada mes", color: "text-emerald-600" },
+  { icon: Shield, valor: "0 descargas", label: "Abre el navegador y listo", color: "text-emerald-600" },
   { icon: CreditCard, valor: "29€/mes", label: "Menos que media hora tuya", color: "text-violet-600" },
 ];
 

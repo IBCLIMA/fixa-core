@@ -56,9 +56,9 @@ export function HeroSection() {
               transition={{ ...TRANSITION_DEFAULT, delay: 0.2 }}
               className="text-lg text-stone-500 mt-6 leading-relaxed max-w-[480px]"
             >
-              Órdenes de trabajo, presupuestos, citas, avisos de ITV
-              y WhatsApp integrado. Desde el PC o desde el móvil,
-              con la matrícula y dos toques. Creado por mecánicos.
+              Órdenes, presupuestos, citas, ITV y WhatsApp. Sin instalar
+              nada, sin descargar nada — abres el navegador y funciona.
+              Desde el PC del taller, desde el móvil o desde la playa.
             </motion.p>
 
             <motion.div
@@ -95,7 +95,7 @@ export function HeroSection() {
               transition={{ ...TRANSITION_DEFAULT, delay: 0.4 }}
               className="flex items-center gap-6 mt-8 text-sm text-stone-400 flex-wrap"
             >
-              {["Sin tarjeta", "Sin permanencia", "Creado por mecánicos"].map((text) => (
+              {["Sin tarjeta", "Sin permanencia", "Sin descargas — funciona en el navegador"].map((text) => (
                 <span key={text} className="flex items-center gap-1.5">
                   <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                   {text}
