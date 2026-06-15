@@ -21,7 +21,7 @@ export function HeroSection() {
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#faf9f7] to-transparent" />
 
       <div className="mx-auto max-w-6xl px-6 py-16 lg:py-0 relative z-10 w-full">
-        <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-8 lg:gap-10 items-center">
           {/* Text */}
           <div>
             <motion.div
@@ -39,7 +39,7 @@ export function HeroSection() {
               </span>
             </motion.div>
 
-            <h1 className="text-[2.75rem] font-extrabold tracking-tight text-stone-900 md:text-6xl lg:text-[4.25rem] leading-[1.05]">
+            <h1 className="text-4xl font-extrabold tracking-tight text-stone-900 md:text-5xl lg:text-[3.5rem] leading-[1.05]">
               El software de gestión
               <br />
               que tu taller
@@ -255,7 +255,7 @@ function HeroMockupSequence({ prefersReducedMotion, mockupVariants }: { prefersR
           </div>
 
           {/* Animated content */}
-          <div className="p-5 min-h-[260px]" style={{ background: "linear-gradient(180deg, #fafaf9 0%, #f5f3f0 100%)" }}>
+          <div className="p-5 min-h-[340px]" style={{ background: "linear-gradient(180deg, #fafaf9 0%, #f5f3f0 100%)" }}>
             <div className="flex items-center justify-between mb-4">
               <FixaLogo size="xs" />
               <div className="flex items-center gap-2">
