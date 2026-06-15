@@ -20,31 +20,31 @@ const pasos = [
   {
     titulo: "El mecánico escribe la matrícula",
     desc: "Abre FIXA, pulsa 'Entrada rápida', escribe la matrícula (o la escanea con la cámara). Si el cliente ya vino antes, se autocompleta todo. Describe la avería y la orden de trabajo está creada — conforme al RD 1457/1986.",
-    img: "/demo/screenshots/nueva-orden.png",
+    img: "/demo/screenshots/nueva-orden.webp",
     alt: "Pantalla de entrada rápida de FIXA",
   },
   {
     titulo: "El panel del día te organiza la mañana",
     desc: "Al abrir FIXA ves de un vistazo: citas de hoy, coches listos para entregar, presupuestos sin respuesta y recambios atascados. Cada uno con su botón de WhatsApp preparado. No tienes que buscar nada.",
-    img: "/demo/screenshots/dashboard.png",
+    img: "/demo/screenshots/dashboard.webp",
     alt: "Panel del día de FIXA",
   },
   {
     titulo: "El estado de cada coche, claro",
     desc: "Lista de órdenes con filtros: en taller, finalizadas, entregadas. Por mecánico si sois varios. El Kanban para los que prefieren arrastrar. Un toque y cambias el estado.",
-    img: "/demo/screenshots/ordenes.png",
+    img: "/demo/screenshots/ordenes.webp",
     alt: "Lista de órdenes en FIXA",
   },
   {
     titulo: "El cliente NO te llama — mira su coche solo",
     desc: "Cada orden tiene un enlace único. El cliente lo abre y ve: estado actual, presupuesto pendiente de aceptar, fotos y el informe final. Un solo link para todo, sin instalar nada.",
-    img: "/demo/screenshots/clientes.png",
+    img: "/demo/screenshots/clientes.webp",
     alt: "Portal del cliente de FIXA",
   },
   {
     titulo: "Las citas se organizan solas",
     desc: "Calendario con citas que los clientes piden online desde su móvil. FIXA te avisa cada tarde de las citas de mañana, con el WhatsApp de recordatorio ya preparado.",
-    img: "/demo/screenshots/calendario.png",
+    img: "/demo/screenshots/calendario.webp",
     alt: "Calendario de citas de FIXA",
   },
 ];

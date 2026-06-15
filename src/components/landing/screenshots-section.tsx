@@ -11,11 +11,11 @@ import { cn } from "@/lib/utils";
  */
 
 const pantallas = [
-  { id: "dashboard", src: "/demo/screenshots/dashboard.png", label: "Panel del día", desc: "Lo que entra, lo que sale y lo que está pendiente — de un vistazo" },
-  { id: "nueva-orden", src: "/demo/screenshots/nueva-orden.png", label: "Entrada rápida", desc: "Matrícula, qué le pasa, y orden creada en 10 segundos" },
-  { id: "ordenes", src: "/demo/screenshots/ordenes.png", label: "Órdenes", desc: "Cada coche con su estado, sin papeles ni pizarras" },
-  { id: "calendario", src: "/demo/screenshots/calendario.png", label: "Citas", desc: "La agenda del taller, con citas online de tus clientes" },
-  { id: "clientes", src: "/demo/screenshots/clientes.png", label: "Clientes", desc: "Historial completo por matrícula: qué, cuándo y por cuánto" },
+  { id: "dashboard", src: "/demo/screenshots/dashboard.webp", label: "Panel del día", desc: "Lo que entra, lo que sale y lo que está pendiente — de un vistazo" },
+  { id: "nueva-orden", src: "/demo/screenshots/nueva-orden.webp", label: "Entrada rápida", desc: "Matrícula, qué le pasa, y orden creada en 10 segundos" },
+  { id: "ordenes", src: "/demo/screenshots/ordenes.webp", label: "Órdenes", desc: "Cada coche con su estado, sin papeles ni pizarras" },
+  { id: "calendario", src: "/demo/screenshots/calendario.webp", label: "Citas", desc: "La agenda del taller, con citas online de tus clientes" },
+  { id: "clientes", src: "/demo/screenshots/clientes.webp", label: "Clientes", desc: "Historial completo por matrícula: qué, cuándo y por cuánto" },
 ];
 
 export function ScreenshotsSection() {
