@@ -4,27 +4,13 @@ import Link from "next/link";
 import { ArrowRight, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { track } from "@vercel/analytics";
-import Aurora from "@/components/ui/aurora";
 import BlurText from "@/components/ui/blur-text";
 import { AnimatedSection } from "./animated-section";
-import { useReducedMotion } from "framer-motion";
 
 export function CtaSection() {
-  const prefersReducedMotion = useReducedMotion();
   return (
     <section className="relative overflow-hidden min-h-[500px] flex items-center">
-      {/* Aurora WebGL background (off si reduced motion) */}
-      <div className="absolute inset-0 bg-stone-950">
-        {!prefersReducedMotion && (
-          <Aurora
-            colorStops={["#F97316", "#3B82F6", "#F97316"]}
-            amplitude={1.2}
-            blend={0.6}
-            speed={0.8}
-            className="opacity-60"
-          />
-        )}
-      </div>
+      <div className="absolute inset-0 bg-stone-950" />
 
       {/* Overlay for readability */}
       <div className="absolute inset-0 bg-stone-950/40" />

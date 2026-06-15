@@ -1,9 +1,6 @@
-"use client";
-
 import { Wrench, CheckCircle2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { AnimatedSection } from "./animated-section";
 import { HexPattern } from "@/components/ui/brand-texture";
 
 /**
@@ -24,7 +21,7 @@ export function TestimonialsSection() {
     <section className="relative overflow-hidden">
       <HexPattern />
       <div className="mx-auto max-w-5xl px-6 py-20 lg:py-28 relative z-10">
-        <AnimatedSection className="text-center mb-12">
+        <div className="text-center mb-12">
           <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
             Sin testimonios de pago
           </span>
@@ -36,9 +33,9 @@ export function TestimonialsSection() {
             de Ibañez Clima, un taller real abierto desde 2010 — y lo usamos cada día para
             trabajar, no para hacer capturas bonitas.
           </p>
-        </AnimatedSection>
+        </div>
 
-        <AnimatedSection delay={0.15}>
+        <div className="text-center mb-12">
           <div className="rounded-2xl bg-stone-950 text-white p-8 lg:p-10 shadow-2xl shadow-stone-900/20 max-w-3xl mx-auto">
             <div className="flex items-center gap-3 mb-6">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-500">
@@ -62,9 +59,9 @@ export function TestimonialsSection() {
               en un taller de verdad, no llega a la app.&rdquo;
             </p>
           </div>
-        </AnimatedSection>
+        </div>
 
-        <AnimatedSection delay={0.3} className="text-center mt-10">
+        <div className="text-center mb-12">
           <p className="text-stone-500 text-sm max-w-md mx-auto mb-5">
             ¿Quieres ser de los primeros talleres en usar FIXA? Los primeros nos ayudan a
             mejorarla — y nosotros les cuidamos como se cuida al primer cliente.
@@ -75,7 +72,7 @@ export function TestimonialsSection() {
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
             </Button>
           </Link>
-        </AnimatedSection>
+        </div>
       </div>
     </section>
   );

@@ -7,7 +7,6 @@ import { track } from "@vercel/analytics";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import Threads from "@/components/ui/threads";
 import { FADE_UP, FADE_RIGHT, FADE_ONLY, TRANSITION_DEFAULT } from "./animation-config";
 
 export function HeroSection() {
@@ -17,17 +16,6 @@ export function HeroSection() {
 
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-      {/* Threads WebGL background - interactive flowing lines (off si reduced motion) */}
-      {!prefersReducedMotion && (
-        <div className="absolute inset-0 opacity-20">
-          <Threads
-            color={[0.976, 0.451, 0.086]}
-            amplitude={1.2}
-            distance={0.3}
-            enableMouseInteraction={true}
-          />
-        </div>
-      )}
       {/* Gradient overlay for depth */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(249,115,22,0.08),transparent)]" />
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#faf9f7] to-transparent" />

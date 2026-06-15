@@ -1,7 +1,4 @@
-"use client";
-
 import { Wrench, Calendar, Shield, CreditCard } from "lucide-react";
-import { AnimatedSection } from "./animated-section";
 
 /**
  * Barra de stats VERIFICABLES — solo datos reales.
@@ -18,7 +15,7 @@ const stats = [
 export function StatsBar() {
   return (
     <section className="border-y border-stone-200/60 bg-white/50 backdrop-blur-sm">
-      <AnimatedSection className="mx-auto max-w-5xl px-6 py-6">
+      <div className="text-center mb-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {stats.map((s) => (
             <div key={s.label} className="flex items-center gap-3">
@@ -32,7 +29,7 @@ export function StatsBar() {
             </div>
           ))}
         </div>
-      </AnimatedSection>
+      </div>
     </section>
   );
 }

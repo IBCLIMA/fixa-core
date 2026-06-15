@@ -1,7 +1,4 @@
-"use client";
-
 import { ShieldCheck, MessageSquare, Clock, Wrench } from "lucide-react";
-import { AnimatedSection } from "./animated-section";
 import { HexPattern } from "@/components/ui/brand-texture";
 
 const objeciones = [
@@ -36,7 +33,7 @@ export function ObjectionsSection() {
     <section className="relative overflow-hidden">
       <HexPattern />
       <div className="mx-auto max-w-5xl px-6 py-20 lg:py-28 relative z-10">
-        <AnimatedSection className="text-center mb-12">
+        <div className="text-center mb-12">
           <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
             Hablemos claro
           </span>
@@ -46,11 +43,11 @@ export function ObjectionsSection() {
           <p className="text-stone-500 mt-4 text-lg max-w-xl mx-auto">
             Estas son las 4 cosas que te están frenando. Las sabemos porque son las mismas que nos frenaban a nosotros.
           </p>
-        </AnimatedSection>
+        </div>
 
         <div className="grid gap-5 md:grid-cols-2">
           {objeciones.map((o, i) => (
-            <AnimatedSection key={o.objecion} delay={i * 0.1}>
+            <div className="text-center mb-12">
               <div className="h-full rounded-2xl bg-white/70 backdrop-blur-sm border border-stone-200/50 p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50">
@@ -60,7 +57,7 @@ export function ObjectionsSection() {
                 </div>
                 <p className="text-sm text-stone-600 leading-relaxed">{o.respuesta}</p>
               </div>
-            </AnimatedSection>
+            </div>
           ))}
         </div>
       </div>

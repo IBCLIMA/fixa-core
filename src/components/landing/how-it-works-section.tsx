@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import Aurora from "@/components/ui/aurora";
 import { AnimatedSection } from "./animated-section";
 import { TRANSITION_DEFAULT } from "./animation-config";
 
@@ -33,16 +32,7 @@ export function HowItWorksSection() {
 
   return (
     <section className="relative overflow-hidden">
-      {/* Aurora WebGL background */}
-      <div className="absolute inset-0 bg-stone-950">
-        <Aurora
-          colorStops={["#F97316", "#8B5CF6", "#F97316"]}
-          amplitude={0.8}
-          blend={0.7}
-          speed={0.6}
-          className="opacity-40"
-        />
-      </div>
+      <div className="absolute inset-0 bg-stone-950" />
       <div className="absolute inset-0 bg-stone-950/30" />
 
       <div className="mx-auto max-w-6xl px-6 py-20 lg:py-28 relative z-10">
