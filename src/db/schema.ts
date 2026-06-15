@@ -267,9 +267,30 @@ export const lineasOrden = pgTable("lineas_orden", {
   tipoPieza: text("tipo_pieza").default("nueva"), // 'nueva' | 'reconstruida' | 'usada'
   referencia: text("referencia"), // Part reference number for traceability
   esAveriaOculta: boolean("es_averia_oculta").default(false),
+  // Gestión de recambios — estados inline por línea
+  estadoRecambio: text("estado_recambio").default("sin_pedir"), // 'sin_pedir' | 'consultado' | 'pedido' | 'recibido'
+  recambistaId: uuid("recambista_id").references(() => recambistas.id),
+  precioCompra: numeric("precio_compra", { precision: 10, scale: 2 }),
+  consultadoAt: timestamp("consultado_at"),
+  pedidoAt: timestamp("pedido_at"),
+  recibidoAt: timestamp("recibido_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
   index("idx_lineas_orden_orden").on(table.ordenId),
+]);
+
+// Recambistas del taller (proveedores de piezas)
+export const recambistas = pgTable("recambistas", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tallerId: uuid("taller_id")
+    .references(() => talleres.id, { onDelete: "cascade" })
+    .notNull(),
+  nombre: text("nombre").notNull(),
+  telefono: text("telefono").notNull(),
+  notas: text("notas"), // ej: "bueno para frenos", "entrega rápida"
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => [
+  index("idx_recambistas_taller").on(table.tallerId),
 ]);
 
 export const presupuestos = pgTable("presupuestos", {

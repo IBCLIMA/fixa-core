@@ -6,7 +6,10 @@ import { Pencil, Trash2, Check, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { editarLineaOrden, eliminarLineaOrden } from "../../actions/ordenes";
+import { RecambioActions } from "./recambio-actions";
 import { toast } from "sonner";
+
+type Recambista = { id: string; nombre: string; telefono: string; notas: string | null };
 
 type Linea = {
   id: string;
@@ -17,9 +20,17 @@ type Linea = {
   descuentoPct: string | null;
   ivaPct: string;
   referencia?: string | null;
+  estadoRecambio?: string | null;
+  recambistaId?: string | null;
 };
 
-export function LineasList({ ordenId, lineas }: { ordenId: string; lineas: Linea[] }) {
+export function LineasList({ ordenId, lineas, recambistas, vehiculo, tallerNombre }: {
+  ordenId: string;
+  lineas: Linea[];
+  recambistas?: Recambista[];
+  vehiculo?: { matricula?: string; marca?: string; modelo?: string; anio?: number | null; vin?: string | null } | null;
+  tallerNombre?: string;
+}) {
   const router = useRouter();
   const [editandoId, setEditandoId] = useState<string | null>(null);
   const [editData, setEditData] = useState({ descripcion: "", cantidad: "", precio: "", descuento: "", iva: "" });
@@ -156,6 +167,22 @@ export function LineasList({ ordenId, lineas }: { ordenId: string; lineas: Linea
                   <span className="text-[10px] font-mono text-stone-400 bg-stone-100 px-1.5 py-0.5 rounded">
                     Ref: {linea.referencia}
                   </span>
+                )}
+                {linea.tipo === "recambio" && recambistas && recambistas.length > 0 && (
+                  <RecambioActions
+                    lineaId={linea.id}
+                    ordenId={ordenId}
+                    descripcion={linea.descripcion}
+                    estadoRecambio={linea.estadoRecambio || "sin_pedir"}
+                    recambistaId={linea.recambistaId || null}
+                    recambistas={recambistas}
+                    matricula={vehiculo?.matricula}
+                    marca={vehiculo?.marca}
+                    modelo={vehiculo?.modelo}
+                    anio={vehiculo?.anio}
+                    vin={vehiculo?.vin}
+                    tallerNombre={tallerNombre}
+                  />
                 )}
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">

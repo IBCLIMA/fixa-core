@@ -9,6 +9,8 @@ import { CopyLinkBox } from "./copy-link-box";
 import { PlantillasForm } from "./plantillas-form";
 import { MensajesWhatsapp } from "./mensajes-whatsapp";
 import { getPlantillas, type LineaPlantilla } from "../actions/plantillas";
+import { getRecambistas } from "../actions/recambistas";
+import { RecambistasForm } from "./recambistas-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -28,6 +30,7 @@ export default async function ConfiguracionPage() {
   if (!taller) return <p>Error cargando configuración</p>;
 
   const plantillas = await getPlantillas().catch(() => []);
+  const recambistasList = await getRecambistas().catch(() => []);
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -53,6 +56,9 @@ export default async function ConfiguracionPage() {
           lineas: p.lineas as LineaPlantilla[],
         }))}
       />
+
+      {/* Recambistas */}
+      <RecambistasForm recambistas={recambistasList} />
 
       {/* Mensajes WhatsApp */}
       <MensajesWhatsapp mensajesActuales={(taller.mensajesWhatsapp as Record<string, string>) || {}} />

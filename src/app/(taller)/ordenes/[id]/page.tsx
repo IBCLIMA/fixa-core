@@ -33,6 +33,7 @@ import { formatWhatsAppUrl } from "@/lib/utils";
 import { getUserRole, getTallerIdFromAuth } from "@/lib/auth";
 import { getInspeccion } from "../../actions/inspecciones";
 import { getActivePhases } from "@/lib/workflow";
+import { getRecambistas } from "../../actions/recambistas";
 import { getDb } from "@/db";
 import { talleres } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -62,15 +63,17 @@ export default async function OrdenDetallePage({
   let maintenanceAlerts: any[] = [];
   let documentoCobro: any = null;
   let precioHora: number = 0;
+  let recambistasList: any[] = [];
 
   try {
-    [rol, inspecciones, mecanicos, maintenanceAlerts, documentoCobro, precioHora] = await Promise.all([
+    [rol, inspecciones, mecanicos, maintenanceAlerts, documentoCobro, precioHora, recambistasList] = await Promise.all([
       getUserRole(),
       getInspeccion(id).catch(() => []),
       getMecanicos().catch(() => []),
       getMaintenanceAlerts(orden.vehiculoId, orden.kmEntrada).catch(() => []),
       getDocumentoByOrden(id).catch(() => null),
       getPrecioHora().catch(() => 0),
+      getRecambistas().catch(() => []),
     ]);
   } catch (e) {
     console.error("Error loading order details:", e);
@@ -339,7 +342,7 @@ export default async function OrdenDetallePage({
         <CardContent>
           {lineas.length > 0 && (
             <div className="mb-4">
-              <LineasList ordenId={orden.id} lineas={lineas} />
+              <LineasList ordenId={orden.id} lineas={lineas} recambistas={recambistasList} vehiculo={orden.vehiculo ? { matricula: orden.vehiculo.matricula, marca: orden.vehiculo.marca || undefined, modelo: orden.vehiculo.modelo || undefined, anio: orden.vehiculo.anio, vin: orden.vehiculo.vin } : null} tallerNombre={tallerConfig?.flujoTaller ? undefined : undefined} />
 
               <Separator className="my-3" />
 
