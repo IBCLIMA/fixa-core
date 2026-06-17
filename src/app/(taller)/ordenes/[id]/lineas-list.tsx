@@ -168,6 +168,13 @@ export function LineasList({ ordenId, lineas, recambistas, vehiculo, tallerNombr
                     Ref: {linea.referencia}
                   </span>
                 )}
+              </div>
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
+                <p className="text-xs text-muted-foreground">
+                  {Number(linea.cantidad)} × {Number(linea.precioUnitario).toFixed(2)}€
+                  {Number(linea.descuentoPct || 0) > 0 && ` (-${linea.descuentoPct}%)`}
+                  {" · IVA "}{linea.ivaPct}%
+                </p>
                 {linea.tipo === "recambio" && (
                   <RecambioActions
                     lineaId={linea.id}
@@ -185,11 +192,6 @@ export function LineasList({ ordenId, lineas, recambistas, vehiculo, tallerNombr
                   />
                 )}
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {Number(linea.cantidad)} × {Number(linea.precioUnitario).toFixed(2)}€
-                {Number(linea.descuentoPct || 0) > 0 && ` (-${linea.descuentoPct}%)`}
-                {" · IVA "}{linea.ivaPct}%
-              </p>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="text-sm font-bold">{base.toFixed(2)}€</span>

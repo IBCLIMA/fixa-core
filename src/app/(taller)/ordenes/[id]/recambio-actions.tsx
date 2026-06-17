@@ -94,10 +94,10 @@ export function RecambioActions({
     return (
       <a
         href="/configuracion"
-        className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold bg-stone-100 text-stone-600 hover:bg-orange-100 hover:text-orange-700 transition-colors cursor-pointer"
+        className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold bg-[#25D366] text-white hover:bg-[#1fb959] transition-colors cursor-pointer shadow-sm"
         title="Añade tus proveedores de recambios en Configuración"
       >
-        <MessageSquare className="h-3 w-3" />Pedir
+        <MessageSquare className="h-3.5 w-3.5" />Pedir recambio
       </a>
     );
   }
@@ -191,10 +191,10 @@ export function RecambioActions({
   return (
     <button
       onClick={() => setShowProveedores(true)}
-      className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold bg-stone-100 text-stone-600 hover:bg-[#25D366] hover:text-white transition-colors cursor-pointer"
+      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold bg-[#25D366] text-white hover:bg-[#1fb959] transition-colors cursor-pointer shadow-sm"
       title="Consultar precio a tus recambistas"
     >
-      <MessageSquare className="h-3 w-3" />Pedir
+      <MessageSquare className="h-3.5 w-3.5" />Pedir recambio
     </button>
   );
 }
