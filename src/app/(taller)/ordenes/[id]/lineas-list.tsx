@@ -168,14 +168,14 @@ export function LineasList({ ordenId, lineas, recambistas, vehiculo, tallerNombr
                     Ref: {linea.referencia}
                   </span>
                 )}
-                {linea.tipo === "recambio" && recambistas && recambistas.length > 0 && (
+                {linea.tipo === "recambio" && (
                   <RecambioActions
                     lineaId={linea.id}
                     ordenId={ordenId}
                     descripcion={linea.descripcion}
                     estadoRecambio={linea.estadoRecambio || "sin_pedir"}
                     recambistaId={linea.recambistaId || null}
-                    recambistas={recambistas}
+                    recambistas={recambistas || []}
                     matricula={vehiculo?.matricula}
                     marca={vehiculo?.marca}
                     modelo={vehiculo?.modelo}

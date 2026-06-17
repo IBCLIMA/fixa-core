@@ -89,7 +89,18 @@ export function RecambioActions({
     return formatWhatsAppUrl(recambista.telefono, msg);
   }
 
-  if (recambistas.length === 0) return null;
+  // Sin recambistas → botón que lleva a configuración
+  if (recambistas.length === 0) {
+    return (
+      <a
+        href="/configuracion"
+        className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold bg-stone-100 text-stone-600 hover:bg-orange-100 hover:text-orange-700 transition-colors cursor-pointer"
+        title="Añade tus proveedores de recambios en Configuración"
+      >
+        <MessageSquare className="h-3 w-3" />Pedir
+      </a>
+    );
+  }
 
   // ── RECIBIDO: badge verde ──
   if (estado === "recibido") {
