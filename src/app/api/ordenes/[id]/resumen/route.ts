@@ -63,7 +63,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     ${orden.descripcionCliente ? `<div style="background:#fafaf9;border-radius:8px;padding:12px;margin:16px 0"><p style="font-size:12px;color:#78716c;margin:0 0 4px">DESCRIPCIÓN</p><p style="margin:0;font-size:14px">${esc(orden.descripcionCliente)}</p></div>` : ""}
     ${orden.diagnostico ? `<div style="background:#fafaf9;border-radius:8px;padding:12px;margin:16px 0"><p style="font-size:12px;color:#78716c;margin:0 0 4px">DIAGNÓSTICO</p><p style="margin:0;font-size:14px">${esc(orden.diagnostico)}</p></div>` : ""}
     ${lineas.length > 0 ? `<table><thead><tr><th>Tipo</th><th>Descripción</th><th style="text-align:right">Cant.</th><th style="text-align:right">Precio</th><th style="text-align:right">Importe</th></tr></thead><tbody>${lineasHtml}</tbody></table><div style="text-align:right;margin:16px 0"><p style="margin:4px 0;color:#78716c">Base: ${totalBase.toFixed(2)}€</p><p style="margin:4px 0;color:#78716c">IVA: ${totalIva.toFixed(2)}€</p><p class="total">Total: ${(totalBase + totalIva).toFixed(2)}€</p></div>` : ""}
-    <hr style="border:none;border-top:1px solid #e7e5e4;margin-top:24px"><p style="text-align:center;color:#a8a29e;font-size:12px;margin-top:16px">Generado con FIXA — fixa.es</p></body></html>`;
+    <hr style="border:none;border-top:1px solid #e7e5e4;margin-top:24px"><p style="text-align:center;color:#a8a29e;font-size:12px;margin-top:16px">Generado con FIXA — fixataller.es</p></body></html>`;
 
     return new NextResponse(html, { headers: { "Content-Type": "text/html; charset=utf-8" } });
   } catch {

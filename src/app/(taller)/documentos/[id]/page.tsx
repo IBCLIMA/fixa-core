@@ -229,7 +229,7 @@ export default async function DocumentoDetallePage({
 
         {/* Footer */}
         <div className="text-center pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground">Documento generado por FIXA — fixa.es</p>
+          <p className="text-xs text-muted-foreground">Documento generado por FIXA — fixataller.es</p>
         </div>
       </div>
 

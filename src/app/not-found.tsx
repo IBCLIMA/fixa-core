@@ -30,7 +30,7 @@ export default function NotFound() {
               </Button>
             </Link>
             <a
-              href="https://wa.me/34644032200?text=Hola%2C%20necesito%20ayuda%20con%20FIXA"
+              href="https://wa.me/34611433218?text=Hola%2C%20necesito%20ayuda%20con%20FIXA"
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1"

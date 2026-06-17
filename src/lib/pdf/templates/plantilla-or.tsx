@@ -137,7 +137,7 @@ export function PlantillaOrPDF() {
         </Text>
 
         <View style={s.footer}>
-          <Text style={s.small}>Plantilla cortesía de FIXA — el software de gestión del taller pequeño</Text>
+          <Text style={s.small}>Plantilla cortesía de FIXA — el software de gestión de taller</Text>
           <Text style={s.small}>Crea órdenes como esta en 10 segundos: fixataller.es</Text>
         </View>
       </Page>
