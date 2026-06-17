@@ -270,7 +270,7 @@ export const lineasOrden = pgTable("lineas_orden", {
   // Gestión de recambios — estados inline por línea
   estadoRecambio: text("estado_recambio").default("sin_pedir"), // 'sin_pedir' | 'consultado' | 'pedido' | 'recibido'
   recambistaId: uuid("recambista_id").references(() => recambistas.id),
-  precioCompra: numeric("precio_compra", { precision: 10, scale: 2 }),
+  precioCompra: numeric("precio_compra", { precision: 10, scale: 2 }), // opcional: lo que pagó al recambista
   consultadoAt: timestamp("consultado_at"),
   pedidoAt: timestamp("pedido_at"),
   recibidoAt: timestamp("recibido_at"),

@@ -15,6 +15,7 @@ import {
   Settings,
   Lightbulb,
   FileText,
+  Package,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,7 +26,7 @@ import { TourGuiado } from "./tour-guiado";
 import { InstallBanner } from "@/components/install-banner";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
-import { ordenesTrabajo, clientes, citas, vehiculos, talleres, presupuestos } from "@/db/schema";
+import { ordenesTrabajo, clientes, citas, vehiculos, talleres, presupuestos, lineasOrden } from "@/db/schema";
 import { eq, and, count, sql, desc, sum, lt } from "drizzle-orm";
 import { estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
@@ -71,6 +72,7 @@ export default async function PanelDelDia() {
   let vehiculosAbandonados: VehicleAbandonment[] = [];
   let presupuestosSinRespuesta: any[] = [];
   let recambiosAtascados: any[] = [];
+  let recambiosPendientes: any[] = [];
 
   try {
   const [
@@ -237,6 +239,31 @@ export default async function PanelDelDia() {
       .limit(8);
   } catch (e) {
     console.error("Recambios atascados query error:", e);
+  }
+
+  // Recambios consultados o pedidos (piezas concretas que faltan)
+  try {
+    recambiosPendientes = await db
+      .select({
+        lineaId: lineasOrden.id,
+        descripcion: lineasOrden.descripcion,
+        estado: lineasOrden.estadoRecambio,
+        consultadoAt: lineasOrden.consultadoAt,
+        ordenId: ordenesTrabajo.id,
+        ordenNumero: ordenesTrabajo.numero,
+        matricula: vehiculos.matricula,
+      })
+      .from(lineasOrden)
+      .innerJoin(ordenesTrabajo, eq(lineasOrden.ordenId, ordenesTrabajo.id))
+      .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
+      .where(and(
+        eq(ordenesTrabajo.tallerId, tallerId),
+        sql`${lineasOrden.estadoRecambio} IN ('consultado', 'pedido')`
+      ))
+      .orderBy(lineasOrden.consultadoAt)
+      .limit(15);
+  } catch (e) {
+    console.error("Recambios pendientes query error:", e);
   }
 
   const cobrosPendientes = cobrosPendientesResult?.count ?? 0;
@@ -540,6 +567,40 @@ export default async function PanelDelDia() {
                       </span>
                     </div>
                     <p className="text-xs text-muted-foreground">{o.clienteNombre} · OR-{o.numero}</p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                </Link>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+
+      {/* Recambios pendientes — piezas concretas que faltan */}
+      {recambiosPendientes.length > 0 && (
+        <Card className="border-orange-200 bg-orange-50/40">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base text-orange-800 flex items-center gap-2">
+              <Package className="h-4 w-4" />
+              Recambios pendientes ({recambiosPendientes.length})
+            </CardTitle>
+            <p className="text-xs text-orange-700 mt-1">
+              Piezas que has pedido o consultado y aún no han llegado.
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {recambiosPendientes.map((r: any) => (
+                <Link key={r.lineaId} href={`/ordenes/${r.ordenId}`} className="flex items-center justify-between rounded-xl bg-white border border-orange-200 p-3 hover:border-orange-300 transition-colors">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold">{r.matricula}</p>
+                      <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${r.estado === "consultado" ? "bg-amber-100 text-amber-700" : "bg-blue-100 text-blue-700"}`}>
+                        {r.estado === "consultado" ? "Consultado" : "Pedido"}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{r.descripcion} · OR-{r.ordenNumero}</p>
                   </div>
                   <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </Link>

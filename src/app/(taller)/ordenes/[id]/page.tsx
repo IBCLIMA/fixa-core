@@ -28,6 +28,7 @@ import { PrintButton } from "./print-button";
 import { CobrarDialog } from "./cobrar-dialog";
 import { EntregarDialog } from "./entregar-dialog";
 import { ItvAlert } from "./itv-alert";
+import { PedirRecambiosBtn } from "./pedir-recambios-btn";
 import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { getUserRole, getTallerIdFromAuth } from "@/lib/auth";
@@ -52,7 +53,7 @@ export default async function OrdenDetallePage({
   const { tallerId } = await getTallerIdFromAuth();
   const db = getDb();
   const [tallerConfig] = await db
-    .select({ flujoTaller: talleres.flujoTaller })
+    .select({ flujoTaller: talleres.flujoTaller, nombre: talleres.nombre })
     .from(talleres)
     .where(eq(talleres.id, tallerId));
   const activePhases = getActivePhases(tallerConfig?.flujoTaller);
@@ -342,7 +343,25 @@ export default async function OrdenDetallePage({
         <CardContent>
           {lineas.length > 0 && (
             <div className="mb-4">
-              <LineasList ordenId={orden.id} lineas={lineas} recambistas={recambistasList} vehiculo={orden.vehiculo ? { matricula: orden.vehiculo.matricula, marca: orden.vehiculo.marca || undefined, modelo: orden.vehiculo.modelo || undefined, anio: orden.vehiculo.anio, vin: orden.vehiculo.vin } : null} tallerNombre={tallerConfig?.flujoTaller ? undefined : undefined} />
+              <LineasList ordenId={orden.id} lineas={lineas} recambistas={recambistasList} vehiculo={orden.vehiculo ? { matricula: orden.vehiculo.matricula, marca: orden.vehiculo.marca || undefined, modelo: orden.vehiculo.modelo || undefined, anio: orden.vehiculo.anio, vin: orden.vehiculo.vin } : null} tallerNombre={tallerConfig?.nombre || undefined} />
+
+              
+              {/* Botón batch: pedir todas las piezas pendientes a un recambista */}
+              {lineas.filter((l: any) => l.tipo === "recambio" && (!l.estadoRecambio || l.estadoRecambio === "sin_pedir")).length > 0 && (
+                <div className="mt-3 mb-3">
+                  <PedirRecambiosBtn
+                    ordenId={orden.id}
+                    lineasRecambio={lineas.filter((l: any) => l.tipo === "recambio")}
+                    recambistas={recambistasList}
+                    matricula={orden.vehiculo?.matricula}
+                    marca={orden.vehiculo?.marca || undefined}
+                    modelo={orden.vehiculo?.modelo || undefined}
+                    anio={orden.vehiculo?.anio}
+                    vin={orden.vehiculo?.vin}
+                    tallerNombre={tallerConfig?.nombre || undefined}
+                  />
+                </div>
+              )}
 
               <Separator className="my-3" />
 
