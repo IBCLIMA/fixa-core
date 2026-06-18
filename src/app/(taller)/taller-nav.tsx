@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import {
   LayoutDashboard, ClipboardList, CalendarDays, Users, MoreHorizontal,
   FileText, Receipt, Bell, Settings, Megaphone, Upload, HelpCircle, Shield, FileCheck,
-  ChevronLeft, Columns3,
+  ChevronLeft, Columns3, BarChart3,
 } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { cn } from "@/lib/utils";
@@ -35,6 +35,7 @@ const gestionNav = [
   { name: "Facturacion", href: "/facturacion", icon: Receipt, roles: ["admin", "recepcion"] },
   { name: "Avisos", href: "/avisos", icon: Bell, roles: ["admin", "mecanico", "recepcion"] },
   { name: "Ofertas", href: "/ofertas", icon: Megaphone, roles: ["admin", "recepcion"] },
+  { name: "Métricas", href: "/metricas", icon: BarChart3, roles: ["admin"] },
 ];
 
 const adminNav = [
