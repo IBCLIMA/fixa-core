@@ -197,10 +197,19 @@ export function RecambioActions({
     );
   }
 
-  // ── SIN PEDIR: botón WhatsApp multi-proveedor ──
+  // ── SIN PEDIR: recambistas guardados + opción libre ──
   if (showProveedores) {
+    const vehiculo = [matricula, marca, modelo, anio].filter(Boolean).join(" · ");
+    const msgGenerico = [
+      `Hola, necesito para ${vehiculo}:`,
+      `— ${descripcion}`,
+      vin ? `VIN: ${vin}` : "",
+      `¿Precio y disponibilidad? Gracias — ${tallerNombre || ""}`,
+    ].filter(Boolean).join("\n");
+    const whatsappLibre = `https://wa.me/?text=${encodeURIComponent(msgGenerico)}`;
+
     return (
-      <div className="flex items-center gap-1 flex-wrap">
+      <div className="flex items-center gap-1.5 flex-wrap">
         {recambistas.map((r) => (
           <a
             key={r.id}
@@ -213,6 +222,15 @@ export function RecambioActions({
             <MessageSquare className="h-3 w-3" />{r.nombre}
           </a>
         ))}
+        <a
+          href={whatsappLibre}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => updateEstado("consultado")}
+          className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold bg-stone-200 text-stone-700 hover:bg-stone-300 transition-colors cursor-pointer"
+        >
+          <MessageSquare className="h-3 w-3" />Otro
+        </a>
       </div>
     );
   }
