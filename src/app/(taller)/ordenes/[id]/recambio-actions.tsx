@@ -89,22 +89,34 @@ export function RecambioActions({
     return formatWhatsAppUrl(recambista.telefono, msg);
   }
 
-  // Sin recambistas → explicación inline + enlace a configuración
+  // Sin recambistas → WhatsApp directo (elige contacto en WhatsApp) + opción de configurar
   if (recambistas.length === 0) {
     if (showProveedores) {
+      const vehiculo = [matricula, marca, modelo, anio].filter(Boolean).join(" · ");
+      const msg = [
+        `Hola, necesito para ${vehiculo}:`,
+        `— ${descripcion}`,
+        vin ? `VIN: ${vin}` : "",
+        `¿Precio y disponibilidad? Gracias — ${tallerNombre || ""}`,
+      ].filter(Boolean).join("\n");
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+
       return (
-        <div className="rounded-xl border border-orange-200 bg-orange-50/50 p-3 text-xs space-y-2">
-          <p className="font-bold text-orange-900">Primero añade tus proveedores de recambios</p>
-          <p className="text-orange-700">
-            Ve a Configuración → Recambistas y añade el nombre y WhatsApp de tus
-            recambistas habituales. Solo tienes que hacerlo una vez — después podrás
-            pedirles piezas desde aquí con un toque.
-          </p>
+        <div className="flex items-center gap-2 flex-wrap">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => updateEstado("consultado")}
+            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold bg-[#25D366] text-white hover:bg-[#1fb959] transition-colors cursor-pointer shadow-sm"
+          >
+            <MessageSquare className="h-3.5 w-3.5" />Enviar por WhatsApp
+          </a>
           <a
             href="/configuracion"
-            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold bg-orange-500 text-white hover:bg-orange-400 transition-colors cursor-pointer"
+            className="text-[11px] text-muted-foreground hover:text-orange-600 transition-colors"
           >
-            Ir a Configuración
+            o configura tus recambistas →
           </a>
         </div>
       );
