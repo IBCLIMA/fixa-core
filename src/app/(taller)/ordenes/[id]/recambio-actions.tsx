@@ -89,16 +89,33 @@ export function RecambioActions({
     return formatWhatsAppUrl(recambista.telefono, msg);
   }
 
-  // Sin recambistas → botón que lleva a configuración
+  // Sin recambistas → explicación inline + enlace a configuración
   if (recambistas.length === 0) {
+    if (showProveedores) {
+      return (
+        <div className="rounded-xl border border-orange-200 bg-orange-50/50 p-3 text-xs space-y-2">
+          <p className="font-bold text-orange-900">Primero añade tus proveedores de recambios</p>
+          <p className="text-orange-700">
+            Ve a Configuración → Recambistas y añade el nombre y WhatsApp de tus
+            recambistas habituales. Solo tienes que hacerlo una vez — después podrás
+            pedirles piezas desde aquí con un toque.
+          </p>
+          <a
+            href="/configuracion"
+            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold bg-orange-500 text-white hover:bg-orange-400 transition-colors cursor-pointer"
+          >
+            Ir a Configuración
+          </a>
+        </div>
+      );
+    }
     return (
-      <a
-        href="/configuracion"
+      <button
+        onClick={() => setShowProveedores(true)}
         className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold bg-[#25D366] text-white hover:bg-[#1fb959] transition-colors cursor-pointer shadow-sm"
-        title="Añade tus proveedores de recambios en Configuración"
       >
         <MessageSquare className="h-3.5 w-3.5" />Pedir recambio
-      </a>
+      </button>
     );
   }
 
