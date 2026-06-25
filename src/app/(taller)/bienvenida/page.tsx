@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { TelefonoTallerHint } from "@/components/telefono-taller-hint";
 import { toast } from "sonner";
 import { crearOperariosEnLote } from "../actions/operarios";
 
@@ -159,9 +160,10 @@ export default function BienvenidaPage() {
                 <Input value={datos.nombre} onChange={(e) => setDatos({ ...datos, nombre: e.target.value })} placeholder="Ej: Taller García Automoción" className="h-12 rounded-xl text-base" autoFocus />
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-stone-500">Teléfono</Label>
-                  <Input value={datos.telefono} onChange={(e) => setDatos({ ...datos, telefono: e.target.value })} placeholder="612 345 678" className="h-11 rounded-xl" />
+                <div className="space-y-1.5 col-span-2">
+                  <Label className="text-xs font-bold text-stone-500">Teléfono (WhatsApp)</Label>
+                  <Input value={datos.telefono} onChange={(e) => setDatos({ ...datos, telefono: e.target.value })} placeholder="612 345 678" type="tel" className="h-11 rounded-xl" />
+                  <TelefonoTallerHint telefono={datos.telefono} />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-bold text-stone-500">Correo electrónico</Label>

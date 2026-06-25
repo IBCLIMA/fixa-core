@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { TelefonoTallerHint } from "@/components/telefono-taller-hint";
 import { toast } from "sonner";
 
 interface Taller {
@@ -44,6 +45,7 @@ export function ConfigForm({ taller }: { taller: Taller }) {
   const [recordatorioCitas, setRecordatorioCitas] = useState(taller.recordatorioCitas ?? true);
   const [logoUrl, setLogoUrl] = useState(taller.logoUrl || "");
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [telefono, setTelefono] = useState(taller.telefono || "");
 
   function toggleRama(value: string) {
     setRamas((prev) =>
@@ -144,8 +146,9 @@ export function ConfigForm({ taller }: { taller: Taller }) {
               <Input id="cif" name="cif" defaultValue={taller.cif || ""} placeholder="B12345678" className="h-11 rounded-xl" />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="telefono">Teléfono</Label>
-              <Input id="telefono" name="telefono" defaultValue={taller.telefono || ""} placeholder="960 000 000" className="h-11 rounded-xl" />
+              <Label htmlFor="telefono">Teléfono (WhatsApp)</Label>
+              <Input id="telefono" name="telefono" type="tel" value={telefono} onChange={(e) => setTelefono(e.target.value)} placeholder="612 345 678" className="h-11 rounded-xl" />
+              <TelefonoTallerHint telefono={telefono} />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="email">Correo electrónico</Label>

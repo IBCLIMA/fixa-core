@@ -25,3 +25,17 @@ export function formatWhatsAppUrl(telefono: string, text?: string): string {
   const base = `https://wa.me/${number}`;
   return text ? `${base}?text=${encodeURIComponent(text)}` : base;
 }
+
+/**
+ * Detecta si un teléfono español parece un FIJO (no apto para WhatsApp).
+ * Móviles empiezan por 6 o 7; fijos por 8 o 9. Solo avisa cuando el número
+ * está ya completo (9 dígitos) para no molestar mientras se teclea.
+ */
+export function esTelefonoFijoES(telefono: string | null | undefined): boolean {
+  if (!telefono) return false;
+  let n = telefono.replace(/\D/g, "");
+  if (n.startsWith("0034")) n = n.slice(4);
+  else if (n.startsWith("34") && n.length > 9) n = n.slice(2);
+  if (n.length < 9) return false; // aún incompleto: no avisamos
+  return /^[89]/.test(n);
+}
