@@ -1,4 +1,4 @@
-import { getUserRole } from "@/lib/auth";
+import { getUserRole, getSwitcherData } from "@/lib/auth";
 import { TallerNav } from "./taller-nav";
 import { redirect } from "next/navigation";
 
@@ -10,5 +10,8 @@ export default async function TallerLayout({ children }: { children: React.React
     redirect("/sign-in");
   }
 
-  return <TallerNav rol={rol}>{children}</TallerNav>;
+  // Solo devuelve datos para super-admin; null para cualquier usuario normal.
+  const switcher = await getSwitcherData();
+
+  return <TallerNav rol={rol} switcher={switcher}>{children}</TallerNav>;
 }

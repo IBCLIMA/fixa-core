@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { getDb } from "@/db";
 import { talleres, usuarios, inviteTokens } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, isNotNull } from "drizzle-orm";
 import { cookies } from "next/headers";
 
 const TRIAL_DAYS = 14;
@@ -15,6 +15,24 @@ export async function getTallerIdFromAuth() {
   const [usuario] = await db.select().from(usuarios).where(eq(usuarios.clerkUserId, userId));
 
   if (usuario) {
+    // Super-admin: puede operar otro taller de su mismo grupo si fijó la cookie
+    // `taller_activo` (switcher). Para usuarios normales NO hay cookie → este bloque
+    // se salta entero y el comportamiento es idéntico al de siempre. Solo se consulta
+    // a Clerk (getSuperAdmin) cuando la cookie está presente.
+    const overrideId = (await cookies()).get("taller_activo")?.value;
+    if (overrideId && overrideId !== usuario.tallerId && (await getSuperAdmin())) {
+      const [target] = await db
+        .select()
+        .from(talleres)
+        .where(and(eq(talleres.id, overrideId), isNotNull(talleres.grupoAdmin)));
+      if (target) {
+        const [adminU] = await db
+          .select()
+          .from(usuarios)
+          .where(and(eq(usuarios.tallerId, target.id), eq(usuarios.rol, "admin")));
+        return { tallerId: target.id, usuarioId: adminU?.id ?? usuario.id, clerkUserId: userId, rol: "admin" as const };
+      }
+    }
     return { tallerId: usuario.tallerId, usuarioId: usuario.id, clerkUserId: userId, rol: usuario.rol };
   }
 
@@ -182,4 +200,24 @@ export async function getSuperAdmin(): Promise<boolean> {
   }
 
   return true;
+}
+
+/**
+ * Datos para el switcher de talleres (SOLO super-admin). Devuelve la lista de
+ * talleres del grupo (los que tienen `grupoAdmin`) y cuál está activo ahora.
+ * Para cualquier usuario normal devuelve null → el switcher no se renderiza.
+ */
+export async function getSwitcherData(): Promise<{ talleres: { id: string; nombre: string }[]; activoId: string } | null> {
+  if (!(await getSuperAdmin())) return null;
+
+  const db = getDb();
+  const lista = await db
+    .select({ id: talleres.id, nombre: talleres.nombre })
+    .from(talleres)
+    .where(isNotNull(talleres.grupoAdmin));
+
+  if (lista.length < 2) return null;
+
+  const { tallerId } = await getTallerIdFromAuth();
+  return { talleres: lista, activoId: tallerId };
 }

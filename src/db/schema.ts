@@ -139,6 +139,9 @@ export const talleres = pgTable("talleres", {
   recordatorioCitas: boolean("recordatorio_citas").default(true).notNull(),
   newsletterConsent: boolean("newsletter_consent").default(false).notNull(),
   newsletterConsentAt: timestamp("newsletter_consent_at"),
+  // Agrupación de talleres de un mismo dueño (uso super-admin: switcher de talleres).
+  // NULL para talleres normales (no afecta a la app general).
+  grupoAdmin: text("grupo_admin"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -165,6 +168,8 @@ export const clientes = pgTable("clientes", {
   nif: text("nif"),
   direccion: text("direccion"),
   notas: text("notas"),
+  origenExterno: text("origen_externo"),
+  origenExternoId: text("origen_externo_id"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
   index("idx_clientes_taller").on(table.tallerId),
@@ -188,6 +193,8 @@ export const vehiculos = pgTable("vehiculos", {
   color: text("color"),
   fechaItv: date("fecha_itv"),
   notas: text("notas"),
+  origenExterno: text("origen_externo"),
+  origenExternoId: text("origen_externo_id"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
   index("idx_vehiculos_taller_matricula").on(table.tallerId, table.matricula),
@@ -236,6 +243,8 @@ export const ordenesTrabajo = pgTable("ordenes_trabajo", {
   fechaPago: timestamp("fecha_pago"),
   importeTotal: numeric("importe_total", { precision: 10, scale: 2 }),
   notasPago: text("notas_pago"),
+  origenExterno: text("origen_externo"),
+  origenExternoId: text("origen_externo_id"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => [
@@ -361,6 +370,8 @@ export const citas = pgTable("citas", {
   estado: estadoCitaEnum("estado").default("programada").notNull(),
   notas: text("notas"),
   consentimientoAt: timestamp("consentimiento_at"), // RGPD: cuándo aceptó el cliente el tratamiento de datos (citas online)
+  origenExterno: text("origen_externo"),
+  origenExternoId: text("origen_externo_id"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
   index("idx_citas_taller_fecha").on(table.tallerId, table.fecha),
@@ -578,6 +589,8 @@ export const plantillasServicio = pgTable("plantillas_servicio", {
     .notNull(),
   nombre: text("nombre").notNull(),
   lineas: jsonb("lineas").notNull(), // Array of { tipo, descripcion, cantidad, precioUnitario }
+  origenExterno: text("origen_externo"),
+  origenExternoId: text("origen_externo_id"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

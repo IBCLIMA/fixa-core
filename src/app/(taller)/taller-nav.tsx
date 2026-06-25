@@ -10,6 +10,7 @@ import {
   ChevronLeft, Columns3, BarChart3,
 } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
+import { TallerSwitcher } from "./taller-switcher";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
@@ -49,7 +50,7 @@ const mobileNav = mainNav;
 
 const SIDEBAR_COLLAPSED_KEY = "fixa-sidebar-collapsed";
 
-export function TallerNav({ children, rol }: { children: React.ReactNode; rol: RolUsuario }) {
+export function TallerNav({ children, rol, switcher }: { children: React.ReactNode; rol: RolUsuario; switcher: { talleres: { id: string; nombre: string }[]; activoId: string } | null }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
 
@@ -87,9 +88,14 @@ export function TallerNav({ children, rol }: { children: React.ReactNode; rol: R
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl shadow-sm shadow-black/[0.04]">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 h-14">
-          <Link href="/">
-            <FixaLogo size="sm" />
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/">
+              <FixaLogo size="sm" />
+            </Link>
+            {switcher && switcher.talleres.length > 1 && (
+              <TallerSwitcher talleres={switcher.talleres} activoId={switcher.activoId} />
+            )}
+          </div>
           <BusquedaGlobal />
           <div className="flex items-center gap-2">
             <div className="transition-transform duration-200 hover:scale-105">
