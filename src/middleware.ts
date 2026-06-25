@@ -36,6 +36,8 @@ const isPublicRoute = createRouteMatcher([
   "/demo",
   "/api/lead",
   "/api/plantilla-or",
+  // Ingesta externa (Taller Manager → FIXA): auth propia por Bearer en el handler
+  "/api/ingest(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
