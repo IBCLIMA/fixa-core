@@ -20,8 +20,11 @@ const ESTADO: Record<string, string> = {
   recibida: "recibido",
   presupuestado: "presupuestado",
   en_produccion: "en_reparacion",
-  finalizado: "entregado",
+  terminado: "listo",
   recogida_pendiente: "listo",
+  finalizado: "entregado",
+  rechazado: "cancelado",
+  "devuelto sin reparar": "cancelado",
 };
 
 const norm = (s?: string | null) => (s || "").replace(/\s+/g, " ").trim().toLowerCase();
