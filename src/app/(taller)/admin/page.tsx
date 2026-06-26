@@ -4,9 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { getSuperAdmin } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getDb } from "@/db";
-import { talleres, usuarios, clientes, vehiculos, ordenesTrabajo } from "@/db/schema";
+import { talleres, usuarios, clientes, vehiculos, ordenesTrabajo, feedback } from "@/db/schema";
 import { count, desc, sql } from "drizzle-orm";
 import { AdminTallerActions } from "./admin-actions";
+import { FeedbackList } from "./feedback-list";
 
 const planColors: Record<string, string> = {
   pendiente: "bg-orange-100 text-orange-700",
@@ -56,6 +57,9 @@ export default async function AdminPage() {
   const [totalUsuarios] = await db.select({ count: count() }).from(usuarios);
   const [totalClientes] = await db.select({ count: count() }).from(clientes);
   const [totalOrdenes] = await db.select({ count: count() }).from(ordenesTrabajo);
+
+  const feedbackList = await db.select().from(feedback).orderBy(desc(feedback.createdAt)).limit(100);
+  const feedbackNuevos = feedbackList.filter((f) => f.estado === "nuevo").length;
 
   const talleresPendientes = talleresList.filter((t) => t.plan === "pendiente");
   const talleresPagando = talleresList.filter((t) => ["basico", "taller", "pro"].includes(t.plan));
@@ -110,6 +114,21 @@ export default async function AdminPage() {
           <div className="rounded-xl bg-blue-50 border border-blue-200 p-3 text-center"><p className="text-xl font-extrabold text-blue-700">{nuevosRegistros.length}</p><p className="text-xs text-blue-600 font-medium">Nuevos (48h)</p></div>
         )}
       </div>
+
+      {/* Buzón de feedback / soporte */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            Buzón de feedback
+            {feedbackNuevos > 0 && (
+              <span className="rounded-full bg-orange-500 px-2 py-0.5 text-[11px] font-bold text-white">{feedbackNuevos} nuevo{feedbackNuevos > 1 ? "s" : ""}</span>
+            )}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <FeedbackList items={feedbackList} />
+        </CardContent>
+      </Card>
 
       {/* Talleres */}
       <Card>

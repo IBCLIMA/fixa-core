@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { TallerSwitcher } from "./taller-switcher";
+import { FeedbackButton } from "./feedback-button";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
@@ -98,6 +99,7 @@ export function TallerNav({ children, rol, switcher }: { children: React.ReactNo
           </div>
           <BusquedaGlobal />
           <div className="flex items-center gap-2">
+            <FeedbackButton />
             <div className="transition-transform duration-200 hover:scale-105">
               <NotificationsBell />
             </div>

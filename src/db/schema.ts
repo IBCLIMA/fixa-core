@@ -103,6 +103,8 @@ export const accionAuditEnum = pgEnum("accion_audit", [
 
 export const planEnum = pgEnum("plan", ["pendiente", "trial", "basico", "taller", "pro", "cancelado"]);
 
+export const feedbackTipoEnum = pgEnum("feedback_tipo", ["sugerencia", "incidencia", "consulta"]);
+
 export const talleres = pgTable("talleres", {
   id: uuid("id").defaultRandom().primaryKey(),
   nombre: text("nombre").notNull(),
@@ -616,6 +618,23 @@ export const averiasOcultas = pgTable("averias_ocultas", {
   registradoPor: uuid("registrado_por").references(() => usuarios.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+// Feedback/soporte de los talleres → buzón del super-admin en /admin
+export const feedback = pgTable("feedback", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tallerId: uuid("taller_id").references(() => talleres.id),
+  usuarioId: uuid("usuario_id").references(() => usuarios.id),
+  tipo: feedbackTipoEnum("tipo").default("sugerencia").notNull(),
+  mensaje: text("mensaje").notNull(),
+  estado: text("estado").default("nuevo").notNull(), // 'nuevo' | 'visto' | 'resuelto'
+  tallerNombre: text("taller_nombre"),
+  usuarioNombre: text("usuario_nombre"),
+  contactoEmail: text("contacto_email"),
+  url: text("url"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => [
+  index("idx_feedback_estado_created").on(table.estado, table.createdAt),
+]);
 
 // ═══ RELACIONES ═══
 
