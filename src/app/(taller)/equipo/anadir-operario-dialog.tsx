@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
+  Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { crearOperarioSimple } from "../actions/operarios";
@@ -37,12 +37,11 @@ export function AnadirOperarioDialog() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setNombre(""); }}>
-      <DialogTrigger asChild>
-        <Button variant="outline" className="rounded-full">
-          <Wrench className="mr-1.5 h-4 w-4" />Añadir operario
-        </Button>
-      </DialogTrigger>
+    <>
+      <Button variant="outline" className="rounded-full" onClick={() => setOpen(true)}>
+        <Wrench className="mr-1.5 h-4 w-4" />Añadir operario
+      </Button>
+      <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setNombre(""); }}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Añadir operario</DialogTitle>
@@ -70,6 +69,7 @@ export function AnadirOperarioDialog() {
           </Button>
         </div>
       </DialogContent>
-    </Dialog>
+      </Dialog>
+    </>
   );
 }

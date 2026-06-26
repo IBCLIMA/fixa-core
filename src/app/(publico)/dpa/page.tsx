@@ -143,7 +143,7 @@ export default function DpaPage() {
 
         <div className="mt-12 pt-6 border-t text-sm text-stone-400">
           <p>FIXA - Gestion de Taller | Producto de Ibanez Clima</p>
-          <p>Contacto DPO: privacidad@fixaapp.es</p>
+          <p>Contacto DPO: hola@fixataller.es</p>
         </div>
       </main>
     </div>

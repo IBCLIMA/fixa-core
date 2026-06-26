@@ -17,7 +17,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { crearVehiculo } from "../../actions/clientes";
 import { toast } from "sonner";
@@ -52,13 +51,12 @@ export function NuevoVehiculoDialog({ clienteId }: { clienteId: string }) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm" variant="outline" className="rounded-full">
-          <Plus className="mr-1 h-3 w-3" />
-          Añadir vehículo
-        </Button>
-      </DialogTrigger>
+    <>
+      <Button size="sm" variant="outline" className="rounded-full" onClick={() => setOpen(true)}>
+        <Plus className="mr-1 h-3 w-3" />
+        Añadir vehículo
+      </Button>
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Nuevo vehículo</DialogTitle>
@@ -116,6 +114,7 @@ export function NuevoVehiculoDialog({ clienteId }: { clienteId: string }) {
           </Button>
         </form>
       </DialogContent>
-    </Dialog>
+      </Dialog>
+    </>
   );
 }

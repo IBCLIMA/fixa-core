@@ -4,6 +4,7 @@ import { talleres } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { Resend } from "resend";
+import { EMAIL_FROM } from "@/lib/constants";
 
 export async function PUT(request: Request) {
   try {
@@ -74,7 +75,7 @@ export async function PUT(request: Request) {
         const { emailBienvenida } = await import("@/lib/email-templates");
         const tpl = emailBienvenida(body.nombre || "");
         resend.emails.send({
-          from: "FIXA <onboarding@resend.dev>",
+          from: EMAIL_FROM,
           to: body.email,
           subject: tpl.subject,
           html: tpl.html,
@@ -83,7 +84,7 @@ export async function PUT(request: Request) {
 
       // Admin notification with workshop details
       resend.emails.send({
-        from: "FIXA <onboarding@resend.dev>",
+        from: EMAIL_FROM,
         to: process.env.ADMIN_NOTIFICATION_EMAIL || "sergi@ibclima.com",
         subject: "\uD83D\uDD14 Nuevo taller registrado en FIXA",
         html: `

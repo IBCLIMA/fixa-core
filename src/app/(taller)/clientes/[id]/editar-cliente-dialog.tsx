@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { actualizarCliente } from "../../actions/clientes";
 import { toast } from "sonner";
 
@@ -47,12 +47,11 @@ export function EditarClienteDialog({ cliente }: Props) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="rounded-full">
-          <Pencil className="mr-1.5 h-3 w-3" />Editar
-        </Button>
-      </DialogTrigger>
+    <>
+      <Button variant="outline" size="sm" className="rounded-full" onClick={() => setOpen(true)}>
+        <Pencil className="mr-1.5 h-3 w-3" />Editar
+      </Button>
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-md">
         <DialogHeader><DialogTitle>Editar cliente</DialogTitle></DialogHeader>
         <form action={handleSubmit} className="space-y-4">
@@ -87,6 +86,7 @@ export function EditarClienteDialog({ cliente }: Props) {
           </Button>
         </form>
       </DialogContent>
-    </Dialog>
+      </Dialog>
+    </>
   );
 }

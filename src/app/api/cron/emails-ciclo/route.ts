@@ -4,6 +4,7 @@ import { talleres, ordenesTrabajo, usuarios } from "@/db/schema";
 import { eq, and, sql, count } from "drizzle-orm";
 import { Resend } from "resend";
 import { emailRescateDia2, emailDia7 } from "@/lib/email-templates";
+import { EMAIL_FROM } from "@/lib/constants";
 
 /**
  * Cron diario 10:00 — emails de ciclo de vida del trial:
@@ -46,7 +47,7 @@ export async function GET(request: Request) {
 
     const tpl = emailRescateDia2(t.nombre || "");
     await resend.emails.send({
-      from: "FIXA <noreply@fixataller.es>",
+      from: EMAIL_FROM,
       to: t.email,
       subject: tpl.subject,
       html: tpl.html,
@@ -71,7 +72,7 @@ export async function GET(request: Request) {
     if (!t.email) continue;
     const tpl = emailDia7(t.nombre || "");
     await resend.emails.send({
-      from: "FIXA <noreply@fixataller.es>",
+      from: EMAIL_FROM,
       to: t.email,
       subject: tpl.subject,
       html: tpl.html,

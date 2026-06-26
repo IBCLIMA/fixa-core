@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { actualizarVehiculo } from "../../actions/clientes";
 import { toast } from "sonner";
 import { FichaScanner } from "@/app/(taller)/ordenes/nueva/ficha-scanner";
@@ -56,12 +56,11 @@ export function EditarVehiculoDialog({ vehiculo }: Props) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm" variant="ghost" className="rounded-full h-7 px-2 text-xs text-stone-400 hover:text-stone-900">
-          <Pencil className="h-3 w-3 mr-1" />Editar
-        </Button>
-      </DialogTrigger>
+    <>
+      <Button size="sm" variant="ghost" className="rounded-full h-7 px-2 text-xs text-stone-400 hover:text-stone-900" onClick={() => setOpen(true)}>
+        <Pencil className="h-3 w-3 mr-1" />Editar
+      </Button>
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-md">
         <DialogHeader><DialogTitle>Editar vehículo — {vehiculo.matricula}</DialogTitle></DialogHeader>
         <FichaScanner
@@ -116,6 +115,7 @@ export function EditarVehiculoDialog({ vehiculo }: Props) {
           <Button type="submit" className="w-full h-11 rounded-xl" disabled={loading}>{loading ? "Guardando..." : "Guardar cambios"}</Button>
         </form>
       </DialogContent>
-    </Dialog>
+      </Dialog>
+    </>
   );
 }

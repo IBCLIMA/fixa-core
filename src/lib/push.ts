@@ -24,7 +24,7 @@ export async function sendPushToTaller(
 
     const webpush = (await import("web-push")).default;
     webpush.setVapidDetails(
-      "mailto:" + (process.env.ADMIN_NOTIFICATION_EMAIL || "soporte@fixa.app"),
+      "mailto:" + (process.env.ADMIN_NOTIFICATION_EMAIL || "hola@fixataller.es"),
       process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
       process.env.VAPID_PRIVATE_KEY
     );

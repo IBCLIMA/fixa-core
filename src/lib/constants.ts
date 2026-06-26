@@ -1,3 +1,8 @@
+// ─── Email ───
+
+// Remitente único de marca para todos los emails transaccionales (Resend).
+export const EMAIL_FROM = "FIXA <hola@fixataller.es>";
+
 // ─── Estado de órdenes de trabajo ───
 
 export const estadoLabels: Record<string, string> = {

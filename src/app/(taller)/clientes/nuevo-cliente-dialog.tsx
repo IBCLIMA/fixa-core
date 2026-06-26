@@ -11,7 +11,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { crearCliente } from "../actions/clientes";
 import { toast } from "sonner";
@@ -41,13 +40,12 @@ export function NuevoClienteDialog() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="rounded-full">
-          <Plus className="mr-1.5 h-4 w-4" />
-          Nuevo cliente
-        </Button>
-      </DialogTrigger>
+    <>
+      <Button className="rounded-full" onClick={() => setOpen(true)}>
+        <Plus className="mr-1.5 h-4 w-4" />
+        Nuevo cliente
+      </Button>
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Nuevo cliente</DialogTitle>
@@ -123,6 +121,7 @@ export function NuevoClienteDialog() {
           </Button>
         </form>
       </DialogContent>
-    </Dialog>
+      </Dialog>
+    </>
   );
 }

@@ -17,7 +17,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { generarDocumentoCobro } from "../../actions/documentos";
 import { toast } from "sonner";
@@ -88,13 +87,12 @@ export function CobrarDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="rounded-full bg-emerald-600 hover:bg-emerald-500 text-white">
-          <Receipt className="mr-1.5 h-4 w-4" />
-          Cobrar y generar documento ({totalFinal.toFixed(2)}EUR)
-        </Button>
-      </DialogTrigger>
+    <>
+      <Button onClick={() => setOpen(true)} className="rounded-full bg-emerald-600 hover:bg-emerald-500 text-white">
+        <Receipt className="mr-1.5 h-4 w-4" />
+        Cobrar y generar documento ({totalFinal.toFixed(2)}EUR)
+      </Button>
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-md">
         {!generado ? (
           <>
@@ -240,6 +238,7 @@ export function CobrarDialog({
           </>
         )}
       </DialogContent>
-    </Dialog>
+      </Dialog>
+    </>
   );
 }

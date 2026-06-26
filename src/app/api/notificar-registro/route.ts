@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { auth } from "@clerk/nextjs/server";
 import { rateLimit } from "@/lib/rate-limit";
+import { EMAIL_FROM } from "@/lib/constants";
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({
-        from: "FIXA <onboarding@resend.dev>",
+        from: EMAIL_FROM,
         to: process.env.ADMIN_NOTIFICATION_EMAIL || "sergi@ibclima.com",
         subject: "🔔 Nuevo registro en FIXA",
         html: `

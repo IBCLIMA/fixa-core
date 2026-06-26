@@ -10,7 +10,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -70,13 +69,12 @@ export function EntregarDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={(v) => (v ? setOpen(true) : cerrar())}>
-      <DialogTrigger asChild>
-        <Button className="rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold h-12 px-6 text-base shadow-lg shadow-emerald-600/20">
-          <Car className="mr-2 h-5 w-5" />
-          Entregar coche
-        </Button>
-      </DialogTrigger>
+    <>
+      <Button onClick={() => setOpen(true)} className="rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold h-12 px-6 text-base shadow-lg shadow-emerald-600/20">
+        <Car className="mr-2 h-5 w-5" />
+        Entregar coche
+      </Button>
+      <Dialog open={open} onOpenChange={(v) => (v ? setOpen(true) : cerrar())}>
       <DialogContent className="sm:max-w-md">
         {!resultado ? (
           <>
@@ -193,6 +191,7 @@ export function EntregarDialog({
           </>
         )}
       </DialogContent>
-    </Dialog>
+      </Dialog>
+    </>
   );
 }

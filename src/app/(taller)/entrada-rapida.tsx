@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
+  Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { buscarPorMatricula, crearOrdenRapida, crearTodoRapido } from "./actions/rapida";
 import { MarcaAutocomplete, ModeloAutocomplete } from "@/components/vehicle-autocomplete";
@@ -112,12 +112,11 @@ export function EntradaRapida() {
   const vehiculoNoEncontrado = showNewForm;
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) resetAll(); }}>
-      <DialogTrigger asChild>
-        <Button className="rounded-full bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/20 hover:shadow-xl hover:shadow-orange-500/25 transition-all">
-          <Car className="mr-1.5 h-4 w-4" />Entrada rápida
-        </Button>
-      </DialogTrigger>
+    <>
+      <Button onClick={() => setOpen(true)} className="rounded-full bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/20 hover:shadow-xl hover:shadow-orange-500/25 transition-all">
+        <Car className="mr-1.5 h-4 w-4" />Entrada rápida
+      </Button>
+      <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) resetAll(); }}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="text-lg">
@@ -337,6 +336,7 @@ export function EntradaRapida() {
           </form>
         )}
       </DialogContent>
-    </Dialog>
+      </Dialog>
+    </>
   );
 }

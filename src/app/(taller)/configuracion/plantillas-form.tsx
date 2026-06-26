@@ -11,7 +11,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { crearPlantilla, actualizarPlantilla, eliminarPlantilla, type LineaPlantilla } from "../actions/plantillas";
 import { serviceTemplates } from "@/lib/service-templates";
@@ -201,12 +200,10 @@ export function PlantillasForm({ plantillasIniciales }: { plantillasIniciales: P
           <CardTitle className="text-base flex items-center gap-2">
             Plantillas de servicio
           </CardTitle>
+          <Button size="sm" className="rounded-full" onClick={() => setOpen(true)}>
+            <Plus className="mr-1 h-3.5 w-3.5" />Nueva plantilla
+          </Button>
           <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) resetForm(); }}>
-            <DialogTrigger asChild>
-              <Button size="sm" className="rounded-full">
-                <Plus className="mr-1 h-3.5 w-3.5" />Nueva plantilla
-              </Button>
-            </DialogTrigger>
             <DialogContent className="max-w-xl">
               <DialogHeader>
                 <DialogTitle>{editando ? "Editar plantilla" : "Nueva plantilla"}</DialogTitle>

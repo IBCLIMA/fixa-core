@@ -3,6 +3,7 @@ import { getDb } from "@/db";
 import { talleres, ordenesTrabajo } from "@/db/schema";
 import { eq, and, sql, count } from "drizzle-orm";
 import { Resend } from "resend";
+import { EMAIL_FROM } from "@/lib/constants";
 
 /**
  * Cron diario: detecta talleres en el día 5 de trial y notifica a Sergi
@@ -68,7 +69,7 @@ export async function GET(request: Request) {
     }).join("");
 
     await resend.emails.send({
-      from: "FIXA <onboarding@resend.dev>",
+      from: EMAIL_FROM,
       to: adminEmail,
       subject: `📋 Check-in día 5: ${resumen.length} taller${resumen.length > 1 ? "es" : ""} para contactar`,
       html: `

@@ -14,7 +14,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { registrarAveriaOculta, getAveriaWhatsAppUrl } from "../../actions/averias-ocultas";
 import { toast } from "sonner";
@@ -101,13 +100,11 @@ export function AveriasOcultas({
               </Badge>
             )}
           </CardTitle>
+          <Button size="sm" variant="outline" className="rounded-full text-amber-700 border-amber-300 hover:bg-amber-50" onClick={() => setOpen(true)}>
+            <Plus className="mr-1 h-3.5 w-3.5" />
+            Registrar avería
+          </Button>
           <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm" variant="outline" className="rounded-full text-amber-700 border-amber-300 hover:bg-amber-50">
-                <Plus className="mr-1 h-3.5 w-3.5" />
-                Registrar avería
-              </Button>
-            </DialogTrigger>
             <DialogContent className="max-w-md">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
