@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { MessageSquarePlus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
+  Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -43,16 +43,16 @@ export function FeedbackButton() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <button
-          type="button"
-          title="Enviar sugerencia o incidencia"
-          className="flex h-9 w-9 items-center justify-center rounded-xl text-stone-500 transition hover:bg-stone-100 hover:text-stone-800"
-        >
-          <MessageSquarePlus className="h-5 w-5" />
-        </button>
-      </DialogTrigger>
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        title="Enviar sugerencia o incidencia"
+        className="flex h-9 w-9 items-center justify-center rounded-xl text-stone-500 transition hover:bg-stone-100 hover:text-stone-800"
+      >
+        <MessageSquarePlus className="h-5 w-5" />
+      </button>
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>¿Una sugerencia o un problema?</DialogTitle>
@@ -83,6 +83,7 @@ export function FeedbackButton() {
           </Button>
         </div>
       </DialogContent>
-    </Dialog>
+      </Dialog>
+    </>
   );
 }

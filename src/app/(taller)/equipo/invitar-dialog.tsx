@@ -5,7 +5,7 @@ import { Plus, Copy, CheckCircle2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
+  Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -39,12 +39,11 @@ export function InvitarUsuarioDialog() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setInviteUrl(""); setCopied(false); } }}>
-      <DialogTrigger asChild>
-        <Button className="rounded-full">
-          <Plus className="mr-1.5 h-4 w-4" />Invitar
-        </Button>
-      </DialogTrigger>
+    <>
+      <Button className="rounded-full" onClick={() => setOpen(true)}>
+        <Plus className="mr-1.5 h-4 w-4" />Invitar
+      </Button>
+      <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setInviteUrl(""); setCopied(false); } }}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Invitar al equipo</DialogTitle>
@@ -90,6 +89,7 @@ export function InvitarUsuarioDialog() {
           </p>
         </div>
       </DialogContent>
-    </Dialog>
+      </Dialog>
+    </>
   );
 }
