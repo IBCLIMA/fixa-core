@@ -105,6 +105,8 @@ export const planEnum = pgEnum("plan", ["pendiente", "trial", "basico", "taller"
 
 export const feedbackTipoEnum = pgEnum("feedback_tipo", ["sugerencia", "incidencia", "consulta"]);
 
+export const estadoCobroEnum = pgEnum("estado_cobro", ["al_corriente", "impagado", "pendiente"]);
+
 export const talleres = pgTable("talleres", {
   id: uuid("id").defaultRandom().primaryKey(),
   nombre: text("nombre").notNull(),
@@ -144,6 +146,9 @@ export const talleres = pgTable("talleres", {
   // Agrupación de talleres de un mismo dueño (uso super-admin: switcher de talleres).
   // NULL para talleres normales (no afecta a la app general).
   grupoAdmin: text("grupo_admin"),
+  // Cobro SEPA manual (Ibañez Clima gira el recibo; se marca a mano).
+  estadoCobro: estadoCobroEnum("estado_cobro").default("al_corriente"),
+  notaCobro: text("nota_cobro"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -634,6 +639,20 @@ export const feedback = pgTable("feedback", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
   index("idx_feedback_estado_created").on(table.estado, table.createdAt),
+]);
+
+// Registro INMUTABLE de acciones del super-admin (impersonar, cambiar plan, cobro…).
+export const adminAudit = pgTable("admin_audit", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  adminEmail: text("admin_email").notNull(),
+  accion: text("accion").notNull(), // 'entrar_como' | 'cambiar_plan' | 'activar' | 'desactivar' | 'aprobar' | 'estado_cobro' | ...
+  tallerId: uuid("taller_id"),
+  tallerNombre: text("taller_nombre"),
+  detalles: jsonb("detalles"), // { antes, despues, ... }
+  ipAddress: text("ip_address"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => [
+  index("idx_admin_audit_created").on(table.createdAt),
 ]);
 
 // ═══ RELACIONES ═══

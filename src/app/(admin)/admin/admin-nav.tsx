@@ -3,17 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard, Building2, BarChart3, Activity, LifeBuoy, Mail, Shield, ArrowLeft,
+  LayoutDashboard, Building2, Receipt, BarChart3, Activity, LifeBuoy, Mail, ScrollText, Shield, ArrowLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { name: "Resumen", href: "/admin", icon: LayoutDashboard, exact: true },
   { name: "Talleres", href: "/admin/talleres", icon: Building2 },
+  { name: "Cobros", href: "/admin/cobros", icon: Receipt },
   { name: "Métricas", href: "/admin/metricas", icon: BarChart3 },
   { name: "Actividad", href: "/admin/actividad", icon: Activity },
   { name: "Soporte", href: "/admin/soporte", icon: LifeBuoy, badgeKey: "soporte" as const },
   { name: "Correo", href: "/admin/correo", icon: Mail },
+  { name: "Auditoría", href: "/admin/auditoria", icon: ScrollText },
 ];
 
 export function AdminNav({ soporteNuevos = 0 }: { soporteNuevos?: number }) {

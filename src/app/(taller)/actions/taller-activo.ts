@@ -1,7 +1,9 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { getSuperAdmin } from "@/lib/auth";
+import { registrarAdminAudit } from "@/lib/admin-audit";
 import { getDb } from "@/db";
 import { talleres } from "@/db/schema";
 import { eq, and, isNotNull } from "drizzle-orm";
@@ -28,4 +30,23 @@ export async function setTallerActivo(tallerId: string) {
     path: "/",
     maxAge: 60 * 60 * 24 * 30,
   });
+}
+
+/**
+ * Sale de la impersonación: borra la cookie `taller_activo` y vuelve al panel de
+ * admin. Solo tiene sentido para super-admin, pero borrar la cookie es inocuo para
+ * cualquier usuario (en la app general la cookie nunca está presente).
+ */
+export async function salirImpersonacion() {
+  const esSuperAdmin = await getSuperAdmin();
+  const cookieStore = await cookies();
+  const tallerId = cookieStore.get("taller_activo")?.value;
+
+  cookieStore.delete("taller_activo");
+
+  if (esSuperAdmin && tallerId) {
+    await registrarAdminAudit({ accion: "salir_como", tallerId });
+  }
+
+  redirect("/admin/talleres");
 }

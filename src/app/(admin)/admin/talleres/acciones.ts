@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getSuperAdmin } from "@/lib/auth";
+import { registrarAdminAudit } from "@/lib/admin-audit";
 import { getDb } from "@/db";
 import { talleres } from "@/db/schema";
 // Reutilizamos la acción existente que fija la cookie `taller_activo` que el
@@ -29,11 +30,25 @@ export async function cambiarPlan(tallerId: string, plan: Plan) {
   if (!PLANES.includes(plan)) throw new Error("Plan no válido");
 
   const db = getDb();
+
+  // Plan anterior para dejar constancia en auditoría.
+  const [antes] = await db
+    .select({ plan: talleres.plan })
+    .from(talleres)
+    .where(eq(talleres.id, tallerId));
+
   const updateData: Record<string, unknown> = { plan };
   if (["basico", "taller", "pro"].includes(plan)) updateData.suscripcionActiva = true;
   if (plan === "cancelado") updateData.suscripcionActiva = false;
 
   await db.update(talleres).set(updateData).where(eq(talleres.id, tallerId));
+
+  await registrarAdminAudit({
+    accion: "cambiar_plan",
+    tallerId,
+    detalles: { planAntes: antes?.plan ?? null, planDespues: plan },
+  });
+
   revalidarTaller(tallerId);
 }
 
@@ -41,7 +56,20 @@ export async function cambiarPlan(tallerId: string, plan: Plan) {
 export async function setActivo(tallerId: string, activo: boolean) {
   await requireSuperAdmin();
   const db = getDb();
+
+  const [antes] = await db
+    .select({ activo: talleres.activo })
+    .from(talleres)
+    .where(eq(talleres.id, tallerId));
+
   await db.update(talleres).set({ activo }).where(eq(talleres.id, tallerId));
+
+  await registrarAdminAudit({
+    accion: activo ? "activar" : "desactivar",
+    tallerId,
+    detalles: { activoAntes: antes?.activo ?? null, activoDespues: activo },
+  });
+
   revalidarTaller(tallerId);
 }
 
@@ -67,6 +95,13 @@ export async function aprobarRegistro(tallerId: string) {
     .update(talleres)
     .set({ plan: "trial", trialEndsAt: trialEnds, activo: true })
     .where(eq(talleres.id, tallerId));
+
+  await registrarAdminAudit({
+    accion: "aprobar",
+    tallerId,
+    detalles: { planAntes: "pendiente", planDespues: "trial", trialEndsAt: trialEnds.toISOString() },
+  });
+
   revalidarTaller(tallerId);
 }
 
@@ -94,5 +129,12 @@ export async function entrarComoTaller(tallerId: string) {
   }
 
   await setTallerActivo(tallerId);
+
+  // IMPORTANTE: auditar ANTES del redirect (redirect lanza una excepción de control).
+  await registrarAdminAudit({
+    accion: "entrar_como",
+    tallerId,
+  });
+
   redirect("/");
 }
