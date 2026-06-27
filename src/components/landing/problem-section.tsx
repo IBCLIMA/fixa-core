@@ -1,4 +1,5 @@
 import { PhoneOff, Clock, Timer } from "lucide-react";
+import { LandingBadge } from "./landing-badge";
 
 const problems = [
   {
@@ -35,9 +36,7 @@ export function ProblemSection() {
 
       <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16 relative z-10">
         <div className="text-center mb-12">
-          <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
-            El problema
-          </span>
+          <LandingBadge>El problema</LandingBadge>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
             ¿Te suena alguno?
           </h2>

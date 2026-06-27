@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { LandingBadge } from "./landing-badge";
 import { ChevronDown, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedSection, StaggerContainer, StaggerItem } from "./animated-section";
@@ -15,7 +16,7 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
       <button
         onClick={() => setOpen(!open)}
         aria-expanded={open}
-        className="flex items-center justify-between w-full p-5 text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 rounded-2xl"
+        className="flex items-center justify-between w-full p-5 text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 rounded-2xl"
       >
         <span className="font-bold text-sm text-stone-900 pr-4">{question}</span>
         <ChevronDown
@@ -56,9 +57,7 @@ export function FaqSection() {
   return (
     <section id="faq" className="mx-auto max-w-6xl px-6 py-12 lg:py-16">
       <AnimatedSection className="text-center mb-12">
-        <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
-          Dudas
-        </span>
+        <LandingBadge>Dudas</LandingBadge>
         <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
           Antes de irte...
         </h2>
@@ -73,7 +72,7 @@ export function FaqSection() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar pregunta..."
-            className="w-full h-12 pl-11 pr-4 rounded-xl bg-white/70 backdrop-blur-sm border border-stone-200/50 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-300 transition-all"
+            className="w-full h-12 pl-11 pr-4 rounded-xl bg-white/70 backdrop-blur-sm border border-stone-200/50 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-300 transition-all"
           />
         </div>
       </div>

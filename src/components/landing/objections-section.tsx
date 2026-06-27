@@ -1,4 +1,5 @@
 import { ShieldCheck, MessageSquare, Clock, Wrench } from "lucide-react";
+import { LandingBadge } from "./landing-badge";
 
 const objeciones = [
   {
@@ -32,9 +33,7 @@ export function ObjectionsSection() {
     <section className="relative overflow-hidden">
       <div className="mx-auto max-w-5xl px-6 py-12 lg:py-16 relative z-10">
         <div className="text-center mb-12">
-          <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
-            Hablemos claro
-          </span>
+          <LandingBadge>Hablemos claro</LandingBadge>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
             Ya. Pero...
           </h2>
@@ -48,8 +47,8 @@ export function ObjectionsSection() {
             <div className="text-center mb-12">
               <div className="h-full rounded-2xl bg-white/70 backdrop-blur-sm border border-stone-200/50 p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50">
-                    <o.icon className="h-5 w-5 text-orange-600" />
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50">
+                    <o.icon className="h-5 w-5 text-brand-600" />
                   </div>
                   <p className="font-bold text-stone-900">{o.objecion}</p>
                 </div>

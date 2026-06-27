@@ -1,6 +1,7 @@
 "use client";
 
 import { PhoneOff, Clock, FileX, CheckCircle2, Smartphone, Bell, MessageSquare, ClipboardList } from "lucide-react";
+import { LandingBadge } from "./landing-badge";
 import { motion, useReducedMotion } from "framer-motion";
 import { AnimatedSection } from "./animated-section";
 import { TRANSITION_DEFAULT } from "./animation-config";
@@ -28,9 +29,7 @@ export function BeforeAfterSection() {
 
       <div className="mx-auto max-w-5xl px-6 py-12 lg:py-16 relative z-10">
         <AnimatedSection className="text-center mb-14">
-          <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
-            El cambio
-          </span>
+          <LandingBadge>El cambio</LandingBadge>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
             Mismo taller. Otro día.
           </h2>

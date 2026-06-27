@@ -22,7 +22,7 @@ export function FloatingCta() {
       <Link
         href="/sign-up"
         onClick={() => track("cta_flotante")}
-        className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl bg-orange-500 text-white font-bold text-sm shadow-2xl shadow-orange-500/30 active:bg-orange-600 transition-colors"
+        className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl bg-brand-500 text-white font-bold text-sm shadow-brand-lg active:bg-brand-600 transition-colors"
       >
         Probarlo gratis
         <ArrowRight className="h-4 w-4" />

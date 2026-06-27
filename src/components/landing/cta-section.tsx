@@ -35,7 +35,7 @@ export function CtaSection() {
             <Link href="/sign-up" onClick={() => track("cta_final")}>
               <Button
                 size="lg"
-                className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-14 px-10 text-base shadow-2xl shadow-orange-500/30 hover:shadow-orange-500/40 transition-all cursor-pointer group"
+                className="rounded-full bg-brand-500 text-white hover:bg-brand-400 font-bold h-14 px-10 text-base shadow-brand hover:shadow-brand-lg transition-all cursor-pointer group"
               >
                 Empezar gratis
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { LandingBadge } from "./landing-badge";
 import Image from "next/image";
 import { AnimatedSection } from "./animated-section";
 import { cn } from "@/lib/utils";
@@ -25,9 +26,7 @@ export function ScreenshotsSection() {
     <section className="relative overflow-hidden">
       <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16">
         <AnimatedSection className="text-center mb-10">
-          <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
-            Capturas reales
-          </span>
+          <LandingBadge>Capturas reales</LandingBadge>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
             Sin retoques. Esto es lo que verás.
           </h2>
@@ -46,8 +45,8 @@ export function ScreenshotsSection() {
                 className={cn(
                   "rounded-full px-4 py-2 text-sm font-bold transition-all cursor-pointer",
                   active.id === p.id
-                    ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20"
-                    : "bg-white/70 text-stone-600 border border-stone-200/60 hover:border-orange-300"
+                    ? "bg-brand-500 text-white shadow-brand"
+                    : "bg-white/70 text-stone-600 border border-stone-200/60 hover:border-brand-300"
                 )}
               >
                 {p.label}

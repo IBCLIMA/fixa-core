@@ -1,4 +1,5 @@
 import { Wrench, CheckCircle2, ArrowRight } from "lucide-react";
+import { LandingBadge } from "./landing-badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -20,9 +21,7 @@ export function TestimonialsSection() {
     <section className="relative overflow-hidden">
       <div className="mx-auto max-w-5xl px-6 py-12 lg:py-16 relative z-10">
         <div className="text-center mb-12">
-          <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
-            Sin testimonios de pago
-          </span>
+          <LandingBadge>Sin testimonios de pago</LandingBadge>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
             Nuestro primer cliente somos nosotros
           </h2>
@@ -36,7 +35,7 @@ export function TestimonialsSection() {
         <div className="text-center mb-12">
           <div className="rounded-2xl bg-stone-950 text-white p-8 lg:p-10 shadow-2xl shadow-stone-900/20 max-w-3xl mx-auto">
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-500">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500">
                 <Wrench className="h-5 w-5 text-white" />
               </div>
               <div>
@@ -47,7 +46,7 @@ export function TestimonialsSection() {
             <div className="space-y-3">
               {usosDiarios.map((u) => (
                 <div key={u} className="flex items-start gap-2.5 text-sm">
-                  <CheckCircle2 className="h-4 w-4 text-orange-400 mt-0.5 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-brand-400 mt-0.5 shrink-0" />
                   <span className="text-stone-300">{u}</span>
                 </div>
               ))}
@@ -65,7 +64,7 @@ export function TestimonialsSection() {
             mejorarla — y nosotros les cuidamos como se cuida al primer cliente.
           </p>
           <Link href="/sign-up">
-            <Button className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-12 px-8 shadow-lg shadow-orange-500/20 cursor-pointer group">
+            <Button className="rounded-full bg-brand-500 text-white hover:bg-brand-400 font-bold h-12 px-8 shadow-brand cursor-pointer group">
               Ser de los primeros
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
             </Button>

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { LandingBadge } from "./landing-badge";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { AnimatedSection } from "./animated-section";
 import { HexPattern } from "@/components/ui/brand-texture";
@@ -13,9 +14,7 @@ export function AboutSection() {
 
       <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16 relative z-10">
         <AnimatedSection className="text-center mb-12">
-          <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
-            Sobre nosotros
-          </span>
+          <LandingBadge>Sobre nosotros</LandingBadge>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
             ¿Quién ha hecho esto?
           </h2>
@@ -24,7 +23,7 @@ export function AboutSection() {
         <AnimatedSection delay={0.2}>
           <div className="max-w-3xl mx-auto rounded-2xl bg-white/70 backdrop-blur-sm border border-stone-200/50 p-8 relative overflow-hidden">
             {/* Accent bar */}
-            <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-orange-500 to-orange-300 rounded-full" />
+            <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-brand-500 to-brand-300 rounded-full" />
 
             <div className="flex flex-col md:flex-row gap-8 items-start">
               {/* Foto real */}

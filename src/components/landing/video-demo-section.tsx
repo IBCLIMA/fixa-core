@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { LandingBadge } from "./landing-badge";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, X, Maximize2, ArrowRight } from "lucide-react";
@@ -47,9 +48,7 @@ export function VideoDemoSection() {
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-5xl px-6 py-12 lg:py-16">
           <AnimatedSection className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
-              Míralo tú mismo
-            </span>
+            <LandingBadge>Míralo tú mismo</LandingBadge>
             <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
               Vale más verlo que leerlo
             </h2>
@@ -103,7 +102,7 @@ export function VideoDemoSection() {
             <Link href="/sign-up" onClick={() => track("cta_video")}>
               <Button
                 size="lg"
-                className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-12 px-8 shadow-lg shadow-orange-500/20 cursor-pointer group"
+                className="rounded-full bg-brand-500 text-white hover:bg-brand-400 font-bold h-12 px-8 shadow-brand cursor-pointer group"
               >
                 Empezar 14 días gratis
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />

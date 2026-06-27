@@ -21,7 +21,7 @@ export function Footer() {
           </div>
           <Link
             href="/sign-up"
-            className="inline-flex items-center gap-2 rounded-full bg-orange-500 hover:bg-orange-400 text-white font-bold h-12 px-8 text-sm transition-colors shrink-0 group"
+            className="inline-flex items-center gap-2 rounded-full bg-brand-500 hover:bg-brand-400 text-white font-bold h-12 px-8 text-sm transition-colors shrink-0 group"
           >
             Empezar gratis
             <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -49,7 +49,7 @@ export function Footer() {
               </a>
               <a
                 href="tel:+34611433218"
-                className="flex h-9 w-9 items-center justify-center rounded-xl bg-stone-800 hover:bg-orange-600 transition-colors"
+                className="flex h-9 w-9 items-center justify-center rounded-xl bg-stone-800 hover:bg-brand-600 transition-colors"
                 aria-label="Teléfono"
               >
                 <Phone className="h-4 w-4 text-stone-400" />
@@ -105,7 +105,7 @@ export function Footer() {
             © {new Date().getFullYear()} FIXA by Ibañez Clima (CIF: B25825761)
           </span>
           <div className="flex items-center gap-4 text-xs">
-            <Link href="/sign-up" className="text-orange-500 font-bold hover:text-orange-400 transition-colors">Probar gratis</Link>
+            <Link href="/sign-up" className="text-brand-500 font-bold hover:text-brand-400 transition-colors">Probar gratis</Link>
             <Link href="/sign-in" className="text-stone-500 hover:text-white transition-colors">Acceder</Link>
           </div>
         </div>

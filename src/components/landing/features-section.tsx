@@ -5,6 +5,7 @@ import {
   Users, FileText, Megaphone, Camera, Shield, Smartphone,
   ArrowRight,
 } from "lucide-react";
+import { LandingBadge } from "./landing-badge";
 import { motion, useReducedMotion } from "framer-motion";
 import { useRef, useCallback } from "react";
 import { AnimatedSection, StaggerContainer, StaggerItem } from "./animated-section";
@@ -54,9 +55,9 @@ const heroFeatures = [
   },
   {
     icon: Search,
-    gradient: "from-orange-500 to-orange-600",
-    bg: "bg-orange-500/5",
-    border: "hover:border-orange-200",
+    gradient: "from-brand-500 to-brand-600",
+    bg: "bg-brand-500/5",
+    border: "hover:border-brand-200",
     title: "Entrada en 10 segundos",
     desc: "Escribe la matrícula → orden creada. Sin formularios interminables.",
     visual: (
@@ -66,12 +67,12 @@ const heroFeatures = [
             <Search className="h-3.5 w-3.5 text-stone-300" />
             <span className="text-xs text-stone-400">Buscar matrícula...</span>
           </div>
-          <div className="rounded-lg bg-orange-50 border border-orange-200/60 p-2.5 flex items-center justify-between">
+          <div className="rounded-lg bg-brand-50 border border-brand-200/60 p-2.5 flex items-center justify-between">
             <div>
               <span className="text-xs font-bold text-stone-900">4523 BCD</span>
               <p className="text-[10px] text-stone-400">Seat León · Juan García</p>
             </div>
-            <div className="text-[10px] font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full">+ Orden</div>
+            <div className="text-[10px] font-bold text-brand-600 bg-brand-100 px-2 py-0.5 rounded-full">+ Orden</div>
           </div>
         </div>
       </div>
@@ -122,9 +123,7 @@ export function FeaturesSection() {
 
       <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16 relative z-10">
         <AnimatedSection className="text-center mb-14">
-          <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
-            Funciones
-          </span>
+          <LandingBadge>Funciones</LandingBadge>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
             Todo lo que tu taller necesita
           </h2>

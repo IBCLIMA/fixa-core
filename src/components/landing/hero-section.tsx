@@ -29,12 +29,12 @@ export function HeroSection() {
               initial="hidden"
               animate="visible"
               transition={{ ...TRANSITION_DEFAULT, delay: 0 }}
-              className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 backdrop-blur-sm px-4 py-2 mb-8"
+              className="inline-flex items-center gap-2 rounded-full border border-brand-200/80 bg-brand-50/80 backdrop-blur-sm px-4 py-2 mb-8"
             >
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-500">
                 <Zap className="h-3 w-3 text-white" />
               </span>
-              <span className="text-xs font-semibold text-orange-700 tracking-wide">
+              <span className="text-xs font-semibold text-brand-700 tracking-wide">
                 Hecho por mecánicos · Desde 29€/mes
               </span>
             </motion.div>
@@ -44,7 +44,7 @@ export function HeroSection() {
               <br />
               que tu taller
               <br />
-              <span className="hero-shimmer bg-gradient-to-r from-orange-500 via-amber-400 to-orange-600 bg-clip-text text-transparent bg-[length:200%_100%]">
+              <span className="hero-shimmer bg-gradient-to-r from-brand-500 via-amber-400 to-brand-600 bg-clip-text text-transparent bg-[length:200%_100%]">
                 de verdad va a usar.
               </span>
             </h1>
@@ -71,7 +71,7 @@ export function HeroSection() {
               <Link href="/sign-up" onClick={() => track("cta_hero")}>
                 <Button
                   size="lg"
-                  className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-14 px-8 text-base shadow-2xl shadow-orange-500/25 hover:shadow-orange-500/35 transition-shadow cursor-pointer group"
+                  className="rounded-full bg-brand-500 text-white hover:bg-brand-400 font-bold h-14 px-8 text-base shadow-brand hover:shadow-brand-lg transition-shadow cursor-pointer group"
                 >
                   Empezar 14 días gratis
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -116,7 +116,7 @@ const demoSteps = [
   {
     label: "Introduce la matrícula",
     icon: Search,
-    color: "bg-orange-500",
+    color: "bg-brand-500",
     content: (
       <div className="space-y-3">
         <div className="rounded-lg bg-white border border-stone-100 p-3">
@@ -137,13 +137,13 @@ const demoSteps = [
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1, duration: 0.4 }}
-            className="rounded-lg bg-orange-50 border border-orange-200/60 p-2.5 flex items-center justify-between"
+            className="rounded-lg bg-brand-50 border border-brand-200/60 p-2.5 flex items-center justify-between"
           >
             <div>
               <span className="text-[10px] font-bold text-stone-900">4523 BCD</span>
               <p className="text-[8px] text-stone-400">Seat León · Juan García</p>
             </div>
-            <div className="text-[9px] font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full">+ Orden</div>
+            <div className="text-[9px] font-bold text-brand-600 bg-brand-100 px-2 py-0.5 rounded-full">+ Orden</div>
           </motion.div>
         </div>
       </div>
@@ -233,7 +233,7 @@ function HeroMockupSequence({ prefersReducedMotion, mockupVariants }: { prefersR
       transition={{ ...TRANSITION_DEFAULT, delay: 0.4, duration: 0.9 }}
       className="hidden lg:block relative"
     >
-      <div className="absolute -inset-8 bg-gradient-to-br from-orange-300/20 via-transparent to-blue-300/10 rounded-[2rem] blur-3xl" />
+      <div className="absolute -inset-8 bg-gradient-to-br from-brand-300/20 via-transparent to-blue-300/10 rounded-[2rem] blur-3xl" />
 
       <motion.div
         animate={prefersReducedMotion ? {} : { y: [-3, 3, -3] }}
@@ -287,7 +287,7 @@ function HeroMockupSequence({ prefersReducedMotion, mockupVariants }: { prefersR
               key={i}
               onClick={() => setStep(i)}
               className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                i === step ? "w-8 bg-orange-500" : "w-2 bg-stone-300 hover:bg-stone-400"
+                i === step ? "w-8 bg-brand-500" : "w-2 bg-stone-300 hover:bg-stone-400"
               }`}
             />
           ))}

@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, X, Minus } from "lucide-react";
+import { LandingBadge } from "./landing-badge";
 import { motion, useReducedMotion } from "framer-motion";
 import { AnimatedSection } from "./animated-section";
 import { TRANSITION_DEFAULT } from "./animation-config";
@@ -30,9 +31,7 @@ export function ComparisonSection() {
     <section className="relative overflow-hidden">
       <div className="mx-auto max-w-4xl px-6 py-12 lg:py-16">
         <AnimatedSection className="text-center mb-14">
-          <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
-            Comparativa
-          </span>
+          <LandingBadge>Comparativa</LandingBadge>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
             ¿Por qué FIXA?
           </h2>
@@ -57,11 +56,11 @@ export function ComparisonSection() {
             <div className="p-4 text-center">
               <p className="text-sm font-bold text-stone-400">ERP caro</p>
             </div>
-            <div className="p-4 text-center bg-orange-50/50 rounded-t-xl relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-[10px] font-bold px-3 py-0.5 rounded-full">
+            <div className="p-4 text-center bg-brand-50/50 rounded-t-xl relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-500 text-white text-[10px] font-bold px-3 py-0.5 rounded-full">
                 Recomendado
               </div>
-              <p className="text-sm font-bold text-orange-600">FIXA</p>
+              <p className="text-sm font-bold text-brand-600">FIXA</p>
             </div>
           </div>
 
@@ -84,7 +83,7 @@ export function ComparisonSection() {
               <div className="p-4 flex items-center justify-center">
                 <CellIcon value={f.erp} />
               </div>
-              <div className="p-4 flex items-center justify-center bg-orange-50/30">
+              <div className="p-4 flex items-center justify-center bg-brand-50/30">
                 <CellIcon value={f.fixa} />
               </div>
             </motion.div>

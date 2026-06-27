@@ -37,7 +37,7 @@ export function HowItWorksSection() {
 
       <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16 relative z-10">
         <AnimatedSection className="text-center mb-16">
-          <span className="inline-flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/10 px-4 py-1.5 text-xs font-semibold text-orange-400 mb-4">
+          <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-brand-500/10 px-4 py-1.5 text-xs font-semibold text-brand-400 mb-4">
             Sin manuales
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-5xl">
@@ -55,7 +55,7 @@ export function HowItWorksSection() {
               whileInView={{ scaleY: 1 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 1.2, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="h-full w-px bg-gradient-to-b from-orange-500/60 via-orange-500/20 to-transparent origin-top"
+              className="h-full w-px bg-gradient-to-b from-brand-500/60 via-brand-500/20 to-transparent origin-top"
             />
           </div>
 
@@ -79,7 +79,7 @@ export function HowItWorksSection() {
                     damping: 15,
                     delay: 0.3 + i * 0.15,
                   }}
-                  className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 relative z-10"
+                  className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 shadow-brand relative z-10"
                 >
                   <span className="text-lg font-extrabold text-white">{s.step}</span>
                 </motion.div>

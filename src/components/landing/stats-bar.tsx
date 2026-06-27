@@ -6,7 +6,7 @@ import { Wrench, Calendar, Shield, CreditCard } from "lucide-react";
  * y hasta que tengamos clientes de pago, lo que decimos se puede comprobar.
  */
 const stats = [
-  { icon: Wrench, valor: "10 seg", label: "Orden de trabajo creada", color: "text-orange-600" },
+  { icon: Wrench, valor: "10 seg", label: "Orden de trabajo creada", color: "text-brand-600" },
   { icon: Calendar, valor: "0 llamadas", label: "El cliente mira su coche solo", color: "text-blue-600" },
   { icon: Shield, valor: "0 descargas", label: "Abre el navegador y listo", color: "text-emerald-600" },
   { icon: CreditCard, valor: "29€/mes", label: "Menos que media hora tuya", color: "text-violet-600" },

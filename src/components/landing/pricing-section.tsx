@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { LandingBadge } from "./landing-badge";
 import Link from "next/link";
 import { Check, X, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -69,9 +70,7 @@ export function PricingSection() {
 
       <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16 relative z-10">
         <AnimatedSection className="text-center mb-10">
-          <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
-            Precios
-          </span>
+          <LandingBadge>Precios</LandingBadge>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
             Menos que media hora de tu mano de obra.
           </h2>
@@ -85,7 +84,7 @@ export function PricingSection() {
             onClick={() => setAnual(!anual)}
             className={cn(
               "relative h-7 w-12 rounded-full transition-colors cursor-pointer",
-              anual ? "bg-orange-500" : "bg-stone-300"
+              anual ? "bg-brand-500" : "bg-stone-300"
             )}
             aria-label={anual ? "Cambiar a mensual" : "Cambiar a anual"}
           >
@@ -123,8 +122,8 @@ export function PricingSection() {
               >
                 {p.popular && (
                   <>
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-orange-500/20 via-transparent to-blue-500/10" />
-                    <div className="absolute top-0 left-0 right-0 flex items-center justify-center gap-1.5 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-xs font-bold">
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-brand-500/20 via-transparent to-blue-500/10" />
+                    <div className="absolute top-0 left-0 right-0 flex items-center justify-center gap-1.5 py-2 bg-gradient-to-r from-brand-500 to-brand-600 text-xs font-bold">
                       <Sparkles className="h-3 w-3" />
                       Más popular
                     </div>
@@ -158,7 +157,7 @@ export function PricingSection() {
                   <div className="space-y-3 mb-8">
                     {p.features.map((f) => (
                       <div key={f} className="flex items-center gap-2.5 text-sm">
-                        <Check className={`h-4 w-4 shrink-0 ${p.popular ? "text-orange-400" : "text-emerald-500"}`} />
+                        <Check className={`h-4 w-4 shrink-0 ${p.popular ? "text-brand-400" : "text-emerald-500"}`} />
                         <span className={p.popular ? "text-stone-300" : "text-stone-600"}>{f}</span>
                       </div>
                     ))}
@@ -168,7 +167,7 @@ export function PricingSection() {
                     <Button
                       className={`w-full rounded-full font-bold h-12 cursor-pointer group ${
                         p.popular
-                          ? "bg-orange-500 text-white hover:bg-orange-400 shadow-lg shadow-orange-500/20"
+                          ? "bg-brand-500 text-white hover:bg-brand-400 shadow-brand"
                           : "bg-stone-100 text-stone-700 hover:bg-stone-200"
                       }`}
                     >
@@ -199,7 +198,7 @@ export function PricingSection() {
                 <tr className="border-b border-stone-200/60">
                   <th className="text-left py-3 px-4 font-bold text-stone-500 text-xs uppercase tracking-wider">Función</th>
                   <th className="py-3 px-4 font-bold text-stone-500 text-xs uppercase tracking-wider text-center">Básico</th>
-                  <th className="py-3 px-4 font-bold text-xs uppercase tracking-wider text-center bg-orange-50/50 text-orange-700">Taller</th>
+                  <th className="py-3 px-4 font-bold text-xs uppercase tracking-wider text-center bg-brand-50/50 text-brand-700">Taller</th>
                   <th className="py-3 px-4 font-bold text-stone-500 text-xs uppercase tracking-wider text-center">Pro</th>
                 </tr>
               </thead>
@@ -208,7 +207,7 @@ export function PricingSection() {
                   <tr key={row.feature} className={i % 2 === 0 ? "" : "bg-stone-50/50"}>
                     <td className="py-2.5 px-4 text-stone-700 font-medium">{row.feature}</td>
                     <td className="py-2.5 px-4 text-center"><CellValue value={row.basico} /></td>
-                    <td className="py-2.5 px-4 text-center bg-orange-50/30"><CellValue value={row.taller} /></td>
+                    <td className="py-2.5 px-4 text-center bg-brand-50/30"><CellValue value={row.taller} /></td>
                     <td className="py-2.5 px-4 text-center"><CellValue value={row.pro} /></td>
                   </tr>
                 ))}
