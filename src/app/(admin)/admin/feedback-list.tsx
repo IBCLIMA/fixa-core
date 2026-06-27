@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { CheckCircle2, Loader2, Eye } from "lucide-react";
-import { marcarFeedback } from "../actions/feedback";
+import { marcarFeedback } from "@/app/(taller)/actions/feedback";
 import { toast } from "sonner";
 
 type Item = {

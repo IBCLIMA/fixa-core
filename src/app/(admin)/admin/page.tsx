@@ -1,14 +1,10 @@
-import { Shield, Users, ClipboardList, Car, Mail } from "lucide-react";
-import Link from "next/link";
+import { Shield } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getSuperAdmin } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import { getDb } from "@/db";
-import { talleres, usuarios, clientes, vehiculos, ordenesTrabajo, feedback } from "@/db/schema";
+import { talleres, usuarios } from "@/db/schema";
 import { count, desc, sql } from "drizzle-orm";
 import { AdminTallerActions } from "./admin-actions";
-import { FeedbackList } from "./feedback-list";
 
 const planColors: Record<string, string> = {
   pendiente: "bg-orange-100 text-orange-700",
@@ -28,10 +24,7 @@ const planLabels: Record<string, string> = {
   cancelado: "Cancelado",
 };
 
-export default async function AdminPage() {
-  const isSuperAdmin = await getSuperAdmin();
-  if (!isSuperAdmin) redirect("/");
-
+export default async function AdminResumenPage() {
   const db = getDb();
 
   const talleresList = await db
@@ -46,9 +39,6 @@ export default async function AdminPage() {
       activo: talleres.activo,
       ultimoAcceso: talleres.ultimoAcceso,
       createdAt: talleres.createdAt,
-      clientesCount: sql<number>`(SELECT COUNT(*) FROM clientes WHERE clientes.taller_id = ${talleres.id})`,
-      vehiculosCount: sql<number>`(SELECT COUNT(*) FROM vehiculos WHERE vehiculos.taller_id = ${talleres.id})`,
-      ordenesCount: sql<number>`(SELECT COUNT(*) FROM ordenes_trabajo WHERE ordenes_trabajo.taller_id = ${talleres.id})`,
       usuariosCount: sql<number>`(SELECT COUNT(*) FROM usuarios WHERE usuarios.taller_id = ${talleres.id})`,
     })
     .from(talleres)
@@ -56,11 +46,6 @@ export default async function AdminPage() {
 
   const [totalTalleres] = await db.select({ count: count() }).from(talleres);
   const [totalUsuarios] = await db.select({ count: count() }).from(usuarios);
-  const [totalClientes] = await db.select({ count: count() }).from(clientes);
-  const [totalOrdenes] = await db.select({ count: count() }).from(ordenesTrabajo);
-
-  const feedbackList = await db.select().from(feedback).orderBy(desc(feedback.createdAt)).limit(100);
-  const feedbackNuevos = feedbackList.filter((f) => f.estado === "nuevo").length;
 
   const talleresPendientes = talleresList.filter((t) => t.plan === "pendiente");
   const talleresPagando = talleresList.filter((t) => ["basico", "taller", "pro"].includes(t.plan));
@@ -79,24 +64,18 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-md">
-            <Shield className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-extrabold tracking-tight">Panel de administración</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Gestiona talleres, planes y facturación</p>
-          </div>
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-md">
+          <Shield className="h-5 w-5 text-white" />
         </div>
-        <Link href="/correo" className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm font-bold text-stone-700 transition hover:bg-stone-50">
-          <Mail className="h-4 w-4 text-orange-500" />
-          Correo
-        </Link>
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight">Resumen de plataforma</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Talleres, planes y facturación de FIXA</p>
+        </div>
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+      <div className="grid grid-cols-3 gap-3">
         <Card className="border-emerald-200 bg-emerald-50/30">
           <CardContent className="p-4">
             <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider">MRR</p>
@@ -104,9 +83,7 @@ export default async function AdminPage() {
           </CardContent>
         </Card>
         <Card><CardContent className="p-4"><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Talleres</p><p className="text-2xl font-extrabold mt-1">{totalTalleres?.count ?? 0}</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Usuarios</p><p className="text-2xl font-extrabold mt-1">{totalUsuarios?.count ?? 0}</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Clientes</p><p className="text-2xl font-extrabold mt-1">{totalClientes?.count ?? 0}</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Órdenes</p><p className="text-2xl font-extrabold mt-1">{totalOrdenes?.count ?? 0}</p></CardContent></Card>
+        <Card><CardContent className="p-4"><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Cuentas</p><p className="text-2xl font-extrabold mt-1">{totalUsuarios?.count ?? 0}</p></CardContent></Card>
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -121,21 +98,6 @@ export default async function AdminPage() {
           <div className="rounded-xl bg-blue-50 border border-blue-200 p-3 text-center"><p className="text-xl font-extrabold text-blue-700">{nuevosRegistros.length}</p><p className="text-xs text-blue-600 font-medium">Nuevos (48h)</p></div>
         )}
       </div>
-
-      {/* Buzón de feedback / soporte */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
-            Buzón de feedback
-            {feedbackNuevos > 0 && (
-              <span className="rounded-full bg-orange-500 px-2 py-0.5 text-[11px] font-bold text-white">{feedbackNuevos} nuevo{feedbackNuevos > 1 ? "s" : ""}</span>
-            )}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <FeedbackList items={feedbackList} />
-        </CardContent>
-      </Card>
 
       {/* Talleres */}
       <Card>
@@ -167,10 +129,7 @@ export default async function AdminPage() {
                         {t.cif && <span>CIF: {t.cif}</span>}
                       </div>
                       <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2">
-                        <span>{t.clientesCount} clientes</span>
-                        <span>{t.vehiculosCount} vehículos</span>
-                        <span>{t.ordenesCount} órdenes</span>
-                        <span>{t.usuariosCount} usuarios</span>
+                        <span>{t.usuariosCount} cuenta(s)</span>
                       </div>
                       <div className="flex items-center gap-3 text-[10px] text-muted-foreground mt-1">
                         <span>Registro: {new Date(t.createdAt).toLocaleDateString("es-ES")}</span>

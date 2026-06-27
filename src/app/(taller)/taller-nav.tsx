@@ -6,7 +6,7 @@ import { UserButton } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import {
   LayoutDashboard, ClipboardList, CalendarDays, Users, MoreHorizontal,
-  FileText, Receipt, Bell, Settings, Megaphone, Upload, HelpCircle, Shield, FileCheck, Mail,
+  FileText, Receipt, Bell, Settings, Megaphone, Upload, HelpCircle, Shield, FileCheck,
   ChevronLeft, Columns3, BarChart3,
 } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
@@ -173,8 +173,7 @@ export function TallerNav({ children, rol, switcher, esSuperAdmin }: { children:
                 </div>
               )}
               <div className="space-y-0.5">
-                <SidebarLink tab={{ name: "Admin", href: "/admin", icon: Shield }} active={isActive("/admin")} collapsed={collapsed} />
-                <SidebarLink tab={{ name: "Correo", href: "/correo", icon: Mail }} active={isActive("/correo")} collapsed={collapsed} />
+                <SidebarLink tab={{ name: "Panel de admin", href: "/admin", icon: Shield }} active={isActive("/admin")} collapsed={collapsed} />
               </div>
             </>
           )}

@@ -241,3 +241,48 @@ export async function responder({
 
   return { messageId: info.messageId };
 }
+
+export type EnviarParams = {
+  to: string;
+  subject: string;
+  text: string;
+};
+
+/**
+ * Envía un correo NUEVO (redactado desde cero) por SMTP (puerto 465, SSL).
+ * No añade cabeceras de hilo: es un mensaje nuevo, no una respuesta.
+ * From = "Soporte FIXA <hola@fixataller.es>".
+ */
+export async function enviar({
+  to,
+  subject,
+  text,
+}: EnviarParams): Promise<{ messageId: string }> {
+  assertConfig();
+
+  if (!to || !to.includes("@")) {
+    throw new Error("Destinatario inválido.");
+  }
+  if (!subject.trim()) {
+    throw new Error("El asunto está vacío.");
+  }
+  if (!text.trim()) {
+    throw new Error("El cuerpo del mensaje está vacío.");
+  }
+
+  const transporter = nodemailer.createTransport({
+    host: HOST!,
+    port: 465,
+    secure: true,
+    auth: { user: USER!, pass: PASS! },
+  });
+
+  const info = await transporter.sendMail({
+    from: FROM,
+    to,
+    subject,
+    text,
+  });
+
+  return { messageId: info.messageId };
+}

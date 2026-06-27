@@ -9,11 +9,20 @@ import {
   Send,
   Inbox,
   CornerUpLeft,
+  PenSquare,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+
+// Validación básica de email (alineada con la del backend).
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function emailValido(v: string): boolean {
+  return EMAIL_RE.test(v.trim());
+}
 
 type MensajeResumen = {
   uid: number;
@@ -66,6 +75,14 @@ export function CorreoCliente() {
   const [respuesta, setRespuesta] = useState("");
   const [enviando, setEnviando] = useState(false);
 
+  // Composición de un correo nuevo (redactar desde cero).
+  const [redactando, setRedactando] = useState(false);
+  const [nuevoPara, setNuevoPara] = useState("");
+  const [nuevoAsunto, setNuevoAsunto] = useState("");
+  const [nuevoTexto, setNuevoTexto] = useState("");
+  const [enviandoNuevo, setEnviandoNuevo] = useState(false);
+  const [tocadoPara, setTocadoPara] = useState(false);
+
   const cargarLista = useCallback(async () => {
     setCargandoLista(true);
     setErrorLista(null);
@@ -87,6 +104,7 @@ export function CorreoCliente() {
 
   const abrir = useCallback(
     async (uid: number) => {
+      setRedactando(false);
       setSeleccionado(uid);
       setMensaje(null);
       setRespuesta("");
@@ -140,8 +158,62 @@ export function CorreoCliente() {
     }
   }, [mensaje, respuesta]);
 
+  const abrirRedactar = useCallback(() => {
+    setRedactando(true);
+    setSeleccionado(null);
+    setMensaje(null);
+    setErrorMensaje(null);
+    setTocadoPara(false);
+  }, []);
+
+  const cerrarRedactar = useCallback(() => {
+    setRedactando(false);
+    setNuevoPara("");
+    setNuevoAsunto("");
+    setNuevoTexto("");
+    setTocadoPara(false);
+  }, []);
+
+  const enviarNuevo = useCallback(async () => {
+    if (!emailValido(nuevoPara)) {
+      setTocadoPara(true);
+      toast.error("Introduce un email de destinatario válido.");
+      return;
+    }
+    if (!nuevoAsunto.trim()) {
+      toast.error("Escribe un asunto.");
+      return;
+    }
+    if (!nuevoTexto.trim()) {
+      toast.error("Escribe el mensaje.");
+      return;
+    }
+    setEnviandoNuevo(true);
+    try {
+      const res = await fetch("/api/admin/correo/enviar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: nuevoPara.trim(),
+          subject: nuevoAsunto.trim(),
+          text: nuevoTexto,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "No se pudo enviar.");
+      toast.success(`Correo enviado a ${nuevoPara.trim()}.`);
+      cerrarRedactar();
+    } catch (e: any) {
+      toast.error(e?.message || "No se pudo enviar el correo.");
+    } finally {
+      setEnviandoNuevo(false);
+    }
+  }, [nuevoPara, nuevoAsunto, nuevoTexto, cerrarRedactar]);
+
+  const paraInvalido = tocadoPara && nuevoPara.trim().length > 0 && !emailValido(nuevoPara);
+
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-6">
+    <div className="w-full">
       <div className="mb-5 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -152,19 +224,25 @@ export function CorreoCliente() {
             <p className="text-xs text-muted-foreground">hola@fixataller.es</p>
           </div>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={cargarLista}
-          disabled={cargandoLista}
-        >
-          {cargandoLista ? (
-            <Loader2 className="size-3.5 animate-spin" />
-          ) : (
-            <RefreshCw className="size-3.5" />
-          )}
-          Actualizar
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={cargarLista}
+            disabled={cargandoLista}
+          >
+            {cargandoLista ? (
+              <Loader2 className="size-3.5 animate-spin" />
+            ) : (
+              <RefreshCw className="size-3.5" />
+            )}
+            Actualizar
+          </Button>
+          <Button size="sm" onClick={abrirRedactar} disabled={redactando}>
+            <PenSquare className="size-3.5" />
+            Redactar
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,340px)_1fr]">
@@ -242,14 +320,134 @@ export function CorreoCliente() {
           </div>
         </div>
 
-        {/* Lector + responder */}
+        {/* Lector + responder / Redactar */}
         <div className="rounded-2xl border bg-card">
-          {seleccionado === null ? (
-            <div className="flex h-full min-h-[300px] flex-col items-center justify-center gap-2 px-6 py-16 text-center">
+          {redactando ? (
+            <div className="flex flex-col">
+              <div className="flex items-center justify-between gap-2 border-b px-6 py-4">
+                <div className="flex items-center gap-2 text-base font-semibold">
+                  <PenSquare className="size-4 text-primary" />
+                  Nuevo correo
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-7"
+                  onClick={cerrarRedactar}
+                  disabled={enviandoNuevo}
+                  aria-label="Cerrar redacción"
+                >
+                  <X className="size-4" />
+                </Button>
+              </div>
+
+              <div className="space-y-4 px-6 py-5">
+                <div className="space-y-1.5">
+                  <label
+                    htmlFor="nuevo-para"
+                    className="text-xs font-medium text-muted-foreground"
+                  >
+                    Para
+                  </label>
+                  <Input
+                    id="nuevo-para"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="off"
+                    placeholder="destinatario@email.com"
+                    value={nuevoPara}
+                    onChange={(e) => setNuevoPara(e.target.value)}
+                    onBlur={() => setTocadoPara(true)}
+                    disabled={enviandoNuevo}
+                    aria-invalid={paraInvalido}
+                    className={
+                      paraInvalido ? "border-destructive focus-visible:ring-destructive/30" : ""
+                    }
+                  />
+                  {paraInvalido && (
+                    <p className="text-xs text-destructive">
+                      Email no válido.
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <label
+                    htmlFor="nuevo-asunto"
+                    className="text-xs font-medium text-muted-foreground"
+                  >
+                    Asunto
+                  </label>
+                  <Input
+                    id="nuevo-asunto"
+                    placeholder="Asunto del correo"
+                    value={nuevoAsunto}
+                    onChange={(e) => setNuevoAsunto(e.target.value)}
+                    disabled={enviandoNuevo}
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label
+                    htmlFor="nuevo-texto"
+                    className="text-xs font-medium text-muted-foreground"
+                  >
+                    Mensaje
+                  </label>
+                  <Textarea
+                    id="nuevo-texto"
+                    value={nuevoTexto}
+                    onChange={(e) => setNuevoTexto(e.target.value)}
+                    placeholder="Escribe tu mensaje…"
+                    className="min-h-48"
+                    disabled={enviandoNuevo}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-[11px] text-muted-foreground">
+                    Se enviará desde hola@fixataller.es
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={cerrarRedactar}
+                      disabled={enviandoNuevo}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={enviarNuevo}
+                      disabled={
+                        enviandoNuevo ||
+                        !emailValido(nuevoPara) ||
+                        !nuevoAsunto.trim() ||
+                        !nuevoTexto.trim()
+                      }
+                    >
+                      {enviandoNuevo ? (
+                        <Loader2 className="size-3.5 animate-spin" />
+                      ) : (
+                        <Send className="size-3.5" />
+                      )}
+                      Enviar correo
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : seleccionado === null ? (
+            <div className="flex h-full min-h-[300px] flex-col items-center justify-center gap-3 px-6 py-16 text-center">
               <Mail className="size-8 text-muted-foreground/50" />
               <p className="text-sm text-muted-foreground">
-                Selecciona un mensaje para leerlo y responder.
+                Selecciona un mensaje para leerlo y responder, o redacta uno nuevo.
               </p>
+              <Button variant="outline" size="sm" onClick={abrirRedactar}>
+                <PenSquare className="size-3.5" />
+                Redactar correo
+              </Button>
             </div>
           ) : cargandoMensaje ? (
             <div className="space-y-3 p-6">
