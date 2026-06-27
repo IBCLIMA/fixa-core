@@ -6,7 +6,7 @@ import { UserButton } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import {
   LayoutDashboard, ClipboardList, CalendarDays, Users, MoreHorizontal,
-  FileText, Receipt, Bell, Settings, Megaphone, Upload, HelpCircle, Shield, FileCheck,
+  FileText, Receipt, Bell, Settings, Megaphone, Upload, HelpCircle, Shield, FileCheck, Mail,
   ChevronLeft, Columns3, BarChart3,
 } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
@@ -51,7 +51,7 @@ const mobileNav = mainNav;
 
 const SIDEBAR_COLLAPSED_KEY = "fixa-sidebar-collapsed";
 
-export function TallerNav({ children, rol, switcher }: { children: React.ReactNode; rol: RolUsuario; switcher: { talleres: { id: string; nombre: string }[]; activoId: string } | null }) {
+export function TallerNav({ children, rol, switcher, esSuperAdmin }: { children: React.ReactNode; rol: RolUsuario; switcher: { talleres: { id: string; nombre: string }[]; activoId: string } | null; esSuperAdmin?: boolean }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
 
@@ -158,6 +158,23 @@ export function TallerNav({ children, rol, switcher }: { children: React.ReactNo
                 {filteredAdmin.map((tab) => (
                   <SidebarLink key={tab.href} tab={tab} active={isActive(tab.href)} collapsed={collapsed} />
                 ))}
+              </div>
+            </>
+          )}
+
+          {/* Plataforma (solo super-admin) */}
+          {esSuperAdmin && (
+            <>
+              <div className="my-3 h-px bg-stone-200/30" />
+              {!collapsed && (
+                <div className="flex items-center gap-1.5 px-3 mb-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-red-400" />
+                  <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Plataforma</p>
+                </div>
+              )}
+              <div className="space-y-0.5">
+                <SidebarLink tab={{ name: "Admin", href: "/admin", icon: Shield }} active={isActive("/admin")} collapsed={collapsed} />
+                <SidebarLink tab={{ name: "Correo", href: "/correo", icon: Mail }} active={isActive("/correo")} collapsed={collapsed} />
               </div>
             </>
           )}
