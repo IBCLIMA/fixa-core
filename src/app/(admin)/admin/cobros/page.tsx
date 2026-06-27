@@ -6,6 +6,7 @@ import { talleres } from "@/db/schema";
 import { inArray, desc } from "drizzle-orm";
 import { CobroActions } from "./cobro-actions";
 import type { EstadoCobro } from "./acciones";
+import { formatMoneyShort } from "@/lib/format";
 
 // MRR por plan (cobro SEPA manual desde Ibañez Clima).
 const MRR_PLAN: Record<string, number> = { basico: 29, taller: 49, pro: 79 };
@@ -80,13 +81,13 @@ export default async function AdminCobrosPage() {
         <Card className={mrrRiesgo > 0 ? "border-red-300 bg-red-50/40" : undefined}>
           <CardContent className="p-4">
             <p className={`text-xs font-bold uppercase tracking-wider ${mrrRiesgo > 0 ? "text-red-600" : "text-muted-foreground"}`}>MRR en riesgo</p>
-            <p className={`text-2xl font-extrabold mt-1 ${mrrRiesgo > 0 ? "text-red-700" : ""}`}>{mrrRiesgo}€</p>
+            <p className={`text-2xl font-extrabold mt-1 ${mrrRiesgo > 0 ? "text-red-700" : ""}`}>{formatMoneyShort(mrrRiesgo)}</p>
           </CardContent>
         </Card>
         <Card className="border-emerald-200 bg-emerald-50/30">
           <CardContent className="p-4">
             <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider">MRR total</p>
-            <p className="text-2xl font-extrabold text-emerald-800 mt-1">{mrrTotal}€</p>
+            <p className="text-2xl font-extrabold text-emerald-800 mt-1">{formatMoneyShort(mrrTotal)}</p>
           </CardContent>
         </Card>
       </div>
@@ -127,7 +128,7 @@ export default async function AdminCobrosPage() {
                           <p className="font-bold">{t.nombre}</p>
                           <Badge variant="outline" className={`text-[10px] ${meta.badge}`}>{meta.label}</Badge>
                           <Badge variant="outline" className="text-[10px] text-muted-foreground">
-                            {PLAN_LABEL[t.plan]} · {t.mrr}€/mes
+                            {PLAN_LABEL[t.plan]} · {formatMoneyShort(t.mrr)}/mes
                           </Badge>
                         </div>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1 flex-wrap">

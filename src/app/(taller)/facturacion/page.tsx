@@ -9,6 +9,7 @@ import { ordenesTrabajo, lineasOrden, clientes, vehiculos, citas, usuarios, docu
 import { eq, and, sql, count, desc, gte } from "drizzle-orm";
 import { CobrosPendientes } from "./cobros-pendientes";
 import { ExportGestoria } from "./export-gestoria";
+import { formatMoney, formatMoneyShort } from "@/lib/format";
 
 export default async function FacturacionPage() {
   let tallerId: string;
@@ -179,7 +180,7 @@ export default async function FacturacionPage() {
               <Receipt className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-2xl font-extrabold leading-none text-emerald-800">{totalFact.toFixed(0)}€</p>
+              <p className="text-2xl font-extrabold leading-none text-emerald-800">{formatMoneyShort(totalFact)}</p>
               <p className="text-xs text-emerald-600 font-medium mt-0.5">Facturado total</p>
             </div>
           </div>
@@ -191,7 +192,7 @@ export default async function FacturacionPage() {
               <TrendingUp className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-2xl font-extrabold leading-none text-blue-800">{factMes.toFixed(0)}€</p>
+              <p className="text-2xl font-extrabold leading-none text-blue-800">{formatMoneyShort(factMes)}</p>
               <p className="text-xs text-blue-600 font-medium mt-0.5">Este mes</p>
             </div>
           </div>
@@ -203,7 +204,7 @@ export default async function FacturacionPage() {
               <Calculator className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-2xl font-extrabold leading-none text-stone-900">{ticketMedio.toFixed(0)}€</p>
+              <p className="text-2xl font-extrabold leading-none text-stone-900">{formatMoneyShort(ticketMedio)}</p>
               <p className="text-xs text-stone-400 font-medium mt-0.5">Ticket medio</p>
             </div>
           </div>
@@ -275,7 +276,7 @@ export default async function FacturacionPage() {
                     <span className="text-xs text-muted-foreground truncate">{o.clienteNombre}</span>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-sm font-bold">{Number(o.total).toFixed(2)}€</span>
+                    <span className="text-sm font-bold">{formatMoney(Number(o.total))}</span>
                     {o.fechaEntrega && (
                       <span className="text-xs text-muted-foreground">
                         {new Date(o.fechaEntrega).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
@@ -327,7 +328,7 @@ export default async function FacturacionPage() {
                     <span className="text-xs text-muted-foreground truncate">{doc.clienteNombre}</span>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-sm font-bold">{Number(doc.totalFinal).toFixed(2)}EUR</span>
+                    <span className="text-sm font-bold">{formatMoney(Number(doc.totalFinal))}</span>
                     <span className="text-xs text-muted-foreground">
                       {new Date(doc.createdAt).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
                     </span>
@@ -375,13 +376,13 @@ export default async function FacturacionPage() {
                     <p className="text-sm font-bold">{c.nombre}</p>
                     <p className="text-xs text-muted-foreground">
                       {c.numOrdenes} {c.numOrdenes === 1 ? "orden" : "órdenes"} completada{c.numOrdenes !== 1 ? "s" : ""}
-                      {" · "}Facturado: {c.totalFacturado.toFixed(2)}€
+                      {" · "}Facturado: {formatMoney(c.totalFacturado)}
                       {" · "}Comisión: {c.comisionPctNum}%
                     </p>
                   </div>
                   <div className="text-right shrink-0">
                     <p className="text-sm font-extrabold text-emerald-700">
-                      {c.comisionGanada.toFixed(2)}€
+                      {formatMoney(c.comisionGanada)}
                     </p>
                     <p className="text-[10px] text-muted-foreground">comisión</p>
                   </div>
@@ -390,7 +391,7 @@ export default async function FacturacionPage() {
               <div className="flex justify-between items-center pt-2 border-t border-border">
                 <span className="text-sm font-bold">Total comisiones</span>
                 <span className="text-sm font-extrabold text-emerald-700">
-                  {comisionesVisibles.reduce((sum, c) => sum + c.comisionGanada, 0).toFixed(2)}€
+                  {formatMoney(comisionesVisibles.reduce((sum, c) => sum + c.comisionGanada, 0))}
                 </span>
               </div>
             </div>

@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { agregarLineaOrden } from "../../actions/ordenes";
+import { formatMoney } from "@/lib/format";
 import { toast } from "sonner";
 
 export function AgregarLineaForm({ ordenId, precioHora = 0 }: { ordenId: string; precioHora?: number }) {
@@ -140,7 +141,7 @@ export function AgregarLineaForm({ ordenId, precioHora = 0 }: { ordenId: string;
             <span className="text-xs text-stone-500">
               Subtotal{Number(descuento) > 0 ? ` (-${descuento}%)` : ""} + IVA {iva}%
             </span>
-            <span className="text-sm font-bold">{total.toFixed(2)}EUR</span>
+            <span className="text-sm font-bold">{formatMoney(total)}</span>
           </div>
         );
       })()}

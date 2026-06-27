@@ -5,6 +5,7 @@ import { getDb } from "@/db";
 import { talleres, usuarios } from "@/db/schema";
 import { count, desc, sql } from "drizzle-orm";
 import { AdminTallerActions } from "./admin-actions";
+import { formatMoneyShort } from "@/lib/format";
 
 const planColors: Record<string, string> = {
   pendiente: "bg-orange-100 text-orange-700",
@@ -79,7 +80,7 @@ export default async function AdminResumenPage() {
         <Card className="border-emerald-200 bg-emerald-50/30">
           <CardContent className="p-4">
             <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider">MRR</p>
-            <p className="text-2xl font-extrabold text-emerald-800 mt-1">{mrr}€</p>
+            <p className="text-2xl font-extrabold text-emerald-800 mt-1">{formatMoneyShort(mrr)}</p>
           </CardContent>
         </Card>
         <Card><CardContent className="p-4"><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Talleres</p><p className="text-2xl font-extrabold mt-1">{totalTalleres?.count ?? 0}</p></CardContent></Card>

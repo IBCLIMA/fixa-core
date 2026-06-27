@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { crearPlantilla, actualizarPlantilla, eliminarPlantilla, type LineaPlantilla } from "../actions/plantillas";
 import { serviceTemplates } from "@/lib/service-templates";
+import { formatMoney } from "@/lib/format";
 import { toast } from "sonner";
 
 type Plantilla = {
@@ -123,9 +124,9 @@ function LineaEditor({
       {/* Total estimado en tiempo real */}
       {lineas.length > 0 && (
         <div className="text-right pt-2 border-t border-stone-100 space-y-0.5">
-          <p className="text-xs text-stone-400">Base: {totalBase.toFixed(2)}EUR</p>
-          <p className="text-xs text-stone-400">IVA: {totalIva.toFixed(2)}EUR</p>
-          <p className="text-sm font-bold text-stone-700">Total: {(totalBase + totalIva).toFixed(2)}EUR</p>
+          <p className="text-xs text-stone-400">Base: {formatMoney(totalBase)}</p>
+          <p className="text-xs text-stone-400">IVA: {formatMoney(totalIva)}</p>
+          <p className="text-sm font-bold text-stone-700">Total: {formatMoney(totalBase + totalIva)}</p>
         </div>
       )}
     </div>
@@ -245,7 +246,7 @@ export function PlantillasForm({ plantillasIniciales }: { plantillasIniciales: P
                   <p className="text-sm font-medium">{p.nombre}</p>
                   <p className="text-xs text-muted-foreground">
                     {p.lineas.length} línea{p.lineas.length !== 1 ? "s" : ""}{" · "}
-                    {p.lineas.reduce((sum, l) => sum + l.cantidad * l.precioUnitario, 0).toFixed(2)}€
+                    {formatMoney(p.lineas.reduce((sum, l) => sum + l.cantidad * l.precioUnitario, 0))}
                   </p>
                 </div>
                 <div className="flex gap-1">
@@ -270,7 +271,7 @@ export function PlantillasForm({ plantillasIniciales }: { plantillasIniciales: P
                 <p className="text-sm font-medium text-stone-600">{t.name}</p>
                 <p className="text-xs text-stone-400">
                   {t.lines.length} línea{t.lines.length !== 1 ? "s" : ""}{" · "}
-                  {t.lines.reduce((sum, l) => sum + l.cantidad * l.precioUnitario, 0).toFixed(2)}€
+                  {formatMoney(t.lines.reduce((sum, l) => sum + l.cantidad * l.precioUnitario, 0))}
                 </p>
               </div>
               <Button

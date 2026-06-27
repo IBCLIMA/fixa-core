@@ -9,6 +9,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { agregarLineaPresupuesto } from "../../actions/presupuestos";
+import { formatMoney } from "@/lib/format";
 import { toast } from "sonner";
 
 export function AgregarLineaPresupuesto({ presupuestoId, precioHora = 0 }: { presupuestoId: string; precioHora?: number }) {
@@ -108,7 +109,7 @@ export function AgregarLineaPresupuesto({ presupuestoId, precioHora = 0 }: { pre
           <span className="text-xs text-stone-500">
             Subtotal{Number(descuento) > 0 ? ` (-${descuento}%)` : ""} + IVA {iva}%
           </span>
-          <span className="text-sm font-bold">{total.toFixed(2)}EUR</span>
+          <span className="text-sm font-bold">{formatMoney(total)}</span>
         </div>
       )}
       <div className="flex gap-2">

@@ -4,6 +4,7 @@ import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
 import { ordenesTrabajo, presupuestos, lineasOrden, avisos } from "@/db/schema";
 import { eq, and, count, sql, gte } from "drizzle-orm";
+import { formatMoneyShort } from "@/lib/format";
 
 export const metadata = { title: "Tu taller en números" };
 
@@ -115,7 +116,7 @@ export default async function MetricasPage() {
           <TrendingUp className="h-8 w-8 text-orange-500 mx-auto mb-3" />
           <p className="text-sm font-bold text-orange-900">Valor estimado de lo que FIXA te ha ahorrado</p>
           <p className="text-4xl font-extrabold text-orange-600 mt-2">
-            {(horasAhorradas * 35).toLocaleString("es-ES")}€
+            {formatMoneyShort(horasAhorradas * 35)}
           </p>
           <p className="text-xs text-orange-700 mt-2">
             Basado en {horasAhorradas}h × 35€/hora de mano de obra.

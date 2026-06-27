@@ -6,6 +6,7 @@ import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
 import { presupuestos, vehiculos, clientes, lineasPresupuesto } from "@/db/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
+import { formatMoney } from "@/lib/format";
 
 const estadoLabels: Record<string, string> = {
   borrador: "Borrador", enviado: "Enviado", aceptado: "Aceptado",
@@ -105,7 +106,7 @@ export default async function PresupuestosPage({
               </div>
               <div className="flex flex-col items-end gap-1.5 shrink-0">
                 <Badge className={`text-[10px] ${estadoColors[p.estado]}`}>{estadoLabels[p.estado]}</Badge>
-                <span className="text-sm font-bold">{Number(p.total).toFixed(2)}€</span>
+                <span className="text-sm font-bold">{formatMoney(Number(p.total))}</span>
               </div>
             </Link>
           ))}

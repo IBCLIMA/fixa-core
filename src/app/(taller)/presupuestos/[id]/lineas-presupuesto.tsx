@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { editarLineaPresupuesto, eliminarLineaPresupuesto } from "../../actions/presupuestos";
+import { formatMoney } from "@/lib/format";
 import { toast } from "sonner";
 
 type Linea = {
@@ -172,13 +173,13 @@ export function LineasPresupuesto({ presupuestoId, lineas }: { presupuestoId: st
                     <span className="text-sm font-medium">{linea.descripcion}</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    {Number(linea.cantidad)} x {Number(linea.precioUnitario).toFixed(2)}EUR
+                    {Number(linea.cantidad)} x {formatMoney(Number(linea.precioUnitario))}
                     {Number(linea.descuentoPct || 0) > 0 && ` (-${linea.descuentoPct}%)`}
                     {" - IVA "}{linea.ivaPct}%
                   </p>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-sm font-bold">{base.toFixed(2)}EUR</span>
+                  <span className="text-sm font-bold">{formatMoney(base)}</span>
                   <button
                     onClick={() => startEdit(linea)}
                     className="p-1.5 rounded-lg text-stone-400 hover:text-orange-600 hover:bg-orange-50 transition-colors no-print"
@@ -203,15 +204,15 @@ export function LineasPresupuesto({ presupuestoId, lineas }: { presupuestoId: st
           <div className="space-y-1 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Base imponible</span>
-              <span>{totalBase.toFixed(2)}EUR</span>
+              <span>{formatMoney(totalBase)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">IVA</span>
-              <span>{totalIva.toFixed(2)}EUR</span>
+              <span>{formatMoney(totalIva)}</span>
             </div>
             <div className="flex justify-between text-base font-bold pt-1">
               <span>Total</span>
-              <span>{totalFinal.toFixed(2)}EUR</span>
+              <span>{formatMoney(totalFinal)}</span>
             </div>
           </div>
         </>

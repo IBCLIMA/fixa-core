@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { Receipt, Check, Printer, MessageSquare, FileText, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { formatWhatsAppUrl } from "@/lib/utils";
+import { formatMoney } from "@/lib/format";
 
 type MetodoPago = "efectivo" | "tarjeta" | "transferencia" | "bizum" | "domiciliacion" | "otro";
 
@@ -90,7 +91,7 @@ export function CobrarDialog({
     <>
       <Button onClick={() => setOpen(true)} className="rounded-full bg-emerald-600 hover:bg-emerald-500 text-white">
         <Receipt className="mr-1.5 h-4 w-4" />
-        Cobrar y generar documento ({totalFinal.toFixed(2)}EUR)
+        Cobrar y generar documento ({formatMoney(totalFinal)})
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-md">
@@ -106,7 +107,7 @@ export function CobrarDialog({
             <div className="space-y-4 py-4">
               <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-center">
                 <p className="text-xs font-bold text-emerald-700 uppercase tracking-wider">Total a cobrar</p>
-                <p className="text-3xl font-extrabold text-emerald-900">{totalFinal.toFixed(2)}EUR</p>
+                <p className="text-3xl font-extrabold text-emerald-900">{formatMoney(totalFinal)}</p>
               </div>
 
               <div className="space-y-2">
@@ -174,7 +175,7 @@ export function CobrarDialog({
                   DOC-{String(generado.numero).padStart(4, "0")}
                 </p>
                 <p className="text-xs text-emerald-600 mt-1">
-                  Pago registrado - {totalFinal.toFixed(2)}EUR
+                  Pago registrado - {formatMoney(totalFinal)}
                 </p>
               </div>
 

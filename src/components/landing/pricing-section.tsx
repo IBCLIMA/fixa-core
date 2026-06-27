@@ -10,6 +10,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { AnimatedSection } from "./animated-section";
 import { TRANSITION_DEFAULT } from "./animation-config";
 import { cn } from "@/lib/utils";
+import { formatMoneyShort } from "@/lib/format";
 
 const precios = [
   {
@@ -136,14 +137,14 @@ export function PricingSection() {
 
                   <div className="flex items-baseline gap-1 mt-6 mb-3">
                     <span className={`text-5xl font-extrabold tracking-tight ${p.popular ? "text-white" : "text-stone-900"}`}>
-                      {precio}€
+                      {formatMoneyShort(precio)}
                     </span>
                     <span className={`text-sm ${p.popular ? "text-stone-400" : "text-stone-400"}`}>/mes</span>
                   </div>
 
                   {anual && (
                     <p className={`text-xs mb-3 ${p.popular ? "text-stone-400" : "text-stone-400"}`}>
-                      <span className="line-through">{p.precio}€</span> · Facturado anualmente ({precio * 12}€/año)
+                      <span className="line-through">{formatMoneyShort(p.precio)}</span> · Facturado anualmente ({formatMoneyShort(precio * 12)}/año)
                     </p>
                   )}
 

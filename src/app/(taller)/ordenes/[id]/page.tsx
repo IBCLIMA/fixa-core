@@ -31,6 +31,7 @@ import { ItvAlert } from "./itv-alert";
 import { PedirRecambiosBtn } from "./pedir-recambios-btn";
 import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
+import { formatMoney } from "@/lib/format";
 import { getUserRole, getTallerIdFromAuth } from "@/lib/auth";
 import { getInspeccion } from "../../actions/inspecciones";
 import { getActivePhases } from "@/lib/workflow";
@@ -277,7 +278,7 @@ export default async function OrdenDetallePage({
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {documentoCobro
                     ? `DOC-${String(documentoCobro.numero).padStart(4, "0")} - ${new Date(documentoCobro.createdAt).toLocaleDateString("es-ES")}`
-                    : `Total: ${totalFinal.toFixed(2)}EUR`}
+                    : `Total: ${formatMoney(totalFinal)}`}
                 </p>
               </div>
               <CobrarDialog
@@ -368,15 +369,15 @@ export default async function OrdenDetallePage({
               <div className="space-y-1 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Base imponible</span>
-                  <span>{totalBase.toFixed(2)}€</span>
+                  <span>{formatMoney(totalBase)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">IVA</span>
-                  <span>{totalIva.toFixed(2)}€</span>
+                  <span>{formatMoney(totalIva)}</span>
                 </div>
                 <div className="flex justify-between text-base font-bold pt-1">
                   <span>Total</span>
-                  <span>{totalFinal.toFixed(2)}€</span>
+                  <span>{formatMoney(totalFinal)}</span>
                 </div>
               </div>
             </div>

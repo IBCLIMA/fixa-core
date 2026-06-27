@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { estadoLabels, estadoColors } from "@/lib/constants";
+import { formatMoney } from "@/lib/format";
 
 type TimelineOrder = {
   id: string;
@@ -59,7 +60,7 @@ export function VehicleTimeline({ ordenes }: { ordenes: TimelineOrder[] }) {
                     )}
                     {orden.importeTotal && Number(orden.importeTotal) > 0 && (
                       <span className="text-[10px] font-bold text-muted-foreground">
-                        {Number(orden.importeTotal).toFixed(2)}
+                        {formatMoney(Number(orden.importeTotal))}
                       </span>
                     )}
                   </div>

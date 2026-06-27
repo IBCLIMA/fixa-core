@@ -7,6 +7,7 @@ import { requireRole } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getDocumentos } from "../actions/documentos";
 import { DocumentosSearch } from "./documentos-search";
+import { formatMoney } from "@/lib/format";
 
 const metodoPagoLabels: Record<string, string> = {
   efectivo: "Efectivo",
@@ -84,7 +85,7 @@ export default async function DocumentosPage({
                         {metodoPagoLabels[doc.metodoPago] || doc.metodoPago}
                       </Badge>
                     )}
-                    <span className="text-sm font-bold">{Number(doc.totalFinal).toFixed(2)}EUR</span>
+                    <span className="text-sm font-bold">{formatMoney(Number(doc.totalFinal))}</span>
                     <span className="text-xs text-muted-foreground">
                       {new Date(doc.createdAt).toLocaleDateString("es-ES", {
                         day: "numeric",

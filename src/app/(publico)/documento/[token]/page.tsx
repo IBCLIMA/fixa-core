@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { getDb } from "@/db";
 import { documentosCobro } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { formatMoney } from "@/lib/format";
 
 // Página privada de cliente (acceso por token): no indexable
 export const metadata = { robots: { index: false, follow: false } };
@@ -137,12 +138,12 @@ export default async function DocumentoPublicoPage({
                         <span className="text-sm font-medium">{linea.descripcion}</span>
                       </div>
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        {linea.cantidad} x {linea.precioUnitario.toFixed(2)}EUR
+                        {linea.cantidad} x {formatMoney(linea.precioUnitario)}
                         {linea.descuentoPct > 0 && ` (-${linea.descuentoPct}%)`}
                         {" - IVA "}{linea.ivaPct}%
                       </p>
                     </div>
-                    <span className="text-sm font-bold">{linea.subtotal.toFixed(2)}EUR</span>
+                    <span className="text-sm font-bold">{formatMoney(linea.subtotal)}</span>
                   </div>
                 ))}
 
@@ -151,15 +152,15 @@ export default async function DocumentoPublicoPage({
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Base imponible</span>
-                    <span>{Number(doc.baseImponible).toFixed(2)}EUR</span>
+                    <span>{formatMoney(Number(doc.baseImponible))}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">IVA</span>
-                    <span>{Number(doc.totalIva).toFixed(2)}EUR</span>
+                    <span>{formatMoney(Number(doc.totalIva))}</span>
                   </div>
                   <div className="flex justify-between text-lg font-extrabold pt-2 border-t border-border">
                     <span>TOTAL</span>
-                    <span>{Number(doc.totalFinal).toFixed(2)}EUR</span>
+                    <span>{formatMoney(Number(doc.totalFinal))}</span>
                   </div>
                 </div>
               </div>

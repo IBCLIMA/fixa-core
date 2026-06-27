@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { MarcaAutocomplete, ModeloAutocomplete } from "@/components/vehicle-autocomplete";
 import { serviceTemplates } from "@/lib/service-templates";
+import { formatMoney } from "@/lib/format";
 import { toast } from "sonner";
 
 type Linea = {
@@ -219,9 +220,9 @@ export default function NuevoPresupuestoPage() {
 
               {/* Totals */}
               <div className="text-right space-y-1 pt-2">
-                <p className="text-sm text-stone-500">Base imponible: {totalBase.toFixed(2)}EUR</p>
-                <p className="text-sm text-stone-500">IVA: {totalIva.toFixed(2)}EUR</p>
-                <p className="text-lg font-bold">Total: {totalFinal.toFixed(2)}EUR</p>
+                <p className="text-sm text-stone-500">Base imponible: {formatMoney(totalBase)}</p>
+                <p className="text-sm text-stone-500">IVA: {formatMoney(totalIva)}</p>
+                <p className="text-lg font-bold">Total: {formatMoney(totalFinal)}</p>
               </div>
             </div>
           )}

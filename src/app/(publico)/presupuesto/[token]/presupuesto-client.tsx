@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { formatMoney } from "@/lib/format";
 
 interface LineaData {
   id: string; tipo: string; descripcion: string; cantidad: number;
@@ -24,7 +25,7 @@ const fadeUp: any = {
 const stagger: any = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } };
 
 function fmt(n: number) {
-  return n.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return formatMoney(n);
 }
 
 export function PresupuestoClient(props: PresupuestoClientProps) {
@@ -196,7 +197,7 @@ export function PresupuestoClient(props: PresupuestoClientProps) {
                           </p>
                         </div>
                       </div>
-                      <p className="font-bold text-stone-900 tabular-nums shrink-0 text-[15px]">{fmt(l.subtotal)} €</p>
+                      <p className="font-bold text-stone-900 tabular-nums shrink-0 text-[15px]">{fmt(l.subtotal)}</p>
                     </div>
                   </div>
                 </div>
@@ -211,12 +212,12 @@ export function PresupuestoClient(props: PresupuestoClientProps) {
             <div className="rounded-[calc(1.25rem-0.375rem)] bg-gradient-to-br from-stone-900 to-stone-800 p-6 shadow-xl shadow-stone-900/10">
               <div className="flex items-end justify-between">
                 <div className="space-y-1">
-                  <p className="text-sm text-white/40">Base: {fmt(totalBase)} €</p>
-                  <p className="text-sm text-white/40">IVA: {fmt(totalIva)} €</p>
+                  <p className="text-sm text-white/40">Base: {fmt(totalBase)}</p>
+                  <p className="text-sm text-white/40">IVA: {fmt(totalIva)}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-[10px] text-orange-400 uppercase tracking-[0.2em] font-semibold mb-1">Total</p>
-                  <p className="text-4xl font-extrabold text-white tabular-nums">{fmt(totalFinal)} €</p>
+                  <p className="text-4xl font-extrabold text-white tabular-nums">{fmt(totalFinal)}</p>
                 </div>
               </div>
             </div>
@@ -303,7 +304,7 @@ export function PresupuestoClient(props: PresupuestoClientProps) {
           <AnimatePresence mode="wait">
             {step === "confirm" ? (
               <motion.div key="c" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-3">
-                <p className="text-sm text-center text-stone-500">¿Confirmas que apruebas por <span className="font-bold text-stone-900">{fmt(totalFinal)} €</span>?</p>
+                <p className="text-sm text-center text-stone-500">¿Confirmas que apruebas por <span className="font-bold text-stone-900">{fmt(totalFinal)}</span>?</p>
                 <div className="flex gap-3">
                   <motion.button whileTap={{ scale: 0.97 }} onClick={() => handleAction("aceptado")} disabled={loading}
                     className="flex-1 h-14 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold shadow-lg shadow-emerald-500/20 disabled:opacity-50"

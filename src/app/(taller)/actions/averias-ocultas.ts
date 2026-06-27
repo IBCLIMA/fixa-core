@@ -8,6 +8,7 @@ import { logAudit } from "@/lib/audit";
 import { createNotification } from "@/lib/notify";
 import { revalidatePath } from "next/cache";
 import { formatWhatsAppUrl } from "@/lib/utils";
+import { formatMoney } from "@/lib/format";
 
 export async function getAveriasOcultas(ordenId: string) {
   const { tallerId } = await getTallerIdFromAuth();
@@ -68,7 +69,7 @@ export async function registrarAveriaOculta(data: {
     tallerId,
     tipo: "averia_oculta",
     titulo: `Avería oculta en OR-${orden.numero}`,
-    mensaje: `${data.descripcion}${data.importeEstimado ? ` — ~${data.importeEstimado}€` : ""}`,
+    mensaje: `${data.descripcion}${data.importeEstimado ? ` — ~${formatMoney(Number(data.importeEstimado))}` : ""}`,
     enlace: `/ordenes/${data.ordenId}`,
   });
 
@@ -105,7 +106,7 @@ export async function getAveriaWhatsAppUrl(averiaId: string) {
     `Te escribimos de ${taller.nombre}. Mientras revisamos tu ${vehiculo?.marca || "vehículo"} ${vehiculo?.modelo || ""} (${vehiculo?.matricula || ""}), hemos encontrado algo que necesita tu atención:`,
     ``,
     `*${averia.descripcion}*`,
-    averia.importeEstimado ? `Coste estimado: ${Number(averia.importeEstimado).toFixed(2)}€` : "",
+    averia.importeEstimado ? `Coste estimado: ${formatMoney(Number(averia.importeEstimado))}` : "",
     ``,
     `Puedes aprobar o rechazar esta reparación adicional aquí:`,
     approvalUrl,

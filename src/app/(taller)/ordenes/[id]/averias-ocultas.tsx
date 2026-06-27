@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { registrarAveriaOculta, getAveriaWhatsAppUrl } from "../../actions/averias-ocultas";
+import { formatMoney } from "@/lib/format";
 import { toast } from "sonner";
 
 type Averia = {
@@ -170,7 +171,7 @@ export function AveriasOcultas({
                   <p className="text-sm font-medium">{averia.descripcion}</p>
                   {averia.importeEstimado && (
                     <p className="text-sm font-bold mt-0.5">
-                      ~{Number(averia.importeEstimado).toFixed(2)}EUR
+                      ~{formatMoney(Number(averia.importeEstimado))}
                     </p>
                   )}
                 </div>

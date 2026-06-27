@@ -5,6 +5,7 @@ import { eq, and, inArray, sql } from "drizzle-orm";
 import { createNotification } from "@/lib/notify";
 import { rateLimit } from "@/lib/rate-limit";
 import { randomBytes } from "crypto";
+import { formatMoney } from "@/lib/format";
 
 export async function POST(
   request: Request,
@@ -86,7 +87,7 @@ export async function POST(
 
   // Build acceptance text (legal snapshot of what was accepted)
   const acceptanceText = estado === "aceptado"
-    ? `ACEPTACIÓN DE PRESUPUESTO\n\nEl cliente acepta el presupuesto PT-${presupuesto.numero} por un importe total de ${totalFinal.toFixed(2)} EUR (IVA incluido), y autoriza al taller a realizar los trabajos descritos.\n\nDetalle:\n${lineas.map(l => `- ${l.descripcion}: ${(Number(l.cantidad) * Number(l.precioUnitario)).toFixed(2)} EUR`).join("\n")}\n\nBase: ${totalBase.toFixed(2)} EUR\nIVA: ${totalIva.toFixed(2)} EUR\nTotal: ${totalFinal.toFixed(2)} EUR\n\nFecha: ${new Date().toLocaleString("es-ES")}\nIP: ${clientIp}`
+    ? `ACEPTACIÓN DE PRESUPUESTO\n\nEl cliente acepta el presupuesto PT-${presupuesto.numero} por un importe total de ${formatMoney(totalFinal)} (IVA incluido), y autoriza al taller a realizar los trabajos descritos.\n\nDetalle:\n${lineas.map(l => `- ${l.descripcion}: ${formatMoney(Number(l.cantidad) * Number(l.precioUnitario))}`).join("\n")}\n\nBase: ${formatMoney(totalBase)}\nIVA: ${formatMoney(totalIva)}\nTotal: ${formatMoney(totalFinal)}\n\nFecha: ${new Date().toLocaleString("es-ES")}\nIP: ${clientIp}`
     : `RECHAZO DE PRESUPUESTO\n\nEl cliente rechaza el presupuesto PT-${presupuesto.numero}.\n\nFecha: ${new Date().toLocaleString("es-ES")}\nIP: ${clientIp}`;
 
   // Atomic conditional update: only transitions if still pending.
@@ -189,7 +190,7 @@ export async function POST(
       tallerId: presupuesto.tallerId,
       tipo: "presupuesto_aceptado",
       titulo: `${matricula} — presupuesto aceptado`,
-      mensaje: `${clienteNombre} ha aceptado el presupuesto para su ${vehiculoDesc} (${matricula}) por ${totalFinal.toFixed(2)}EUR. La OR ya está en reparación.`,
+      mensaje: `${clienteNombre} ha aceptado el presupuesto para su ${vehiculoDesc} (${matricula}) por ${formatMoney(totalFinal)}. La OR ya está en reparación.`,
       enlace: presupuesto.ordenId ? `/ordenes/${presupuesto.ordenId}` : `/presupuestos/${presupuesto.id}`,
     });
   } else {

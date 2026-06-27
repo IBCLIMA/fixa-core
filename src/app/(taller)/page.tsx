@@ -31,6 +31,7 @@ import { eq, and, count, sql, desc, sum, lt } from "drizzle-orm";
 import { estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { getVehicleAbandonment, type VehicleAbandonment } from "@/lib/vehicle-alerts";
+import { formatMoney } from "@/lib/format";
 import { AlertTriangle } from "lucide-react";
 
 const estadoDots: Record<string, string> = {
@@ -720,7 +721,7 @@ export default async function PanelDelDia() {
               <p className="text-xs text-muted-foreground font-medium">Entregadas hoy</p>
             </div>
             <div className="rounded-xl bg-muted/50 p-3 text-center">
-              <p className="text-2xl font-extrabold text-stone-900">{facturacionHoy.toFixed(2)}€</p>
+              <p className="text-2xl font-extrabold text-stone-900">{formatMoney(facturacionHoy)}</p>
               <p className="text-xs text-muted-foreground font-medium">Facturación</p>
             </div>
             <div className="rounded-xl bg-muted/50 p-3 text-center">

@@ -2,6 +2,7 @@ import { BarChart3, TrendingUp, Repeat, Euro, Users, Percent } from "lucide-reac
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDb } from "@/db";
 import { talleres } from "@/db/schema";
+import { formatMoneyShort } from "@/lib/format";
 
 export const metadata = { title: "Métricas · FIXA Admin" };
 export const dynamic = "force-dynamic";
@@ -11,10 +12,6 @@ const PRECIO_PLAN: Record<string, number> = { basico: 29, taller: 49, pro: 79 };
 const PLANES_PAGO = ["basico", "taller", "pro"];
 
 const DIA = 86_400_000;
-
-function eur(n: number) {
-  return new Intl.NumberFormat("es-ES", { maximumFractionDigits: 0 }).format(n) + "€";
-}
 
 export default async function MetricasPage() {
   const db = getDb();
@@ -120,8 +117,8 @@ export default async function MetricasPage() {
               <Euro className="h-3.5 w-3.5" />
               <p className="text-xs font-bold uppercase tracking-wider">MRR</p>
             </div>
-            <p className="text-2xl font-extrabold text-emerald-800 mt-1">{eur(mrr)}</p>
-            <p className="text-[11px] text-emerald-600/80 mt-0.5">ARR ≈ {eur(arr)}</p>
+            <p className="text-2xl font-extrabold text-emerald-800 mt-1">{formatMoneyShort(mrr)}</p>
+            <p className="text-[11px] text-emerald-600/80 mt-0.5">ARR ≈ {formatMoneyShort(arr)}</p>
           </CardContent>
         </Card>
         <Card>
@@ -130,7 +127,7 @@ export default async function MetricasPage() {
               <Users className="h-3.5 w-3.5" />
               <p className="text-xs font-bold uppercase tracking-wider">ARPU</p>
             </div>
-            <p className="text-2xl font-extrabold mt-1">{eur(arpu)}</p>
+            <p className="text-2xl font-extrabold mt-1">{formatMoneyShort(arpu)}</p>
             <p className="text-[11px] text-muted-foreground mt-0.5">{pagando.length} pagando</p>
           </CardContent>
         </Card>
@@ -255,7 +252,7 @@ export default async function MetricasPage() {
               return (
                 <div key={p.plan} className="flex items-center gap-3">
                   <div className="w-28 shrink-0 text-xs font-medium capitalize">
-                    {p.plan} <span className="text-muted-foreground">({PRECIO_PLAN[p.plan]}€)</span>
+                    {p.plan} <span className="text-muted-foreground">({formatMoneyShort(PRECIO_PLAN[p.plan])})</span>
                   </div>
                   <div className="relative h-6 flex-1 overflow-hidden rounded-md bg-stone-100">
                     <div
@@ -264,7 +261,7 @@ export default async function MetricasPage() {
                     />
                   </div>
                   <div className="w-32 shrink-0 text-right text-xs">
-                    <span className="font-bold tabular-nums">{eur(p.total)}</span>
+                    <span className="font-bold tabular-nums">{formatMoneyShort(p.total)}</span>
                     <span className="text-muted-foreground"> · {p.n} taller{p.n !== 1 ? "es" : ""}</span>
                   </div>
                 </div>

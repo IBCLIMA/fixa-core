@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { entregarOrden } from "../../actions/ordenes";
+import { formatMoney } from "@/lib/format";
 import { toast } from "sonner";
 import { Car, Check, MessageSquare, FileText, Clock } from "lucide-react";
 import Link from "next/link";
@@ -91,7 +92,7 @@ export function EntregarDialog({
                 <>
                   <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-center">
                     <p className="text-xs font-bold text-emerald-700 uppercase tracking-wider">Total a cobrar</p>
-                    <p className="text-3xl font-extrabold text-emerald-900">{totalFinal.toFixed(2)}€</p>
+                    <p className="text-3xl font-extrabold text-emerald-900">{formatMoney(totalFinal)}</p>
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Método de pago</label>
@@ -126,7 +127,7 @@ export function EntregarDialog({
                     onClick={() => handleEntregar(true)}
                   >
                     <Check className="mr-1.5 h-4 w-4" />
-                    {loading ? "Entregando..." : `Entregar y cobrar ${totalFinal.toFixed(2)}€`}
+                    {loading ? "Entregando..." : `Entregar y cobrar ${formatMoney(totalFinal)}`}
                   </Button>
                   <Button
                     variant="outline"

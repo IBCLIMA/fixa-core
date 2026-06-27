@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { editarLineaOrden, eliminarLineaOrden } from "../../actions/ordenes";
 import { RecambioActions } from "./recambio-actions";
+import { formatMoney } from "@/lib/format";
 import { toast } from "sonner";
 
 type Recambista = { id: string; nombre: string; telefono: string; notas: string | null };
@@ -171,7 +172,7 @@ export function LineasList({ ordenId, lineas, recambistas, vehiculo, tallerNombr
               </div>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <p className="text-xs text-muted-foreground">
-                  {Number(linea.cantidad)} × {Number(linea.precioUnitario).toFixed(2)}€
+                  {Number(linea.cantidad)} × {formatMoney(Number(linea.precioUnitario))}
                   {Number(linea.descuentoPct || 0) > 0 && ` (-${linea.descuentoPct}%)`}
                   {" · IVA "}{linea.ivaPct}%
                 </p>
@@ -194,7 +195,7 @@ export function LineasList({ ordenId, lineas, recambistas, vehiculo, tallerNombr
               </div>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="text-sm font-bold">{base.toFixed(2)}€</span>
+              <span className="text-sm font-bold">{formatMoney(base)}</span>
               <button
                 onClick={() => startEdit(linea)}
                 className="p-1.5 rounded-lg text-stone-400 hover:text-orange-600 hover:bg-orange-50 transition-colors"

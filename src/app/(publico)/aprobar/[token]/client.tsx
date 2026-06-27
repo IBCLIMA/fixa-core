@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { responderAveria } from "@/app/(taller)/actions/averias-ocultas";
+import { formatMoney } from "@/lib/format";
 
 export function AprobarAveriaClient({
   token,
@@ -155,7 +156,7 @@ export function AprobarAveriaClient({
                     Coste estimado
                   </p>
                   <p className="text-2xl font-extrabold text-stone-900 mt-1">
-                    {Number(averia.importeEstimado).toFixed(2)}EUR
+                    {formatMoney(Number(averia.importeEstimado))}
                   </p>
                   <p className="text-[10px] text-amber-600 mt-1">IVA no incluido</p>
                 </div>

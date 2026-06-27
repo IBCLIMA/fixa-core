@@ -14,6 +14,7 @@ import { registrarPago } from "../actions/ordenes";
 import { toast } from "sonner";
 import { Check, CreditCard } from "lucide-react";
 import Link from "next/link";
+import { formatMoney } from "@/lib/format";
 
 type OrdenPendiente = {
   id: string;
@@ -61,7 +62,7 @@ export function CobrosPendientes({ ordenes }: { ordenes: OrdenPendiente[] }) {
       <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 flex items-center justify-between">
         <div>
           <p className="text-xs font-bold text-amber-700 uppercase tracking-wider">Total pendiente de cobro</p>
-          <p className="text-2xl font-extrabold text-amber-900">{totalPendiente.toFixed(2)}€</p>
+          <p className="text-2xl font-extrabold text-amber-900">{formatMoney(totalPendiente)}</p>
         </div>
         <Badge className="bg-amber-600 text-white text-sm px-3 py-1">
           {ordenes.length} {ordenes.length === 1 ? "orden" : "órdenes"}
@@ -78,7 +79,7 @@ export function CobrosPendientes({ ordenes }: { ordenes: OrdenPendiente[] }) {
                 <span className="text-xs text-muted-foreground truncate">{o.clienteNombre}</span>
               </Link>
               <div className="flex items-center gap-3 shrink-0">
-                <span className="text-sm font-bold">{Number(o.total).toFixed(2)}€</span>
+                <span className="text-sm font-bold">{formatMoney(Number(o.total))}</span>
                 {o.fechaEntrega && (
                   <span className="text-xs text-muted-foreground">
                     {new Date(o.fechaEntrega).toLocaleDateString("es-ES", { day: "numeric", month: "short" })}
