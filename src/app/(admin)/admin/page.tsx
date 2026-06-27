@@ -85,7 +85,7 @@ export default async function AdminResumenPage() {
     { n: impagados.length, label: "con recibo impagado", icon: CreditCard, href: "/admin/cobros", tone: "red" as const },
     { n: trialExpirado.length, label: "con trial expirado sin convertir", icon: AlertTriangle, href: "/admin/talleres", tone: "red" as const },
     { n: enfriandose.length, label: "enfriándose (sin entrar +7 días)", icon: Clock, href: "/admin/actividad", tone: "amber" as const },
-    { n: nuevos.length, label: "registros nuevos (48 h)", icon: UserPlus, href: "/admin/talleres", tone: "blue" as const },
+    { n: nuevos.length, label: "nuevos (48 h)", icon: UserPlus, href: "/admin/talleres", tone: "blue" as const },
   ].filter((a) => a.n > 0);
 
   const toneRow: Record<string, string> = {
