@@ -285,12 +285,12 @@ export default async function PanelDelDia() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <p className="text-sm font-medium text-muted-foreground capitalize">{fechaHoy}</p>
           <h1 className="text-2xl font-extrabold tracking-tight mt-0.5">Panel del día</h1>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <TourGuiado />
           <Link href="/presupuestos/nuevo">
             <Button variant="outline" className="rounded-full">
