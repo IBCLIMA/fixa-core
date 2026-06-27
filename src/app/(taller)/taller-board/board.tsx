@@ -150,12 +150,12 @@ export function TallerBoard({ ordenes, activePhases, flujoActual, tallerId }: {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <h1 className="text-2xl font-extrabold tracking-tight">Taller</h1>
           <p className="text-sm text-muted-foreground">{items.length} vehículo{items.length !== 1 ? "s" : ""}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {/* Workflow selector */}
           <div className="flex items-center gap-1 rounded-full bg-stone-100 p-0.5">
             {Object.entries(workflowPresets).map(([key, preset]) => (

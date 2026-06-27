@@ -68,8 +68,8 @@ export default async function PresupuestosPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <h1 className="text-2xl font-extrabold tracking-tight">Presupuestos</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Presupuestos enviados a tus clientes.</p>
         </div>

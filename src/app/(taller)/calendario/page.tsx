@@ -65,8 +65,8 @@ export default async function CalendarioPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <h1 className="text-2xl font-extrabold tracking-tight">Calendario</h1>
           <p className="text-sm text-muted-foreground mt-0.5">Organiza las citas de entrada de vehiculos.</p>
           <p className="text-xs text-muted-foreground mt-0.5">
@@ -75,7 +75,7 @@ export default async function CalendarioPage({
             {week.days[6].toLocaleDateString("es-ES", { day: "numeric", month: "long" })}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Link
             href={`/calendario?semana=${formatMondayParam(prevMonday)}`}
             className="flex h-10 w-10 items-center justify-center rounded-xl border border-border hover:bg-muted transition-all duration-200 hover:scale-105"

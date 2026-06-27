@@ -28,8 +28,8 @@ export default async function AvisosPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <h1 className="text-2xl font-extrabold tracking-tight">Avisos</h1>
           <p className="text-sm text-muted-foreground mt-0.5">ITVs proximas y mantenimientos pendientes.</p>
         </div>

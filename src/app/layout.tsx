@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { esES } from "@clerk/localizations/es-ES";
@@ -64,6 +64,17 @@ export const metadata: Metadata = {
   },
 };
 
+// Modo app: viewport-fit=cover habilita las safe areas (Dynamic Island / barra de
+// inicio en iPhone). maximumScale=1 evita el auto-zoom de iOS al enfocar inputs
+// (tic de "esto es web"). themeColor claro = la barra de estado se funde con la app.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: "cover",
+  themeColor: "#faf9f7",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -77,7 +88,6 @@ export default function RootLayout({
       >
         <head>
           <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-          <meta name="theme-color" content="#f97316" />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSONLD) }}

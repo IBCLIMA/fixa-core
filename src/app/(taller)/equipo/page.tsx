@@ -49,12 +49,12 @@ export default async function EquipoPage() {
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <h1 className="text-2xl font-extrabold tracking-tight">Equipo</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{equipo.length} usuario{equipo.length !== 1 ? "s" : ""}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <AnadirOperarioDialog />
           <InvitarUsuarioDialog />
         </div>

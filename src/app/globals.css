@@ -346,3 +346,38 @@ html {
   font-size: 13px !important;
   padding: 6px 16px !important;
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   MODO APP (PWA) — que se sienta app nativa, no web
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Sin el flash gris al tocar (tic de web en móvil) */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Safe areas del iPhone (Dynamic Island arriba, barra de inicio abajo).
+   Requiere viewport-fit=cover (ya puesto en layout.tsx). Usar en barras fijas. */
+.pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.pl-safe { padding-left: env(safe-area-inset-left, 0px); }
+.pr-safe { padding-right: env(safe-area-inset-right, 0px); }
+/* Suma la safe area a un padding base (p.ej. nav inferior) */
+.pb-safe-nav { padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px)); }
+
+@media (display-mode: standalone) {
+  /* App instalada: sin rebote elástico que delata que es una web */
+  html, body {
+    overscroll-behavior-y: none;
+  }
+  /* Texto de la UI no seleccionable como en una app nativa; inputs/áreas de
+     texto y contenido editable SÍ seleccionables (no romper copiar/pegar). */
+  body {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  input, textarea, [contenteditable="true"], [data-selectable] {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+}

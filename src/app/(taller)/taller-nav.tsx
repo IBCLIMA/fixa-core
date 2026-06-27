@@ -84,11 +84,14 @@ export function TallerNav({ children, rol, switcher, esSuperAdmin }: { children:
 
   return (
     <div className="flex min-h-[100dvh] flex-col antialiased" style={{ background: "linear-gradient(180deg, #faf9f7 0%, #f5f3f0 100%)" }}>
-      <TrialBanner />
+      {/* Barra superior fija (app-bar): trial + header juntos. pt-safe deja el
+          contenido bajo el Dynamic Island del iPhone en modo app. */}
+      <div className="sticky top-0 z-40 pt-safe bg-white/80 backdrop-blur-xl shadow-sm shadow-black/[0.04]">
+        <TrialBanner />
 
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl shadow-sm shadow-black/[0.04]">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 h-14">
+        {/* Header */}
+        <header>
+          <div className="mx-auto flex max-w-6xl items-center justify-between px-4 h-14">
           <div className="flex items-center gap-2">
             <Link href="/">
               <FixaLogo size="sm" />
@@ -108,7 +111,8 @@ export function TallerNav({ children, rol, switcher, esSuperAdmin }: { children:
             </div>
           </div>
         </div>
-      </header>
+        </header>
+      </div>
 
       {/* Desktop sidebar */}
       <div className="mx-auto flex w-full max-w-6xl flex-1">

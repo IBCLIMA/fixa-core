@@ -214,8 +214,8 @@ export function CorreoCliente() {
 
   return (
     <div className="w-full">
-      <div className="mb-5 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3 min-w-0">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-md">
             <Mail className="h-5 w-5 text-white" />
           </div>
@@ -224,7 +224,7 @@ export function CorreoCliente() {
             <p className="text-sm text-muted-foreground mt-0.5">hola@fixataller.es</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Button
             variant="outline"
             size="sm"
