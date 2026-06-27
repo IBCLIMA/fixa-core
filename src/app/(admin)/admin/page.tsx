@@ -1,6 +1,7 @@
-import { Shield } from "lucide-react";
+import { Shield, Euro, Store, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { StatCard } from "@/components/stat-card";
 import { getDb } from "@/db";
 import { talleres, usuarios } from "@/db/schema";
 import { count, desc, sql } from "drizzle-orm";
@@ -77,14 +78,9 @@ export default async function AdminResumenPage() {
 
       {/* KPIs */}
       <div className="grid grid-cols-3 gap-3">
-        <Card className="border-emerald-200 bg-emerald-50/30">
-          <CardContent className="p-4">
-            <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider">MRR</p>
-            <p className="text-2xl font-extrabold text-emerald-800 mt-1">{formatMoneyShort(mrr)}</p>
-          </CardContent>
-        </Card>
-        <Card><CardContent className="p-4"><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Talleres</p><p className="text-2xl font-extrabold mt-1">{totalTalleres?.count ?? 0}</p></CardContent></Card>
-        <Card><CardContent className="p-4"><p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Cuentas</p><p className="text-2xl font-extrabold mt-1">{totalUsuarios?.count ?? 0}</p></CardContent></Card>
+        <StatCard label="MRR" value={formatMoneyShort(mrr)} icon={Euro} accent="emerald" />
+        <StatCard label="Talleres" value={totalTalleres?.count ?? 0} icon={Store} accent="violet" />
+        <StatCard label="Cuentas" value={totalUsuarios?.count ?? 0} icon={Users} accent="blue" />
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">

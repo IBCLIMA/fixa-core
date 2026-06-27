@@ -18,6 +18,7 @@ import {
   Package,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StatCard } from "@/components/stat-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -305,69 +306,11 @@ export default async function PanelDelDia() {
 
       {/* KPIs */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-        <div id="kpi-en-taller" className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-sm shadow-blue-500/20">
-              <Car className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold leading-none text-stone-900">{ordenesActivas.length}</p>
-              <p className="text-xs text-stone-400 font-medium mt-0.5">En taller</p>
-            </div>
-          </div>
-          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-blue-500/[0.04]" />
-        </div>
-        <div id="kpi-citas" className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-sm shadow-orange-500/20">
-              <CalendarDays className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold leading-none text-stone-900">{citasHoy.length}</p>
-              <p className="text-xs text-stone-400 font-medium mt-0.5">Citas hoy</p>
-            </div>
-          </div>
-          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-orange-500/[0.04]" />
-        </div>
-        <div className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-violet-600 shadow-sm shadow-violet-500/20">
-              <Receipt className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold leading-none text-stone-900">{totalClientes}</p>
-              <p className="text-xs text-stone-400 font-medium mt-0.5">Clientes</p>
-            </div>
-          </div>
-          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-violet-500/[0.04]" />
-        </div>
-        <div className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-sm shadow-emerald-500/20">
-              <ClipboardList className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold leading-none text-stone-900">{cochesListos.length}</p>
-              <p className="text-xs text-stone-400 font-medium mt-0.5">Finalizados</p>
-            </div>
-          </div>
-          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-emerald-500/[0.04]" />
-        </div>
-        <Link href="/facturacion" className={`relative overflow-hidden rounded-2xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ${cobrosPendientes > 0 ? "bg-amber-50 border border-amber-300" : "bg-white border border-stone-200/60"}`}>
-          <div className="flex items-center gap-3">
-            <div className={`flex h-11 w-11 items-center justify-center rounded-xl shadow-sm ${cobrosPendientes > 0 ? "bg-gradient-to-br from-amber-500 to-amber-600 shadow-amber-500/20" : "bg-gradient-to-br from-stone-400 to-stone-500 shadow-stone-400/20"}`}>
-              <CreditCard className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <p className={`text-2xl font-extrabold leading-none ${cobrosPendientes > 0 ? "text-amber-900" : "text-stone-900"}`}>{cobrosPendientes}</p>
-              <p className={`text-xs font-medium mt-0.5 ${cobrosPendientes > 0 ? "text-amber-600" : "text-stone-400"}`}>Cobros pend.</p>
-            </div>
-          </div>
-          {cobrosPendientes > 0 && (
-            <div className="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-amber-500 animate-pulse" />
-          )}
-          <div className={`absolute -top-4 -right-4 h-16 w-16 rounded-full ${cobrosPendientes > 0 ? "bg-amber-500/[0.08]" : "bg-stone-500/[0.04]"}`} />
-        </Link>
+        <StatCard id="kpi-en-taller" label="En taller" value={ordenesActivas.length} icon={Car} accent="blue" />
+        <StatCard id="kpi-citas" label="Citas hoy" value={citasHoy.length} icon={CalendarDays} accent="brand" />
+        <StatCard label="Clientes" value={totalClientes} icon={Receipt} accent="violet" />
+        <StatCard label="Finalizados" value={cochesListos.length} icon={ClipboardList} accent="emerald" />
+        <StatCard label="Cobros pend." value={cobrosPendientes} icon={CreditCard} accent="stone" href="/facturacion" alert={cobrosPendientes > 0} />
       </div>
 
       {/* Primeros pasos — solo si el taller está vacío */}

@@ -9,6 +9,7 @@ import { ordenesTrabajo, lineasOrden, clientes, vehiculos, citas, usuarios, docu
 import { eq, and, sql, count, desc, gte } from "drizzle-orm";
 import { CobrosPendientes } from "./cobros-pendientes";
 import { ExportGestoria } from "./export-gestoria";
+import { StatCard } from "@/components/stat-card";
 import { formatMoney, formatMoneyShort } from "@/lib/format";
 
 export default async function FacturacionPage() {
@@ -174,54 +175,10 @@ export default async function FacturacionPage() {
 
       {/* KPIs principales */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <div className="relative overflow-hidden rounded-2xl bg-emerald-50/30 border border-emerald-200 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-sm shadow-emerald-500/20">
-              <Receipt className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold leading-none text-emerald-800">{formatMoneyShort(totalFact)}</p>
-              <p className="text-xs text-emerald-600 font-medium mt-0.5">Facturado total</p>
-            </div>
-          </div>
-          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-emerald-500/[0.04]" />
-        </div>
-        <div className="relative overflow-hidden rounded-2xl bg-blue-50/30 border border-blue-200 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-sm shadow-orange-500/20">
-              <TrendingUp className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold leading-none text-blue-800">{formatMoneyShort(factMes)}</p>
-              <p className="text-xs text-blue-600 font-medium mt-0.5">Este mes</p>
-            </div>
-          </div>
-          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-orange-500/[0.04]" />
-        </div>
-        <div className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-sm shadow-blue-500/20">
-              <Calculator className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold leading-none text-stone-900">{formatMoneyShort(ticketMedio)}</p>
-              <p className="text-xs text-stone-400 font-medium mt-0.5">Ticket medio</p>
-            </div>
-          </div>
-          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-blue-500/[0.04]" />
-        </div>
-        <div className="relative overflow-hidden rounded-2xl bg-white border border-stone-200/60 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-violet-600 shadow-sm shadow-violet-500/20">
-              <CheckCircle className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold leading-none text-stone-900">{entregadas?.count ?? 0}</p>
-              <p className="text-xs text-stone-400 font-medium mt-0.5">Completadas</p>
-            </div>
-          </div>
-          <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-violet-500/[0.04]" />
-        </div>
+        <StatCard label="Facturado total" value={formatMoneyShort(totalFact)} icon={Receipt} accent="emerald" />
+        <StatCard label="Este mes" value={formatMoneyShort(factMes)} icon={TrendingUp} accent="brand" />
+        <StatCard label="Ticket medio" value={formatMoneyShort(ticketMedio)} icon={Calculator} accent="blue" />
+        <StatCard label="Completadas" value={entregadas?.count ?? 0} icon={CheckCircle} accent="violet" />
       </div>
 
       {/* Resumen del mes */}

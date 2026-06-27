@@ -1,5 +1,6 @@
 import { BarChart3, TrendingUp, Repeat, Euro, Users, Percent } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StatCard } from "@/components/stat-card";
 import { getDb } from "@/db";
 import { talleres } from "@/db/schema";
 import { formatMoneyShort } from "@/lib/format";
@@ -111,46 +112,35 @@ export default async function MetricasPage() {
 
       {/* KPIs principales */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Card className="border-emerald-200 bg-emerald-50/40">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-1.5 text-emerald-600">
-              <Euro className="h-3.5 w-3.5" />
-              <p className="text-xs font-bold uppercase tracking-wider">MRR</p>
-            </div>
-            <p className="text-2xl font-extrabold text-emerald-800 mt-1">{formatMoneyShort(mrr)}</p>
-            <p className="text-[11px] text-emerald-600/80 mt-0.5">ARR ≈ {formatMoneyShort(arr)}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-1.5 text-muted-foreground">
-              <Users className="h-3.5 w-3.5" />
-              <p className="text-xs font-bold uppercase tracking-wider">ARPU</p>
-            </div>
-            <p className="text-2xl font-extrabold mt-1">{formatMoneyShort(arpu)}</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">{pagando.length} pagando</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-1.5 text-muted-foreground">
-              <Percent className="h-3.5 w-3.5" />
-              <p className="text-xs font-bold uppercase tracking-wider">Conversión</p>
-            </div>
-            <p className="text-2xl font-extrabold mt-1">{conversion.toFixed(0)}%</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">trial → pago</p>
-          </CardContent>
-        </Card>
-        <Card className={churn > 0 ? "border-red-200 bg-red-50/40" : ""}>
-          <CardContent className="p-4">
-            <div className={`flex items-center gap-1.5 ${churn > 0 ? "text-red-600" : "text-muted-foreground"}`}>
-              <Repeat className="h-3.5 w-3.5" />
-              <p className="text-xs font-bold uppercase tracking-wider">Churn</p>
-            </div>
-            <p className={`text-2xl font-extrabold mt-1 ${churn > 0 ? "text-red-700" : ""}`}>{churn.toFixed(0)}%</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">{cancelados.length} cancelados</p>
-          </CardContent>
-        </Card>
+        <StatCard
+          label="MRR"
+          value={formatMoneyShort(mrr)}
+          sub={`ARR ≈ ${formatMoneyShort(arr)}`}
+          icon={Euro}
+          accent="emerald"
+        />
+        <StatCard
+          label="ARPU"
+          value={formatMoneyShort(arpu)}
+          sub={`${pagando.length} pagando`}
+          icon={Users}
+          accent="violet"
+        />
+        <StatCard
+          label="Conversión"
+          value={`${conversion.toFixed(0)}%`}
+          sub="trial → pago"
+          icon={Percent}
+          accent="blue"
+        />
+        <StatCard
+          label="Churn"
+          value={`${churn.toFixed(0)}%`}
+          sub={`${cancelados.length} cancelados`}
+          icon={Repeat}
+          accent="stone"
+          alert={churn > 0}
+        />
       </div>
 
       {/* Embudo trial → pago */}

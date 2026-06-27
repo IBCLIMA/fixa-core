@@ -29,6 +29,7 @@ import { CobrarDialog } from "./cobrar-dialog";
 import { EntregarDialog } from "./entregar-dialog";
 import { ItvAlert } from "./itv-alert";
 import { PedirRecambiosBtn } from "./pedir-recambios-btn";
+import { BarraAccionOrden } from "./barra-accion";
 import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { formatMoney } from "@/lib/format";
@@ -100,8 +101,18 @@ export default async function OrdenDetallePage({
   }, 0);
   const totalFinal = totalBase + totalIva;
 
+  // URL de WhatsApp para avisar del estado al cliente (reutilizada en la barra
+  // sticky y en el bloque de cambio de estado — se construye una sola vez).
+  const whatsappEstadoUrl =
+    orden.cliente?.telefono && orden.tokenPublico
+      ? formatWhatsAppUrl(
+          orden.cliente.telefono,
+          `Hola ${orden.cliente.nombre?.split(" ")[0] || ""},\n\nTe informamos del estado de tu ${orden.vehiculo?.marca || ""} ${orden.vehiculo?.modelo || ""} (${orden.vehiculo?.matricula || ""}).\n\nPuedes ver los detalles aquí:\n${process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com"}/estado/${orden.tokenPublico}\n\nSi tienes alguna duda, no dudes en contactarnos.\n\n¡Un saludo!`
+        )
+      : null;
+
   return (
-    <div id="orden-detail-container" className="space-y-6 max-w-3xl">
+    <div id="orden-detail-container" className="space-y-6 max-w-3xl pb-28 lg:pb-6">
       {/* Header */}
       <div className="flex items-start gap-3">
         <Link href="/ordenes">
@@ -201,47 +212,6 @@ export default async function OrdenDetallePage({
         descripcionActual={orden.descripcionCliente}
       />
 
-      {/* Datos legales (RD 1457/1986) */}
-      <DatosLegales
-        ordenId={orden.id}
-        fechaEstimada={orden.fechaEstimada}
-        observacionesEntrada={orden.observacionesEntrada}
-        renunciaPresupuesto={orden.renunciaPresupuesto}
-        renunciaPiezas={orden.renunciaPiezas}
-      />
-
-      {/* Datos del seguro (chapa/pintura) */}
-      <SeguroChapa
-        ordenId={orden.id}
-        tipoIntervencion={orden.tipoIntervencion}
-        aseguradora={orden.aseguradora}
-        numPoliza={orden.numPoliza}
-        numSiniestro={orden.numSiniestro}
-        numPeritaje={orden.numPeritaje}
-        nombrePerito={orden.nombrePerito}
-      />
-
-      {/* Fotos */}
-      <Card>
-        <CardContent className="p-4">
-          <FotosOrden ordenId={orden.id} fotos={orden.fotos || []} />
-        </CardContent>
-      </Card>
-
-      {/* Inspección — solo mostrar si ya tiene datos */}
-      {inspecciones.length > 0 && (
-        <InspeccionView ordenId={orden.id} inspecciones={inspecciones} />
-      )}
-
-      {/* Averías ocultas */}
-      {orden.estado !== "entregado" && orden.estado !== "cancelado" && (
-        <AveriasOcultas
-          ordenId={orden.id}
-          averias={orden.averias || []}
-          clienteTelefono={orden.cliente?.telefono}
-        />
-      )}
-
       {/* Entrega unificada: entregar + cobrar + WhatsApp en un solo flujo */}
       {orden.estado === "listo" && (
         <Card className="no-print border-emerald-300 bg-emerald-50/60">
@@ -295,43 +265,7 @@ export default async function OrdenDetallePage({
         </Card>
       )}
 
-      {/* Acciones */}
-      <Card className="no-print">
-        <CardContent className="p-4 space-y-3">
-          {/* Primary actions */}
-          <div className="flex flex-wrap gap-2">
-            <a href={`/api/ordenes/${orden.id}/pdf`} target="_blank">
-              <Button className="rounded-full bg-stone-900 hover:bg-stone-800 text-white">
-                <Printer className="mr-1.5 h-4 w-4" />Descargar OR (PDF)
-              </Button>
-            </a>
-            <PrintButton />
-          </div>
-
-          {/* Secondary actions */}
-          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border">
-            <a href={`/informe/${orden.tokenPublico || orden.id}`} target="_blank">
-              <Button variant="outline" size="sm" className="rounded-full">
-                <FileText className="mr-1.5 h-4 w-4" />Ver informe
-              </Button>
-            </a>
-            <CrearPresupuestoBtn ordenId={orden.id} />
-            {orden.cliente?.telefono && (
-              <EnviarInformeBtn ordenId={orden.id} />
-            )}
-            {orden.estado === "entregado" && orden.cliente?.telefono && (
-              <PedirResenaBtn ordenId={orden.id} />
-            )}
-            {isAdmin && (
-              <div className="ml-auto">
-                <EliminarOrdenBtn ordenId={orden.id} />
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Líneas de trabajo */}
+      {/* Líneas de trabajo — lo que se factura: prioridad alta, por encima de PDF/informe */}
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
@@ -395,12 +329,9 @@ export default async function OrdenDetallePage({
       {/* Cambiar estado */}
       <div className="no-print rounded-xl bg-muted/50 border border-border px-4 py-3 space-y-3">
         <CambiarEstadoButtons ordenId={orden.id} estadoActual={orden.estado} activePhases={activePhases} />
-        {orden.cliente?.telefono && orden.tokenPublico && (
+        {whatsappEstadoUrl && (
           <a
-            href={formatWhatsAppUrl(
-              orden.cliente.telefono,
-              `Hola ${orden.cliente.nombre?.split(" ")[0] || ""},\n\nTe informamos del estado de tu ${orden.vehiculo?.marca || ""} ${orden.vehiculo?.modelo || ""} (${orden.vehiculo?.matricula || ""}).\n\nPuedes ver los detalles aquí:\n${process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com"}/estado/${orden.tokenPublico}\n\nSi tienes alguna duda, no dudes en contactarnos.\n\n¡Un saludo!`
-            )}
+            href={whatsappEstadoUrl}
             target="_blank"
             className="flex items-center justify-center gap-2 w-full h-11 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-500 transition-colors"
           >
@@ -409,6 +340,80 @@ export default async function OrdenDetallePage({
           </a>
         )}
       </div>
+
+      {/* Acciones documentales (PDF / informe / presupuesto) — secundarias respecto a las líneas */}
+      <Card className="no-print">
+        <CardContent className="p-4 space-y-3">
+          {/* Primary actions */}
+          <div className="flex flex-wrap gap-2">
+            <a href={`/api/ordenes/${orden.id}/pdf`} target="_blank">
+              <Button className="rounded-full bg-stone-900 hover:bg-stone-800 text-white">
+                <Printer className="mr-1.5 h-4 w-4" />Descargar OR (PDF)
+              </Button>
+            </a>
+            <PrintButton />
+          </div>
+
+          {/* Secondary actions */}
+          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border">
+            <a href={`/informe/${orden.tokenPublico || orden.id}`} target="_blank">
+              <Button variant="outline" size="sm" className="rounded-full">
+                <FileText className="mr-1.5 h-4 w-4" />Ver informe
+              </Button>
+            </a>
+            <CrearPresupuestoBtn ordenId={orden.id} />
+            {orden.cliente?.telefono && (
+              <EnviarInformeBtn ordenId={orden.id} />
+            )}
+            {orden.estado === "entregado" && orden.cliente?.telefono && (
+              <PedirResenaBtn ordenId={orden.id} />
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* ── Secciones secundarias: datos legales, seguro, fotos, inspección, averías ── */}
+
+      {/* Datos legales (RD 1457/1986) */}
+      <DatosLegales
+        ordenId={orden.id}
+        fechaEstimada={orden.fechaEstimada}
+        observacionesEntrada={orden.observacionesEntrada}
+        renunciaPresupuesto={orden.renunciaPresupuesto}
+        renunciaPiezas={orden.renunciaPiezas}
+      />
+
+      {/* Datos del seguro (chapa/pintura) */}
+      <SeguroChapa
+        ordenId={orden.id}
+        tipoIntervencion={orden.tipoIntervencion}
+        aseguradora={orden.aseguradora}
+        numPoliza={orden.numPoliza}
+        numSiniestro={orden.numSiniestro}
+        numPeritaje={orden.numPeritaje}
+        nombrePerito={orden.nombrePerito}
+      />
+
+      {/* Fotos */}
+      <Card>
+        <CardContent className="p-4">
+          <FotosOrden ordenId={orden.id} fotos={orden.fotos || []} />
+        </CardContent>
+      </Card>
+
+      {/* Inspección — solo mostrar si ya tiene datos */}
+      {inspecciones.length > 0 && (
+        <InspeccionView ordenId={orden.id} inspecciones={inspecciones} />
+      )}
+
+      {/* Averías ocultas */}
+      {orden.estado !== "entregado" && orden.estado !== "cancelado" && (
+        <AveriasOcultas
+          ordenId={orden.id}
+          averias={orden.averias || []}
+          clienteTelefono={orden.cliente?.telefono}
+        />
+      )}
 
       {/* Historial */}
       {orden.historial && orden.historial.length > 0 && (
@@ -453,6 +458,35 @@ export default async function OrdenDetallePage({
           </CardContent>
         </Card>
       )}
+
+      {/* Zona de peligro — acción destructiva separada de las acciones rutinarias */}
+      {isAdmin && (
+        <div className="no-print mt-2 rounded-xl border border-destructive/20 bg-destructive/[0.03] px-4 py-3">
+          <p className="text-xs font-semibold text-muted-foreground mb-2">Zona de peligro</p>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-xs text-muted-foreground max-w-xs">
+              Eliminar la orden borra líneas, fotos, historial y presupuestos. No se puede deshacer.
+            </p>
+            <EliminarOrdenBtn ordenId={orden.id} />
+          </div>
+        </div>
+      )}
+
+      {/* Barra de acción sticky: acción principal contextual + WhatsApp, sin scroll */}
+      <BarraAccionOrden
+        ordenId={orden.id}
+        estadoActual={orden.estado}
+        activePhases={activePhases}
+        totalFinal={totalFinal}
+        hayLineas={lineas.length > 0}
+        yaCobrado={!!documentoCobro}
+        documentoId={documentoCobro?.id}
+        matricula={orden.vehiculo?.matricula}
+        clienteNombre={orden.cliente?.nombre}
+        clienteTelefono={orden.cliente?.telefono}
+        tieneTelefono={!!orden.cliente?.telefono}
+        whatsappEstadoUrl={whatsappEstadoUrl}
+      />
     </div>
   );
 }

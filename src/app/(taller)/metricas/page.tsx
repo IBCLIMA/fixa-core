@@ -1,5 +1,6 @@
-import { BarChart3, ClipboardList, FileText, Bell, Clock, TrendingUp } from "lucide-react";
+import { ClipboardList, FileText, Bell, Clock, TrendingUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { StatCard, type StatAccent } from "@/components/stat-card";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
 import { ordenesTrabajo, presupuestos, lineasOrden, avisos } from "@/db/schema";
@@ -47,38 +48,40 @@ export default async function MetricasPage() {
 
   const tasaAceptacion = totalPresEnviados > 0 ? Math.round((totalPresAceptados / totalPresEnviados) * 100) : 0;
 
-  const kpis = [
+  const kpis: {
+    icon: typeof ClipboardList;
+    valor: React.ReactNode;
+    label: string;
+    sub: string;
+    accent: StatAccent;
+  }[] = [
     {
       icon: ClipboardList,
       valor: mesTotalOrdenes,
       label: "Órdenes este mes",
       sub: `${totalOrdenes} en total`,
-      color: "from-blue-500 to-blue-600",
-      shadow: "shadow-blue-500/20",
+      accent: "blue",
     },
     {
       icon: FileText,
       valor: totalPresEnviados,
       label: "Presupuestos enviados",
       sub: `${totalPresAceptados} aceptados (${tasaAceptacion}%)`,
-      color: "from-emerald-500 to-emerald-600",
-      shadow: "shadow-emerald-500/20",
+      accent: "emerald",
     },
     {
       icon: Bell,
       valor: totalItv,
       label: "ITVs avisadas",
       sub: "Trabajo que antes se escapaba",
-      color: "from-amber-500 to-amber-600",
-      shadow: "shadow-amber-500/20",
+      accent: "amber",
     },
     {
       icon: Clock,
       valor: `${horasAhorradas}h`,
       label: "Horas ahorradas (estimado)",
       sub: `${minutosAhorrados} min en tareas que antes hacías a mano`,
-      color: "from-violet-500 to-violet-600",
-      shadow: "shadow-violet-500/20",
+      accent: "violet",
     },
   ];
 
@@ -93,20 +96,14 @@ export default async function MetricasPage() {
 
       <div className="grid grid-cols-2 gap-4">
         {kpis.map((kpi) => (
-          <Card key={kpi.label} className="overflow-hidden">
-            <CardContent className="p-5">
-              <div className="flex items-start gap-3">
-                <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${kpi.color} shadow-sm ${kpi.shadow}`}>
-                  <kpi.icon className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-3xl font-extrabold leading-none text-stone-900">{kpi.valor}</p>
-                  <p className="text-sm font-medium text-stone-700 mt-1">{kpi.label}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{kpi.sub}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <StatCard
+            key={kpi.label}
+            label={kpi.label}
+            value={kpi.valor}
+            sub={kpi.sub}
+            icon={kpi.icon}
+            accent={kpi.accent}
+          />
         ))}
       </div>
 

@@ -35,6 +35,7 @@ export function CobrarDialog({
   matricula,
   yaGenerado,
   documentoId,
+  barMode = false,
 }: {
   ordenId: string;
   totalFinal: number;
@@ -43,6 +44,8 @@ export function CobrarDialog({
   matricula?: string;
   yaGenerado?: boolean;
   documentoId?: string | null;
+  /** When true, the trigger fills the sticky action bar (full width). */
+  barMode?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [metodo, setMetodo] = useState<MetodoPago>("tarjeta");
@@ -78,8 +81,8 @@ export function CobrarDialog({
   // If document already generated, show link to it
   if (yaGenerado && documentoId) {
     return (
-      <Link href={`/documentos/${documentoId}`}>
-        <Button variant="outline" className="rounded-full">
+      <Link href={`/documentos/${documentoId}`} className={barMode ? "block" : undefined}>
+        <Button variant="outline" className={barMode ? "w-full rounded-xl h-12" : "rounded-full"}>
           <FileText className="mr-1.5 h-4 w-4" />
           Ver documento de cobro
         </Button>
@@ -89,7 +92,7 @@ export function CobrarDialog({
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="rounded-full bg-emerald-600 hover:bg-emerald-500 text-white">
+      <Button onClick={() => setOpen(true)} className={`bg-emerald-600 hover:bg-emerald-500 text-white ${barMode ? "w-full rounded-xl h-12 font-bold" : "rounded-full"}`}>
         <Receipt className="mr-1.5 h-4 w-4" />
         Cobrar y generar documento ({formatMoney(totalFinal)})
       </Button>

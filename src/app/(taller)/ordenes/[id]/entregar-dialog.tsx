@@ -33,6 +33,7 @@ export function EntregarDialog({
   clienteNombre,
   tieneTelefono,
   hayLineas,
+  barMode = false,
 }: {
   ordenId: string;
   totalFinal: number;
@@ -40,6 +41,8 @@ export function EntregarDialog({
   clienteNombre?: string;
   tieneTelefono: boolean;
   hayLineas: boolean;
+  /** When true, the trigger fills the sticky action bar (full width). */
+  barMode?: boolean;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -71,7 +74,7 @@ export function EntregarDialog({
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold h-12 px-6 text-base shadow-lg shadow-emerald-600/20">
+      <Button onClick={() => setOpen(true)} className={`bg-emerald-600 hover:bg-emerald-500 text-white font-bold h-12 px-6 text-base shadow-lg shadow-emerald-600/20 ${barMode ? "w-full rounded-xl" : "rounded-full"}`}>
         <Car className="mr-2 h-5 w-5" />
         Entregar coche
       </Button>
