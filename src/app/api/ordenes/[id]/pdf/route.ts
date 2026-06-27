@@ -59,7 +59,7 @@ export async function GET(
     }
 
     // Generate QR code
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://fixataller.es";
     const trackingUrl = orden.tokenPublico
       ? `${appUrl}/estado/${orden.tokenPublico}`
       : null;

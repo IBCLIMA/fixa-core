@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Smartphone, Share, SquarePlus, Bell, Globe, MoreVertical } from "lucide-react";
+import { ArrowLeft, Smartphone, Share, SquarePlus, Bell, Globe, MoreVertical, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -32,14 +32,26 @@ export default function InstalarPage() {
             </div>
             <div>
               <p className="font-extrabold">iPhone / iPad</p>
-              <p className="text-xs text-muted-foreground">Importante: hazlo desde Safari (no desde Chrome)</p>
+              <p className="text-xs text-muted-foreground">Tiene que ser desde Safari</p>
             </div>
           </div>
+
+          {/* Aviso Safari vs Chrome — la duda más común */}
+          <div className="rounded-xl bg-amber-50 border border-amber-200 p-3 flex items-start gap-2.5">
+            <TriangleAlert className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+            <p className="text-xs text-amber-900">
+              <span className="font-bold">¿Estás en Chrome?</span> En el iPhone instalar apps así
+              <span className="font-bold"> solo funciona en Safari</span> (lo impone Apple, no es cosa nuestra).
+              Si abriste esto en Chrome: copia <span className="font-bold">fixataller.es</span>, ábrelo en
+              <span className="font-bold"> Safari</span> y sigue los pasos.
+            </p>
+          </div>
+
           <ol className="space-y-3">
             <li className="flex items-start gap-3">
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-extrabold text-brand-700">1</span>
               <p className="text-sm pt-1">
-                Abre <span className="font-bold">fixa.ibclima.com</span> en <span className="font-bold">Safari</span> e inicia sesión
+                Con <span className="font-bold">Safari</span>, entra en <span className="font-bold">fixataller.es</span> e inicia sesión.
               </p>
             </li>
             <li className="flex items-start gap-3">
@@ -47,14 +59,21 @@ export default function InstalarPage() {
               <p className="text-sm pt-1 flex items-center gap-1.5 flex-wrap">
                 Pulsa el botón de compartir
                 <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-blue-50"><Share className="h-3.5 w-3.5 text-blue-600" /></span>
-                (abajo en el centro)
+                — el cuadrado con la flecha hacia arriba, abajo en el centro.
               </p>
             </li>
             <li className="flex items-start gap-3">
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-extrabold text-brand-700">3</span>
               <p className="text-sm pt-1 flex items-center gap-1.5 flex-wrap">
-                Baja y elige
+                Desliza hacia abajo en esa lista y toca
                 <span className="inline-flex items-center gap-1 rounded-md bg-stone-100 px-2 py-0.5 text-xs font-bold"><SquarePlus className="h-3.5 w-3.5" />Añadir a pantalla de inicio</span>
+              </p>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-extrabold text-brand-700">4</span>
+              <p className="text-sm pt-1">
+                Pulsa <span className="font-bold">Añadir</span> (arriba a la derecha). Ya tienes el icono de FIXA
+                en tu pantalla de inicio — ábrela <span className="font-bold">desde ese icono</span>, no desde el navegador.
               </p>
             </li>
           </ol>
@@ -85,7 +104,7 @@ export default function InstalarPage() {
             <li className="flex items-start gap-3">
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-extrabold text-brand-700">1</span>
               <p className="text-sm pt-1">
-                Abre <span className="font-bold">fixa.ibclima.com</span> en <span className="font-bold">Chrome</span> e inicia sesión
+                Abre <span className="font-bold">fixataller.es</span> en <span className="font-bold">Chrome</span> e inicia sesión
               </p>
             </li>
             <li className="flex items-start gap-3">

@@ -107,7 +107,7 @@ export default async function OrdenDetallePage({
     orden.cliente?.telefono && orden.tokenPublico
       ? formatWhatsAppUrl(
           orden.cliente.telefono,
-          `Hola ${orden.cliente.nombre?.split(" ")[0] || ""},\n\nTe informamos del estado de tu ${orden.vehiculo?.marca || ""} ${orden.vehiculo?.modelo || ""} (${orden.vehiculo?.matricula || ""}).\n\nPuedes ver los detalles aquí:\n${process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com"}/estado/${orden.tokenPublico}\n\nSi tienes alguna duda, no dudes en contactarnos.\n\n¡Un saludo!`
+          `Hola ${orden.cliente.nombre?.split(" ")[0] || ""},\n\nTe informamos del estado de tu ${orden.vehiculo?.marca || ""} ${orden.vehiculo?.modelo || ""} (${orden.vehiculo?.matricula || ""}).\n\nPuedes ver los detalles aquí:\n${process.env.NEXT_PUBLIC_APP_URL || "https://fixataller.es"}/estado/${orden.tokenPublico}\n\nSi tienes alguna duda, no dudes en contactarnos.\n\n¡Un saludo!`
         )
       : null;
 

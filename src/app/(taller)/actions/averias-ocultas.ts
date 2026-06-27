@@ -97,7 +97,7 @@ export async function getAveriaWhatsAppUrl(averiaId: string) {
 
   if (!cliente?.telefono) throw new Error("El cliente no tiene teléfono");
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://fixataller.es";
   const approvalUrl = `${appUrl}/aprobar/${averia.tokenAprobacion}`;
 
   const mensaje = [

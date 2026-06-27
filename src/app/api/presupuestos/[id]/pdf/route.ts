@@ -51,7 +51,7 @@ export async function GET(
       .where(eq(lineasPresupuesto.presupuestoId, id));
 
     // Generate QR code for public presupuesto page
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://fixataller.es";
     const publicUrl = presupuesto.tokenPublico
       ? `${appUrl}/presupuesto/${presupuesto.tokenPublico}`
       : null;

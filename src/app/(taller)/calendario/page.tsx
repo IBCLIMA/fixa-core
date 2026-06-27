@@ -47,7 +47,7 @@ export default async function CalendarioPage({
     getEntregasSemana(week.start, week.end),
     getDiasBloqueadosSemana(week.start, week.end),
   ]);
-  const citaUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://fixa.ibclima.com"}/cita/${tallerId}`;
+  const citaUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://fixataller.es"}/cita/${tallerId}`;
 
   // Calcular semanas anterior y siguiente
   const prevMonday = new Date(week.monday);
