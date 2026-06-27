@@ -5,6 +5,9 @@ import { TestimonialsSection } from "@/components/landing/testimonials-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { Footer } from "@/components/landing/footer";
 import { WebServicesBanner } from "@/components/web-services-banner";
+import { NosotrosHero } from "@/components/funciones/nosotros-hero";
+import { NosotrosMilestones } from "@/components/funciones/nosotros-milestones";
+import { NosotrosValores } from "@/components/funciones/nosotros-valores";
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -30,13 +33,13 @@ const jsonLd = {
 
 export default function NosotrosPage() {
   return (
-    <div className="min-h-screen antialiased" style={{ background: "linear-gradient(180deg, #faf9f7 0%, #f5f3f0 100%)" }}>
+    <div className="min-h-screen bg-background antialiased">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Navbar />
-      <div className="pt-8">
-        <h1 className="sr-only">Sobre FIXA: el software de gestión nacido dentro de un taller mecánico real</h1>
-        <AboutSection />
-      </div>
+      <NosotrosHero />
+      <NosotrosMilestones />
+      <AboutSection />
+      <NosotrosValores />
       <TestimonialsSection />
       <CtaSection />
       <Footer />

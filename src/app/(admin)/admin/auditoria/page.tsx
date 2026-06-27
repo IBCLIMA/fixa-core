@@ -135,9 +135,17 @@ export default async function AuditoriaPage() {
           </div>
 
           {filas.length === 0 && (
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              Todavía no hay acciones registradas.
-            </p>
+            <div className="flex flex-col items-center gap-3 py-12 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-stone-100">
+                <FileText className="h-6 w-6 text-stone-400" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-stone-700">Sin acciones registradas</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Impersonar, cambiar de plan, activar o aprobar un taller quedará registrado aquí.
+                </p>
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>

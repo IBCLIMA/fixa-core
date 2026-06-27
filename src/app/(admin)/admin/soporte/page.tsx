@@ -32,7 +32,7 @@ export default async function SoportePage() {
           <CardTitle className="text-base flex items-center gap-2">
             Buzón de feedback
             {feedbackNuevos > 0 && (
-              <span className="rounded-full bg-orange-500 px-2 py-0.5 text-[11px] font-bold text-white">{feedbackNuevos} nuevo{feedbackNuevos > 1 ? "s" : ""}</span>
+              <span className="rounded-full bg-brand-500 px-2 py-0.5 text-[11px] font-bold text-white">{feedbackNuevos} nuevo{feedbackNuevos > 1 ? "s" : ""}</span>
             )}
           </CardTitle>
         </CardHeader>

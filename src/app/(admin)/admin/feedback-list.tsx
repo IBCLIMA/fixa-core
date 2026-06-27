@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { CheckCircle2, Loader2, Eye } from "lucide-react";
+import { CheckCircle2, Loader2, Eye, Inbox } from "lucide-react";
 import { marcarFeedback } from "@/app/(taller)/actions/feedback";
 import { toast } from "sonner";
 
@@ -38,7 +38,19 @@ export function FeedbackList({ items }: { items: Item[] }) {
   }
 
   if (!items.length) {
-    return <p className="text-sm text-muted-foreground">Aún no hay mensajes. Cuando un taller envíe una sugerencia o incidencia, aparecerá aquí.</p>;
+    return (
+      <div className="flex flex-col items-center gap-3 py-12 text-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-stone-100">
+          <Inbox className="h-6 w-6 text-stone-400" />
+        </div>
+        <div>
+          <p className="text-sm font-bold text-stone-700">Buzón vacío</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Cuando un taller envíe una sugerencia, incidencia o consulta, aparecerá aquí.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -47,12 +59,12 @@ export function FeedbackList({ items }: { items: Item[] }) {
         const t = tipoMeta[f.tipo] ?? tipoMeta.consulta;
         const resuelto = f.estado === "resuelto";
         return (
-          <div key={f.id} className={`rounded-xl border p-4 ${resuelto ? "border-stone-200 bg-stone-50/50 opacity-60" : f.estado === "nuevo" ? "border-orange-200 bg-orange-50/30" : "border-stone-200"}`}>
+          <div key={f.id} className={`rounded-xl border p-4 ${resuelto ? "border-stone-200 bg-stone-50/50 opacity-60" : f.estado === "nuevo" ? "border-brand-200 bg-brand-50/30" : "border-stone-200"}`}>
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${t.cls}`}>{t.label}</span>
-                  {f.estado === "nuevo" && <span className="rounded-full bg-orange-500 px-2 py-0.5 text-[10px] font-bold text-white">NUEVO</span>}
+                  {f.estado === "nuevo" && <span className="rounded-full bg-brand-500 px-2 py-0.5 text-[10px] font-bold text-white">NUEVO</span>}
                   {resuelto && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">Resuelto</span>}
                 </div>
                 <p className="mt-2 whitespace-pre-wrap text-sm text-stone-800">{f.mensaje}</p>

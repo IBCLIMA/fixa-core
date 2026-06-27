@@ -14,7 +14,7 @@ import type { Plan } from "../acciones";
 export const metadata = { title: "Detalle de taller · FIXA Admin" };
 
 const planColors: Record<string, string> = {
-  pendiente: "bg-orange-100 text-orange-700",
+  pendiente: "bg-brand-100 text-brand-700",
   trial: "bg-amber-100 text-amber-700",
   basico: "bg-blue-100 text-blue-700",
   taller: "bg-emerald-100 text-emerald-700",
@@ -118,8 +118,8 @@ export default async function TallerDetallePage({ params }: { params: Promise<{ 
       {/* Cabecera */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-md">
-            <Building2 className="h-5.5 w-5.5 text-white" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-md">
+            <Building2 className="h-5 w-5 text-white" />
           </div>
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight">{taller.nombre}</h1>

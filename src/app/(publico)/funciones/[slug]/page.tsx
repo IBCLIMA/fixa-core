@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { getAllFeatures, getFeatureBySlug } from "@/lib/content";
 import { MDXContent } from "@/components/mdx-content";
+import { Navbar } from "@/components/landing/navbar";
+import { CtaSection } from "@/components/landing/cta-section";
+import { Footer } from "@/components/landing/footer";
+import { WebServicesBanner } from "@/components/web-services-banner";
+import { FeatureHero } from "@/components/funciones/feature-hero";
+import { FeatureBenefits } from "@/components/funciones/feature-benefits";
 import { SITE_URL } from "@/lib/seo";
 
 export async function generateStaticParams() {
@@ -43,24 +47,25 @@ export default async function FeaturePage({ params }: { params: Promise<{ slug: 
   };
 
   return (
-    <article className="mx-auto max-w-3xl px-6 py-16">
+    <div className="min-h-screen bg-background antialiased">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <Link href="/funciones" className="inline-flex items-center gap-2 text-sm text-stone-400 hover:text-stone-700 transition-colors mb-8">
-        <ArrowLeft className="h-4 w-4" /> Todas las funciones
-      </Link>
+      <Navbar />
 
-      <div className="prose prose-stone prose-lg max-w-none prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:font-extrabold prose-h1:tracking-tight">
-        <MDXContent code={feature.body} />
-      </div>
+      <FeatureHero title={feature.title} description={feature.description} icon={feature.icon} />
 
-      <div className="mt-16 rounded-2xl bg-stone-900 p-8 text-center">
-        <h3 className="text-2xl font-bold text-white mb-2">Pruébalo en tu taller</h3>
-        <p className="text-stone-400 mb-6">14 días gratis. Sin tarjeta de crédito.</p>
-        <Link href="/sign-up" className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-orange-500 text-white font-bold hover:bg-orange-400 transition-colors">
-          Probar FIXA gratis
-        </Link>
-      </div>
-    </article>
+      <main className="mx-auto max-w-3xl px-6 pb-16">
+        <FeatureBenefits />
+
+        {/* Cuerpo del artículo (MDX). El H1 del MDX se oculta: el H1 visible es el del hero. */}
+        <div className="mt-12 prose prose-stone prose-lg max-w-none text-pretty [&_h1]:hidden prose-headings:tracking-tight prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-12 prose-h2:text-stone-900 prose-h3:text-stone-900 prose-strong:text-stone-900 prose-a:text-brand-700 prose-a:font-medium hover:prose-a:text-brand-600 prose-li:marker:text-brand-500 prose-img:rounded-2xl prose-img:shadow-md">
+          <MDXContent code={feature.body} />
+        </div>
+      </main>
+
+      <CtaSection />
+      <Footer />
+      <WebServicesBanner />
+    </div>
   );
 }

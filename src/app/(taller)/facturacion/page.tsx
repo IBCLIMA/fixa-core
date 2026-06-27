@@ -10,6 +10,7 @@ import { eq, and, sql, count, desc, gte } from "drizzle-orm";
 import { CobrosPendientes } from "./cobros-pendientes";
 import { ExportGestoria } from "./export-gestoria";
 import { StatCard } from "@/components/stat-card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { formatMoney, formatMoneyShort } from "@/lib/format";
 
 export default async function FacturacionPage() {
@@ -173,6 +174,42 @@ export default async function FacturacionPage() {
         <ExportGestoria />
       </div>
 
+      <Tabs defaultValue="resumen" className="gap-4">
+        {/* Navegación de secciones — scroll horizontal en móvil */}
+        <div className="-mx-1 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <TabsList variant="line" className="w-max">
+            <TabsTrigger value="resumen">
+              <TrendingUp />
+              Resumen
+            </TabsTrigger>
+            <TabsTrigger value="cobros">
+              <AlertTriangle />
+              Cobros
+              {ordenesPendientesCobro.length > 0 && (
+                <Badge className="ml-0.5 h-4 min-w-4 justify-center bg-amber-500 px-1 text-[10px] text-white">
+                  {ordenesPendientesCobro.length}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="documentos">
+              <FileCheck />
+              Documentos
+            </TabsTrigger>
+            {comisionesVisibles.length > 0 && (
+              <TabsTrigger value="comisiones">
+                <Wrench />
+                Comisiones
+              </TabsTrigger>
+            )}
+            <TabsTrigger value="verifactu">
+              <Receipt />
+              VeriFactu
+            </TabsTrigger>
+          </TabsList>
+        </div>
+
+        {/* RESUMEN: KPIs + resumen del mes + últimas completadas */}
+        <TabsContent value="resumen" className="space-y-6">
       {/* KPIs principales */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard label="Facturado total" value={formatMoneyShort(totalFact)} icon={Receipt} accent="emerald" />
@@ -246,7 +283,10 @@ export default async function FacturacionPage() {
           )}
         </CardContent>
       </Card>
+        </TabsContent>
 
+        {/* DOCUMENTOS: documentos de cobro recientes */}
+        <TabsContent value="documentos">
       {/* Documentos de cobro recientes */}
       <Card>
         <CardHeader className="pb-3">
@@ -296,7 +336,10 @@ export default async function FacturacionPage() {
           )}
         </CardContent>
       </Card>
+        </TabsContent>
 
+        {/* COBROS: cobros pendientes */}
+        <TabsContent value="cobros">
       {/* Cobros pendientes */}
       <Card className={ordenesPendientesCobro.length > 0 ? "border-amber-200" : ""}>
         <CardHeader className="pb-3">
@@ -312,9 +355,11 @@ export default async function FacturacionPage() {
           <CobrosPendientes ordenes={ordenesPendientesCobro} />
         </CardContent>
       </Card>
+        </TabsContent>
 
-      {/* Comisiones */}
-      {comisionesVisibles.length > 0 && (
+        {/* COMISIONES: comisiones del mes */}
+        {comisionesVisibles.length > 0 && (
+        <TabsContent value="comisiones">
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
@@ -354,9 +399,11 @@ export default async function FacturacionPage() {
             </div>
           </CardContent>
         </Card>
-      )}
+        </TabsContent>
+        )}
 
-      {/* VeriFactu */}
+        {/* VERIFACTU: facturación electrónica */}
+        <TabsContent value="verifactu">
       <Card className="border-amber-200 bg-amber-50/30">
         <CardContent className="p-4 text-center space-y-2">
           <p className="text-sm font-bold text-amber-800">Facturación electrónica VeriFactu</p>
@@ -365,6 +412,8 @@ export default async function FacturacionPage() {
           </p>
         </CardContent>
       </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

@@ -51,15 +51,15 @@ export function TallerAcciones({ tallerId, nombre, plan, activo }: Props) {
     <div className="space-y-4">
       {/* Aprobar registro (solo si pendiente) */}
       {plan === "pendiente" && (
-        <div className="rounded-xl border-2 border-orange-300 bg-orange-50 p-4">
-          <p className="text-sm font-bold text-orange-800">Registro pendiente de aprobación</p>
-          <p className="mt-0.5 text-xs text-orange-700">
+        <div className="rounded-xl border-2 border-brand-300 bg-brand-50 p-4">
+          <p className="text-sm font-bold text-brand-800">Registro pendiente de aprobación</p>
+          <p className="mt-0.5 text-xs text-brand-700">
             Al aprobar, el taller pasa a <strong>trial de 14 días</strong> y se activa.
           </p>
           <Button
             onClick={() => run(() => aprobarRegistro(tallerId), "Registro aprobado · trial de 14 días")}
             disabled={pending}
-            className="mt-3 bg-orange-600 text-white hover:bg-orange-700"
+            className="mt-3 bg-brand-600 text-white hover:bg-brand-700"
             size="sm"
           >
             <Check className="mr-1.5 h-4 w-4" />

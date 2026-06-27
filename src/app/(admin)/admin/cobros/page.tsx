@@ -1,6 +1,7 @@
-import { Euro, AlertTriangle } from "lucide-react";
+import { Euro, AlertTriangle, TrendingDown, Inbox } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { StatCard } from "@/components/stat-card";
 import { getDb } from "@/db";
 import { talleres } from "@/db/schema";
 import { inArray, desc } from "drizzle-orm";
@@ -68,28 +69,30 @@ export default async function AdminCobrosPage() {
       </div>
 
       {/* Resumen */}
-      <div className="grid grid-cols-3 gap-3">
-        <Card className={impagados.length > 0 ? "border-red-300 bg-red-50/40" : "border-emerald-200 bg-emerald-50/30"}>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-1.5">
-              {impagados.length > 0 && <AlertTriangle className="h-3.5 w-3.5 text-red-600" />}
-              <p className={`text-xs font-bold uppercase tracking-wider ${impagados.length > 0 ? "text-red-600" : "text-emerald-600"}`}>Impagados</p>
-            </div>
-            <p className={`text-2xl font-extrabold mt-1 ${impagados.length > 0 ? "text-red-700" : "text-emerald-800"}`}>{impagados.length}</p>
-          </CardContent>
-        </Card>
-        <Card className={mrrRiesgo > 0 ? "border-red-300 bg-red-50/40" : undefined}>
-          <CardContent className="p-4">
-            <p className={`text-xs font-bold uppercase tracking-wider ${mrrRiesgo > 0 ? "text-red-600" : "text-muted-foreground"}`}>MRR en riesgo</p>
-            <p className={`text-2xl font-extrabold mt-1 ${mrrRiesgo > 0 ? "text-red-700" : ""}`}>{formatMoneyShort(mrrRiesgo)}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-emerald-200 bg-emerald-50/30">
-          <CardContent className="p-4">
-            <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider">MRR total</p>
-            <p className="text-2xl font-extrabold text-emerald-800 mt-1">{formatMoneyShort(mrrTotal)}</p>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <StatCard
+          label="Impagados"
+          value={impagados.length}
+          sub={`de ${filas.length} taller${filas.length === 1 ? "" : "es"} de pago`}
+          icon={AlertTriangle}
+          accent="stone"
+          alert={impagados.length > 0}
+        />
+        <StatCard
+          label="MRR en riesgo"
+          value={formatMoneyShort(mrrRiesgo)}
+          sub={`${impagados.length} impagado${impagados.length === 1 ? "" : "s"}`}
+          icon={TrendingDown}
+          accent="amber"
+          alert={mrrRiesgo > 0}
+        />
+        <StatCard
+          label="MRR total"
+          value={formatMoneyShort(mrrTotal)}
+          sub={`ARR ≈ ${formatMoneyShort(mrrTotal * 12)}`}
+          icon={Euro}
+          accent="emerald"
+        />
       </div>
 
       {(impagados.length > 0 || pendientes.length > 0) && (
@@ -108,9 +111,17 @@ export default async function AdminCobrosPage() {
         </CardHeader>
         <CardContent>
           {filas.length === 0 ? (
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              Aún no hay talleres con plan de pago.
-            </p>
+            <div className="flex flex-col items-center gap-3 py-12 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-stone-100">
+                <Inbox className="h-6 w-6 text-stone-400" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-stone-700">Aún no hay talleres de pago</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Cuando un taller pase a un plan de pago aparecerá aquí su recibo SEPA mensual.
+                </p>
+              </div>
+            </div>
           ) : (
             <div className="space-y-3">
               {filas.map((t) => {

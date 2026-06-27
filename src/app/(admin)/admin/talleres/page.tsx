@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Building2, ChevronRight, Search } from "lucide-react";
+import { Building2, ChevronRight, Search, SearchX } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getDb } from "@/db";
@@ -9,7 +9,7 @@ import { and, desc, eq, ilike, or, sql, type SQL } from "drizzle-orm";
 export const metadata = { title: "Talleres · FIXA Admin" };
 
 const planColors: Record<string, string> = {
-  pendiente: "bg-orange-100 text-orange-700",
+  pendiente: "bg-brand-100 text-brand-700",
   trial: "bg-amber-100 text-amber-700",
   basico: "bg-blue-100 text-blue-700",
   taller: "bg-emerald-100 text-emerald-700",
@@ -151,8 +151,21 @@ export default async function TalleresPage({
       {/* Lista */}
       {lista.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-stone-300 bg-white/60 p-12 text-center">
-          <p className="text-sm font-bold text-stone-700">Sin resultados</p>
-          <p className="mt-1 text-sm text-muted-foreground">Ningún taller coincide con los filtros.</p>
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-stone-100">
+            {q || plan || estado ? (
+              <SearchX className="h-6 w-6 text-stone-400" />
+            ) : (
+              <Building2 className="h-6 w-6 text-stone-400" />
+            )}
+          </div>
+          <p className="mt-4 text-sm font-bold text-stone-700">
+            {q || plan || estado ? "Sin resultados" : "Aún no hay talleres"}
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {q || plan || estado
+              ? "Ningún taller coincide con los filtros."
+              : "Cuando se registre el primer taller aparecerá aquí."}
+          </p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -174,7 +187,7 @@ export default async function TalleresPage({
                     <p className="truncate font-bold">{t.nombre}</p>
                     <Badge className={`text-[10px] ${planColors[t.plan]}`}>{planLabels[t.plan]}</Badge>
                     {t.plan === "pendiente" && (
-                      <Badge className="text-[10px] bg-orange-500 text-white">PENDIENTE</Badge>
+                      <Badge className="text-[10px] bg-brand-500 text-white">PENDIENTE</Badge>
                     )}
                     {!t.activo && (
                       <Badge variant="outline" className="text-[10px] border-red-200 text-red-500">

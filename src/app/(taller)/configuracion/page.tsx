@@ -1,4 +1,4 @@
-import { Settings, Shield, Download, FileText, Database, CalendarCheck, Star, Copy, Info } from "lucide-react";
+import { Settings, Shield, Download, FileText, Database, CalendarCheck, Star, Copy, Info, MessageSquare, Package } from "lucide-react";
 import { getDb } from "@/db";
 import { talleres } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -13,6 +13,7 @@ import { getRecambistas } from "../actions/recambistas";
 import { RecambistasForm } from "./recambistas-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import Link from "next/link";
 
 export default async function ConfiguracionPage() {
@@ -39,6 +40,35 @@ export default async function ConfiguracionPage() {
         <p className="text-sm text-muted-foreground mt-0.5">Datos del taller, seguridad y privacidad.</p>
       </div>
 
+      <Tabs defaultValue="taller" className="gap-4">
+        {/* Navegación de secciones — scroll horizontal en móvil */}
+        <div className="-mx-1 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <TabsList variant="line" className="w-max">
+            <TabsTrigger value="taller">
+              <Settings />
+              Taller
+            </TabsTrigger>
+            <TabsTrigger value="plantillas">
+              <FileText />
+              Plantillas
+            </TabsTrigger>
+            <TabsTrigger value="recambistas">
+              <Package />
+              Recambistas
+            </TabsTrigger>
+            <TabsTrigger value="mensajes">
+              <MessageSquare />
+              Mensajes
+            </TabsTrigger>
+            <TabsTrigger value="seguridad">
+              <Shield />
+              Seguridad
+            </TabsTrigger>
+          </TabsList>
+        </div>
+
+        {/* TALLER: datos del taller + cita online */}
+        <TabsContent value="taller" className="space-y-6">
       <div className="flex items-start gap-2 rounded-xl bg-blue-50 border border-blue-200 p-3">
         <Info className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
         <p className="text-xs text-blue-800">
@@ -47,21 +77,6 @@ export default async function ConfiguracionPage() {
       </div>
 
       <ConfigForm taller={taller} />
-
-      {/* Plantillas de servicio */}
-      <PlantillasForm
-        plantillasIniciales={plantillas.map((p) => ({
-          id: p.id,
-          nombre: p.nombre,
-          lineas: p.lineas as LineaPlantilla[],
-        }))}
-      />
-
-      {/* Recambistas */}
-      <RecambistasForm recambistas={recambistasList} />
-
-      {/* Mensajes WhatsApp */}
-      <MensajesWhatsapp mensajesActuales={(taller.mensajesWhatsapp as Record<string, string>) || {}} />
 
       {/* Enlace de cita online */}
       <Card>
@@ -88,7 +103,31 @@ export default async function ConfiguracionPage() {
           </p>
         </CardContent>
       </Card>
+        </TabsContent>
 
+        {/* PLANTILLAS: plantillas de servicio */}
+        <TabsContent value="plantillas">
+      <PlantillasForm
+        plantillasIniciales={plantillas.map((p) => ({
+          id: p.id,
+          nombre: p.nombre,
+          lineas: p.lineas as LineaPlantilla[],
+        }))}
+      />
+        </TabsContent>
+
+        {/* RECAMBISTAS: proveedores de recambios guardados */}
+        <TabsContent value="recambistas">
+      <RecambistasForm recambistas={recambistasList} />
+        </TabsContent>
+
+        {/* MENSAJES: plantillas de WhatsApp */}
+        <TabsContent value="mensajes">
+      <MensajesWhatsapp mensajesActuales={(taller.mensajesWhatsapp as Record<string, string>) || {}} />
+        </TabsContent>
+
+        {/* SEGURIDAD: backups, privacidad y zona peligrosa */}
+        <TabsContent value="seguridad" className="space-y-6">
       {/* Seguridad y datos */}
       <Card>
         <CardHeader className="pb-3">
@@ -171,6 +210,8 @@ export default async function ConfiguracionPage() {
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

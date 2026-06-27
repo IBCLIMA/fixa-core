@@ -179,7 +179,7 @@ export default async function MetricasPage() {
             })}
           </div>
           {pendientes.length > 0 && (
-            <p className="mt-3 text-[11px] text-orange-600">
+            <p className="mt-3 text-[11px] text-brand-600">
               + {pendientes.length} registro{pendientes.length > 1 ? "s" : ""} pendiente
               {pendientes.length > 1 ? "s" : ""} de aprobación (fuera del embudo).
             </p>

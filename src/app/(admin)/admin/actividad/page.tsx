@@ -250,9 +250,17 @@ export default async function ActividadPage() {
               );
             })}
             {enriquecidos.length === 0 && (
-              <p className="py-8 text-center text-sm text-muted-foreground">
-                No hay talleres operativos todavía.
-              </p>
+              <div className="flex flex-col items-center gap-3 py-12 text-center">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-stone-100">
+                  <Activity className="h-6 w-6 text-stone-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-stone-700">Sin talleres operativos</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    En cuanto un taller aprobado empiece a trabajar, verás aquí su nivel de uso y riesgo.
+                  </p>
+                </div>
+              </div>
             )}
           </div>
         </CardContent>
