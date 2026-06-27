@@ -1,7 +1,9 @@
 // ─── Email ───
 
 // Remitente único de marca para todos los emails transaccionales (Resend).
-export const EMAIL_FROM = "FIXA <hola@fixataller.es>";
+// TEMPORAL: onboarding@resend.dev (dominio verificado de Resend) mientras se verifica
+// fixataller.es en Resend. Cambiar a "FIXA <hola@fixataller.es>" cuando el dominio esté verified.
+export const EMAIL_FROM = "FIXA <onboarding@resend.dev>";
 
 // ─── Estado de órdenes de trabajo ───
 

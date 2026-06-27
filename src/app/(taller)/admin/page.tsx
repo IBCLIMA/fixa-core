@@ -1,4 +1,5 @@
-import { Shield, Users, ClipboardList, Car } from "lucide-react";
+import { Shield, Users, ClipboardList, Car, Mail } from "lucide-react";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getSuperAdmin } from "@/lib/auth";
@@ -78,14 +79,20 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-md">
-          <Shield className="h-5 w-5 text-white" />
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-md">
+            <Shield className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-extrabold tracking-tight">Panel de administración</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">Gestiona talleres, planes y facturación</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">Panel de administración</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Gestiona talleres, planes y facturación</p>
-        </div>
+        <Link href="/correo" className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm font-bold text-stone-700 transition hover:bg-stone-50">
+          <Mail className="h-4 w-4 text-orange-500" />
+          Correo
+        </Link>
       </div>
 
       {/* KPIs */}
