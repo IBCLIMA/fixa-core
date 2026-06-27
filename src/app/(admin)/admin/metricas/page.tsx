@@ -1,9 +1,52 @@
-import { BarChart3, TrendingUp, Repeat, Euro, Users, Percent } from "lucide-react";
+import { BarChart3, TrendingUp, Repeat, Euro, Users, Percent, LineChart } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatCard } from "@/components/stat-card";
 import { getDb } from "@/db";
-import { talleres } from "@/db/schema";
+import { talleres, dailyStats } from "@/db/schema";
+import { isNull, desc } from "drizzle-orm";
 import { formatMoneyShort } from "@/lib/format";
+
+// ── Histórico de plataforma (snapshot diario del cron daily-stats) ──────────
+// Devuelve la serie ascendente por fecha. Si la tabla aún no existe (el fundador
+// no ha aplicado el SQL) o no hay filas, devuelve [] y la UI muestra el estado
+// "recopilando datos" sin romper.
+type PlataformaDia = {
+  fecha: string;
+  mrr: number;
+  registros: number;
+  talleresActivos: number;
+  talleresPagando: number;
+};
+
+async function getTendencia(): Promise<PlataformaDia[]> {
+  const db = getDb();
+  try {
+    const filas = await db
+      .select({
+        fecha: dailyStats.fecha,
+        mrr: dailyStats.mrr,
+        registros: dailyStats.registros,
+        talleresActivos: dailyStats.talleresActivos,
+        talleresPagando: dailyStats.talleresPagando,
+      })
+      .from(dailyStats)
+      .where(isNull(dailyStats.tallerId))
+      .orderBy(desc(dailyStats.fecha))
+      .limit(30);
+    return filas
+      .map((f) => ({
+        fecha: f.fecha,
+        mrr: Number(f.mrr),
+        registros: f.registros,
+        talleresActivos: f.talleresActivos,
+        talleresPagando: f.talleresPagando,
+      }))
+      .reverse();
+  } catch {
+    // Tabla aún no creada → tratamos como "sin datos todavía".
+    return [];
+  }
+}
 
 export const metadata = { title: "Métricas · FIXA Admin" };
 export const dynamic = "force-dynamic";
@@ -16,6 +59,16 @@ const DIA = 86_400_000;
 
 export default async function MetricasPage() {
   const db = getDb();
+
+  // Histórico real (snapshot diario). Tendencia de MRR y activos para ver churn.
+  const tendencia = await getTendencia();
+  const hayTendencia = tendencia.length >= 2;
+  const maxMrrTend = Math.max(1, ...tendencia.map((d) => d.mrr));
+  const maxActivos = Math.max(1, ...tendencia.map((d) => d.talleresActivos));
+  const primero = tendencia[0];
+  const ultimo = tendencia[tendencia.length - 1];
+  const deltaMrr = hayTendencia ? ultimo.mrr - primero.mrr : 0;
+  const deltaActivos = hayTendencia ? ultimo.talleresActivos - primero.talleresActivos : 0;
 
   // ── Datos crudos (pocos talleres ⇒ calculamos al vuelo en JS).
   // NOTA escala: cuando haya cientos/miles de talleres, esto debe precalcularse
@@ -142,6 +195,83 @@ export default async function MetricasPage() {
           alert={churn > 0}
         />
       </div>
+
+      {/* Tendencia histórica (snapshot diario) — detección de churn */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <LineChart className="h-4 w-4 text-muted-foreground" />
+            Tendencia · últimos {tendencia.length || 30} días
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {!hayTendencia ? (
+            <div className="flex flex-col items-center gap-2 py-10 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-stone-100">
+                <LineChart className="h-6 w-6 text-stone-400" />
+              </div>
+              <p className="text-sm font-bold text-stone-700">Recopilando datos</p>
+              <p className="max-w-sm text-sm text-muted-foreground">
+                El snapshot diario empieza a guardar histórico esta noche. Vuelve mañana
+                para ver la evolución de MRR y de talleres activos (y detectar churn).
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-5">
+              {/* MRR */}
+              <div>
+                <div className="mb-1.5 flex items-baseline justify-between">
+                  <span className="text-xs font-medium text-muted-foreground">MRR</span>
+                  <span className="text-xs font-semibold tabular-nums">
+                    {formatMoneyShort(ultimo.mrr)}
+                    <span className={deltaMrr >= 0 ? "ml-1.5 text-emerald-600" : "ml-1.5 text-red-600"}>
+                      {deltaMrr >= 0 ? "▲" : "▼"} {formatMoneyShort(Math.abs(deltaMrr))}
+                    </span>
+                  </span>
+                </div>
+                <div className="flex h-16 items-end gap-px">
+                  {tendencia.map((d) => (
+                    <div
+                      key={`mrr-${d.fecha}`}
+                      title={`${d.fecha} · ${formatMoneyShort(d.mrr)}`}
+                      className="flex-1 rounded-t bg-emerald-500/80"
+                      style={{ height: `${(d.mrr / maxMrrTend) * 100}%`, minHeight: d.mrr > 0 ? 3 : 0 }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Talleres activos por día (caída sostenida = churn) */}
+              <div>
+                <div className="mb-1.5 flex items-baseline justify-between">
+                  <span className="text-xs font-medium text-muted-foreground">Talleres activos/día</span>
+                  <span className="text-xs font-semibold tabular-nums">
+                    {ultimo.talleresActivos}
+                    <span className={deltaActivos >= 0 ? "ml-1.5 text-emerald-600" : "ml-1.5 text-red-600"}>
+                      {deltaActivos >= 0 ? "▲" : "▼"} {Math.abs(deltaActivos)}
+                    </span>
+                  </span>
+                </div>
+                <div className="flex h-16 items-end gap-px">
+                  {tendencia.map((d) => (
+                    <div
+                      key={`act-${d.fecha}`}
+                      title={`${d.fecha} · ${d.talleresActivos} activos`}
+                      className="flex-1 rounded-t bg-blue-500/80"
+                      style={{ height: `${(d.talleresActivos / maxActivos) * 100}%`, minHeight: d.talleresActivos > 0 ? 3 : 0 }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <p className="text-[11px] text-muted-foreground">
+                Histórico real desde <code>daily_stats</code> (snapshot nocturno). Una caída
+                sostenida de activos con MRR plano es la señal temprana de churn.
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Embudo trial → pago */}
       <Card>

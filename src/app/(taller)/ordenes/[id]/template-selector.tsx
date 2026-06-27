@@ -69,13 +69,12 @@ export function TemplateSelector({ ordenId }: { ordenId: string }) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          size="sm"
-          className="rounded-full"
+          className="rounded-full h-11 sm:h-9 w-full sm:w-auto whitespace-nowrap"
           disabled={loading}
         >
-          <Layers className="mr-1 h-3 w-3" />
+          <Layers className="mr-1 h-4 w-4" />
           {loading ? "Aplicando..." : "Aplicar plantilla"}
-          <ChevronDown className="ml-1 h-3 w-3" />
+          <ChevronDown className="ml-1 h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64">

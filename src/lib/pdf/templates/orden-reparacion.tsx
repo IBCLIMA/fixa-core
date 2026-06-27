@@ -1,4 +1,5 @@
 import { Document, Page, Text, View, Image, StyleSheet } from "@react-pdf/renderer";
+import { formatMoneyText, formatDecimal2 } from "@/lib/format";
 
 const F = "Helvetica";
 const FB = "Helvetica-Bold";
@@ -210,18 +211,18 @@ export function OrdenReparacionPDF({ data }: { data: OrdenPDFData }) {
             <Text style={[s.td, { width: "7%", color: c.light, fontSize: 6 }]}>{l.tipo === "mano_obra" ? "MO" : l.tipo === "recambio" ? "RC" : "OT"}</Text>
             <Text style={[s.td, { width: "48%" }]}>{l.descripcion}</Text>
             <Text style={[s.td, { width: "10%", textAlign: "right" as any }]}>{Number(l.cantidad)}</Text>
-            <Text style={[s.td, { width: "15%", textAlign: "right" as any }]}>{Number(l.precioUnitario).toFixed(2)}</Text>
-            <Text style={[s.td, { width: "20%", textAlign: "right" as any, fontFamily: FB }]}>{l.base.toFixed(2)}</Text>
+            <Text style={[s.td, { width: "15%", textAlign: "right" as any }]}>{formatDecimal2(Number(l.precioUnitario))}</Text>
+            <Text style={[s.td, { width: "20%", textAlign: "right" as any, fontFamily: FB }]}>{formatDecimal2(l.base)}</Text>
           </View>
         ))}
         {Array.from({ length: emptyR }).map((_, i) => <View key={`e${i}`} style={s.tR}><Text style={s.td}> </Text></View>)}
 
         {lCalc.length > 0 && (
           <View style={s.tots}>
-            <View style={s.toR}><Text style={s.toL}>Base</Text><Text style={s.toV}>{totalBase.toFixed(2)}</Text></View>
-            <View style={s.toR}><Text style={s.toL}>IVA</Text><Text style={s.toV}>{totalIva.toFixed(2)}</Text></View>
+            <View style={s.toR}><Text style={s.toL}>Base</Text><Text style={s.toV}>{formatDecimal2(totalBase)}</Text></View>
+            <View style={s.toR}><Text style={s.toL}>IVA</Text><Text style={s.toV}>{formatDecimal2(totalIva)}</Text></View>
             <View style={[s.toR, { borderTopWidth: 1, borderTopColor: c.black, paddingTop: 2, marginTop: 1 }]}>
-              <Text style={s.toFL}>TOTAL</Text><Text style={s.toFV}>{totalFinal.toFixed(2)} EUR</Text>
+              <Text style={s.toFL}>TOTAL</Text><Text style={s.toFV}>{formatMoneyText(totalFinal)}</Text>
             </View>
           </View>
         )}

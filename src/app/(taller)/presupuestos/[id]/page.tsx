@@ -224,7 +224,7 @@ export default async function PresupuestoDetallePage({
         <CardContent>
           <LineasPresupuesto presupuestoId={presupuesto.id} lineas={lineas} />
 
-          <div className="flex gap-2 mt-4 no-print">
+          <div className="flex flex-col sm:flex-row gap-2 mt-4 no-print">
             <div className="flex-1">
               <AgregarLineaPresupuesto presupuestoId={presupuesto.id} precioHora={precioHora} />
             </div>

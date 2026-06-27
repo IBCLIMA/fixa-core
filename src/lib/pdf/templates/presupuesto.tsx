@@ -1,4 +1,5 @@
 import { Document, Page, Text, View, Image, StyleSheet } from "@react-pdf/renderer";
+import { formatMoneyText, formatDecimal2 } from "@/lib/format";
 
 const F = "Helvetica";
 const FB = "Helvetica-Bold";
@@ -557,7 +558,7 @@ export function PresupuestoPDF({ data }: { data: PresupuestoPDFData }) {
                         : "Otros"}
                     {l.referencia ? `  ·  Ref: ${l.referencia}` : ""}
                     {"  ·  "}
-                    {Number(l.precioUnitario).toFixed(2)} EUR/ud
+                    {formatDecimal2(Number(l.precioUnitario))} EUR/ud
                     {Number(l.descuentoPct || 0) > 0
                       ? `  ·  -${l.descuentoPct}% dto`
                       : ""}
@@ -572,7 +573,7 @@ export function PresupuestoPDF({ data }: { data: PresupuestoPDFData }) {
                   {Number(l.cantidad)}
                 </Text>
                 <Text style={[s.tdAmount, { width: "28%" }]}>
-                  {l.base.toFixed(2)} EUR
+                  {formatMoneyText(l.base)}
                 </Text>
               </View>
             ))}
@@ -581,7 +582,7 @@ export function PresupuestoPDF({ data }: { data: PresupuestoPDFData }) {
             <View style={s.totalCard}>
               <View style={s.totalRow}>
                 <Text style={s.totalLabel}>Base imponible</Text>
-                <Text style={s.totalValue}>{totalBase.toFixed(2)} EUR</Text>
+                <Text style={s.totalValue}>{formatMoneyText(totalBase)}</Text>
               </View>
               {totalDescuento > 0 && (
                 <View style={s.totalRow}>
@@ -589,19 +590,19 @@ export function PresupuestoPDF({ data }: { data: PresupuestoPDFData }) {
                     Ahorro aplicado
                   </Text>
                   <Text style={[s.totalValue, { color: c.green }]}>
-                    -{totalDescuento.toFixed(2)} EUR
+                    -{formatMoneyText(totalDescuento)}
                   </Text>
                 </View>
               )}
               <View style={s.totalRow}>
                 <Text style={s.totalLabel}>IVA</Text>
-                <Text style={s.totalValue}>{totalIva.toFixed(2)} EUR</Text>
+                <Text style={s.totalValue}>{formatMoneyText(totalIva)}</Text>
               </View>
               <View style={s.totalDivider} />
               <View style={s.totalFinalRow}>
                 <Text style={s.totalFinalLabel}>Total</Text>
                 <Text style={s.totalFinalValue}>
-                  {totalFinal.toFixed(2)} EUR
+                  {formatMoneyText(totalFinal)}
                 </Text>
               </View>
             </View>

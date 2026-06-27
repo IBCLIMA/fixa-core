@@ -1,9 +1,10 @@
 "use client";
 
 import { useTransition } from "react";
-import { CheckCircle2, Loader2, Eye, Inbox } from "lucide-react";
+import { CheckCircle2, Loader2, Eye, Inbox, Reply } from "lucide-react";
 import { marcarFeedback } from "@/app/(taller)/actions/feedback";
 import { toast } from "sonner";
+import { FeedbackReplyDialog } from "./soporte/feedback-reply-dialog";
 
 type Item = {
   id: string;
@@ -76,19 +77,40 @@ export function FeedbackList({ items }: { items: Item[] }) {
                   <span>· {new Date(f.createdAt).toLocaleString("es-ES")}</span>
                 </div>
               </div>
-              {!resuelto && (
-                <div className="flex shrink-0 gap-1.5">
-                  {f.estado === "nuevo" && (
-                    <button onClick={() => set(f.id, "visto")} disabled={isPending} title="Marcar como visto" className="flex h-8 w-8 items-center justify-center rounded-lg border border-stone-200 text-stone-500 hover:bg-stone-50">
-                      <Eye className="h-4 w-4" />
-                    </button>
-                  )}
-                  <button onClick={() => set(f.id, "resuelto")} disabled={isPending} title="Marcar como resuelto" className="flex h-8 items-center gap-1 rounded-lg bg-emerald-600 px-2.5 text-xs font-medium text-white hover:bg-emerald-700">
-                    {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
-                    Resuelto
+              <div className="flex shrink-0 flex-col items-end gap-1.5">
+                {/* Responder por email — solo si el feedback tiene email resoluble del taller */}
+                {f.contactoEmail ? (
+                  <FeedbackReplyDialog
+                    feedbackId={f.id}
+                    to={f.contactoEmail}
+                    tallerNombre={f.tallerNombre}
+                    mensaje={f.mensaje}
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    disabled
+                    title="Este taller no tiene email registrado — no se puede responder por correo"
+                    className="flex h-8 cursor-not-allowed items-center gap-1.5 rounded-lg border border-stone-200 px-2.5 text-xs font-medium text-stone-400 opacity-70"
+                  >
+                    <Reply className="h-4 w-4" />
+                    Responder
                   </button>
-                </div>
-              )}
+                )}
+                {!resuelto && (
+                  <div className="flex gap-1.5">
+                    {f.estado === "nuevo" && (
+                      <button onClick={() => set(f.id, "visto")} disabled={isPending} title="Marcar como visto" className="flex h-8 w-8 items-center justify-center rounded-lg border border-stone-200 text-stone-500 hover:bg-stone-50">
+                        <Eye className="h-4 w-4" />
+                      </button>
+                    )}
+                    <button onClick={() => set(f.id, "resuelto")} disabled={isPending} title="Marcar como resuelto" className="flex h-8 items-center gap-1 rounded-lg bg-emerald-600 px-2.5 text-xs font-medium text-white hover:bg-emerald-700">
+                      {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+                      Resuelto
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         );

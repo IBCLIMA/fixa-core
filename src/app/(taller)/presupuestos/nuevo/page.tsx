@@ -142,24 +142,24 @@ export default function NuevoPresupuestoPage() {
 
         {/* Lines */}
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <Label className="text-sm font-bold">Trabajos y recambios</Label>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <select
                 onChange={(e) => {
                   const t = serviceTemplates.find((t) => t.name === e.target.value);
                   if (t) { applyTemplate(t); e.target.value = ""; }
                 }}
                 defaultValue=""
-                className="h-8 rounded-lg border border-input bg-background px-2 text-xs"
+                className="h-11 sm:h-9 rounded-lg border border-input bg-background px-3 text-sm"
               >
                 <option value="" disabled>Aplicar plantilla...</option>
                 {serviceTemplates.map((t) => (
                   <option key={t.name} value={t.name}>{t.name}</option>
                 ))}
               </select>
-              <Button type="button" variant="outline" size="sm" onClick={addLinea} className="rounded-full text-xs h-8">
-                <Plus className="h-3 w-3 mr-1" />Añadir línea
+              <Button type="button" variant="outline" onClick={addLinea} className="rounded-full h-11 sm:h-9">
+                <Plus className="h-4 w-4 mr-1" />Añadir línea
               </Button>
             </div>
           </div>
@@ -172,57 +172,72 @@ export default function NuevoPresupuestoPage() {
           ) : (
             <div className="space-y-2">
               {lineas.map((l, i) => (
-                <div key={i} className="rounded-xl border border-stone-200 bg-stone-50/50 p-3 space-y-2">
-                  <div className="flex items-center justify-between">
+                <div key={i} className="rounded-xl border border-stone-200 bg-stone-50/50 p-3 space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
                     <select
                       value={l.tipo}
                       onChange={(e) => updateLinea(i, "tipo", e.target.value)}
-                      className="h-9 rounded-lg border border-input bg-white px-2 text-sm"
+                      className="h-11 sm:h-9 rounded-lg border border-input bg-white px-3 text-sm"
                     >
                       <option value="mano_obra">Mano de obra</option>
                       <option value="recambio">Recambio</option>
                       <option value="otros">Otros</option>
                     </select>
-                    <button type="button" onClick={() => removeLinea(i)} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg">
+                    <button type="button" onClick={() => removeLinea(i)} aria-label="Eliminar línea" className="inline-flex h-11 w-11 sm:h-9 sm:w-9 shrink-0 items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
-                  <Input
-                    value={l.descripcion}
-                    onChange={(e) => updateLinea(i, "descripcion", e.target.value)}
-                    placeholder="Descripción del trabajo o recambio"
-                    className="h-10 rounded-lg text-sm"
-                  />
-                  {l.tipo === "recambio" && (
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-medium text-muted-foreground">Concepto</label>
                     <Input
-                      value={l.referencia || ""}
-                      onChange={(e) => updateLinea(i, "referencia", e.target.value)}
-                      placeholder="Referencia (ej: 0986494128)"
-                      className="h-9 rounded-lg text-sm font-mono"
+                      value={l.descripcion}
+                      onChange={(e) => updateLinea(i, "descripcion", e.target.value)}
+                      placeholder="Descripción del trabajo o recambio"
+                      className="h-11 sm:h-10 rounded-lg text-sm"
                     />
+                  </div>
+                  {l.tipo === "recambio" && (
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-medium text-muted-foreground">Referencia</label>
+                      <Input
+                        value={l.referencia || ""}
+                        onChange={(e) => updateLinea(i, "referencia", e.target.value)}
+                        placeholder="Ej: 0986494128"
+                        className="h-11 sm:h-10 rounded-lg text-sm font-mono"
+                      />
+                    </div>
                   )}
                   <div className="grid grid-cols-3 gap-2">
-                    <div>
-                      <label className="text-[10px] text-stone-400">Cantidad</label>
-                      <Input type="number" value={l.cantidad} onChange={(e) => updateLinea(i, "cantidad", Number(e.target.value))} className="h-9 rounded-lg text-sm" min={0} step={0.25} />
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-medium text-muted-foreground">Cantidad</label>
+                      <Input type="number" value={l.cantidad} onChange={(e) => updateLinea(i, "cantidad", Number(e.target.value))} className="h-11 sm:h-9 rounded-lg text-sm" min={0} step={0.25} />
                     </div>
-                    <div>
-                      <label className="text-[10px] text-stone-400">Precio unitario (EUR)</label>
-                      <Input type="number" value={l.precioUnitario} onChange={(e) => updateLinea(i, "precioUnitario", Number(e.target.value))} className="h-9 rounded-lg text-sm" min={0} step={0.5} />
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-medium text-muted-foreground">Precio (EUR)</label>
+                      <Input type="number" value={l.precioUnitario} onChange={(e) => updateLinea(i, "precioUnitario", Number(e.target.value))} className="h-11 sm:h-9 rounded-lg text-sm" min={0} step={0.5} />
                     </div>
-                    <div>
-                      <label className="text-[10px] text-stone-400">IVA %</label>
-                      <Input type="number" value={l.ivaPct} onChange={(e) => updateLinea(i, "ivaPct", Number(e.target.value))} className="h-9 rounded-lg text-sm" min={0} step={1} />
+                    <div className="space-y-1">
+                      <label className="text-[11px] font-medium text-muted-foreground">IVA %</label>
+                      <Input type="number" value={l.ivaPct} onChange={(e) => updateLinea(i, "ivaPct", Number(e.target.value))} className="h-11 sm:h-9 rounded-lg text-sm" min={0} step={1} />
                     </div>
                   </div>
                 </div>
               ))}
 
               {/* Totals */}
-              <div className="text-right space-y-1 pt-2">
-                <p className="text-sm text-stone-500">Base imponible: {formatMoney(totalBase)}</p>
-                <p className="text-sm text-stone-500">IVA: {formatMoney(totalIva)}</p>
-                <p className="text-lg font-bold">Total: {formatMoney(totalFinal)}</p>
+              <div className="rounded-xl bg-muted/50 px-4 py-3 space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Base imponible</span>
+                  <span className="tabular-nums">{formatMoney(totalBase)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">IVA</span>
+                  <span className="tabular-nums">{formatMoney(totalIva)}</span>
+                </div>
+                <div className="flex justify-between text-base font-bold pt-1">
+                  <span>Total</span>
+                  <span className="tabular-nums">{formatMoney(totalFinal)}</span>
+                </div>
               </div>
             </div>
           )}

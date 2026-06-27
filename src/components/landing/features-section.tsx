@@ -34,7 +34,7 @@ const heroFeatures = [
     bg: "bg-blue-500/5",
     border: "hover:border-blue-200",
     title: "Órdenes de trabajo",
-    desc: "Control completo del estado de cada coche. De la entrada a la entrega en un vistazo.",
+    desc: "De un vistazo sabes qué coche está en qué punto. Ninguno se te queda olvidado en un rincón.",
     visual: (
       <div className="mt-4 space-y-2">
         {[
@@ -59,7 +59,7 @@ const heroFeatures = [
     bg: "bg-brand-500/5",
     border: "hover:border-brand-200",
     title: "Entrada en 10 segundos",
-    desc: "Escribe la matrícula → orden creada. Sin formularios interminables.",
+    desc: "Escribes la matrícula y la orden ya está. Sin rellenar diez casillas.",
     visual: (
       <div className="mt-4">
         <div className="rounded-lg bg-white/80 border border-stone-100 p-3">
@@ -84,7 +84,7 @@ const heroFeatures = [
     bg: "bg-emerald-500/5",
     border: "hover:border-emerald-200",
     title: "WhatsApp integrado",
-    desc: "Avisa al cliente con un toque. 13 plantillas listas para cada situación.",
+    desc: "Un toque y el cliente sabe que su coche está listo. El mensaje ya va escrito, tú solo das a enviar.",
     visual: (
       <div className="mt-4 space-y-2">
         {[
@@ -102,14 +102,14 @@ const heroFeatures = [
 ];
 
 const smallFeatures = [
-  { icon: Car, color: "from-cyan-500 to-cyan-600", title: "Portal del cliente", desc: "El cliente ve el estado sin llamar." },
-  { icon: CalendarDays, color: "from-violet-500 to-violet-600", title: "Agenda de citas", desc: "Calendario semanal con disponibilidad." },
-  { icon: Bell, color: "from-red-500 to-red-600", title: "Avisos ITV", desc: "Detecta ITVs próximas automáticamente." },
-  { icon: Users, color: "from-indigo-500 to-indigo-600", title: "Clientes y vehículos", desc: "Fichas con historial completo." },
-  { icon: FileText, color: "from-amber-500 to-amber-600", title: "Presupuestos", desc: "M.O. y recambios con IVA automático." },
-  { icon: Megaphone, color: "from-pink-500 to-pink-600", title: "Ofertas masivas", desc: "Promociones WhatsApp con un clic." },
-  { icon: Camera, color: "from-teal-500 to-teal-600", title: "Fotos del vehículo", desc: "Protección ante reclamaciones." },
-  { icon: Shield, color: "from-stone-500 to-stone-600", title: "Seguridad RGPD", desc: "Datos cifrados, backups diarios." },
+  { icon: Car, color: "from-cyan-500 to-cyan-600", title: "Portal del cliente", desc: "Mira el estado de su coche él solo. Y deja de llamarte." },
+  { icon: CalendarDays, color: "from-violet-500 to-violet-600", title: "Agenda de citas", desc: "El cliente pide cita online, tú la confirmas. Sin teléfono de por medio." },
+  { icon: Bell, color: "from-red-500 to-red-600", title: "Avisos ITV", desc: "FIXA te avisa de las ITV que tocan. Trabajo que antes se te escapaba." },
+  { icon: Users, color: "from-indigo-500 to-indigo-600", title: "Clientes y vehículos", desc: "Cada coche con su historia: qué le hiciste, cuándo y por cuánto." },
+  { icon: FileText, color: "from-amber-500 to-amber-600", title: "Presupuestos", desc: "Mano de obra y piezas con el IVA ya puesto. El cliente lo acepta desde el sofá." },
+  { icon: Megaphone, color: "from-pink-500 to-pink-600", title: "Ofertas a todos", desc: "Mándale una oferta a todos tus clientes de golpe por WhatsApp." },
+  { icon: Camera, color: "from-teal-500 to-teal-600", title: "Fotos del coche", desc: "Foto al coche cuando entra. Si luego hay líos, tienes la prueba." },
+  { icon: Shield, color: "from-stone-500 to-stone-600", title: "Tus datos a salvo", desc: "Cifrados y con copia cada día. RGPD en regla, sin que tú hagas nada." },
   { icon: Smartphone, color: "from-rose-500 to-rose-600", title: "Sin instalar nada. Desde cualquier sitio.", desc: "Abre el navegador y funciona. PC, tablet o móvil. En el taller, en casa o de vacaciones — tu taller siempre contigo." },
 ];
 
@@ -125,7 +125,7 @@ export function FeaturesSection() {
         <AnimatedSection className="text-center mb-14">
           <LandingBadge>Funciones</LandingBadge>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-            Todo lo que tu taller necesita
+            Lo que usas de verdad. Y nada que estorbe.
           </h2>
           <p className="text-stone-500 mt-4 max-w-lg mx-auto text-lg">
             Por menos de lo que cuesta un cambio de aceite al mes.

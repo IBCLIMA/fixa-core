@@ -11,8 +11,9 @@ import {
   pgEnum,
   jsonb,
   index,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 // ═══ ENUMS ═══
 
@@ -655,6 +656,61 @@ export const adminAudit = pgTable("admin_audit", {
   index("idx_admin_audit_created").on(table.createdAt),
 ]);
 
+// ═══ MÉTRICAS HISTÓRICAS (snapshot diario) ═══
+//
+// Una fila por día y por taller (tallerId NOT NULL) = timeline de uso real de
+// cada taller → detecta churn ("dejó de usar FIXA el día X").
+// Una fila por día con tallerId NULL = agregado de plataforma de ese día
+// (MRR, registros, talleres activos…) → tendencias para el fundador.
+//
+// Lo rellena el cron /api/cron/daily-stats (idempotente: UPSERT por día).
+// Sustituye los cálculos al vuelo de admin/metricas y admin/actividad, que no
+// escalan. Aquí se LEE la serie histórica; el cron es quien CALCULA.
+//
+// Idempotencia con tallerId nullable: NO se usa una única unique sobre
+// (fecha, tallerId) porque en Postgres dos NULL son distintos y duplicaría la
+// fila de plataforma. Se usan DOS índices únicos PARCIALES (ver SQL al pie del
+// fichero): uno para filas de taller y otro para la fila de plataforma. Es
+// portable a cualquier versión de Postgres (no depende de NULLS NOT DISTINCT).
+export const dailyStats = pgTable(
+  "daily_stats",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    fecha: date("fecha").notNull(),
+    // NULL ⇒ fila agregada de plataforma. NOT NULL ⇒ snapshot de ese taller.
+    tallerId: uuid("taller_id").references(() => talleres.id, { onDelete: "cascade" }),
+
+    // ── Actividad del día (en ambos tipos de fila) ──────────────────
+    ordenesCreadas: integer("ordenes_creadas").default(0).notNull(),
+    citasCreadas: integer("citas_creadas").default(0).notNull(),
+    // Acumulado de órdenes del taller a fecha del snapshot (0 en fila plataforma).
+    ordenesTotal: integer("ordenes_total").default(0).notNull(),
+    // Per-taller: ¿hubo actividad real ese día? (orden/cita creada o acceso).
+    activo: boolean("activo").default(false).notNull(),
+
+    // ── Agregado de plataforma (solo significativo cuando tallerId IS NULL) ──
+    registros: integer("registros").default(0).notNull(), // talleres nuevos ese día
+    talleresTotal: integer("talleres_total").default(0).notNull(), // base operativa (no pendientes)
+    talleresTrial: integer("talleres_trial").default(0).notNull(),
+    talleresPagando: integer("talleres_pagando").default(0).notNull(),
+    talleresActivos: integer("talleres_activos").default(0).notNull(), // con actividad ese día
+    mrr: numeric("mrr", { precision: 10, scale: 2 }).default("0").notNull(),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_daily_stats_fecha").on(table.fecha),
+    // Un snapshot por taller y día.
+    uniqueIndex("uq_daily_stats_taller_dia")
+      .on(table.fecha, table.tallerId)
+      .where(sql`taller_id IS NOT NULL`),
+    // Una sola fila de plataforma por día.
+    uniqueIndex("uq_daily_stats_plataforma_dia")
+      .on(table.fecha)
+      .where(sql`taller_id IS NULL`),
+  ]
+);
+
 // ═══ RELACIONES ═══
 
 export const inviteTokensRelations = relations(inviteTokens, ({ one }) => ({
@@ -813,3 +869,38 @@ export const documentosCobroRelations = relations(documentosCobro, ({ one }) => 
     references: [vehiculos.id],
   }),
 }));
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * SQL a aplicar A MANO en Neon para la tabla `daily_stats` (métricas históricas).
+ * No se ejecuta nada desde aquí — copiar y pegar en el SQL editor de Neon.
+ * Es idempotente (IF NOT EXISTS), se puede correr varias veces sin romper nada.
+ *
+ *   CREATE TABLE IF NOT EXISTS daily_stats (
+ *     id               uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+ *     fecha            date NOT NULL,
+ *     taller_id        uuid REFERENCES talleres(id) ON DELETE CASCADE,
+ *     ordenes_creadas  integer NOT NULL DEFAULT 0,
+ *     citas_creadas    integer NOT NULL DEFAULT 0,
+ *     ordenes_total    integer NOT NULL DEFAULT 0,
+ *     activo           boolean NOT NULL DEFAULT false,
+ *     registros        integer NOT NULL DEFAULT 0,
+ *     talleres_total   integer NOT NULL DEFAULT 0,
+ *     talleres_trial   integer NOT NULL DEFAULT 0,
+ *     talleres_pagando integer NOT NULL DEFAULT 0,
+ *     talleres_activos integer NOT NULL DEFAULT 0,
+ *     mrr              numeric(10,2) NOT NULL DEFAULT 0,
+ *     created_at       timestamp NOT NULL DEFAULT now()
+ *   );
+ *
+ *   CREATE INDEX IF NOT EXISTS idx_daily_stats_fecha
+ *     ON daily_stats (fecha);
+ *
+ *   -- Un snapshot por taller y día.
+ *   CREATE UNIQUE INDEX IF NOT EXISTS uq_daily_stats_taller_dia
+ *     ON daily_stats (fecha, taller_id) WHERE taller_id IS NOT NULL;
+ *
+ *   -- Una sola fila de plataforma (taller_id NULL) por día.
+ *   CREATE UNIQUE INDEX IF NOT EXISTS uq_daily_stats_plataforma_dia
+ *     ON daily_stats (fecha) WHERE taller_id IS NULL;
+ *
+ * ═══════════════════════════════════════════════════════════════════════════ */

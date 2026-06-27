@@ -35,17 +35,17 @@ export function HeroSection() {
                 <Zap className="h-3 w-3 text-white" />
               </span>
               <span className="text-xs font-semibold text-brand-700 tracking-wide">
-                Hecho por mecánicos · Desde 29€/mes
+                Nacido en un taller de verdad · desde 29€/mes
               </span>
             </motion.div>
 
             <h1 className="text-4xl font-extrabold tracking-tight text-stone-900 md:text-5xl lg:text-[3.5rem] leading-[1.05]">
-              El software de gestión
+              El programa de taller
               <br />
-              que tu taller
+              que esta vez
               <br />
               <span className="hero-shimmer bg-gradient-to-r from-brand-500 via-amber-400 to-brand-600 bg-clip-text text-transparent bg-[length:200%_100%]">
-                de verdad va a usar.
+                sí vas a usar.
               </span>
             </h1>
 
@@ -56,9 +56,10 @@ export function HeroSection() {
               transition={{ ...TRANSITION_DEFAULT, delay: 0.2 }}
               className="text-lg text-stone-500 mt-6 leading-relaxed max-w-[480px]"
             >
-              Órdenes, presupuestos, citas, ITV y WhatsApp. Sin instalar
-              nada, sin descargar nada — abres el navegador y funciona.
-              Desde el PC del taller, desde el móvil o desde la playa.
+              Ya te conoces la historia: pruebas un programa, te peleas con él
+              dos semanas y acabas volviendo al cuaderno. Con FIXA no. Si manejas
+              WhatsApp, manejas FIXA. Abres el navegador y a currar — desde el
+              ordenador del taller o desde el móvil, con las manos llenas de grasa.
             </motion.p>
 
             <motion.div
@@ -73,7 +74,7 @@ export function HeroSection() {
                   size="lg"
                   className="rounded-full bg-brand-500 text-white hover:bg-brand-400 font-bold h-14 px-8 text-base shadow-brand hover:shadow-brand-lg transition-shadow cursor-pointer group"
                 >
-                  Empezar 14 días gratis
+                  Probarlo gratis 14 días
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
                 </Button>
               </Link>

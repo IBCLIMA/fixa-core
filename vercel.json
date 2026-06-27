@@ -31,6 +31,10 @@
     {
       "path": "/api/cron/checkin-trial",
       "schedule": "30 9 * * *"
+    },
+    {
+      "path": "/api/cron/daily-stats",
+      "schedule": "5 0 * * *"
     }
   ]
 }

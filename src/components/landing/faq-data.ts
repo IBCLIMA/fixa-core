@@ -1,13 +1,13 @@
 // Datos de FAQ compartidos (server + client) — también alimentan el schema FAQPage
 export const faqs = [
-  { q: "¿Es difícil de usar?", a: "Si sabes usar WhatsApp, sabes usar FIXA. Incluye tour guiado y guía de primeros pasos. Lo dejamos todo montado.", cat: "general" },
-  { q: "¿Necesito ordenador?", a: "No. FIXA funciona 100% desde el móvil. Se instala como una app y funciona incluso sin conexión.", cat: "general" },
-  { q: "¿Puedo importar mis datos actuales?", a: "Sí. Sube un CSV con tus clientes y vehículos. Si tienes los datos en Excel, guárdalo como CSV y súbelo.", cat: "datos" },
-  { q: "¿Hay permanencia?", a: "No. Cancela cuando quieras. Sin contratos, sin penalizaciones.", cat: "precios" },
-  { q: "¿Mis datos están seguros?", a: "Datos cifrados, backups automáticos diarios, cumplimiento RGPD. Descarga tus datos en cualquier momento.", cat: "datos" },
-  { q: "¿El WhatsApp se envía solo?", a: "FIXA prepara el mensaje y abre WhatsApp listo para enviar. Tú pulsas enviar. Sin API ni costes extra.", cat: "general" },
-  { q: "¿Cuánto tiempo tardo en empezar?", a: "Menos de una semana. Creamos tu cuenta, importamos tus clientes, y lo tienes funcionando.", cat: "general" },
-  { q: "¿Y si no me gusta?", a: "14 días gratis sin compromiso. No te pedimos tarjeta de crédito. Si no te convence, no pagas nada.", cat: "precios" },
-  { q: "¿Migráis vosotros mis datos?", a: "Sí. Si nos envías un Excel o CSV con tus clientes y vehículos, te los importamos gratis. También podemos configurar el taller por ti.", cat: "datos" },
-  { q: "¿Funciona con mi gestoría?", a: "FIXA genera presupuestos y facturas que puedes exportar. Compatible con cualquier flujo de gestoría.", cat: "general" },
+  { q: "¿Es difícil de usar?", a: "Si sabes mandar un WhatsApp, sabes usar FIXA. Te dejamos todo montado y un tour de primeros pasos. En cinco minutos haces tu primera orden.", cat: "general" },
+  { q: "¿Necesito ordenador?", a: "No hace falta. FIXA funciona igual desde el móvil que desde el ordenador del taller. Abres el navegador y a currar.", cat: "general" },
+  { q: "¿Puedo importar mis datos actuales?", a: "Sí. Si tienes los clientes en Excel, lo guardas como CSV y lo subes. Y si te da pereza, te los pasamos nosotros.", cat: "datos" },
+  { q: "¿Hay permanencia?", a: "Ninguna. Cancelas el mes que quieras, tú solo, sin llamar a nadie ni dar explicaciones.", cat: "precios" },
+  { q: "¿Mis datos están seguros?", a: "Sí. Cifrados y con copia de seguridad cada día. Son tuyos: te los descargas cuando quieras.", cat: "datos" },
+  { q: "¿El WhatsApp se envía solo?", a: "FIXA te deja el mensaje escrito y abre WhatsApp. Tú solo das a enviar. Sin API rara ni costes de más.", cat: "general" },
+  { q: "¿Cuánto tiempo tardo en empezar?", a: "Menos de una semana. Te creamos la cuenta, metemos tus clientes y a funcionar.", cat: "general" },
+  { q: "¿Y si no me gusta?", a: "14 días gratis y sin tarjeta. Si no te convence, no pagas nada y aquí no ha pasado nada.", cat: "precios" },
+  { q: "¿Migráis vosotros mis datos?", a: "Sí, y gratis. Nos pasas un Excel o CSV con tus clientes y coches y te lo dejamos dentro. Si quieres, te configuramos el taller entero.", cat: "datos" },
+  { q: "¿Funciona con mi gestoría?", a: "FIXA saca presupuestos y facturas que exportas y le pasas a tu gestor sin problema.", cat: "general" },
 ];

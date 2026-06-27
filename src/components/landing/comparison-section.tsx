@@ -13,7 +13,7 @@ const features = [
   { name: "Portal del cliente online", paper: false, erp: true, fixa: true },
   { name: "Avisos ITV automáticos", paper: false, erp: true, fixa: true },
   { name: "Funciona en PC, tablet y móvil", paper: false, erp: false, fixa: true },
-  { name: "Setup en 1 semana", paper: true, erp: false, fixa: true },
+  { name: "Funcionando en 1 semana", paper: true, erp: false, fixa: true },
   { name: "Sin formación necesaria", paper: true, erp: false, fixa: true },
   { name: "Precio", paper: "0€", erp: "150-300€/mes", fixa: "29€/mes" },
 ];
