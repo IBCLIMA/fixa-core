@@ -57,7 +57,7 @@ export function TrialBanner() {
   let canDismiss: boolean;
 
   if (daysLeft === 1) {
-    bgColor = "bg-orange-500";
+    bgColor = "bg-brand-500";
     textColor = "text-white";
     icon = AlertTriangle;
     message = "Tu prueba termina mañana. ¡Contacta para activar tu plan!";

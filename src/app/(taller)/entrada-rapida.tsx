@@ -113,7 +113,7 @@ export function EntradaRapida() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="rounded-full bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/20 hover:shadow-xl hover:shadow-orange-500/25 transition-all">
+      <Button onClick={() => setOpen(true)} className="rounded-full bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-lg shadow-brand-500/20 hover:shadow-xl hover:shadow-brand-500/25 transition-all">
         <Car className="mr-1.5 h-4 w-4" />Entrada rápida
       </Button>
       <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) resetAll(); }}>
@@ -195,13 +195,13 @@ export function EntradaRapida() {
         {!seleccionado && vehiculoNoEncontrado && (
           <form action={handleCrearNuevo} className="space-y-3">
             {/* Plate (already filled, editable) */}
-            <div className="rounded-xl bg-orange-50 border border-orange-200 p-3 flex items-center gap-3">
-              <UserPlus className="h-5 w-5 text-orange-600 shrink-0" />
+            <div className="rounded-xl bg-brand-50 border border-brand-200 p-3 flex items-center gap-3">
+              <UserPlus className="h-5 w-5 text-brand-600 shrink-0" />
               <div>
-                <p className="text-sm font-bold text-orange-900">
+                <p className="text-sm font-bold text-brand-900">
                   <span className="tracking-wider">{matricula}</span> no está registrado
                 </p>
-                <p className="text-xs text-orange-700">Rellena los datos para dar de alta cliente y vehículo</p>
+                <p className="text-xs text-brand-700">Rellena los datos para dar de alta cliente y vehículo</p>
               </div>
             </div>
             {/* Escanear ficha técnica → rellena matrícula + marca + modelo */}

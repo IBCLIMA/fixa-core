@@ -40,7 +40,7 @@ const pasos = [
     titulo: "Crea tu primera orden",
     desc: 'Usa el botón "Entrada rápida" en el panel: escribe la matrícula, describe lo que le pasa al coche, y crea la orden en 10 segundos.',
     icon: ClipboardList,
-    color: "from-orange-500 to-orange-600",
+    color: "from-brand-500 to-brand-600",
     href: "/",
     boton: "Ir al Panel",
   },
@@ -115,7 +115,7 @@ export default function PrimerosPasosPage() {
                     <h3 className="text-sm font-bold text-stone-900">{paso.titulo}</h3>
                   </div>
                   <p className="text-xs text-stone-500 leading-relaxed">{paso.desc}</p>
-                  <Link href={paso.href} className="inline-flex items-center gap-1 text-xs font-bold text-orange-600 mt-2 hover:text-orange-700 transition-colors">
+                  <Link href={paso.href} className="inline-flex items-center gap-1 text-xs font-bold text-brand-600 mt-2 hover:text-brand-700 transition-colors">
                     {paso.boton}<ArrowRight className="h-3 w-3" />
                   </Link>
                 </div>
@@ -125,14 +125,14 @@ export default function PrimerosPasosPage() {
         ))}
       </div>
 
-      <Card className="border-orange-200 bg-orange-50/50">
+      <Card className="border-brand-200 bg-brand-50/50">
         <CardContent className="p-4 text-center space-y-2">
-          <p className="font-bold text-orange-900">Un último consejo</p>
-          <p className="text-sm text-orange-800">
+          <p className="font-bold text-brand-900">Un último consejo</p>
+          <p className="text-sm text-brand-800">
             Instala FIXA en tu móvil para tenerla como una app, con avisos al instante
             cuando un cliente acepte un presupuesto.
           </p>
-          <Link href="/instalar" className="inline-block text-sm font-bold text-orange-600 hover:underline">
+          <Link href="/instalar" className="inline-block text-sm font-bold text-brand-600 hover:underline">
             Ver cómo instalarla (30 segundos) →
           </Link>
         </CardContent>

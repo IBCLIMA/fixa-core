@@ -96,7 +96,7 @@ export function LineasPresupuesto({ presupuestoId, lineas }: { presupuestoId: st
 
             if (isEditing) {
               return (
-                <div key={linea.id} className="rounded-xl border-2 border-orange-200 bg-orange-50/30 p-3 space-y-2">
+                <div key={linea.id} className="rounded-xl border-2 border-brand-200 bg-brand-50/30 p-3 space-y-2">
                   <Input
                     value={editData.descripcion}
                     onChange={(e) => setEditData({ ...editData, descripcion: e.target.value })}
@@ -182,7 +182,7 @@ export function LineasPresupuesto({ presupuestoId, lineas }: { presupuestoId: st
                   <span className="text-sm font-bold">{formatMoney(base)}</span>
                   <button
                     onClick={() => startEdit(linea)}
-                    className="p-1.5 rounded-lg text-stone-400 hover:text-orange-600 hover:bg-orange-50 transition-colors no-print"
+                    className="p-1.5 rounded-lg text-stone-400 hover:text-brand-600 hover:bg-brand-50 transition-colors no-print"
                     title="Editar"
                   >
                     <Pencil className="h-4 w-4" />

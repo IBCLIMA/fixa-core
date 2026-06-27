@@ -55,7 +55,7 @@ function DraggableCard({ orden, nextLabel, nextState, onMove }: {
           <div className="flex items-center gap-2 min-w-0">
             <span className="text-[11px] text-stone-500 truncate">{orden.clienteNombre?.split(" ")[0] || "—"}</span>
             {orden.asignadoNombre && (
-              <span className="text-[10px] font-medium text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded-full truncate">
+              <span className="text-[10px] font-medium text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded-full truncate">
                 {orden.asignadoNombre.split(" ")[0]}
               </span>
             )}
@@ -91,7 +91,7 @@ function DroppableColumn({ id, label, icon: Icon, color, bg, border, count, chil
         <span className="flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-stone-100 px-1.5 text-[10px] font-bold text-stone-500">{count}</span>
       </div>
       <div ref={setNodeRef}
-        className={`space-y-2 min-h-[100px] rounded-2xl p-2 border border-dashed transition-colors ${isOver ? "bg-orange-50 border-orange-300" : `${bg} ${border}`}`}
+        className={`space-y-2 min-h-[100px] rounded-2xl p-2 border border-dashed transition-colors ${isOver ? "bg-brand-50 border-brand-300" : `${bg} ${border}`}`}
       >
         {children}
       </div>
@@ -205,7 +205,7 @@ export function TallerBoard({ ordenes, activePhases, flujoActual, tallerId }: {
 
         <DragOverlay>
           {activeOrden && (
-            <div className="rounded-2xl border-2 border-orange-400 bg-white p-3.5 shadow-xl rotate-2 w-[260px]">
+            <div className="rounded-2xl border-2 border-brand-400 bg-white p-3.5 shadow-xl rotate-2 w-[260px]">
               <span className="text-base font-extrabold tracking-wider">{activeOrden.matricula}</span>
               <span className="text-[10px] text-stone-400 ml-2">OR-{activeOrden.numero}</span>
               <p className="text-xs text-stone-500 mt-1">{[activeOrden.marca, activeOrden.modelo].filter(Boolean).join(" ")}</p>

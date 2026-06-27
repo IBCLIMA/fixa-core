@@ -70,15 +70,15 @@ export default function AyudaPage() {
         </a>
 
         <a href="tel:+34611433218" className="block">
-          <Card className="hover:border-orange-300 hover:shadow-md transition-all duration-300 cursor-pointer h-full">
+          <Card className="hover:border-brand-300 hover:shadow-md transition-all duration-300 cursor-pointer h-full">
             <CardContent className="p-5 flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50">
-                <Phone className="h-6 w-6 text-orange-600" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-50">
+                <Phone className="h-6 w-6 text-brand-600" />
               </div>
               <div>
                 <h3 className="font-bold text-sm">Teléfono</h3>
                 <p className="text-xs text-muted-foreground mt-0.5">611 433 218</p>
-                <p className="text-xs text-orange-600 font-semibold mt-1">Llamar →</p>
+                <p className="text-xs text-brand-600 font-semibold mt-1">Llamar →</p>
               </div>
             </CardContent>
           </Card>
@@ -100,15 +100,15 @@ export default function AyudaPage() {
         </Link>
 
         <Link href="/instalar" className="block sm:col-span-2">
-          <Card className="hover:border-orange-300 hover:shadow-md transition-all duration-300 cursor-pointer h-full">
+          <Card className="hover:border-brand-300 hover:shadow-md transition-all duration-300 cursor-pointer h-full">
             <CardContent className="p-5 flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50">
-                <Smartphone className="h-6 w-6 text-orange-600" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-50">
+                <Smartphone className="h-6 w-6 text-brand-600" />
               </div>
               <div>
                 <h3 className="font-bold text-sm">Instala FIXA en tu móvil</h3>
                 <p className="text-xs text-muted-foreground mt-0.5">Como una app: icono en pantalla de inicio y avisos al instante</p>
-                <p className="text-xs text-orange-600 font-semibold mt-1">Ver cómo (30 segundos) →</p>
+                <p className="text-xs text-brand-600 font-semibold mt-1">Ver cómo (30 segundos) →</p>
               </div>
             </CardContent>
           </Card>

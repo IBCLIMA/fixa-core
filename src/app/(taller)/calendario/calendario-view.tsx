@@ -63,7 +63,7 @@ interface CalendarioViewProps {
 const dayNames = ["lun", "mar", "mie", "jue", "vie", "sab", "dom"];
 
 const citaColors = [
-  { border: "border-l-orange-500", bg: "bg-orange-50", text: "text-orange-700", time: "text-orange-600" },
+  { border: "border-l-brand-500", bg: "bg-brand-50", text: "text-brand-700", time: "text-brand-600" },
   { border: "border-l-blue-500", bg: "bg-blue-50", text: "text-blue-700", time: "text-blue-600" },
   { border: "border-l-emerald-500", bg: "bg-emerald-50", text: "text-emerald-700", time: "text-emerald-600" },
   { border: "border-l-violet-500", bg: "bg-violet-50", text: "text-violet-700", time: "text-violet-600" },
@@ -205,7 +205,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
           <div
             className={cn(
               "h-full rounded-full transition-all",
-              full ? "bg-red-500" : pct > 70 ? "bg-orange-400" : "bg-emerald-400"
+              full ? "bg-red-500" : pct > 70 ? "bg-brand-400" : "bg-emerald-400"
             )}
             style={{ width: `${pct}%` }}
           />
@@ -218,10 +218,10 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
     <>
       {ConfirmUI}
       {/* ── Feature 5: Today section ──────────────────────────────── */}
-      <div className="rounded-xl border-2 border-orange-200 bg-gradient-to-br from-orange-50/80 to-white p-4 shadow-sm shadow-orange-500/5">
+      <div className="rounded-xl border-2 border-brand-200 bg-gradient-to-br from-brand-50/80 to-white p-4 shadow-sm shadow-brand-500/5">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500 text-white">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-white">
               <CalendarDays className="h-4 w-4" />
             </div>
             <div>
@@ -235,7 +235,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
             <Button
               size="sm"
               variant="outline"
-              className="rounded-xl text-xs h-8 border-orange-200 text-orange-600 hover:bg-orange-50"
+              className="rounded-xl text-xs h-8 border-brand-200 text-brand-600 hover:bg-brand-50"
               onClick={() => { setSelectedDate(hoy); setShowForm(true); }}
             >
               <Plus className="mr-1 h-3 w-3" />
@@ -260,7 +260,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
             <div
               className={cn(
                 "h-full rounded-full transition-all",
-                isFull ? "bg-red-500" : capacityPct > 70 ? "bg-orange-400" : "bg-emerald-400"
+                isFull ? "bg-red-500" : capacityPct > 70 ? "bg-brand-400" : "bg-emerald-400"
               )}
               style={{ width: `${capacityPct}%` }}
             />
@@ -401,7 +401,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
                 blocked
                   ? "border-red-200 bg-red-50/30"
                   : isToday
-                  ? "border-orange-300 bg-orange-50/30 shadow-sm shadow-orange-500/10 ring-1 ring-orange-200"
+                  ? "border-brand-300 bg-brand-50/30 shadow-sm shadow-brand-500/10 ring-1 ring-brand-200"
                   : isWeekend
                   ? "border-stone-100 bg-stone-50/50"
                   : "border-stone-200/60 bg-white"
@@ -414,7 +414,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
                   blocked
                     ? "bg-red-100 border-red-200 text-red-700"
                     : isToday
-                    ? "bg-orange-500 text-white border-orange-500"
+                    ? "bg-brand-500 text-white border-brand-500"
                     : isWeekend
                     ? "bg-stone-100/80 border-stone-100 text-stone-400"
                     : "bg-stone-50 border-stone-200/40"
@@ -422,7 +422,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
               >
                 <p className={cn(
                   "text-[10px] font-bold uppercase tracking-wider",
-                  blocked ? "text-red-400" : isToday ? "text-orange-100" : "text-stone-400"
+                  blocked ? "text-red-400" : isToday ? "text-brand-100" : "text-stone-400"
                 )}>
                   {dayNames[i]}
                 </p>
@@ -533,8 +533,8 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
                     className={cn(
                       "group/add w-full rounded-lg border border-dashed p-2 transition-all duration-200",
                       isWeekend
-                        ? "border-stone-200 text-stone-300 hover:border-orange-300 hover:text-orange-400 hover:bg-orange-50/50"
-                        : "border-stone-200 text-stone-300 hover:border-orange-400 hover:text-orange-500 hover:bg-orange-50/50"
+                        ? "border-stone-200 text-stone-300 hover:border-brand-300 hover:text-brand-400 hover:bg-brand-50/50"
+                        : "border-stone-200 text-stone-300 hover:border-brand-400 hover:text-brand-500 hover:bg-brand-50/50"
                     )}
                   >
                     <Plus className="h-3 w-3 mx-auto transition-transform duration-200 group-hover/add:scale-110" />
@@ -549,7 +549,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
       {/* Weekly summary */}
       <div className="hidden md:flex items-center justify-between rounded-xl bg-white border border-stone-200/60 px-4 py-3 mt-1">
         <div className="flex items-center gap-2">
-          <CalendarDays className="h-4 w-4 text-orange-500" />
+          <CalendarDays className="h-4 w-4 text-brand-500" />
           <span className="text-sm text-stone-600">
             <span className="font-bold text-stone-900">{totalCitas}</span>{" "}
             {totalCitas === 1 ? "cita" : "citas"} esta semana
@@ -568,7 +568,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
         <Button
           size="sm"
           variant="outline"
-          className="rounded-xl text-xs h-8 border-orange-200 text-orange-600 hover:bg-orange-50 hover:text-orange-700"
+          className="rounded-xl text-xs h-8 border-brand-200 text-brand-600 hover:bg-brand-50 hover:text-brand-700"
           onClick={() => { setSelectedDate(hoy); setShowForm(true); }}
         >
           <Plus className="mr-1 h-3 w-3" />
@@ -619,7 +619,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
                   className={cn(
                     "rounded-xl border bg-white p-3.5 transition-all duration-200 border-l-[3px]",
                     color.border,
-                    isDateToday && "ring-1 ring-orange-200",
+                    isDateToday && "ring-1 ring-brand-200",
                     cita.estado === "completada" && "opacity-50"
                   )}
                 >
@@ -638,7 +638,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
                         <p className="text-xs text-muted-foreground mt-0.5">
                           {citaDate.toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })}
                           {isDateToday && (
-                            <span className="ml-1.5 inline-flex items-center rounded-full bg-orange-100 px-1.5 py-0.5 text-[10px] font-bold text-orange-600">
+                            <span className="ml-1.5 inline-flex items-center rounded-full bg-brand-100 px-1.5 py-0.5 text-[10px] font-bold text-brand-600">
                               Hoy
                             </span>
                           )}
@@ -719,10 +719,10 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
           <div className="space-y-2">
             <button
               onClick={openNewCita}
-              className="w-full flex items-center gap-3 rounded-xl border border-stone-200 p-3 hover:bg-orange-50 hover:border-orange-200 transition-all"
+              className="w-full flex items-center gap-3 rounded-xl border border-stone-200 p-3 hover:bg-brand-50 hover:border-brand-200 transition-all"
             >
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-100">
-                <Plus className="h-4 w-4 text-orange-600" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-100">
+                <Plus className="h-4 w-4 text-brand-600" />
               </div>
               <div className="text-left">
                 <p className="text-sm font-semibold">Nueva cita</p>

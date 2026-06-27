@@ -108,14 +108,14 @@ export default async function MetricasPage() {
       </div>
 
       {/* Valor económico estimado */}
-      <Card className="border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50/50">
+      <Card className="border-brand-200 bg-gradient-to-br from-brand-50 to-amber-50/50">
         <CardContent className="p-6 text-center">
-          <TrendingUp className="h-8 w-8 text-orange-500 mx-auto mb-3" />
-          <p className="text-sm font-bold text-orange-900">Valor estimado de lo que FIXA te ha ahorrado</p>
-          <p className="text-4xl font-extrabold text-orange-600 mt-2">
+          <TrendingUp className="h-8 w-8 text-brand-500 mx-auto mb-3" />
+          <p className="text-sm font-bold text-brand-900">Valor estimado de lo que FIXA te ha ahorrado</p>
+          <p className="text-4xl font-extrabold text-brand-600 mt-2">
             {formatMoneyShort(horasAhorradas * 35)}
           </p>
-          <p className="text-xs text-orange-700 mt-2">
+          <p className="text-xs text-brand-700 mt-2">
             Basado en {horasAhorradas}h × 35€/hora de mano de obra.
             FIXA cuesta {mesTotalOrdenes > 0 ? "29€/mes" : "nada (estás en prueba gratuita)"}.
           </p>
@@ -123,8 +123,12 @@ export default async function MetricasPage() {
       </Card>
 
       {totalOrdenes === 0 && (
-        <div className="text-center py-8 text-muted-foreground">
-          <p className="text-sm">Aún no hay datos — crea tu primera orden y los números empezarán a aparecer.</p>
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-12 text-center">
+          <ClipboardList className="h-10 w-10 text-muted-foreground/20 mb-3" />
+          <h3 className="text-sm font-bold">Aún no hay datos</h3>
+          <p className="text-xs text-muted-foreground mt-1 max-w-xs">
+            Crea tu primera orden y los números empezarán a aparecer aquí.
+          </p>
         </div>
       )}
     </div>

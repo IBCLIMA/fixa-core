@@ -115,11 +115,11 @@ export default async function CalendarioPage({
       />
 
       {/* Cita online */}
-      <div className="flex items-center gap-3 rounded-xl bg-orange-50 border border-orange-200 p-3">
-        <Share2 className="h-4 w-4 text-orange-600 shrink-0" />
+      <div className="flex items-center gap-3 rounded-xl bg-brand-50 border border-brand-200 p-3">
+        <Share2 className="h-4 w-4 text-brand-600 shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-bold text-orange-900">Enlace de cita online</p>
-          <p className="text-[10px] text-orange-700">Compártelo en WhatsApp, Google Maps o tu web</p>
+          <p className="text-xs font-bold text-brand-900">Enlace de cita online</p>
+          <p className="text-[10px] text-brand-700">Compártelo en WhatsApp, Google Maps o tu web</p>
         </div>
         <CopyLinkBox url={citaUrl} />
       </div>

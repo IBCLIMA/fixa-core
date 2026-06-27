@@ -15,7 +15,7 @@ const tipoLabels: Record<string, string> = {
 const tipoColors: Record<string, string> = {
   itv: "bg-red-100 text-red-700", revision_km: "bg-blue-100 text-blue-700",
   aceite: "bg-amber-100 text-amber-700", neumaticos: "bg-violet-100 text-violet-700",
-  frenos: "bg-orange-100 text-orange-700", personalizado: "bg-zinc-100 text-zinc-700",
+  frenos: "bg-brand-100 text-brand-700", personalizado: "bg-zinc-100 text-zinc-700",
 };
 
 export default async function AvisosPage() {

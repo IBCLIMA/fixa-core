@@ -37,13 +37,13 @@ export default function InstalarPage() {
           </div>
           <ol className="space-y-3">
             <li className="flex items-start gap-3">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-orange-100 text-sm font-extrabold text-orange-700">1</span>
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-extrabold text-brand-700">1</span>
               <p className="text-sm pt-1">
                 Abre <span className="font-bold">fixa.ibclima.com</span> en <span className="font-bold">Safari</span> e inicia sesión
               </p>
             </li>
             <li className="flex items-start gap-3">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-orange-100 text-sm font-extrabold text-orange-700">2</span>
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-extrabold text-brand-700">2</span>
               <p className="text-sm pt-1 flex items-center gap-1.5 flex-wrap">
                 Pulsa el botón de compartir
                 <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-blue-50"><Share className="h-3.5 w-3.5 text-blue-600" /></span>
@@ -51,7 +51,7 @@ export default function InstalarPage() {
               </p>
             </li>
             <li className="flex items-start gap-3">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-orange-100 text-sm font-extrabold text-orange-700">3</span>
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-extrabold text-brand-700">3</span>
               <p className="text-sm pt-1 flex items-center gap-1.5 flex-wrap">
                 Baja y elige
                 <span className="inline-flex items-center gap-1 rounded-md bg-stone-100 px-2 py-0.5 text-xs font-bold"><SquarePlus className="h-3.5 w-3.5" />Añadir a pantalla de inicio</span>
@@ -83,20 +83,20 @@ export default function InstalarPage() {
           </div>
           <ol className="space-y-3">
             <li className="flex items-start gap-3">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-orange-100 text-sm font-extrabold text-orange-700">1</span>
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-extrabold text-brand-700">1</span>
               <p className="text-sm pt-1">
                 Abre <span className="font-bold">fixa.ibclima.com</span> en <span className="font-bold">Chrome</span> e inicia sesión
               </p>
             </li>
             <li className="flex items-start gap-3">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-orange-100 text-sm font-extrabold text-orange-700">2</span>
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-extrabold text-brand-700">2</span>
               <p className="text-sm pt-1">
                 Si aparece el aviso <span className="font-bold">"Instalar FIXA"</span>, púlsalo y listo.
                 Si no aparece, sigue al paso 3.
               </p>
             </li>
             <li className="flex items-start gap-3">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-orange-100 text-sm font-extrabold text-orange-700">3</span>
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-extrabold text-brand-700">3</span>
               <p className="text-sm pt-1 flex items-center gap-1.5 flex-wrap">
                 Menú
                 <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-stone-100"><MoreVertical className="h-3.5 w-3.5" /></span>

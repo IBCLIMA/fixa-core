@@ -92,7 +92,7 @@ export default async function PresupuestosPage({
       ) : (
         <div className="space-y-2">
           {presupuestosList.map((p) => (
-            <Link key={p.id} href={`/presupuestos/${p.id}`} className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 hover:bg-accent/30 transition-all duration-200">
+            <Link key={p.id} href={`/presupuestos/${p.id}`} className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-xs hover:bg-accent/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
               <div className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-muted">
                 <span className="text-[10px] font-bold text-muted-foreground">PT</span>
                 <span className="text-sm font-extrabold leading-none">{p.numero}</span>

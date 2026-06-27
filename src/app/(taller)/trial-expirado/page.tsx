@@ -27,8 +27,8 @@ export default function TrialExpiradoPage() {
                 <span className="font-medium">Básico</span>
                 <span className="font-bold">29€/mes</span>
               </div>
-              <div className="flex justify-between rounded-lg bg-orange-50 border border-orange-200 p-3">
-                <span className="font-medium">Taller <span className="text-xs text-orange-600">(recomendado)</span></span>
+              <div className="flex justify-between rounded-lg bg-brand-50 border border-brand-200 p-3">
+                <span className="font-medium">Taller <span className="text-xs text-brand-600">(recomendado)</span></span>
                 <span className="font-bold">49€/mes</span>
               </div>
               <div className="flex justify-between rounded-lg bg-stone-50 p-3">

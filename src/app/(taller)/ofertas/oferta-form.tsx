@@ -56,7 +56,7 @@ export function OfertaForm({ totalClientes }: { totalClientes: number }) {
                 <button
                   key={p.id}
                   onClick={() => setMensaje(p.mensaje)}
-                  className="rounded-xl border border-stone-200 bg-white p-3 text-left text-xs font-medium text-stone-700 hover:border-orange-300 hover:bg-orange-50 transition-all"
+                  className="rounded-xl border border-stone-200 bg-white p-3 text-left text-xs font-medium text-stone-700 hover:border-brand-300 hover:bg-brand-50 transition-all"
                 >
                   {p.label}
                 </button>

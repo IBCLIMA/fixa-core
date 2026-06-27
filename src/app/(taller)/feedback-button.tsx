@@ -75,7 +75,7 @@ export function FeedbackButton() {
             rows={4}
             maxLength={2000}
             placeholder="Escríbelo aquí…"
-            className="w-full rounded-xl border border-stone-200 p-3 text-sm outline-none focus:border-orange-400"
+            className="w-full rounded-xl border border-stone-200 p-3 text-sm outline-none focus:border-brand-400"
           />
           <Button onClick={enviar} disabled={isPending} className="w-full rounded-xl">
             {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}

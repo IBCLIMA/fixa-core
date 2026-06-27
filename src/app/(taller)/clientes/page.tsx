@@ -11,6 +11,17 @@ import { NuevoClienteDialog } from "./nuevo-cliente-dialog";
 
 const PER_PAGE = 20;
 
+function formatUltimaVisita(value: string | null): string | null {
+  if (!value) return null;
+  const fecha = new Date(value);
+  if (Number.isNaN(fecha.getTime())) return null;
+  const dias = Math.floor((Date.now() - fecha.getTime()) / 86_400_000);
+  if (dias <= 0) return "Hoy";
+  if (dias === 1) return "Ayer";
+  if (dias < 30) return `Hace ${dias} d`;
+  return fecha.toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" });
+}
+
 export default async function ClientesPage({
   searchParams,
 }: {
@@ -53,6 +64,7 @@ export default async function ClientesPage({
       email: clientes.email,
       createdAt: clientes.createdAt,
       vehiculoCount: sql<number>`(SELECT COUNT(*) FROM vehiculos WHERE vehiculos.cliente_id = ${clientes.id})`,
+      ultimaVisita: sql<string | null>`(SELECT MAX(created_at) FROM ordenes_trabajo WHERE ordenes_trabajo.cliente_id = ${clientes.id})`,
     })
     .from(clientes)
     .where(whereCondition)
@@ -94,25 +106,35 @@ export default async function ClientesPage({
         </div>
       ) : (
         <div className="space-y-2">
-          {clientesList.map((c) => (
-            <Link key={c.id} href={`/clientes/${c.id}`} className="block">
-              <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 hover:bg-accent/30 hover:border-brand/20 transition-all duration-200">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand/10">
-                  <span className="text-sm font-extrabold text-brand">{c.nombre.charAt(0).toUpperCase()}</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold truncate">{c.nombre}</p>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
-                    {c.telefono && <span className="flex items-center gap-1"><Phone className="h-3 w-3" />{c.telefono}</span>}
-                    {c.email && <span className="flex items-center gap-1"><Mail className="h-3 w-3" />{c.email}</span>}
+          {clientesList.map((c) => {
+            const ultimaVisita = formatUltimaVisita(c.ultimaVisita);
+            return (
+              <Link key={c.id} href={`/clientes/${c.id}`} className="block">
+                <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-xs hover:bg-accent/30 hover:border-brand/20 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand/10">
+                    <span className="text-sm font-extrabold text-brand">{c.nombre.charAt(0).toUpperCase()}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold truncate">{c.nombre}</p>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5 truncate">
+                      {c.telefono && <span className="flex items-center gap-1 shrink-0"><Phone className="h-3 w-3" />{c.telefono}</span>}
+                      {c.email && <span className="flex items-center gap-1 min-w-0 truncate"><Mail className="h-3 w-3 shrink-0" /><span className="truncate">{c.email}</span></span>}
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end gap-1 shrink-0">
+                    <Badge variant={c.vehiculoCount > 0 ? "secondary" : "outline"}>
+                      <Car className="h-3 w-3 mr-1" />{c.vehiculoCount}
+                    </Badge>
+                    {ultimaVisita ? (
+                      <span className="text-[11px] text-muted-foreground tabular-nums">{ultimaVisita}</span>
+                    ) : (
+                      <span className="text-[11px] text-muted-foreground/50">Sin visitas</span>
+                    )}
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  {c.vehiculoCount > 0 && <Badge variant="secondary"><Car className="h-3 w-3 mr-1" />{c.vehiculoCount}</Badge>}
-                </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       )}
 

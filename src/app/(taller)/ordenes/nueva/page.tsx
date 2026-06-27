@@ -316,11 +316,11 @@ export default function NuevaOrdenPage() {
               <Label className="text-xs font-bold text-stone-500">Motivo del depósito</Label>
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 text-sm">
-                  <input type="radio" name="motivoDeposito" value="reparacion" defaultChecked className="accent-orange-500" />
+                  <input type="radio" name="motivoDeposito" value="reparacion" defaultChecked className="accent-brand-500" />
                   Reparación
                 </label>
                 <label className="flex items-center gap-2 text-sm">
-                  <input type="radio" name="motivoDeposito" value="presupuesto" className="accent-orange-500" />
+                  <input type="radio" name="motivoDeposito" value="presupuesto" className="accent-brand-500" />
                   Presupuesto
                 </label>
               </div>
@@ -349,7 +349,7 @@ export default function NuevaOrdenPage() {
                             : prev.filter((t) => t !== tipo.value)
                         );
                       }}
-                      className="accent-orange-500"
+                      className="accent-brand-500"
                     />
                     {tipo.label}
                   </label>

@@ -52,7 +52,7 @@ export function TallerSwitcher({
         className="flex h-8 items-center gap-1.5 rounded-xl border border-stone-200 bg-white px-2.5 text-xs font-bold text-stone-700 transition hover:bg-stone-50 disabled:opacity-50"
         title="Cambiar de taller (super-admin)"
       >
-        <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
+        <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
         <span className="max-w-[140px] truncate">{activo?.nombre}</span>
         <ChevronsUpDown className="h-3.5 w-3.5 text-stone-400" />
       </button>
@@ -69,7 +69,7 @@ export function TallerSwitcher({
               className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm text-stone-700 transition hover:bg-stone-50"
             >
               <span className="truncate">{t.nombre}</span>
-              {t.id === activoId && <Check className="h-4 w-4 shrink-0 text-orange-500" />}
+              {t.id === activoId && <Check className="h-4 w-4 shrink-0 text-brand-500" />}
             </button>
           ))}
         </div>

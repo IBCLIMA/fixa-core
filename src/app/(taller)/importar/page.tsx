@@ -82,11 +82,11 @@ export default function ImportarPage() {
         <button
           onClick={() => { setTipo("clientes"); setResultado(null); }}
           className={`flex-1 flex items-center justify-center gap-2 rounded-xl p-4 border-2 transition-all ${
-            tipo === "clientes" ? "border-orange-500 bg-orange-50" : "border-stone-200 hover:border-stone-300"
+            tipo === "clientes" ? "border-brand-500 bg-brand-50" : "border-stone-200 hover:border-stone-300"
           }`}
         >
-          <Users className={`h-5 w-5 ${tipo === "clientes" ? "text-orange-600" : "text-stone-400"}`} />
-          <span className={`font-bold text-sm ${tipo === "clientes" ? "text-orange-700" : "text-stone-600"}`}>Clientes</span>
+          <Users className={`h-5 w-5 ${tipo === "clientes" ? "text-brand-600" : "text-stone-400"}`} />
+          <span className={`font-bold text-sm ${tipo === "clientes" ? "text-brand-700" : "text-stone-600"}`}>Clientes</span>
         </button>
         <button
           onClick={() => { setTipo("vehiculos"); setResultado(null); }}
@@ -144,7 +144,7 @@ export default function ImportarPage() {
       {/* Upload */}
       <Card>
         <CardContent className="p-6">
-          <label className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-stone-200 p-8 cursor-pointer hover:border-orange-400 hover:bg-orange-50/30 transition-all">
+          <label className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-stone-200 p-8 cursor-pointer hover:border-brand-400 hover:bg-brand-50/30 transition-all">
             <Upload className="h-8 w-8 text-stone-300 mb-3" />
             <p className="text-sm font-bold text-stone-700">
               {uploading ? "Importando..." : "Haz clic o arrastra tu archivo CSV"}
