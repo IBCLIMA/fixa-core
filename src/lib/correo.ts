@@ -186,6 +186,21 @@ function pathDeCarpeta(carpeta: Carpeta, buzones: Buzones): string | null {
  * - En "enviados" la dirección mostrada (`from`) es el DESTINATARIO (To).
  * - Si la carpeta no existe en el servidor, devuelve `carpetaDisponible: false`.
  */
+/**
+ * Cuenta los correos NO LEÍDOS de la bandeja de entrada. Ligero: usa IMAP STATUS
+ * (no abre el buzón ni descarga mensajes). Para el badge de "correos nuevos".
+ */
+export async function contarNoLeidos(): Promise<number> {
+  const client = nuevoClienteImap();
+  await client.connect();
+  try {
+    const status = await client.status("INBOX", { unseen: true });
+    return status.unseen ?? 0;
+  } finally {
+    await client.logout().catch(() => {});
+  }
+}
+
 export async function listarMensajes(
   params: ListarParams = {},
 ): Promise<ListarResultado> {

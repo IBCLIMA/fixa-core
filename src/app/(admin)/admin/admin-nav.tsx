@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -14,12 +15,32 @@ const navItems = [
   { name: "Métricas", href: "/admin/metricas", icon: BarChart3 },
   { name: "Actividad", href: "/admin/actividad", icon: Activity },
   { name: "Soporte", href: "/admin/soporte", icon: LifeBuoy, badgeKey: "soporte" as const },
-  { name: "Correo", href: "/admin/correo", icon: Mail },
+  { name: "Correo", href: "/admin/correo", icon: Mail, badgeKey: "correo" as const },
   { name: "Auditoría", href: "/admin/auditoria", icon: ScrollText },
 ];
 
 export function AdminNav({ soporteNuevos = 0 }: { soporteNuevos?: number }) {
   const pathname = usePathname();
+  const [correoNuevos, setCorreoNuevos] = useState(0);
+
+  // Sondeo ligero del nº de correos no leídos (IMAP STATUS) para el badge de Correo.
+  // En cliente y cada 60s para no meter latencia de IMAP en cada carga de página.
+  useEffect(() => {
+    let activo = true;
+    const cargar = () =>
+      fetch("/api/admin/correo/no-leidos")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (activo && d) setCorreoNuevos(d.noLeidos ?? 0);
+        })
+        .catch(() => {});
+    cargar();
+    const id = setInterval(cargar, 60000);
+    return () => {
+      activo = false;
+      clearInterval(id);
+    };
+  }, []);
 
   function isActive(href: string, exact?: boolean) {
     if (exact) return pathname === href;
@@ -30,7 +51,12 @@ export function AdminNav({ soporteNuevos = 0 }: { soporteNuevos?: number }) {
     <nav className="flex flex-col gap-1">
       {navItems.map((item) => {
         const active = isActive(item.href, item.exact);
-        const badge = item.badgeKey === "soporte" && soporteNuevos > 0 ? soporteNuevos : null;
+        const badge =
+          item.badgeKey === "soporte" && soporteNuevos > 0
+            ? soporteNuevos
+            : item.badgeKey === "correo" && correoNuevos > 0
+              ? correoNuevos
+              : null;
         return (
           <Link
             key={item.href}
