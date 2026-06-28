@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Receipt, Search, FileText } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Receipt } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { requireRole } from "@/lib/auth";
@@ -14,7 +14,7 @@ const metodoPagoLabels: Record<string, string> = {
   tarjeta: "Tarjeta",
   transferencia: "Transferencia",
   bizum: "Bizum",
-  domiciliacion: "Domiciliacion",
+  domiciliacion: "Domiciliación",
   otro: "Otro",
 };
 
@@ -60,7 +60,7 @@ export default async function DocumentosPage({
               </p>
               <p className="text-xs text-muted-foreground mt-1 max-w-[280px]">
                 {search
-                  ? "Prueba con otro termino de busqueda."
+                  ? "Prueba con otro término de búsqueda."
                   : "Los documentos se generan al cobrar una orden desde la pantalla de detalle."}
               </p>
             </div>
@@ -70,28 +70,32 @@ export default async function DocumentosPage({
                 <Link
                   key={doc.id}
                   href={`/documentos/${doc.id}`}
-                  className="flex items-center justify-between rounded-xl bg-muted/50 px-3 py-2.5 hover:bg-muted/80 transition-colors"
+                  className="flex min-h-[56px] items-center justify-between gap-3 rounded-xl bg-muted/50 px-3 py-2.5 hover:bg-muted/80 transition-colors"
                 >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="text-xs font-bold text-muted-foreground">
-                      DOC-{String(doc.numero).padStart(4, "0")}
-                    </span>
-                    <span className="text-sm font-medium">{doc.matricula}</span>
+                  <div className="flex flex-col gap-0.5 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-muted-foreground shrink-0">
+                        DOC-{String(doc.numero).padStart(4, "0")}
+                      </span>
+                      <span className="text-sm font-medium truncate">{doc.matricula}</span>
+                    </div>
                     <span className="text-xs text-muted-foreground truncate">{doc.clienteNombre}</span>
                   </div>
-                  <div className="flex items-center gap-3 shrink-0">
-                    {doc.metodoPago && (
-                      <Badge variant="outline" className="text-[10px]">
-                        {metodoPagoLabels[doc.metodoPago] || doc.metodoPago}
-                      </Badge>
-                    )}
-                    <span className="text-sm font-bold">{formatMoney(Number(doc.totalFinal))}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(doc.createdAt).toLocaleDateString("es-ES", {
-                        day: "numeric",
-                        month: "short",
-                      })}
-                    </span>
+                  <div className="flex flex-col items-end gap-0.5 shrink-0">
+                    <span className="text-sm font-bold tabular-nums">{formatMoney(Number(doc.totalFinal))}</span>
+                    <div className="flex items-center gap-2">
+                      {doc.metodoPago && (
+                        <Badge variant="outline" className="text-[10px]">
+                          {metodoPagoLabels[doc.metodoPago] || doc.metodoPago}
+                        </Badge>
+                      )}
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(doc.createdAt).toLocaleDateString("es-ES", {
+                          day: "numeric",
+                          month: "short",
+                        })}
+                      </span>
+                    </div>
                   </div>
                 </Link>
               ))}
@@ -111,7 +115,7 @@ export default async function DocumentosPage({
             </Link>
           )}
           <span className="text-sm text-muted-foreground">
-            Pagina {page} de {totalPages}
+            Página {page} de {totalPages}
           </span>
           {page < totalPages && (
             <Link href={`/documentos?page=${page + 1}${search ? `&q=${search}` : ""}`}>

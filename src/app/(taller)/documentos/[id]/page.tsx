@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Printer, MessageSquare, ExternalLink, Car, FileText } from "lucide-react";
+import { ArrowLeft, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +14,7 @@ const metodoPagoLabels: Record<string, string> = {
   tarjeta: "Tarjeta",
   transferencia: "Transferencia",
   bizum: "Bizum",
-  domiciliacion: "Domiciliacion",
+  domiciliacion: "Domiciliación",
   otro: "Otro",
 };
 
@@ -43,21 +43,23 @@ export default async function DocumentoDetallePage({
   return (
     <div className="space-y-6 max-w-3xl">
       {/* Header */}
-      <div className="flex items-center gap-3 no-print">
-        <Link href="/documentos">
-          <Button variant="ghost" size="icon" className="rounded-full">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div className="flex-1">
-          <h1 className="text-2xl font-extrabold tracking-tight">{docNumero}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {new Date(doc.createdAt).toLocaleDateString("es-ES", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </p>
+      <div className="flex flex-col gap-3 no-print sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link href="/documentos">
+            <Button variant="ghost" size="icon" className="rounded-full shrink-0">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          </Link>
+          <div className="min-w-0">
+            <h1 className="text-2xl font-extrabold tracking-tight">{docNumero}</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              {new Date(doc.createdAt).toLocaleDateString("es-ES", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </p>
+          </div>
         </div>
         <DocumentoActions
           documentoId={doc.id}
@@ -106,7 +108,7 @@ export default async function DocumentoDetallePage({
 
           <Card>
             <CardContent className="p-4">
-              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Vehiculo</p>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Vehículo</p>
               <p className="text-lg font-bold tracking-wider">{doc.matricula}</p>
               <p className="text-sm text-muted-foreground">
                 {[doc.marca, doc.modelo].filter(Boolean).join(" ")}
@@ -128,7 +130,7 @@ export default async function DocumentoDetallePage({
             <div className="hidden sm:block">
               <div className="grid grid-cols-[auto_1fr_60px_80px_50px_50px_80px] gap-2 text-xs font-bold text-muted-foreground uppercase tracking-wider pb-2 border-b border-border px-1">
                 <span>Tipo</span>
-                <span>Descripcion</span>
+                <span>Descripción</span>
                 <span className="text-right">Cant.</span>
                 <span className="text-right">Precio</span>
                 <span className="text-right">Dto.</span>

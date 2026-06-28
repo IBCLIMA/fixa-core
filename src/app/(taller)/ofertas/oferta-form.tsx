@@ -50,13 +50,13 @@ export function OfertaForm({ totalClientes }: { totalClientes: number }) {
         <>
           {/* Plantillas */}
           <div className="space-y-2">
-            <Label className="text-xs font-bold text-stone-500 uppercase tracking-wider">Plantillas rápidas</Label>
+            <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Plantillas rápidas</Label>
             <div className="grid grid-cols-2 gap-2">
               {plantillas.map((p) => (
                 <button
                   key={p.id}
                   onClick={() => setMensaje(p.mensaje)}
-                  className="rounded-xl border border-stone-200 bg-white p-3 text-left text-xs font-medium text-stone-700 hover:border-brand-300 hover:bg-brand-50 transition-all"
+                  className="min-h-[44px] rounded-xl border border-border bg-card p-3 text-left text-xs font-medium text-foreground hover:border-brand-300 hover:bg-brand-50 transition-all"
                 >
                   {p.label}
                 </button>
@@ -66,7 +66,7 @@ export function OfertaForm({ totalClientes }: { totalClientes: number }) {
 
           {/* Mensaje */}
           <div className="space-y-2">
-            <Label className="text-xs font-bold text-stone-500 uppercase tracking-wider">Mensaje</Label>
+            <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Mensaje</Label>
             <Textarea
               value={mensaje}
               onChange={(e) => setMensaje(e.target.value)}
@@ -74,8 +74,8 @@ export function OfertaForm({ totalClientes }: { totalClientes: number }) {
               rows={4}
               className="rounded-xl"
             />
-            <p className="text-[10px] text-stone-400">
-              Usa {"{{nombre}}"} para personalizar con el nombre de cada cliente
+            <p className="text-xs text-muted-foreground">
+              Escribe {"{{nombre}}"} y cada cliente recibirá su mensaje con su nombre.
             </p>
           </div>
 
@@ -83,7 +83,7 @@ export function OfertaForm({ totalClientes }: { totalClientes: number }) {
           {mensaje && (
             <Card>
               <CardContent className="p-4">
-                <p className="text-xs font-bold text-stone-500 mb-2">Vista previa</p>
+                <p className="text-xs font-bold text-muted-foreground mb-2">Así lo verá el cliente</p>
                 <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3">
                   <p className="text-sm text-emerald-900/80">
                     {mensaje.replace(/\{\{nombre\}\}/g, "Antonio")}
@@ -104,7 +104,7 @@ export function OfertaForm({ totalClientes }: { totalClientes: number }) {
           <Card className="border-emerald-200 bg-emerald-50/50">
             <CardContent className="p-4 text-center">
               <p className="font-bold text-emerald-800">{links.length} mensajes listos para enviar</p>
-              <p className="text-xs text-emerald-600 mt-1">Haz clic en cada cliente para abrir WhatsApp con el mensaje</p>
+              <p className="text-xs text-emerald-700 mt-1">Toca cada cliente para abrir WhatsApp con su mensaje ya escrito.</p>
             </CardContent>
           </Card>
 
@@ -114,13 +114,14 @@ export function OfertaForm({ totalClientes }: { totalClientes: number }) {
                 key={link.id}
                 href={link.url}
                 target="_blank"
-                className="flex items-center justify-between rounded-xl bg-white border border-stone-200 p-3 hover:border-emerald-300 hover:bg-emerald-50/30 transition-all"
+                onClick={() => toast.success(`Abriendo WhatsApp de ${link.nombre.split(" ")[0]}`)}
+                className="flex min-h-[56px] items-center justify-between gap-3 rounded-xl bg-card border border-border p-3 hover:border-emerald-300 hover:bg-emerald-50/30 transition-all"
               >
-                <div>
-                  <p className="text-sm font-medium">{link.nombre}</p>
-                  <p className="text-xs text-stone-400">{link.telefono}</p>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium truncate">{link.nombre}</p>
+                  <p className="text-xs text-muted-foreground">{link.telefono}</p>
                 </div>
-                <div className="flex items-center gap-1.5 text-emerald-600">
+                <div className="flex items-center gap-1.5 text-emerald-600 shrink-0">
                   <MessageSquare className="h-4 w-4" />
                   <ExternalLink className="h-3 w-3" />
                 </div>

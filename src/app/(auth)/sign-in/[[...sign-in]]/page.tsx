@@ -1,7 +1,7 @@
 import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
 import { FixaLogo } from "@/components/ui/fixa-logo";
-import { ArrowLeft, ArrowRight, Wrench, Clock, Smartphone, Shield, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Wrench, Clock, Smartphone, Lock, ShieldCheck } from "lucide-react";
 
 export default function Page() {
   return (
@@ -21,7 +21,7 @@ export default function Page() {
                 <br />
                 <span className="text-brand-400">de vuelta.</span>
               </h1>
-              <p className="text-stone-400 mt-4 text-lg">Tu taller te está esperando.</p>
+              <p className="text-stone-400 mt-4 text-lg">Tus coches de hoy te están esperando. Entra y a currar.</p>
             </div>
 
             <div className="space-y-4">
@@ -40,8 +40,8 @@ export default function Page() {
             </div>
 
             <div className="rounded-2xl bg-gradient-to-r from-brand-500/10 to-brand-600/5 border border-brand-500/20 p-5">
-              <p className="text-white font-bold text-sm mb-1">¿Aún no tienes cuenta?</p>
-              <p className="text-stone-400 text-xs mb-3">14 días gratis. Sin tarjeta. Sin compromiso.</p>
+              <p className="text-white font-bold text-sm mb-1">¿Todavía no la has probado?</p>
+              <p className="text-stone-400 text-xs mb-3">14 días gratis. Sin tarjeta. Sin permanencia.</p>
               <Link href="/sign-up" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-500 text-white text-sm font-bold hover:bg-brand-400 transition-colors">
                 Crear cuenta gratis <ArrowRight className="h-4 w-4" />
               </Link>
@@ -99,14 +99,14 @@ export default function Page() {
 
             {/* Trust signals */}
             <div className="mt-6 flex items-center justify-center gap-6 text-xs text-stone-400">
-              <span className="flex items-center gap-1.5"><Shield className="h-3.5 w-3.5 text-emerald-500" />Datos cifrados</span>
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-blue-500" />RGPD</span>
+              <span className="flex items-center gap-1.5"><Lock className="h-3.5 w-3.5 text-emerald-500" />Datos cifrados</span>
+              <span className="flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-blue-500" />Cumple el RGPD</span>
             </div>
 
             {/* Register CTA mobile */}
             <div className="mt-6 lg:hidden rounded-xl bg-stone-900 p-5 text-center">
-              <p className="text-white font-bold">¿No tienes cuenta?</p>
-              <p className="text-stone-400 text-xs mt-1 mb-3">14 días gratis. Sin compromiso.</p>
+              <p className="text-white font-bold">¿Todavía no la has probado?</p>
+              <p className="text-stone-400 text-xs mt-1 mb-3">14 días gratis. Sin tarjeta. Sin permanencia.</p>
               <Link href="/sign-up" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-brand-500 text-white text-sm font-bold">
                 Crear cuenta gratis <ArrowRight className="h-4 w-4" />
               </Link>

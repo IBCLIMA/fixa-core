@@ -20,7 +20,7 @@ export function DocumentosSearch({ initialSearch }: { initialSearch: string }) {
     <form onSubmit={handleSubmit} className="relative">
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
       <Input
-        placeholder="Buscar por cliente o matricula..."
+        placeholder="Buscar por cliente o matrícula..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="pl-9 rounded-xl"

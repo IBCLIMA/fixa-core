@@ -1,7 +1,7 @@
 import { SignUp } from "@clerk/nextjs";
 import Link from "next/link";
 import { FixaLogo } from "@/components/ui/fixa-logo";
-import { CheckCircle2, ArrowLeft, MessageSquare, Zap, Smartphone, Star, Shield, Clock } from "lucide-react";
+import { CheckCircle2, ArrowLeft, MessageSquare, Zap, Tag, ShieldCheck, Lock, XCircle } from "lucide-react";
 
 export default function Page() {
   return (
@@ -14,23 +14,38 @@ export default function Page() {
         <div className="relative z-10 flex flex-col justify-between h-full p-12">
           <Link href="/"><FixaLogo size="md" theme="dark" /></Link>
 
-          <div className="space-y-10 -mt-8">
+          <div className="space-y-8 -mt-8">
             <div>
-              <p className="text-brand-400 font-bold text-sm tracking-wider uppercase mb-4">Empieza gratis hoy</p>
-              <h1 className="text-5xl font-extrabold text-white tracking-tight leading-[1.1]">
-                Deja de perder
+              <p className="text-brand-400 font-bold text-sm tracking-wider uppercase mb-4">14 días gratis · sin tarjeta</p>
+              <h1 className="text-[2.75rem] xl:text-5xl font-extrabold text-white tracking-tight leading-[1.08]">
+                Se acabó el cuaderno
                 <br />
-                <span className="bg-gradient-to-r from-brand-400 via-amber-300 to-brand-500 bg-clip-text text-transparent">2 horas al día</span>
-                <br />
-                al teléfono.
+                y el{" "}
+                <span className="bg-gradient-to-r from-brand-400 via-amber-300 to-brand-500 bg-clip-text text-transparent">
+                  «¿está listo
+                  <br />
+                  mi coche?»
+                </span>
               </h1>
+            </div>
+
+            <div className="space-y-4 max-w-[440px]">
+              <p className="text-stone-300 text-base leading-relaxed">
+                ¿Cuántas veces sueltas la llave para coger el teléfono? ¿Cuántos presupuestos
+                haces a las nueve de la noche? Con FIXA el cliente se entera solo y el
+                presupuesto sale en un momento. Tú, a lo tuyo.
+              </p>
+              <p className="text-stone-400 text-sm leading-relaxed">
+                ¿Que ya probaste un programa y acabó cogiendo polvo? Normal: lo hizo gente
+                que no ha pisado un taller. Este no. Si manejas WhatsApp, manejas FIXA.
+              </p>
             </div>
 
             <div className="grid grid-cols-3 gap-4">
               {[
-                { number: "10s", label: "Crear orden", icon: Zap },
-                { number: "0", label: "Llamadas", icon: Smartphone },
-                { number: "29€", label: "Al mes", icon: Star },
+                { number: "10s", label: "Y la orden está hecha", icon: Zap },
+                { number: "14", label: "Días gratis", icon: CheckCircle2 },
+                { number: "29€", label: "Al mes", icon: Tag },
               ].map((stat) => (
                 <div key={stat.label} className="rounded-xl bg-white/[0.04] border border-white/[0.06] p-4">
                   <stat.icon className="h-5 w-5 text-brand-400 mb-2" />
@@ -68,15 +83,19 @@ export default function Page() {
           backgroundSize: "32px 32px",
         }} />
 
-        <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-8 py-10">
-          {/* Mobile header */}
-          <div className="lg:hidden mb-8 text-center">
+        <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-10 sm:px-8">
+          {/* Mobile pitch - compact, no estorba al formulario */}
+          <div className="lg:hidden mb-7 text-center max-w-md">
             <Link href="/"><FixaLogo size="lg" /></Link>
-            <h2 className="text-xl font-extrabold text-stone-900 mt-4">Prueba FIXA gratis</h2>
-            <p className="text-stone-500 text-sm mt-1">Tu taller organizado en 2 minutos</p>
-            <div className="flex items-center justify-center gap-4 mt-3">
-              {["14 días gratis", "Sin tarjeta"].map((t) => (
-                <span key={t} className="flex items-center gap-1 text-xs text-stone-500">
+            <h2 className="text-2xl font-extrabold text-stone-900 mt-5 leading-tight">
+              El programa de taller que <span className="text-brand-600">esta vez sí vas a usar.</span>
+            </h2>
+            <p className="text-stone-500 text-sm mt-2.5 leading-relaxed">
+              Si manejas WhatsApp, manejas FIXA. Pruébalo gratis y monta tu taller en un momento.
+            </p>
+            <div className="flex items-center justify-center gap-x-4 gap-y-1.5 mt-4 flex-wrap">
+              {["14 días gratis", "Sin tarjeta", "Sin permanencia"].map((t) => (
+                <span key={t} className="flex items-center gap-1 text-xs font-medium text-stone-600">
                   <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />{t}
                 </span>
               ))}
@@ -89,10 +108,10 @@ export default function Page() {
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center">
                 <Zap className="h-4 w-4 text-white" />
               </div>
-              <span className="text-xs font-bold text-brand-600 tracking-wider uppercase">Registro gratuito</span>
+              <span className="text-xs font-bold text-brand-600 tracking-wider uppercase">Empieza gratis hoy</span>
             </div>
             <h2 className="text-3xl font-extrabold text-stone-900 tracking-tight">Crea tu cuenta</h2>
-            <p className="text-stone-500 mt-2">En 30 segundos. Sin tarjeta. Sin compromiso.</p>
+            <p className="text-stone-500 mt-2">14 días gratis. Sin tarjeta. Sin permanencia.</p>
           </div>
 
           {/* Form card */}
@@ -120,21 +139,22 @@ export default function Page() {
             </div>
 
             {/* Trust signals */}
-            <div className="mt-6 flex items-center justify-center gap-6 text-xs text-stone-400">
-              <span className="flex items-center gap-1.5"><Shield className="h-3.5 w-3.5 text-emerald-500" />Datos cifrados</span>
-              <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-brand-500" />Setup 2 min</span>
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-blue-500" />RGPD</span>
+            <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-2.5 text-xs text-stone-500 max-w-xs mx-auto">
+              <span className="flex items-center gap-1.5"><XCircle className="h-3.5 w-3.5 text-stone-400 shrink-0" />Sin tarjeta</span>
+              <span className="flex items-center gap-1.5"><Lock className="h-3.5 w-3.5 text-emerald-500 shrink-0" />Datos cifrados</span>
+              <span className="flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-blue-500 shrink-0" />Cumple el RGPD</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-brand-500 shrink-0" />Cancela cuando quieras</span>
             </div>
 
             {/* WhatsApp help */}
-            <div className="mt-5">
+            <div className="mt-6">
               <a
                 href="https://wa.me/34611433218?text=Hola%2C%20quiero%20registrarme%20en%20FIXA"
                 target="_blank"
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-emerald-50/80 border border-emerald-200/40 text-emerald-700 text-sm font-semibold hover:bg-emerald-100 transition-colors"
               >
                 <MessageSquare className="h-4 w-4" />
-                ¿Necesitas ayuda? Escríbenos
+                ¿Te atascas? Te ayudamos por WhatsApp
               </a>
             </div>
           </div>

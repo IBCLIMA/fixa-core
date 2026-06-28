@@ -1,10 +1,9 @@
-import { Bell, MessageSquare, Check, Plus, RefreshCw, Car, UserX } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bell, Check, Car, UserX } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { getAvisos, getClientesInactivos } from "../actions/avisos";
-import { AvisosActions } from "./avisos-actions";
+import { AvisosActions, WhatsAppBoton } from "./avisos-actions";
 import { formatWhatsAppUrl } from "@/lib/utils";
 
 const tipoLabels: Record<string, string> = {
@@ -31,7 +30,7 @@ export default async function AvisosPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-2xl font-extrabold tracking-tight">Avisos</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">ITVs proximas y mantenimientos pendientes.</p>
+          <p className="text-sm text-muted-foreground mt-0.5">ITVs próximas y mantenimientos pendientes.</p>
         </div>
         <AvisosActions />
       </div>
@@ -60,13 +59,11 @@ export default async function AvisosPage() {
                       </div>
                     </div>
                     {a.clienteTelefono && (
-                      <a
+                      <WhatsAppBoton
                         href={formatWhatsAppUrl(a.clienteTelefono, `Hola ${a.clienteNombre?.split(" ")[0]}, te recordamos que ${a.descripcion || `tu vehículo ${a.matricula} necesita atención`}. ¿Te reservamos cita? ¡Un saludo!`)}
-                        target="_blank"
-                        className="flex h-11 items-center gap-1.5 rounded-xl bg-emerald-600 px-4 text-white text-xs font-bold hover:bg-emerald-500 transition-colors shrink-0"
-                      >
-                        <MessageSquare className="h-3 w-3" />Enviar
-                      </a>
+                        label="Enviar"
+                        nombre={a.clienteNombre?.split(" ")[0]}
+                      />
                     )}
                   </div>
                 </CardContent>
@@ -104,16 +101,15 @@ export default async function AvisosPage() {
                         </div>
                       </Link>
                       {c.telefono && (
-                        <a
+                        <WhatsAppBoton
                           href={formatWhatsAppUrl(
                             c.telefono,
                             `Hola ${c.nombre?.split(" ")[0]}, ¡cuánto tiempo! Te escribimos del taller. ¿Cómo va el coche? Si le toca revisión, cambio de aceite o la ITV, dínoslo y te buscamos hueco esta semana. ¡Un saludo!`
                           )}
-                          target="_blank"
-                          className="flex h-11 items-center gap-1.5 rounded-xl bg-violet-600 px-4 text-white text-xs font-bold hover:bg-violet-500 transition-colors shrink-0"
-                        >
-                          <MessageSquare className="h-3 w-3" />Contactar
-                        </a>
+                          label="Contactar"
+                          nombre={c.nombre?.split(" ")[0]}
+                          tono="violet"
+                        />
                       )}
                     </div>
                   </CardContent>
@@ -130,11 +126,11 @@ export default async function AvisosPage() {
           <Bell className="h-12 w-12 text-muted-foreground/20 mb-4" />
           <h3 className="text-lg font-bold">Sin avisos pendientes</h3>
           <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-            FIXA detecta automaticamente las ITVs proximas a vencer de tus vehiculos registrados. Tambien puedes crear avisos personalizados de mantenimiento (aceite, neumaticos, frenos).
+            FIXA detecta automáticamente las ITVs próximas a vencer de tus vehículos registrados. También puedes crear avisos de mantenimiento (aceite, neumáticos, frenos).
           </p>
           <p className="text-xs text-muted-foreground mt-3 flex items-center gap-1.5 justify-center">
             <Car className="h-3.5 w-3.5" />
-            Registra vehiculos con fecha de ITV para activar los avisos automaticos.
+            Guarda los vehículos con su fecha de ITV y los avisos aparecerán aquí solos.
           </p>
         </div>
       )}
