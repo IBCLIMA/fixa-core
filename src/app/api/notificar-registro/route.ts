@@ -33,7 +33,9 @@ export async function POST(request: NextRequest) {
 
       await resend.emails.send({
         from: EMAIL_FROM,
-        to: process.env.ADMIN_NOTIFICATION_EMAIL || "sergi@ibclima.com",
+        // Las altas entran en el hub de comunicación FIXA↔taller (hola@). Se puede
+        // redirigir con la env ADMIN_NOTIFICATION_EMAIL si hiciera falta.
+        to: process.env.ADMIN_NOTIFICATION_EMAIL || "hola@fixataller.es",
         subject: "🔔 Nuevo registro en FIXA",
         html: `
           <div style="font-family: -apple-system, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
