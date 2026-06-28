@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "FIXA | Tu taller deja de depender de tu memoria",
+    default: "FIXA | Deja de llevar el taller en la cabeza",
     template: "%s | FIXA",
   },
   description:
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   // og:image y twitter:image se generan en src/app/opengraph-image.tsx (convención de archivo)
   openGraph: {
-    title: "FIXA | Tu taller deja de depender de tu memoria",
+    title: "FIXA | Deja de llevar el taller en la cabeza",
     description: "FIXA te dice qué hacer hoy: coches parados, presupuestos sin respuesta, clientes que esperan y revisiones que puedes recuperar. Y tus clientes ven el estado de su coche en tiempo real.",
     siteName: "FIXA",
     type: "website",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "FIXA | Tu taller deja de depender de tu memoria",
+    title: "FIXA | Deja de llevar el taller en la cabeza",
     description: "FIXA te avisa de lo que cuesta dinero y tus clientes ven su coche en tiempo real. Desde 29€/mes. 14 días gratis.",
   },
   robots: {

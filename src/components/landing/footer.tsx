@@ -35,7 +35,7 @@ export function Footer() {
           <div>
             <FixaLogo size="sm" theme="dark" />
             <p className="text-sm text-stone-500 mt-4 max-w-[220px] leading-relaxed">
-              Tu taller deja de depender de tu memoria. FIXA te avisa de lo que necesita atención y tu cliente ve su coche en tiempo real. Nació dentro de un taller de verdad, hecha por gente del sector, no por una startup.
+              Deja de llevar el taller en la cabeza. FIXA te avisa de lo que necesita atención y tu cliente ve su coche en tiempo real. Nació dentro de un taller de verdad, hecha por gente del sector, no por una startup.
             </p>
             <div className="flex items-center gap-3 mt-5">
               <a

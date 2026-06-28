@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "FIXA — Tu taller deja de depender de tu memoria";
+export const alt = "FIXA — Deja de llevar el taller en la cabeza";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -65,7 +65,7 @@ export default function OgImage() {
             display: "flex",
           }}
         >
-          Tu taller deja de depender de tu memoria
+          Deja de llevar el taller en la cabeza
         </div>
         <div
           style={{

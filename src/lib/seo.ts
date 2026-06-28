@@ -13,7 +13,7 @@ export const ORGANIZATION_JSONLD = {
   url: SITE_URL,
   logo: `${SITE_URL}/icons/icon-512.png`,
   description:
-    "FIXA hace que tu taller deje de depender de tu memoria: te avisa de los coches parados, los presupuestos sin respuesta y las revisiones que puedes recuperar, y mantiene informado al cliente en tiempo real.",
+    "FIXA hace que dejes de llevar el taller en la cabeza: te avisa de los coches parados, los presupuestos sin respuesta y las revisiones que puedes recuperar, y mantiene informado al cliente en tiempo real.",
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "customer support",
@@ -29,7 +29,7 @@ export const SOFTWARE_JSONLD = {
   url: SITE_URL,
   image: `${SITE_URL}/icons/icon-512.png`,
   description:
-    "FIXA hace que tu taller deje de depender de tu memoria. Te avisa de los coches parados, los presupuestos sin respuesta, los clientes que esperan noticias y las revisiones que puedes recuperar. Y tus clientes ven el estado de su coche en tiempo real, sin llamarte.",
+    "FIXA hace que dejes de llevar el taller en la cabeza. Te avisa de los coches parados, los presupuestos sin respuesta, los clientes que esperan noticias y las revisiones que puedes recuperar. Y tus clientes ven el estado de su coche en tiempo real, sin llamarte.",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web, iOS, Android",
   inLanguage: "es",

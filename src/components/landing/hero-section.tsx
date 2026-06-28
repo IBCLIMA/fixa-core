@@ -40,12 +40,12 @@ export function HeroSection() {
             </motion.div>
 
             <h1 className="text-4xl font-extrabold tracking-tight text-stone-900 md:text-5xl lg:text-[3.5rem] leading-[1.05]">
-              Tu taller deja de
+              Deja de llevar
               <br />
-              depender de
+              el taller
               <br />
               <span className="hero-shimmer bg-gradient-to-r from-brand-500 via-amber-400 to-brand-600 bg-clip-text text-transparent bg-[length:200%_100%]">
-                tu memoria.
+                en la cabeza.
               </span>
             </h1>
 
@@ -56,10 +56,9 @@ export function HeroSection() {
               transition={{ ...TRANSITION_DEFAULT, delay: 0.2 }}
               className="text-lg text-stone-500 mt-6 leading-relaxed max-w-[480px]"
             >
-              FIXA te avisa de los coches parados, los presupuestos sin
-              respuesta, los clientes que esperan noticias y las revisiones que
-              puedes recuperar. Además, tus clientes ven el estado de su coche
-              en tiempo real y dejan de llamar para preguntar.
+              FIXA recuerda por ti: presupuestos sin contestar, coches
+              parados, ITV y clientes esperando noticias. Y tus clientes ven el
+              estado de su coche en tiempo real, sin llamarte.
             </motion.p>
 
             <motion.p

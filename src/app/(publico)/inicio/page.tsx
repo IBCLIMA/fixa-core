@@ -19,7 +19,7 @@ import { faqs } from "@/components/landing/faq-data";
 
 export const metadata: Metadata = {
   // absolute evita que el template "%s | FIXA" duplique la marca al final
-  title: { absolute: "FIXA | Tu taller deja de depender de tu memoria" },
+  title: { absolute: "FIXA | Deja de llevar el taller en la cabeza" },
   description:
     "FIXA te avisa de los coches parados, los presupuestos sin respuesta, los clientes que esperan noticias y las revisiones que puedes recuperar. Y tus clientes ven el estado de su coche en tiempo real, sin llamarte.",
   keywords: [
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/" },
   openGraph: {
-    title: "FIXA | Tu taller deja de depender de tu memoria",
+    title: "FIXA | Deja de llevar el taller en la cabeza",
     description: "FIXA te dice qué hacer hoy: coches parados, presupuestos sin respuesta, clientes que esperan y revisiones que puedes recuperar. Y tus clientes ven el estado de su coche en tiempo real.",
     url: "/",
     siteName: "FIXA",

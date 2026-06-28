@@ -88,7 +88,7 @@ export default function Page() {
           <div className="lg:hidden mb-7 text-center max-w-md">
             <Link href="/"><FixaLogo size="lg" /></Link>
             <h2 className="text-2xl font-extrabold text-stone-900 mt-5 leading-tight">
-              Tu taller deja de depender de tu memoria. <span className="text-brand-600">Y esta vez sí lo usas.</span>
+              Deja de llevar el taller en la cabeza. <span className="text-brand-600">Y esta vez sí lo usas.</span>
             </h2>
             <p className="text-stone-500 text-sm mt-2.5 leading-relaxed">
               Si manejas WhatsApp, manejas FIXA. Pruébalo gratis y monta tu taller en un momento.
