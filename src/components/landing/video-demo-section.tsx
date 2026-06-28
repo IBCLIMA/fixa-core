@@ -45,15 +45,15 @@ export function VideoDemoSection() {
 
   return (
     <>
-      <section className="relative overflow-hidden">
+      <section id="demo" className="relative overflow-hidden scroll-mt-20">
         <div className="mx-auto max-w-5xl px-6 py-12 lg:py-16">
           <AnimatedSection className="text-center mb-12">
             <LandingBadge>Míralo tú mismo</LandingBadge>
             <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-              Vale más verlo que leerlo
+              Tu taller, bajo control, en 30 segundos
             </h2>
             <p className="text-stone-500 mt-4 text-lg">
-              30 segundos. Si no te convence, sigues haciendo scroll.
+              Mira cómo FIXA te dice qué necesita atención. Si no te convence, sigues haciendo scroll.
             </p>
           </AnimatedSection>
 

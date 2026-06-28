@@ -1,13 +1,15 @@
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import { Car, FileText } from "lucide-react";
-import { FixaLogo } from "@/components/ui/fixa-logo";
+import { PortalClienteHeader } from "@/components/portal-cliente-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { getDb } from "@/db";
-import { documentosCobro } from "@/db/schema";
+import { documentosCobro, talleres } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { formatMoney } from "@/lib/format";
+import { registrarApertura } from "@/lib/portal-views";
 
 // Página privada de cliente (acceso por token): no indexable
 export const metadata = { robots: { index: false, follow: false } };
@@ -48,20 +50,35 @@ export default async function DocumentoPublicoPage({
 
   if (!doc) return notFound();
 
+  // Tracking de apertura del portal (no bloquea el render; ver portal-views.ts)
+  registrarApertura({
+    tallerId: doc.tallerId,
+    tipo: "documento",
+    entidadId: doc.id,
+    token,
+    clienteId: doc.clienteId,
+    userAgent: (await headers()).get("user-agent"),
+  });
+
+  // Logo del taller para la cabecera white-label (el snapshot del documento no lo guarda)
+  const [taller] = await db
+    .select({ logoUrl: talleres.logoUrl })
+    .from(talleres)
+    .where(eq(talleres.id, doc.tallerId))
+    .limit(1);
+
   const lineas = (doc.lineas as LineaSnapshot[]) || [];
   const docNumero = `DOC-${String(doc.numero).padStart(4, "0")}`;
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card px-6 py-4 no-print">
-        <div className="mx-auto max-w-lg flex items-center gap-2">
-          <FixaLogo size="sm" />
-          <span className="text-xs text-muted-foreground ml-1">
-            Documento de cobro
-          </span>
-        </div>
-      </header>
+      {/* Header — identidad del taller (white-label) */}
+      <PortalClienteHeader
+        nombre={doc.tallerNombre}
+        logoUrl={taller?.logoUrl}
+        subtitle="Documento de cobro"
+        className="no-print"
+      />
 
       <main className="mx-auto max-w-lg px-4 py-8 space-y-6">
         {/* Workshop header + doc number */}

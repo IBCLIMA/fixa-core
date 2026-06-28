@@ -5,7 +5,6 @@ import Image from "next/image";
 import { AlertTriangle, Check, X, Phone, Car, Wrench, CheckCircle2, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { FixaLogo } from "@/components/ui/fixa-logo";
 import { responderAveria } from "@/app/(taller)/actions/averias-ocultas";
 import { formatMoney } from "@/lib/format";
 import { formatWhatsAppUrl } from "@/lib/utils";
@@ -26,7 +25,7 @@ export function AprobarAveriaClient({
   };
   orden: { numero: number };
   vehiculo: { matricula: string | null; marca: string | null; modelo: string | null };
-  taller: { nombre: string; telefono: string | null };
+  taller: { nombre: string; telefono: string | null; logoUrl: string | null };
 }) {
   const [loading, setLoading] = useState(false);
   const [resultado, setResultado] = useState<"aprobada" | "rechazada" | null>(
@@ -48,9 +47,16 @@ export function AprobarAveriaClient({
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-b from-brand-50 via-background to-muted">
       <div className="max-w-md w-full space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <FixaLogo size="md" variant="icon" />
+        {/* Header — identidad del taller (white-label) */}
+        <div className="flex flex-col items-center text-center space-y-2">
+          {taller.logoUrl && (
+            // eslint-disable-next-line @next/next/no-img-element -- logo de taller desde URL arbitraria
+            <img
+              src={taller.logoUrl}
+              alt={taller.nombre}
+              className="h-10 w-auto max-w-[180px] object-contain"
+            />
+          )}
           <h1 className="text-xl font-extrabold tracking-tight text-foreground">
             {taller.nombre}
           </h1>

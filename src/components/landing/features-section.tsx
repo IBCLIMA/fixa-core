@@ -3,7 +3,7 @@
 import {
   ClipboardList, Search, MessageSquare, Car, CalendarDays, Bell,
   Users, FileText, Megaphone, Camera, Shield, Smartphone,
-  ArrowRight,
+  ArrowRight, Sparkles,
 } from "lucide-react";
 import { LandingBadge } from "./landing-badge";
 import { motion, useReducedMotion } from "framer-motion";
@@ -102,7 +102,8 @@ const heroFeatures = [
 ];
 
 const smallFeatures = [
-  { icon: Car, color: "from-cyan-500 to-cyan-600", title: "Portal del cliente", desc: "Mira el estado de su coche él solo. Y deja de llamarte." },
+  { icon: Car, color: "from-cyan-500 to-cyan-600", title: "Portal del cliente", desc: "Sigue su reparación en tiempo real, tipo Amazon. Sabe lo que pasa sin llamarte." },
+  { icon: Sparkles, color: "from-fuchsia-500 to-fuchsia-600", title: "Mensajes claros con IA", desc: "Convierte la jerga técnica en algo que el cliente entiende. Sin que te llame para que se lo traduzcas." },
   { icon: CalendarDays, color: "from-violet-500 to-violet-600", title: "Agenda de citas", desc: "El cliente pide cita online, tú la confirmas. Sin teléfono de por medio." },
   { icon: Bell, color: "from-red-500 to-red-600", title: "Avisos ITV", desc: "FIXA te avisa de las ITV que tocan. Trabajo que antes se te escapaba." },
   { icon: Users, color: "from-indigo-500 to-indigo-600", title: "Clientes y vehículos", desc: "Cada coche con su historia: qué le hiciste, cuándo y por cuánto." },
@@ -123,12 +124,12 @@ export function FeaturesSection() {
 
       <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16 relative z-10">
         <AnimatedSection className="text-center mb-14">
-          <LandingBadge>Funciones</LandingBadge>
+          <LandingBadge>Tu torre de control</LandingBadge>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-            Lo que usas de verdad. Y nada que estorbe.
+            Todo bajo control. Y FIXA te avisa de lo que no.
           </h2>
           <p className="text-stone-500 mt-4 max-w-lg mx-auto text-lg">
-            Por menos de lo que cuesta un cambio de aceite al mes.
+            No es una pantalla más. Es quien vigila tu taller para que no se te escape nada.
           </p>
         </AnimatedSection>
 

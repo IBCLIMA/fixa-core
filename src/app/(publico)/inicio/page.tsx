@@ -18,17 +18,18 @@ import { SOFTWARE_JSONLD } from "@/lib/seo";
 import { faqs } from "@/components/landing/faq-data";
 
 export const metadata: Metadata = {
-  title: "FIXA — Software de gestión para talleres mecánicos | Desde 29€/mes",
+  // absolute evita que el template "%s | FIXA" duplique la marca al final
+  title: { absolute: "FIXA | Torre de control para talleres modernos" },
   description:
-    "Órdenes, presupuestos, citas, ITV y WhatsApp para tu taller. Desde el PC o el móvil. Creado por un ingeniero que lleva 15 años en talleres. 14 días gratis. Desde 29€/mes.",
+    "Controla vehículos, presupuestos, avisos y clientes desde una plataforma que te dice qué necesita atención y mantiene informado al cliente en tiempo real.",
   keywords: [
-    "software taller mecánico", "gestión taller", "programa taller",
-    "órdenes de trabajo taller", "app taller mecánico", "ERP taller mecánico",
+    "torre de control taller", "control de taller mecánico", "gestión taller",
+    "estado reparación cliente", "avisos taller", "portal del cliente taller",
   ],
   alternates: { canonical: "/" },
   openGraph: {
-    title: "FIXA — El software que tu taller necesita",
-    description: "Órdenes, citas, WhatsApp, presupuestos y avisos ITV. Desde el PC o el móvil, por 29€/mes.",
+    title: "FIXA | Torre de control para talleres modernos",
+    description: "FIXA te dice qué coche está bloqueado, qué cliente llamar y qué presupuesto perseguir. Y tus clientes ven el estado de su coche en tiempo real.",
     url: "/",
     siteName: "FIXA",
     type: "website",

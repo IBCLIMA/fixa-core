@@ -13,7 +13,7 @@ export const ORGANIZATION_JSONLD = {
   url: SITE_URL,
   logo: `${SITE_URL}/icons/icon-512.png`,
   description:
-    "Software de gestión para talleres mecánicos pequeños: órdenes de trabajo, presupuestos, citas, WhatsApp y avisos ITV.",
+    "La torre de control para talleres modernos: te dice qué necesita atención y mantiene informado al cliente en tiempo real.",
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "customer support",
@@ -29,7 +29,7 @@ export const SOFTWARE_JSONLD = {
   url: SITE_URL,
   image: `${SITE_URL}/icons/icon-512.png`,
   description:
-    "Software de gestión para talleres mecánicos: órdenes de trabajo legales (RD 1457/1986), presupuestos que el cliente acepta online, citas, WhatsApp y avisos ITV. Desde el móvil, sin formación.",
+    "La torre de control para talleres modernos. Controla vehículos, presupuestos, avisos y clientes desde una plataforma que te dice qué necesita atención y mantiene informado al cliente en tiempo real.",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web, iOS, Android",
   inLanguage: "es",

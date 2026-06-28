@@ -904,3 +904,43 @@ export const documentosCobroRelations = relations(documentosCobro, ({ one }) => 
  *     ON daily_stats (fecha) WHERE taller_id IS NULL;
  *
  * ═══════════════════════════════════════════════════════════════════════════ */
+
+// ── Torre de control V1 ──────────────────────────────────────────────────────
+// Tracking del portal del cliente: alerta "presupuesto visto pero no aceptado"
+// + métrica estrella (aperturas por reparación).
+export const portalViews = pgTable(
+  "portal_views",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    tallerId: uuid("taller_id").references(() => talleres.id, { onDelete: "cascade" }).notNull(),
+    tipo: text("tipo").notNull(), // estado | presupuesto | documento | informe | aprobar
+    entidadId: uuid("entidad_id").notNull(),
+    token: text("token"),
+    clienteId: uuid("cliente_id"),
+    userAgent: text("user_agent"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_portal_views_entidad").on(table.tipo, table.entidadId, table.createdAt),
+    index("idx_portal_views_taller").on(table.tallerId, table.createdAt),
+  ]
+);
+
+// La alerta de la torre de control se DERIVA al vuelo de timestamps existentes.
+// Aquí SOLO guardamos su gestión (gestionada / pospuesta) → cero deuda-ERP.
+export const alertasGestion = pgTable(
+  "alertas_gestion",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    tallerId: uuid("taller_id").references(() => talleres.id, { onDelete: "cascade" }).notNull(),
+    alertaKey: text("alerta_key").notNull(), // determinista: `${tipo}:${entidadId}`
+    estado: text("estado").notNull(), // gestionada | pospuesta
+    pospuestaHasta: timestamp("pospuesta_hasta"),
+    accion: text("accion"),
+    gestionadaPor: text("gestionada_por"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_alertas_gestion_lookup").on(table.tallerId, table.alertaKey, table.createdAt),
+  ]
+);

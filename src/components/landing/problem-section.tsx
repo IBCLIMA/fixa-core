@@ -7,24 +7,24 @@ const problems = [
     color: "text-red-500",
     bg: "bg-red-500/10",
     accent: "border-red-200/50",
-    title: "20 llamadas al día para nada",
-    desc: '"¿Está listo mi coche?" — la misma pregunta 20 veces. Te saca de debajo del coche, pierdes el hilo y son 2 horas diarias que no cobras a nadie.',
+    title: "Coches parados que nadie ve",
+    desc: "Un coche lleva tres días esperando una pieza y se te ha ido de la cabeza. Nadie te avisa. El cliente se enfada y tú ni te habías enterado de que estaba bloqueado.",
   },
   {
     icon: Timer,
     color: "text-amber-600",
     bg: "bg-amber-500/10",
     accent: "border-amber-200/50",
-    title: "Presupuestos a las 9 de la noche",
-    desc: "El presupuesto lo haces en casa con la calculadora. Si tardas un día más, el cliente ya se fue a otro. Cada hora de retraso es dinero perdido.",
+    title: "Presupuestos que se enfrían",
+    desc: "Mandaste un presupuesto la semana pasada. ¿Lo aceptó? ¿Lo llamaste? No te acuerdas. Y mientras dudas, el cliente ya está en otro taller.",
   },
   {
     icon: Clock,
     color: "text-blue-500",
     bg: "bg-blue-500/10",
     accent: "border-blue-200/50",
-    title: "ITVs que se te escapan",
-    desc: "Tienes 200 clientes con ITV. ¿Cuántos te han avisado de que les toca? Ninguno — y se la hacen en otro sitio. Son 5-10 pre-ITVs al mes que pierdes.",
+    title: "Clientes que no vuelven",
+    desc: "Le tocaba la ITV en marzo. Nadie le avisó. Se la hizo en otro sitio y de paso le hicieron la revisión. Trabajo que era tuyo y se fue, sin que lo vieras venir.",
   },
 ];
 
@@ -38,10 +38,10 @@ export function ProblemSection() {
         <div className="text-center mb-12">
           <LandingBadge>El problema</LandingBadge>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-            ¿Te suena alguno?
+            Cuando el taller crece, el caos ya no cabe en tu cabeza
           </h2>
           <p className="text-stone-500 mt-4 text-lg max-w-xl mx-auto">
-            Si tu taller pierde dinero, no es por los coches — es por la gestión.
+            Con dos coches lo controlas todo de memoria. Con veinte, no. Y lo que se te escapa no son tornillos: es dinero.
           </p>
         </div>
 

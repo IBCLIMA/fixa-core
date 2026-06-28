@@ -146,7 +146,7 @@ export async function getAveriaByToken(token: string) {
     averia,
     orden: { numero: orden.numero },
     vehiculo: { matricula: vehiculo?.matricula, marca: vehiculo?.marca, modelo: vehiculo?.modelo },
-    taller: { nombre: taller.nombre, telefono: taller.telefono },
+    taller: { nombre: taller.nombre, telefono: taller.telefono, logoUrl: taller.logoUrl },
   };
 }
 

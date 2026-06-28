@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { getDb } from "@/db";
 import {
@@ -10,6 +11,7 @@ import {
 } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { PresupuestoClient } from "./presupuesto-client";
+import { registrarApertura } from "@/lib/portal-views";
 
 interface PageProps {
   params: Promise<{ token: string }>;
@@ -59,6 +61,16 @@ export default async function PresupuestoPublicoPage({ params }: PageProps) {
     .limit(1);
 
   if (!presupuesto) return notFound();
+
+  // Tracking de apertura del portal (no bloquea el render; ver portal-views.ts)
+  registrarApertura({
+    tallerId: presupuesto.tallerId,
+    tipo: "presupuesto",
+    entidadId: presupuesto.id,
+    token,
+    clienteId: presupuesto.clienteId,
+    userAgent: (await headers()).get("user-agent"),
+  });
 
   // Traceability: first time the client opens the link, the quote moves borrador → enviado
   // (the workshop sees it left "draft" without having to flip the state manually)

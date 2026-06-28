@@ -7,23 +7,23 @@ import { TRANSITION_DEFAULT } from "./animation-config";
 const steps = [
   {
     step: "01",
-    title: "Regístrate y mete tus clientes",
-    desc: "Sin tarjeta. Si tienes los clientes en Excel, los subes en un CSV. Si no, los das de alta cuando entren — con la matrícula se quedan para siempre.",
+    title: "Abres FIXA y ves qué necesita atención",
+    desc: "Lo primero del día, de un vistazo: qué coche está bloqueado esperando una pieza, qué cliente lleva dos días sin respuesta, qué entrega toca hoy. Sin buscar nada.",
   },
   {
     step: "02",
-    title: "Entra un coche → matrícula y listo",
-    desc: "Escribes la matrícula (o la escaneas con la cámara), describes qué le pasa, y la orden está creada en 10 segundos. Si ya vino antes, se autocompleta todo.",
+    title: "Te avisa de lo que se te escaparía",
+    desc: "Un presupuesto sin aceptar que se enfría. Una ITV que vence este mes. Un coche que lleva parado demasiado. FIXA lo levanta antes de que se convierta en un problema.",
   },
   {
     step: "03",
-    title: "Trabaja tranquilo — el cliente no te llama",
-    desc: "El cliente tiene un enlace donde ve el estado de su coche. Cuando acabas, un toque en WhatsApp: informe con fotos. Se acabó el '¿ya está listo?'.",
+    title: "El cliente se entera solo, sin llamarte",
+    desc: "Cada cliente ve el estado de su coche en tiempo real desde un enlace. Cuando hay novedad, le llega por WhatsApp. Se acabó el '¿ya está listo?' veinte veces al día.",
   },
   {
     step: "04",
-    title: "Entrega, cobra y pide reseña — todo a la vez",
-    desc: "Pulsas 'Entregar', cobras y FIXA envía al cliente el informe + petición de reseña en un solo WhatsApp. Un minuto en vez de cuatro pantallas.",
+    title: "Cierras el día sabiendo que no se quedó nada fuera",
+    desc: "Entregas, cobras y pides reseña en un solo WhatsApp. Y cuando apagas la luz del taller, nada importante se ha quedado olvidado en un rincón.",
   },
 ];
 
@@ -38,13 +38,16 @@ export function HowItWorksSection() {
       <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16 relative z-10">
         <AnimatedSection className="text-center mb-16">
           <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-brand-500/10 px-4 py-1.5 text-xs font-semibold text-brand-400 mb-4">
-            Sin manuales
+            La torre de control
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-5xl">
-            Cuatro pasos.
+            Cada mañana sabes
             <br />
-            <span className="text-stone-500">Y el primero tarda 10 segundos.</span>
+            <span className="text-stone-500">qué necesita tu atención.</span>
           </h2>
+          <p className="text-stone-400 mt-5 text-lg max-w-xl mx-auto">
+            FIXA no es una pantalla más. Es quien te avisa.
+          </p>
         </AnimatedSection>
 
         <div className="relative max-w-3xl mx-auto">

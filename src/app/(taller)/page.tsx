@@ -32,6 +32,8 @@ import { eq, and, count, sql, desc, sum, lt } from "drizzle-orm";
 import { estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { getVehicleAbandonment, type VehicleAbandonment } from "@/lib/vehicle-alerts";
+import { getTorreDeControl, type TorreItem } from "@/lib/torre-control";
+import { TorreDeControl } from "./torre/torre-de-control";
 import { formatMoney } from "@/lib/format";
 import { AlertTriangle } from "lucide-react";
 
@@ -72,6 +74,7 @@ export default async function PanelDelDia() {
   let facturacionHoyResult: any = { total: 0 };
   let citasManana: any[] = [];
   let vehiculosAbandonados: VehicleAbandonment[] = [];
+  let torreItems: TorreItem[] = [];
   let presupuestosSinRespuesta: any[] = [];
   let recambiosAtascados: any[] = [];
   let recambiosPendientes: any[] = [];
@@ -193,6 +196,13 @@ export default async function PanelDelDia() {
     console.error("Vehicle abandonment query error:", e);
   }
 
+  // Torre de control — "Hoy requiere tu atención" (héroe de la home)
+  try {
+    torreItems = await getTorreDeControl(tallerId);
+  } catch (e) {
+    console.error("Torre de control query error:", e);
+  }
+
   // Presupuestos enviados sin respuesta (dinero parado)
   try {
     presupuestosSinRespuesta = await db
@@ -301,10 +311,13 @@ export default async function PanelDelDia() {
         </div>
       </div>
 
+      {/* Hoy requiere tu atención — torre de control (héroe de la home) */}
+      <TorreDeControl items={torreItems} />
+
       {/* Instalar PWA (solo móvil, solo si no está instalada) */}
       <InstallBanner />
 
-      {/* KPIs */}
+      {/* KPIs — demotados bajo la torre de control */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         <StatCard id="kpi-en-taller" label="En taller" value={ordenesActivas.length} icon={Car} accent="blue" />
         <StatCard id="kpi-citas" label="Citas hoy" value={citasHoy.length} icon={CalendarDays} accent="brand" />

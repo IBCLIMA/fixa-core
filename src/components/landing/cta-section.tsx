@@ -17,7 +17,7 @@ export function CtaSection() {
 
       <div className="mx-auto max-w-6xl px-6 py-14 lg:py-20 text-center relative z-10">
         <BlurText
-          text="Mañana a las 8 abres el taller. ¿Con papel o con FIXA?"
+          text="Mañana abres el taller. ¿A ciegas o con la torre de control?"
           className="text-4xl font-extrabold tracking-tight text-white md:text-6xl leading-[1.1] justify-center"
           delay={40}
           animateBy="words"
@@ -25,8 +25,8 @@ export function CtaSection() {
         />
 
         <AnimatedSection delay={0.4}>
-          <p className="text-stone-300 mt-6 max-w-md mx-auto text-lg leading-relaxed">
-            Te registras en 1 minuto. Sin tarjeta. Y si no te convence, lo borras todo sin dar explicaciones.
+          <p className="text-stone-300 mt-6 max-w-lg mx-auto text-lg leading-relaxed">
+            FIXA no es una pantalla más. Es quien te avisa de lo que necesita atención. Te registras en 1 minuto, sin tarjeta. Y si no te convence, lo borras todo sin dar explicaciones.
           </p>
         </AnimatedSection>
 

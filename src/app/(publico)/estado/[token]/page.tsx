@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { Car, Clock, CheckCircle2, CalendarCheck, FileText, AlertTriangle, Receipt, ArrowRight, Phone, MessageSquare } from "lucide-react";
-import { FixaLogo } from "@/components/ui/fixa-logo";
+import { PortalClienteHeader } from "@/components/portal-cliente-header";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,7 @@ import { getDb } from "@/db";
 import { ordenesTrabajo, vehiculos, clientes, talleres, historialEstados, presupuestos, averiasOcultas, documentosCobro } from "@/db/schema";
 import { eq, desc, and, inArray } from "drizzle-orm";
 import { estadoLabelsCliente as estadoLabels, estadoColors } from "@/lib/constants";
+import { registrarApertura } from "@/lib/portal-views";
 
 // Página privada de cliente (acceso por token): no indexable
 export const metadata = { robots: { index: false, follow: false } };
@@ -43,8 +45,10 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
       modelo: vehiculos.modelo,
       clienteNombre: clientes.nombre,
       tallerNombre: talleres.nombre,
+      tallerLogoUrl: talleres.logoUrl,
       tallerTelefono: talleres.telefono,
       tallerId: ordenesTrabajo.tallerId,
+      clienteId: ordenesTrabajo.clienteId,
     })
     .from(ordenesTrabajo)
     .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
@@ -55,6 +59,16 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
 
   if (!orden[0]) return notFound();
   const o = orden[0];
+
+  // Tracking de apertura del portal (no bloquea el render; ver portal-views.ts)
+  registrarApertura({
+    tallerId: o.tallerId,
+    tipo: "estado",
+    entidadId: o.id,
+    token,
+    clienteId: o.clienteId,
+    userAgent: (await headers()).get("user-agent"),
+  });
 
   const currentStepIndex = estadoSteps.indexOf(o.estado);
 
@@ -98,13 +112,12 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card px-6 py-4">
-        <div className="mx-auto max-w-lg flex items-center gap-2">
-          <FixaLogo size="sm" />
-          <span className="text-xs text-muted-foreground ml-1">Estado de tu vehículo</span>
-        </div>
-      </header>
+      {/* Header — identidad del taller (white-label) */}
+      <PortalClienteHeader
+        nombre={o.tallerNombre}
+        logoUrl={o.tallerLogoUrl}
+        subtitle="Estado de tu vehículo"
+      />
 
       <main className="mx-auto max-w-lg px-4 py-8 space-y-6">
         {/* Estado actual */}

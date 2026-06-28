@@ -21,11 +21,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "FIXA — Software de gestión para talleres mecánicos",
+    default: "FIXA | Torre de control para talleres modernos",
     template: "%s | FIXA",
   },
   description:
-    "Gestiona tu taller desde el móvil: órdenes de trabajo, citas, avisos ITV, WhatsApp integrado, presupuestos y portal del cliente. Desde 29€/mes. 14 días gratis.",
+    "Controla vehículos, presupuestos, avisos y clientes desde una plataforma que te dice qué necesita atención y mantiene informado al cliente en tiempo real.",
   metadataBase: new URL(SITE_URL),
   manifest: "/manifest.json",
   appleWebApp: {
@@ -35,16 +35,16 @@ export const metadata: Metadata = {
   },
   // og:image y twitter:image se generan en src/app/opengraph-image.tsx (convención de archivo)
   openGraph: {
-    title: "FIXA — El software que tu taller necesita",
-    description: "Órdenes, citas, WhatsApp, presupuestos y avisos ITV. Todo desde el móvil por 29€/mes. Creado por mecánicos.",
+    title: "FIXA | Torre de control para talleres modernos",
+    description: "FIXA te dice qué coche está bloqueado, qué cliente llamar y qué presupuesto perseguir. Y tus clientes ven el estado de su coche en tiempo real.",
     siteName: "FIXA",
     type: "website",
     locale: "es_ES",
   },
   twitter: {
     card: "summary_large_image",
-    title: "FIXA — Software de gestión para talleres mecánicos",
-    description: "Gestiona tu taller desde el móvil por 29€/mes. 14 días gratis.",
+    title: "FIXA | Torre de control para talleres modernos",
+    description: "Sabes qué necesita atención y tus clientes ven su coche en tiempo real. Desde 29€/mes. 14 días gratis.",
   },
   robots: {
     index: true,

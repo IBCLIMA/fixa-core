@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { FixaLogo } from "@/components/ui/fixa-logo";
+import { headers } from "next/headers";
+import { PortalClienteHeader } from "@/components/portal-cliente-header";
 import { MediaGallery } from "@/components/media-lightbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +17,7 @@ import {
 import { eq } from "drizzle-orm";
 import { Car, Wrench, Camera, AlertTriangle, CheckCircle2, AlertCircle, Info, Phone, MessageSquare } from "lucide-react";
 import { formatWhatsAppUrl } from "@/lib/utils";
+import { registrarApertura } from "@/lib/portal-views";
 
 // Página privada de cliente (acceso por token): no indexable
 export const metadata = { robots: { index: false, follow: false } };
@@ -54,6 +56,8 @@ export default async function InformePublicoPage({
   const [orden] = await db
     .select({
       id: ordenesTrabajo.id,
+      tallerId: ordenesTrabajo.tallerId,
+      clienteId: ordenesTrabajo.clienteId,
       numero: ordenesTrabajo.numero,
       estado: ordenesTrabajo.estado,
       descripcionCliente: ordenesTrabajo.descripcionCliente,
@@ -68,6 +72,7 @@ export default async function InformePublicoPage({
       km: vehiculos.km,
       clienteNombre: clientes.nombre,
       tallerNombre: talleres.nombre,
+      tallerLogoUrl: talleres.logoUrl,
       tallerTelefono: talleres.telefono,
       tallerEmail: talleres.email,
       tallerDireccion: talleres.direccion,
@@ -80,6 +85,17 @@ export default async function InformePublicoPage({
     .limit(1);
 
   if (!orden) return notFound();
+
+  // Tracking de apertura del portal (no bloquea el render; ver portal-views.ts).
+  // `ordenId` aquí es el token público de la orden.
+  registrarApertura({
+    tallerId: orden.tallerId,
+    tipo: "informe",
+    entidadId: orden.id,
+    token: ordenId,
+    clienteId: orden.clienteId,
+    userAgent: (await headers()).get("user-agent"),
+  });
 
   // Use the real order ID (not the public token) for sub-queries
   const realOrdenId = orden.id;
@@ -104,20 +120,19 @@ export default async function InformePublicoPage({
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card px-6 py-4 print:border-none">
-        <div className="mx-auto max-w-2xl flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <FixaLogo size="sm" />
-            <span className="text-xs text-muted-foreground ml-1">
-              Informe del vehículo
-            </span>
-          </div>
+      {/* Header — identidad del taller (white-label) */}
+      <PortalClienteHeader
+        nombre={orden.tallerNombre}
+        logoUrl={orden.tallerLogoUrl}
+        subtitle="Informe del vehículo"
+        className="print:border-none"
+        containerClassName="max-w-2xl"
+        right={
           <span className="text-xs text-muted-foreground print:hidden">
             OR-{orden.numero}
           </span>
-        </div>
-      </header>
+        }
+      />
 
       <main className="mx-auto max-w-2xl px-4 py-8 space-y-6 print:px-0 print:py-4">
         {/* Workshop header */}

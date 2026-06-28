@@ -24,7 +24,7 @@ const objeciones = [
     icon: MessageSquare,
     objecion: "\u201CYa probé otro programa y no lo usaba nadie\u201D",
     respuesta:
-      "Normal: la mayoría de programas de taller están pensados para la oficina, no para el mecánico. FIXA funciona desde el PC y desde el móvil, con las manos manchadas, sin formación. Si tu equipo usa WhatsApp, usa FIXA. Y si en 14 días no la usa nadie, la borras y no pagas nada.",
+      "Normal: aquello era una pantalla más para rellenar. FIXA es lo contrario: es quien te avisa de lo que necesita atención, no una libreta digital que mantienes tú. Funciona desde el PC y desde el móvil, con las manos manchadas. Y si en 14 días no le sacas partido, la borras y no pagas nada.",
   },
 ];
 

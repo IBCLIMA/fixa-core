@@ -11,6 +11,7 @@ import { AsignarMecanico } from "./asignar-mecanico";
 import { CambiarEstadoButtons } from "./cambiar-estado";
 import { AgregarLineaForm } from "./agregar-linea";
 import { EditarDiagnostico } from "./editar-diagnostico";
+import { ExplicarClienteBtn } from "./explicar-cliente-btn";
 import { CrearPresupuestoBtn } from "./crear-presupuesto-btn";
 import { FotosOrden } from "./fotos-orden";
 import { EliminarOrdenBtn } from "./eliminar-orden-btn";
@@ -237,6 +238,18 @@ export default async function OrdenDetallePage({
         diagnosticoActual={orden.diagnostico}
         descripcionActual={orden.descripcionCliente}
       />
+
+      {/* IA: convierte el diagnóstico técnico en un mensaje claro para el cliente.
+           El mecánico revisa y envía — nunca se envía solo. */}
+      <div className="no-print -mt-2 flex justify-end">
+        <ExplicarClienteBtn
+          ordenId={orden.id}
+          clienteTelefono={orden.cliente?.telefono}
+          clienteNombre={orden.cliente?.nombre}
+          matricula={orden.vehiculo?.matricula}
+          iaDisponible={!!process.env.ANTHROPIC_API_KEY}
+        />
+      </div>
 
       {/* Entrega unificada: entregar + cobrar + WhatsApp en un solo flujo */}
       {orden.estado === "listo" && (

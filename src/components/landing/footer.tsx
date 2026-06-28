@@ -35,7 +35,7 @@ export function Footer() {
           <div>
             <FixaLogo size="sm" theme="dark" />
             <p className="text-sm text-stone-500 mt-4 max-w-[220px] leading-relaxed">
-              El programa de taller que nació dentro de un taller de verdad. Hecho por gente del sector, no por una startup.
+              La torre de control para talleres modernos. Nació dentro de un taller de verdad, hecha por gente del sector, no por una startup.
             </p>
             <div className="flex items-center gap-3 mt-5">
               <a

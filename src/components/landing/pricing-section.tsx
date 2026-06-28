@@ -73,9 +73,11 @@ export function PricingSection() {
         <AnimatedSection className="text-center mb-10">
           <LandingBadge>Precios</LandingBadge>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-            Menos que media hora de tu mano de obra.
+            Recupera un presupuesto al mes y se paga solo.
           </h2>
-          <p className="text-stone-500 mt-4 text-lg">14 días gratis en todos los planes</p>
+          <p className="text-stone-500 mt-4 text-lg max-w-xl mx-auto">
+            Una revisión que no se escapa, un cliente que vuelve, un presupuesto que persigues a tiempo. Con eso ya cubres el mes. 14 días gratis en todos los planes.
+          </p>
         </AnimatedSection>
 
         {/* Toggle mensual/anual */}

@@ -1,9 +1,11 @@
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import { getDb } from "@/db";
 import { talleres, citas, diasBloqueados } from "@/db/schema";
 import { eq, and, gte, lte, sql } from "drizzle-orm";
-import { FixaLogo } from "@/components/ui/fixa-logo";
+import { PortalClienteHeader } from "@/components/portal-cliente-header";
 import { BookingForm } from "./booking-form";
+import { registrarApertura } from "@/lib/portal-views";
 
 // Página privada de cliente (acceso por token): no indexable
 export const metadata = { robots: { index: false, follow: false } };
@@ -17,6 +19,7 @@ export default async function CitaPublicaPage({ params }: { params: Promise<{ ta
     .select({
       id: talleres.id,
       nombre: talleres.nombre,
+      logoUrl: talleres.logoUrl,
       telefono: talleres.telefono,
       trabajaSabados: talleres.trabajaSabados,
       horarioApertura: talleres.horarioApertura,
@@ -32,6 +35,15 @@ export default async function CitaPublicaPage({ params }: { params: Promise<{ ta
   if (!taller[0]) return notFound();
 
   const t = taller[0];
+
+  // Tracking de apertura del portal (no bloquea el render; ver portal-views.ts).
+  // En cita no hay entidad específica: entidadId = tallerId.
+  registrarApertura({
+    tallerId: t.id,
+    tipo: "cita",
+    entidadId: t.id,
+    userAgent: (await headers()).get("user-agent"),
+  });
 
   // Next 30 days range
   const today = new Date();
@@ -82,13 +94,12 @@ export default async function CitaPublicaPage({ params }: { params: Promise<{ ta
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card px-6 py-4">
-        <div className="mx-auto max-w-lg flex items-center gap-2">
-          <FixaLogo size="sm" />
-          <span className="text-xs text-muted-foreground ml-1">Solicitar cita</span>
-        </div>
-      </header>
+      {/* Header — identidad del taller (white-label) */}
+      <PortalClienteHeader
+        nombre={t.nombre}
+        logoUrl={t.logoUrl}
+        subtitle="Solicitar cita"
+      />
 
       <main className="mx-auto max-w-lg px-4 py-8 space-y-6">
         <div className="text-center space-y-2">
@@ -107,6 +118,8 @@ export default async function CitaPublicaPage({ params }: { params: Promise<{ ta
           horarioSabadoCierre={t.horarioSabadoCierre ?? "13:00"}
           fechasBloqueadas={fechasBloqueadas}
         />
+
+        <p className="text-center text-xs text-muted-foreground">Powered by FIXA</p>
       </main>
     </div>
   );
