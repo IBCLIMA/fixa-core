@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Zap, Send, Search, MessageSquare, ClipboardList } from "lucide-react";
+import { ArrowRight, CheckCircle2, Zap, MessageSquare, Phone, AlertTriangle, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { track } from "@vercel/analytics";
 import { FixaLogo } from "@/components/ui/fixa-logo";
-import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { FADE_UP, FADE_RIGHT, FADE_ONLY, TRANSITION_DEFAULT } from "./animation-config";
 
 export function HeroSection() {
@@ -114,127 +113,24 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Mockup - Auto-cycling demo */}
-          <HeroMockupSequence prefersReducedMotion={prefersReducedMotion} mockupVariants={mockupVariants} />
+          {/* Mockup — el briefing de la mañana (FIXA ya ha pensado por él) */}
+          <HeroMockupBriefing prefersReducedMotion={prefersReducedMotion} mockupVariants={mockupVariants} />
         </div>
       </div>
     </section>
   );
 }
 
-const demoSteps = [
-  {
-    label: "Introduce la matrícula",
-    icon: Search,
-    color: "bg-brand-500",
-    content: (
-      <div className="space-y-3">
-        <div className="rounded-lg bg-white border border-stone-100 p-3">
-          <div className="flex items-center gap-2 mb-3">
-            <Search className="h-3.5 w-3.5 text-stone-300" />
-            <div className="h-5 flex-1 bg-stone-50 rounded flex items-center px-2">
-              <motion.span
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-                className="text-[11px] font-bold text-stone-900 overflow-hidden whitespace-nowrap"
-              >
-                4523 BCD
-              </motion.span>
-            </div>
-          </div>
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, duration: 0.4 }}
-            className="rounded-lg bg-brand-50 border border-brand-200/60 p-2.5 flex items-center justify-between"
-          >
-            <div>
-              <span className="text-[10px] font-bold text-stone-900">4523 BCD</span>
-              <p className="text-[8px] text-stone-400">Seat León · Juan García</p>
-            </div>
-            <div className="text-[9px] font-bold text-brand-600 bg-brand-100 px-2 py-0.5 rounded-full">+ Orden</div>
-          </motion.div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    label: "Orden creada en 10 seg",
-    icon: ClipboardList,
-    color: "bg-blue-500",
-    content: (
-      <div className="space-y-2">
-        <div className="rounded-lg bg-blue-50 border border-blue-200/60 p-3">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold text-stone-900">4523 BCD · Seat León</span>
-            <span className="text-[8px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">Recibido</span>
-          </div>
-          <p className="text-[9px] text-stone-500">Ruido al frenar. Revisar pastillas y discos.</p>
-        </div>
-        {[
-          { m: "5678 DRS", s: "Finalizado", c: "bg-emerald-500" },
-          { m: "7891 JNM", s: "En reparación", c: "bg-blue-500" },
-        ].map((o) => (
-          <div key={o.m} className="flex items-center justify-between rounded-lg bg-white border border-stone-100 p-2.5">
-            <div className="flex items-center gap-2">
-              <div className={`h-2 w-2 rounded-full ${o.c}`} />
-              <span className="text-[10px] font-bold text-stone-900">{o.m}</span>
-            </div>
-            <span className="text-[8px] text-stone-400 font-medium">{o.s}</span>
-          </div>
-        ))}
-      </div>
-    ),
-  },
-  {
-    label: "WhatsApp enviado",
-    icon: MessageSquare,
-    color: "bg-emerald-500",
-    content: (
-      <div className="space-y-2">
-        <div className="rounded-lg bg-emerald-50 border border-emerald-200/60 p-3">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold text-stone-900">5678 DRS · Peugeot 308</span>
-            <span className="text-[8px] font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">Listo</span>
-          </div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.3 }}
-            className="rounded-lg bg-emerald-500 p-2.5 mt-2 flex items-center justify-center gap-2"
-          >
-            <Send className="h-3 w-3 text-white" />
-            <span className="text-[10px] text-white font-bold">Avisar por WhatsApp</span>
-          </motion.div>
-        </div>
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.4 }}
-          className="rounded-lg bg-white border border-emerald-200 p-2.5 flex items-center gap-2"
-        >
-          <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-          <span className="text-[9px] text-stone-600">Cliente notificado correctamente</span>
-        </motion.div>
-      </div>
-    ),
-  },
+// Lo que el gerente ve al abrir FIXA: no formularios — decisiones que mueven dinero.
+// Datos de ejemplo realistas (no inflados): un día normal de taller.
+const briefingItems = [
+  { icon: Phone, bg: "bg-red-500", titulo: "Llama a Antonio", sub: "Presupuesto de 740 € · 2 días sin responder", accion: "Llamar" },
+  { icon: MessageSquare, bg: "bg-amber-500", titulo: "Avisa a María", sub: "Su coche ya está listo y no lo sabe", accion: "WhatsApp" },
+  { icon: AlertTriangle, bg: "bg-red-500", titulo: "Peugeot 2008 bloqueado", sub: "Falta la pieza · avísale del retraso", accion: "Avisar" },
+  { icon: Calendar, bg: "bg-emerald-500", titulo: "7 ITV este mes", sub: "≈ 840 € que puedes recuperar", accion: "Ver" },
 ];
 
-function HeroMockupSequence({ prefersReducedMotion, mockupVariants }: { prefersReducedMotion: boolean | null; mockupVariants: any }) {
-  const [step, setStep] = useState(0);
-
-  useEffect(() => {
-    if (prefersReducedMotion) return;
-    const timer = setInterval(() => {
-      setStep((prev) => (prev + 1) % demoSteps.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [prefersReducedMotion]);
-
-  const current = demoSteps[step];
-
+function HeroMockupBriefing({ prefersReducedMotion, mockupVariants }: { prefersReducedMotion: boolean | null; mockupVariants: any }) {
   return (
     <motion.div
       variants={mockupVariants}
@@ -264,43 +160,38 @@ function HeroMockupSequence({ prefersReducedMotion, mockupVariants }: { prefersR
             </div>
           </div>
 
-          {/* Animated content */}
+          {/* El briefing */}
           <div className="p-5 min-h-[340px]" style={{ background: "linear-gradient(180deg, #fafaf9 0%, #f5f3f0 100%)" }}>
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between">
               <FixaLogo size="xs" />
-              <div className="flex items-center gap-2">
-                <div className={`h-5 w-5 rounded-md ${current.color} flex items-center justify-center`}>
-                  <current.icon className="h-3 w-3 text-white" />
-                </div>
-                <span className="text-[10px] text-stone-500 font-medium">{current.label}</span>
-              </div>
+              <span className="text-[9px] font-medium text-stone-400">Martes · 8:02</span>
             </div>
+            <p className="text-[13px] font-extrabold text-stone-900 mt-3">Buenos días.</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-brand-600 mt-3 mb-2.5">
+              Hoy no dejes escapar esto
+            </p>
 
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={step}
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              >
-                {current.content}
-              </motion.div>
-            </AnimatePresence>
+            <div className="space-y-2">
+              {briefingItems.map((item, i) => (
+                <motion.div
+                  key={item.titulo}
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 + i * 0.15, duration: 0.4 }}
+                  className="flex items-center gap-2.5 rounded-xl bg-white border border-stone-100 p-2.5 shadow-sm"
+                >
+                  <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${item.bg}`}>
+                    <item.icon className="h-3.5 w-3.5 text-white" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-bold text-stone-900 leading-tight">{item.titulo}</p>
+                    <p className="text-[9px] text-stone-500 leading-tight truncate">{item.sub}</p>
+                  </div>
+                  <span className="text-[8px] font-bold text-stone-400 shrink-0">{item.accion} →</span>
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
-
-        {/* Step indicators */}
-        <div className="flex justify-center gap-2 mt-4">
-          {demoSteps.map((s, i) => (
-            <button
-              key={i}
-              onClick={() => setStep(i)}
-              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                i === step ? "w-8 bg-brand-500" : "w-2 bg-stone-300 hover:bg-stone-400"
-              }`}
-            />
-          ))}
         </div>
       </motion.div>
     </motion.div>

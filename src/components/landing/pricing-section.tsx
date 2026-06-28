@@ -25,7 +25,7 @@ const precios = [
     nombre: "Taller",
     precio: 49,
     precioAnual: 39,
-    desc: "Lo que usa la mayoría",
+    desc: "El taller entero bajo control",
     features: ["Hasta 5 usuarios", "Todo lo del plan Básico", "Avisos ITV automáticos", "Presupuestos que se aceptan online", "Envío masivo de ofertas", "Importar datos CSV", "Soporte prioritario"],
     popular: true,
   },
@@ -34,7 +34,7 @@ const precios = [
     precio: 79,
     precioAnual: 65,
     desc: "Para equipos y varios talleres",
-    features: ["Usuarios ilimitados", "Todo lo del plan Taller", "Multi-taller", "Informes avanzados", "Personalización", "Soporte dedicado"],
+    features: ["Usuarios ilimitados", "Todo lo del plan Taller", "Multi-taller", "Los números de tu taller", "Con tu logo y tus textos", "Soporte dedicado"],
     popular: false,
   },
 ];
@@ -50,7 +50,7 @@ const comparacionFeatures = [
   { feature: "Envío de ofertas masivo", basico: false, taller: true, pro: true },
   { feature: "Importar datos CSV", basico: false, taller: true, pro: true },
   { feature: "Multi-taller", basico: false, taller: false, pro: true },
-  { feature: "Informes avanzados", basico: false, taller: false, pro: true },
+  { feature: "Los números de tu taller", basico: false, taller: false, pro: true },
   { feature: "Usuarios", basico: "1", taller: "5", pro: "Sin límite" },
   { feature: "Soporte", basico: "Email", taller: "Prioritario", pro: "Dedicado" },
 ];
@@ -128,7 +128,7 @@ export function PricingSection() {
                     <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-brand-500/20 via-transparent to-blue-500/10" />
                     <div className="absolute top-0 left-0 right-0 flex items-center justify-center gap-1.5 py-2 bg-gradient-to-r from-brand-500 to-brand-600 text-xs font-bold">
                       <Sparkles className="h-3 w-3" />
-                      Más popular
+                      El que recomendamos
                     </div>
                   </>
                 )}

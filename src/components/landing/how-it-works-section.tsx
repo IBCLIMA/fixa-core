@@ -38,7 +38,7 @@ export function HowItWorksSection() {
       <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16 relative z-10">
         <AnimatedSection className="text-center mb-16">
           <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-brand-500/10 px-4 py-1.5 text-xs font-semibold text-brand-400 mb-4">
-            Tu panel inteligente
+            Tu día, ya ordenado
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-5xl">
             FIXA te dice
