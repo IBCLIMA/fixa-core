@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Mail,
   RefreshCw,
@@ -11,6 +11,8 @@ import {
   CornerUpLeft,
   PenSquare,
   X,
+  Search,
+  ShieldAlert,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +25,16 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function emailValido(v: string): boolean {
   return EMAIL_RE.test(v.trim());
 }
+
+const LIMIT = 30;
+
+type Carpeta = "recibidos" | "enviados" | "spam";
+
+const CARPETAS: { id: Carpeta; label: string; icon: typeof Inbox }[] = [
+  { id: "recibidos", label: "Recibidos", icon: Inbox },
+  { id: "enviados", label: "Enviados", icon: Send },
+  { id: "spam", label: "Spam", icon: ShieldAlert },
+];
 
 type MensajeResumen = {
   uid: number;
@@ -63,9 +75,17 @@ function formatFecha(iso: string | null): string {
 }
 
 export function CorreoCliente() {
+  const [carpeta, setCarpeta] = useState<Carpeta>("recibidos");
   const [mensajes, setMensajes] = useState<MensajeResumen[]>([]);
   const [cargandoLista, setCargandoLista] = useState(true);
+  const [cargandoMas, setCargandoMas] = useState(false);
   const [errorLista, setErrorLista] = useState<string | null>(null);
+  const [hayMas, setHayMas] = useState(false);
+  const [carpetaDisponible, setCarpetaDisponible] = useState(true);
+
+  // Búsqueda: valor del input + valor "debounced" que dispara la consulta.
+  const [busqueda, setBusqueda] = useState("");
+  const [debounced, setDebounced] = useState("");
 
   const [seleccionado, setSeleccionado] = useState<number | null>(null);
   const [mensaje, setMensaje] = useState<MensajeCompleto | null>(null);
@@ -83,24 +103,91 @@ export function CorreoCliente() {
   const [enviandoNuevo, setEnviandoNuevo] = useState(false);
   const [tocadoPara, setTocadoPara] = useState(false);
 
-  const cargarLista = useCallback(async () => {
-    setCargandoLista(true);
-    setErrorLista(null);
-    try {
-      const res = await fetch("/api/admin/correo?limit=30", { cache: "no-store" });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Error al cargar la bandeja.");
-      setMensajes(data.mensajes ?? []);
-    } catch (e: any) {
-      setErrorLista(e?.message || "No se pudo conectar al buzón.");
-    } finally {
-      setCargandoLista(false);
-    }
-  }, []);
+  // Contador de petición para descartar respuestas obsoletas (carrera al
+  // cambiar de carpeta o teclear en el buscador).
+  const reqRef = useRef(0);
 
+  const cargarPagina = useCallback(
+    async (opts: { append: boolean; carp: Carpeta; q: string; offset: number }) => {
+      const { append, carp, q, offset } = opts;
+      const myReq = ++reqRef.current;
+
+      if (append) {
+        setCargandoMas(true);
+      } else {
+        setCargandoLista(true);
+        setErrorLista(null);
+      }
+
+      try {
+        const url =
+          `/api/admin/correo?carpeta=${carp}&limit=${LIMIT}&offset=${offset}` +
+          `&q=${encodeURIComponent(q)}`;
+        const res = await fetch(url, { cache: "no-store" });
+        const data = await res.json();
+        if (myReq !== reqRef.current) return; // respuesta obsoleta
+        if (!res.ok) throw new Error(data?.error || "Error al cargar la bandeja.");
+
+        setCarpetaDisponible(data.carpetaDisponible ?? true);
+        setHayMas(data.hayMas ?? false);
+        setMensajes((prev) =>
+          append ? [...prev, ...(data.mensajes ?? [])] : data.mensajes ?? [],
+        );
+      } catch (e: any) {
+        if (myReq !== reqRef.current) return;
+        if (append) {
+          toast.error("No se pudieron cargar más mensajes.");
+        } else {
+          setErrorLista(e?.message || "No se pudo conectar al buzón.");
+          setMensajes([]);
+        }
+      } finally {
+        if (myReq === reqRef.current) {
+          setCargandoLista(false);
+          setCargandoMas(false);
+        }
+      }
+    },
+    [],
+  );
+
+  // Debounce del buscador.
   useEffect(() => {
-    cargarLista();
-  }, [cargarLista]);
+    const t = setTimeout(() => setDebounced(busqueda.trim()), 350);
+    return () => clearTimeout(t);
+  }, [busqueda]);
+
+  // Recarga (página 0) al cambiar de carpeta o de búsqueda.
+  useEffect(() => {
+    cargarPagina({ append: false, carp: carpeta, q: debounced, offset: 0 });
+  }, [carpeta, debounced, cargarPagina]);
+
+  const cambiarCarpeta = useCallback(
+    (c: Carpeta) => {
+      if (c === carpeta) return;
+      // El UID pertenece al buzón anterior: cerramos el lector.
+      setSeleccionado(null);
+      setMensaje(null);
+      setErrorMensaje(null);
+      setBusqueda("");
+      setDebounced("");
+      setCarpeta(c);
+    },
+    [carpeta],
+  );
+
+  const recargar = useCallback(() => {
+    cargarPagina({ append: false, carp: carpeta, q: debounced, offset: 0 });
+  }, [cargarPagina, carpeta, debounced]);
+
+  const cargarMas = useCallback(() => {
+    cargarPagina({
+      append: true,
+      carp: carpeta,
+      q: debounced,
+      offset: mensajes.length,
+    });
+  }, [cargarPagina, carpeta, debounced, mensajes.length]);
 
   const abrir = useCallback(
     async (uid: number) => {
@@ -111,7 +198,9 @@ export function CorreoCliente() {
       setErrorMensaje(null);
       setCargandoMensaje(true);
       try {
-        const res = await fetch(`/api/admin/correo/${uid}`, { cache: "no-store" });
+        const res = await fetch(`/api/admin/correo/${uid}?carpeta=${carpeta}`, {
+          cache: "no-store",
+        });
         const data = await res.json();
         if (!res.ok) throw new Error(data?.error || "Error al abrir el mensaje.");
         setMensaje(data.mensaje);
@@ -125,7 +214,7 @@ export function CorreoCliente() {
         setCargandoMensaje(false);
       }
     },
-    [],
+    [carpeta],
   );
 
   const enviarRespuesta = useCallback(async () => {
@@ -212,6 +301,22 @@ export function CorreoCliente() {
 
   const paraInvalido = tocadoPara && nuevoPara.trim().length > 0 && !emailValido(nuevoPara);
 
+  const esEnviados = carpeta === "enviados";
+  const carpetaActual = CARPETAS.find((c) => c.id === carpeta)!;
+  const IconoCarpeta = carpetaActual.icon;
+  const hayBusqueda = debounced.length > 0;
+
+  // Texto del estado vacío según el contexto.
+  const vacioTitulo = !carpetaDisponible
+    ? `La carpeta "${carpetaActual.label}" no está disponible en este buzón.`
+    : hayBusqueda
+      ? "Sin resultados para tu búsqueda."
+      : carpeta === "enviados"
+        ? "No hay correos en Enviados."
+        : carpeta === "spam"
+          ? "No hay correos en Spam."
+          : "No hay mensajes en la bandeja.";
+
   return (
     <div className="w-full">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -228,7 +333,7 @@ export function CorreoCliente() {
           <Button
             variant="outline"
             size="sm"
-            onClick={cargarLista}
+            onClick={recargar}
             disabled={cargandoLista}
           >
             {cargandoLista ? (
@@ -245,15 +350,67 @@ export function CorreoCliente() {
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,340px)_1fr]">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,360px)_1fr]">
         {/* Bandeja */}
-        <div className="rounded-2xl border bg-card">
-          <div className="flex items-center gap-2 border-b px-4 py-3 text-sm font-medium">
-            <Inbox className="size-4 text-muted-foreground" />
-            Bandeja de entrada
+        <div className="flex flex-col rounded-2xl border bg-card">
+          {/* Carpetas */}
+          <div className="border-b p-2">
+            <div
+              role="tablist"
+              aria-label="Carpetas de correo"
+              className="grid grid-cols-3 gap-1 rounded-xl bg-muted p-1"
+            >
+              {CARPETAS.map((c) => {
+                const activa = c.id === carpeta;
+                const Icono = c.icon;
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={activa}
+                    onClick={() => cambiarCarpeta(c.id)}
+                    className={`flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-2 text-[13px] font-medium transition-colors ${
+                      activa
+                        ? "bg-background text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Icono className="size-4 shrink-0" />
+                    <span className="truncate">{c.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="max-h-[70vh] overflow-y-auto">
+          {/* Buscador */}
+          <div className="border-b p-2">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                type="search"
+                inputMode="search"
+                placeholder={`Buscar en ${carpetaActual.label.toLowerCase()}…`}
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                aria-label="Buscar correos"
+                className="h-11 pl-9 pr-9"
+              />
+              {busqueda && (
+                <button
+                  type="button"
+                  onClick={() => setBusqueda("")}
+                  aria-label="Limpiar búsqueda"
+                  className="absolute right-1.5 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  <X className="size-4" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="max-h-[64vh] min-h-[200px] overflow-y-auto">
             {cargandoLista ? (
               <div className="space-y-2 p-3">
                 {Array.from({ length: 6 }).map((_, i) => (
@@ -264,58 +421,90 @@ export function CorreoCliente() {
               <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
                 <AlertCircle className="size-6 text-destructive" />
                 <p className="text-sm text-muted-foreground">{errorLista}</p>
-                <Button variant="outline" size="sm" onClick={cargarLista}>
+                <Button variant="outline" size="sm" onClick={recargar}>
                   Reintentar
                 </Button>
               </div>
             ) : mensajes.length === 0 ? (
-              <p className="px-4 py-10 text-center text-sm text-muted-foreground">
-                No hay mensajes en la bandeja.
-              </p>
+              <div className="flex flex-col items-center gap-1.5 px-4 py-10 text-center">
+                <IconoCarpeta className="size-6 text-muted-foreground/50" />
+                <p className="text-sm text-muted-foreground">{vacioTitulo}</p>
+                {hayBusqueda && carpetaDisponible && (
+                  <Button variant="ghost" size="sm" onClick={() => setBusqueda("")}>
+                    Limpiar búsqueda
+                  </Button>
+                )}
+              </div>
             ) : (
-              <ul className="divide-y">
-                {mensajes.map((m) => {
-                  const activo = m.uid === seleccionado;
-                  return (
-                    <li key={m.uid}>
-                      <button
-                        type="button"
-                        onClick={() => abrir(m.uid)}
-                        className={`flex w-full flex-col gap-0.5 px-4 py-3 text-left transition-colors hover:bg-muted/60 ${
-                          activo ? "bg-muted" : ""
-                        }`}
-                      >
-                        <div className="flex items-baseline justify-between gap-2">
-                          <span
-                            className={`truncate text-sm ${
-                              m.seen ? "text-foreground" : "font-semibold"
-                            }`}
-                          >
-                            {m.fromName}
-                          </span>
-                          <span className="shrink-0 text-[11px] text-muted-foreground">
-                            {formatFecha(m.date)}
-                          </span>
-                        </div>
-                        <span
-                          className={`truncate text-[13px] ${
-                            m.seen
-                              ? "text-muted-foreground"
-                              : "font-medium text-foreground"
+              <>
+                <ul className="divide-y">
+                  {mensajes.map((m) => {
+                    const activo = m.uid === seleccionado;
+                    return (
+                      <li key={m.uid}>
+                        <button
+                          type="button"
+                          onClick={() => abrir(m.uid)}
+                          className={`flex min-h-11 w-full flex-col gap-0.5 px-4 py-3 text-left transition-colors hover:bg-muted/60 ${
+                            activo ? "bg-muted" : ""
                           }`}
                         >
-                          {m.subject}
-                        </span>
-                        {m.snippet && (
-                          <span className="truncate text-xs text-muted-foreground">
-                            {m.snippet}
+                          <div className="flex items-baseline justify-between gap-2">
+                            <span
+                              className={`truncate text-sm ${
+                                m.seen ? "text-foreground" : "font-semibold"
+                              }`}
+                            >
+                              {esEnviados && (
+                                <span className="text-muted-foreground">Para: </span>
+                              )}
+                              {m.fromName}
+                            </span>
+                            <span className="shrink-0 text-[11px] text-muted-foreground">
+                              {formatFecha(m.date)}
+                            </span>
+                          </div>
+                          <span
+                            className={`truncate text-[13px] ${
+                              m.seen
+                                ? "text-muted-foreground"
+                                : "font-medium text-foreground"
+                            }`}
+                          >
+                            {m.subject}
                           </span>
-                        )}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
+                          {m.snippet && (
+                            <span className="truncate text-xs text-muted-foreground">
+                              {m.snippet}
+                            </span>
+                          )}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+
+                {hayMas && (
+                  <div className="p-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={cargarMas}
+                      disabled={cargandoMas}
+                    >
+                      {cargandoMas ? (
+                        <>
+                          <Loader2 className="size-3.5 animate-spin" />
+                          Cargando…
+                        </>
+                      ) : (
+                        "Cargar más"
+                      )}
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

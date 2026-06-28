@@ -38,14 +38,36 @@ function nuevoClienteImap(): ImapFlow {
   });
 }
 
+/** Carpetas soportadas por el cliente (alcance cerrado). */
+export type Carpeta = "recibidos" | "enviados" | "spam";
+
 export type MensajeResumen = {
   uid: number;
+  /** Dirección de la "otra parte": remitente en Recibidos/Spam, destinatario en Enviados. */
   from: string;
   fromName: string;
   subject: string;
   date: string | null;
   seen: boolean;
   snippet: string;
+};
+
+export type ListarParams = {
+  carpeta?: Carpeta;
+  limit?: number;
+  offset?: number;
+  /** Texto de búsqueda IMAP (asunto / remitente / destinatario / cuerpo). */
+  buscar?: string;
+};
+
+export type ListarResultado = {
+  mensajes: MensajeResumen[];
+  /** Total de mensajes que cumplen el filtro en la carpeta (para paginar). */
+  total: number;
+  /** `true` si quedan más mensajes por cargar tras esta página. */
+  hayMas: boolean;
+  /** `false` si la carpeta no existe en el servidor IMAP (p.ej. no hay Spam). */
+  carpetaDisponible: boolean;
 };
 
 export type MensajeCompleto = {
@@ -71,33 +93,164 @@ function parseDireccion(value: unknown): { address: string; name: string } {
   return { address: "", name: "" };
 }
 
+type BuzonImap = {
+  path: string;
+  name?: string;
+  specialUse?: string;
+};
+
+type Buzones = {
+  recibidos: string;
+  enviados: string | null;
+  spam: string | null;
+};
+
 /**
- * Lista los últimos `limit` mensajes de INBOX (más recientes primero).
- * Trae cabeceras + un snippet de texto. Abre y cierra la conexión.
+ * Encuentra el path de un buzón por nombre, de forma tolerante.
+ * En cPanel/Webempresa los nombres reales varían (INBOX.Sent, INBOX.spam,
+ * "Sent Items", "Correo no deseado"…), así que comparamos tanto el nombre
+ * de la hoja como el último segmento del path en minúsculas.
  */
-export async function listarMensajes(limit = 30): Promise<MensajeResumen[]> {
+function buscarPorNombre(lista: BuzonImap[], candidatos: string[]): string | null {
+  const norm = (s: string) => s.toLowerCase().trim();
+  const cands = candidatos.map(norm);
+  for (const b of lista) {
+    const hoja = norm(b.name ?? b.path.split(/[./]/).pop() ?? b.path);
+    if (cands.includes(hoja)) return b.path;
+  }
+  // Segundo intento: coincidencia parcial (p.ej. "INBOX.Sent Mail").
+  for (const b of lista) {
+    const hoja = norm(b.name ?? b.path.split(/[./]/).pop() ?? b.path);
+    if (cands.some((c) => hoja.includes(c))) return b.path;
+  }
+  return null;
+}
+
+/**
+ * Detecta los buzones reales de Recibidos / Enviados / Spam.
+ *
+ * Prioriza los special-use flags de IMAP (RFC 6154: `\Sent`, `\Junk`),
+ * que es lo robusto. Si el servidor no los expone, cae a heurística por
+ * nombre con variantes habituales en castellano e inglés.
+ */
+async function detectarBuzones(client: ImapFlow): Promise<Buzones> {
+  let lista: BuzonImap[] = [];
+  try {
+    lista = (await client.list()) as unknown as BuzonImap[];
+  } catch {
+    lista = [];
+  }
+
+  let enviados: string | null = null;
+  let spam: string | null = null;
+
+  for (const b of lista) {
+    if (b.specialUse === "\\Sent") enviados = b.path;
+    else if (b.specialUse === "\\Junk") spam = b.path;
+  }
+
+  if (!enviados) {
+    enviados = buscarPorNombre(lista, [
+      "sent",
+      "enviados",
+      "sent mail",
+      "sent items",
+      "elementos enviados",
+      "correo enviado",
+    ]);
+  }
+  if (!spam) {
+    spam = buscarPorNombre(lista, [
+      "junk",
+      "spam",
+      "bulk",
+      "correo no deseado",
+      "no deseado",
+    ]);
+  }
+
+  return { recibidos: "INBOX", enviados, spam };
+}
+
+function pathDeCarpeta(carpeta: Carpeta, buzones: Buzones): string | null {
+  if (carpeta === "recibidos") return buzones.recibidos;
+  if (carpeta === "enviados") return buzones.enviados;
+  return buzones.spam;
+}
+
+/**
+ * Lista mensajes de la carpeta indicada (más recientes primero), paginando
+ * de `limit` en `limit` a partir de `offset`. Soporta búsqueda IMAP por
+ * asunto / remitente / destinatario / cuerpo. Abre y cierra la conexión.
+ *
+ * - En "enviados" la dirección mostrada (`from`) es el DESTINATARIO (To).
+ * - Si la carpeta no existe en el servidor, devuelve `carpetaDisponible: false`.
+ */
+export async function listarMensajes(
+  params: ListarParams = {},
+): Promise<ListarResultado> {
+  const carpeta: Carpeta = params.carpeta ?? "recibidos";
+  const limit = Math.min(Math.max(1, params.limit ?? 30), 50);
+  const offset = Math.max(0, params.offset ?? 0);
+  const buscar = (params.buscar ?? "").trim();
+
+  const vacio: ListarResultado = {
+    mensajes: [],
+    total: 0,
+    hayMas: false,
+    carpetaDisponible: true,
+  };
+
   const client = nuevoClienteImap();
   await client.connect();
 
   try {
-    const lock = await client.getMailboxLock("INBOX");
+    const buzones = await detectarBuzones(client);
+    const path = pathDeCarpeta(carpeta, buzones);
+    if (!path) {
+      return { ...vacio, carpetaDisponible: false };
+    }
+
+    const lock = await client.getMailboxLock(path);
     try {
       const mailbox = client.mailbox;
-      const total = typeof mailbox === "object" && mailbox ? mailbox.exists : 0;
-      if (!total) return [];
+      const existen = typeof mailbox === "object" && mailbox ? mailbox.exists : 0;
+      if (!existen) return vacio;
 
-      // Rango de secuencia de los últimos N mensajes.
-      const desde = Math.max(1, total - limit + 1);
-      const rango = `${desde}:${total}`;
+      // Conjunto de UIDs candidatos (todos, o los que cumplen la búsqueda).
+      const criterio = buscar
+        ? {
+            or: [
+              { subject: buscar },
+              { from: buscar },
+              { to: buscar },
+              { body: buscar },
+            ],
+          }
+        : { all: true };
 
+      const uids = ((await client.search(criterio, { uid: true })) || []) as number[];
+      // Más recientes primero: el UID crece con el tiempo dentro del buzón.
+      uids.sort((a, b) => b - a);
+
+      const total = uids.length;
+      const pageUids = uids.slice(offset, offset + limit);
+      if (pageUids.length === 0) {
+        return { mensajes: [], total, hayMas: false, carpetaDisponible: true };
+      }
+
+      const esEnviados = carpeta === "enviados";
       const mensajes: MensajeResumen[] = [];
 
       for await (const msg of client.fetch(
-        rango,
+        pageUids,
         { uid: true, envelope: true, flags: true, source: true },
-        { uid: false },
+        { uid: true },
       )) {
-        const from = parseDireccion(msg.envelope?.from);
+        // En Enviados interesa el destinatario; en el resto, el remitente.
+        const persona = esEnviados
+          ? parseDireccion(msg.envelope?.to)
+          : parseDireccion(msg.envelope?.from);
 
         let snippet = "";
         if (msg.source) {
@@ -112,8 +265,8 @@ export async function listarMensajes(limit = 30): Promise<MensajeResumen[]> {
 
         mensajes.push({
           uid: msg.uid,
-          from: from.address,
-          fromName: from.name || from.address,
+          from: persona.address,
+          fromName: persona.name || persona.address,
           subject: msg.envelope?.subject ?? "(sin asunto)",
           date: msg.envelope?.date ? new Date(msg.envelope.date).toISOString() : null,
           seen: msg.flags?.has("\\Seen") ?? false,
@@ -128,7 +281,12 @@ export async function listarMensajes(limit = 30): Promise<MensajeResumen[]> {
         return tb - ta;
       });
 
-      return mensajes;
+      return {
+        mensajes,
+        total,
+        hayMas: offset + pageUids.length < total,
+        carpetaDisponible: true,
+      };
     } finally {
       lock.release();
     }
@@ -138,15 +296,24 @@ export async function listarMensajes(limit = 30): Promise<MensajeResumen[]> {
 }
 
 /**
- * Lee un mensaje completo por UID. Devuelve cuerpo en texto y HTML parseados.
- * Marca el mensaje como leído (\Seen). Abre y cierra la conexión.
+ * Lee un mensaje completo por UID dentro de la carpeta indicada (el UID es
+ * único por buzón, así que hay que abrir el correcto). Devuelve cuerpo en
+ * texto y HTML parseados. Marca el mensaje como leído (\Seen).
+ * Abre y cierra la conexión.
  */
-export async function leerMensaje(uid: number): Promise<MensajeCompleto | null> {
+export async function leerMensaje(
+  uid: number,
+  carpeta: Carpeta = "recibidos",
+): Promise<MensajeCompleto | null> {
   const client = nuevoClienteImap();
   await client.connect();
 
   try {
-    const lock = await client.getMailboxLock("INBOX");
+    const buzones = await detectarBuzones(client);
+    const path = pathDeCarpeta(carpeta, buzones);
+    if (!path) return null;
+
+    const lock = await client.getMailboxLock(path);
     try {
       const msg = await client.fetchOne(
         String(uid),
