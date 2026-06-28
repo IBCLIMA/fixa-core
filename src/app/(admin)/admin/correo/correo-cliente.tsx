@@ -229,7 +229,9 @@ export function CorreoCliente() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          to: mensaje.from,
+          // En Enviados, "responder" continúa la conversación con el DESTINATARIO,
+          // no con uno mismo (que es el remitente de un correo enviado).
+          to: carpeta === "enviados" ? mensaje.to : mensaje.from,
           subject: mensaje.subject,
           text: respuesta,
           inReplyTo: mensaje.messageId,
@@ -245,7 +247,7 @@ export function CorreoCliente() {
     } finally {
       setEnviando(false);
     }
-  }, [mensaje, respuesta]);
+  }, [mensaje, respuesta, carpeta]);
 
   const abrirRedactar = useCallback(() => {
     setRedactando(true);
@@ -699,7 +701,7 @@ export function CorreoCliente() {
               <div className="border-t bg-muted/30 px-6 py-4">
                 <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                   <CornerUpLeft className="size-3.5" />
-                  Responder a {mensaje.from}
+                  Responder a {carpeta === "enviados" ? mensaje.to : mensaje.from}
                 </div>
                 <Textarea
                   value={respuesta}
