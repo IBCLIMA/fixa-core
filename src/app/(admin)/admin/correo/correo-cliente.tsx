@@ -28,6 +28,21 @@ function emailValido(v: string): boolean {
 
 const LIMIT = 30;
 
+type CuentaId = "hola" | "sergi";
+
+type Cuenta = {
+  id: CuentaId;
+  label: string;
+  email: string;
+  disponible: boolean;
+};
+
+// Variable de entorno que activa cada cuenta (para el mensaje de "no configurada").
+const ENV_CUENTA: Record<CuentaId, string> = {
+  hola: "HOLA_IMAP_PASSWORD",
+  sergi: "SERGI_MAIL_PASSWORD",
+};
+
 type Carpeta = "recibidos" | "enviados" | "spam";
 
 const CARPETAS: { id: Carpeta; label: string; icon: typeof Inbox }[] = [
@@ -75,6 +90,10 @@ function formatFecha(iso: string | null): string {
 }
 
 export function CorreoCliente() {
+  // Cuentas de correo disponibles (hola@ / sergi@) y la seleccionada.
+  const [cuentas, setCuentas] = useState<Cuenta[]>([]);
+  const [cuenta, setCuenta] = useState<CuentaId>("hola");
+
   const [carpeta, setCarpeta] = useState<Carpeta>("recibidos");
   const [mensajes, setMensajes] = useState<MensajeResumen[]>([]);
   const [cargandoLista, setCargandoLista] = useState(true);
@@ -108,8 +127,14 @@ export function CorreoCliente() {
   const reqRef = useRef(0);
 
   const cargarPagina = useCallback(
-    async (opts: { append: boolean; carp: Carpeta; q: string; offset: number }) => {
-      const { append, carp, q, offset } = opts;
+    async (opts: {
+      append: boolean;
+      cta: CuentaId;
+      carp: Carpeta;
+      q: string;
+      offset: number;
+    }) => {
+      const { append, cta, carp, q, offset } = opts;
       const myReq = ++reqRef.current;
 
       if (append) {
@@ -121,7 +146,7 @@ export function CorreoCliente() {
 
       try {
         const url =
-          `/api/admin/correo?carpeta=${carp}&limit=${LIMIT}&offset=${offset}` +
+          `/api/admin/correo?cuenta=${cta}&carpeta=${carp}&limit=${LIMIT}&offset=${offset}` +
           `&q=${encodeURIComponent(q)}`;
         const res = await fetch(url, { cache: "no-store" });
         const data = await res.json();
@@ -151,16 +176,39 @@ export function CorreoCliente() {
     [],
   );
 
+  // Carga las cuentas disponibles una vez. Si la cuenta seleccionada por
+  // defecto (hola) no estuviera disponible, salta a la primera que lo esté.
+  useEffect(() => {
+    let activo = true;
+    fetch("/api/admin/correo/cuentas")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!activo || !d?.cuentas) return;
+        const lista = d.cuentas as Cuenta[];
+        setCuentas(lista);
+        setCuenta((actual) => {
+          const seleccionadaOk = lista.some((c) => c.id === actual && c.disponible);
+          if (seleccionadaOk) return actual;
+          const primera = lista.find((c) => c.disponible);
+          return primera ? primera.id : actual;
+        });
+      })
+      .catch(() => {});
+    return () => {
+      activo = false;
+    };
+  }, []);
+
   // Debounce del buscador.
   useEffect(() => {
     const t = setTimeout(() => setDebounced(busqueda.trim()), 350);
     return () => clearTimeout(t);
   }, [busqueda]);
 
-  // Recarga (página 0) al cambiar de carpeta o de búsqueda.
+  // Recarga (página 0) al cambiar de cuenta, carpeta o búsqueda.
   useEffect(() => {
-    cargarPagina({ append: false, carp: carpeta, q: debounced, offset: 0 });
-  }, [carpeta, debounced, cargarPagina]);
+    cargarPagina({ append: false, cta: cuenta, carp: carpeta, q: debounced, offset: 0 });
+  }, [cuenta, carpeta, debounced, cargarPagina]);
 
   const cambiarCarpeta = useCallback(
     (c: Carpeta) => {
@@ -176,18 +224,35 @@ export function CorreoCliente() {
     [carpeta],
   );
 
+  const cambiarCuenta = useCallback(
+    (c: CuentaId) => {
+      if (c === cuenta) return;
+      // El UID y las carpetas pertenecen a otro buzón: reseteamos todo.
+      setSeleccionado(null);
+      setMensaje(null);
+      setErrorMensaje(null);
+      setRedactando(false);
+      setBusqueda("");
+      setDebounced("");
+      setCarpeta("recibidos");
+      setCuenta(c);
+    },
+    [cuenta],
+  );
+
   const recargar = useCallback(() => {
-    cargarPagina({ append: false, carp: carpeta, q: debounced, offset: 0 });
-  }, [cargarPagina, carpeta, debounced]);
+    cargarPagina({ append: false, cta: cuenta, carp: carpeta, q: debounced, offset: 0 });
+  }, [cargarPagina, cuenta, carpeta, debounced]);
 
   const cargarMas = useCallback(() => {
     cargarPagina({
       append: true,
+      cta: cuenta,
       carp: carpeta,
       q: debounced,
       offset: mensajes.length,
     });
-  }, [cargarPagina, carpeta, debounced, mensajes.length]);
+  }, [cargarPagina, cuenta, carpeta, debounced, mensajes.length]);
 
   const abrir = useCallback(
     async (uid: number) => {
@@ -198,9 +263,10 @@ export function CorreoCliente() {
       setErrorMensaje(null);
       setCargandoMensaje(true);
       try {
-        const res = await fetch(`/api/admin/correo/${uid}?carpeta=${carpeta}`, {
-          cache: "no-store",
-        });
+        const res = await fetch(
+          `/api/admin/correo/${uid}?cuenta=${cuenta}&carpeta=${carpeta}`,
+          { cache: "no-store" },
+        );
         const data = await res.json();
         if (!res.ok) throw new Error(data?.error || "Error al abrir el mensaje.");
         setMensaje(data.mensaje);
@@ -214,7 +280,7 @@ export function CorreoCliente() {
         setCargandoMensaje(false);
       }
     },
-    [carpeta],
+    [cuenta, carpeta],
   );
 
   const enviarRespuesta = useCallback(async () => {
@@ -229,6 +295,7 @@ export function CorreoCliente() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          cuenta,
           // En Enviados, "responder" continúa la conversación con el DESTINATARIO,
           // no con uno mismo (que es el remitente de un correo enviado).
           to: carpeta === "enviados" ? mensaje.to : mensaje.from,
@@ -247,7 +314,7 @@ export function CorreoCliente() {
     } finally {
       setEnviando(false);
     }
-  }, [mensaje, respuesta, carpeta]);
+  }, [mensaje, respuesta, cuenta, carpeta]);
 
   const abrirRedactar = useCallback(() => {
     setRedactando(true);
@@ -285,6 +352,7 @@ export function CorreoCliente() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          cuenta,
           to: nuevoPara.trim(),
           subject: nuevoAsunto.trim(),
           text: nuevoTexto,
@@ -299,9 +367,17 @@ export function CorreoCliente() {
     } finally {
       setEnviandoNuevo(false);
     }
-  }, [nuevoPara, nuevoAsunto, nuevoTexto, cerrarRedactar]);
+  }, [nuevoPara, nuevoAsunto, nuevoTexto, cuenta, cerrarRedactar]);
 
   const paraInvalido = tocadoPara && nuevoPara.trim().length > 0 && !emailValido(nuevoPara);
+
+  // Cuenta seleccionada y cuentas para el selector.
+  const cuentaActual = cuentas.find((c) => c.id === cuenta) ?? null;
+  const emailActual = cuentaActual?.email ?? "hola@fixataller.es";
+  const cuentasDisponibles = cuentas.filter((c) => c.disponible);
+  const cuentasNoDisponibles = cuentas.filter((c) => !c.disponible);
+  // El selector solo tiene sentido si hay más de una cuenta activable.
+  const mostrarSelector = cuentasDisponibles.length > 1;
 
   const esEnviados = carpeta === "enviados";
   const carpetaActual = CARPETAS.find((c) => c.id === carpeta)!;
@@ -328,7 +404,7 @@ export function CorreoCliente() {
           </div>
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight">Correo</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">hola@fixataller.es</p>
+            <p className="text-sm text-muted-foreground mt-0.5">{emailActual}</p>
           </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
@@ -351,6 +427,57 @@ export function CorreoCliente() {
           </Button>
         </div>
       </div>
+
+      {/* Selector de cuenta — solo si hay más de una cuenta activable. */}
+      {mostrarSelector && (
+        <div className="mb-4">
+          <div
+            role="tablist"
+            aria-label="Cuenta de correo"
+            className="inline-flex max-w-full flex-wrap gap-1 rounded-xl bg-muted p-1"
+          >
+            {cuentasDisponibles.map((c) => {
+              const activa = c.id === cuenta;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={activa}
+                  onClick={() => cambiarCuenta(c.id)}
+                  className={`flex min-h-11 items-center gap-2 rounded-lg px-3 text-[13px] font-medium transition-colors ${
+                    activa
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <span className="truncate">{c.label}</span>
+                  <span className="hidden truncate text-muted-foreground sm:inline">
+                    {c.email}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Aviso de cuenta(s) no configurada(s): qué env var activa cada una. */}
+      {cuentasNoDisponibles.length > 0 && (
+        <div className="mb-4 flex flex-col gap-1 rounded-xl border border-dashed bg-muted/30 px-4 py-3">
+          {cuentasNoDisponibles.map((c) => (
+            <p key={c.id} className="text-xs text-muted-foreground">
+              La cuenta{" "}
+              <span className="font-medium text-foreground">{c.email}</span> está
+              inactiva. Configura{" "}
+              <code className="rounded bg-muted px-1 py-0.5 font-mono text-[11px]">
+                {ENV_CUENTA[c.id]}
+              </code>{" "}
+              para activarla.
+            </p>
+          ))}
+        </div>
+      )}
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,360px)_1fr]">
         {/* Bandeja */}
@@ -597,7 +724,7 @@ export function CorreoCliente() {
 
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-[11px] text-muted-foreground">
-                    Se enviará desde hola@fixataller.es
+                    Se enviará desde {emailActual}
                   </p>
                   <div className="flex items-center gap-2">
                     <Button

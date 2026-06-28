@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { getSuperAdmin } from "@/lib/auth";
-import { leerMensaje, type Carpeta } from "@/lib/correo";
+import { leerMensaje, type Carpeta, type CuentaId } from "@/lib/correo";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
 const CARPETAS: Carpeta[] = ["recibidos", "enviados", "spam"];
+const CUENTAS: CuentaId[] = ["hola", "sergi"];
 
 export async function GET(
   request: Request,
@@ -23,12 +24,19 @@ export async function GET(
       return NextResponse.json({ error: "UID inválido" }, { status: 400 });
     }
 
-    const carpetaRaw = new URL(request.url).searchParams.get("carpeta") ?? "recibidos";
+    const searchParams = new URL(request.url).searchParams;
+
+    const carpetaRaw = searchParams.get("carpeta") ?? "recibidos";
     const carpeta: Carpeta = (CARPETAS as string[]).includes(carpetaRaw)
       ? (carpetaRaw as Carpeta)
       : "recibidos";
 
-    const mensaje = await leerMensaje(uidNum, carpeta);
+    const cuentaRaw = searchParams.get("cuenta") ?? "hola";
+    const cuenta: CuentaId = (CUENTAS as string[]).includes(cuentaRaw)
+      ? (cuentaRaw as CuentaId)
+      : "hola";
+
+    const mensaje = await leerMensaje(uidNum, carpeta, cuenta);
     if (!mensaje) {
       return NextResponse.json({ error: "Mensaje no encontrado" }, { status: 404 });
     }

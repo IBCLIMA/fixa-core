@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { getSuperAdmin } from "@/lib/auth";
-import { responder } from "@/lib/correo";
+import { responder, type CuentaId } from "@/lib/correo";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
+
+const CUENTAS: CuentaId[] = ["hola", "sergi"];
 
 export async function POST(request: Request) {
   try {
@@ -17,12 +19,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Cuerpo inválido" }, { status: 400 });
     }
 
-    const { to, subject, text, inReplyTo, references } = body as {
+    const { to, subject, text, inReplyTo, references, cuenta: cuentaRaw } = body as {
       to?: string;
       subject?: string;
       text?: string;
       inReplyTo?: string | null;
       references?: string | null;
+      cuenta?: string;
     };
 
     if (!to || !text?.trim()) {
@@ -32,12 +35,17 @@ export async function POST(request: Request) {
       );
     }
 
+    const cuenta: CuentaId = (CUENTAS as string[]).includes(cuentaRaw ?? "")
+      ? (cuentaRaw as CuentaId)
+      : "hola";
+
     const { messageId } = await responder({
       to,
       subject: subject ?? "(sin asunto)",
       text,
       inReplyTo: inReplyTo ?? null,
       references: references ?? null,
+      cuenta,
     });
 
     return NextResponse.json({ ok: true, messageId });

@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { getSuperAdmin } from "@/lib/auth";
-import { listarMensajes, type Carpeta } from "@/lib/correo";
+import { listarMensajes, type Carpeta, type CuentaId } from "@/lib/correo";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
 const CARPETAS: Carpeta[] = ["recibidos", "enviados", "spam"];
+const CUENTAS: CuentaId[] = ["hola", "sergi"];
 
 export async function GET(request: Request) {
   try {
@@ -15,6 +16,11 @@ export async function GET(request: Request) {
     }
 
     const { searchParams } = new URL(request.url);
+
+    const cuentaRaw = searchParams.get("cuenta") ?? "hola";
+    const cuenta: CuentaId = (CUENTAS as string[]).includes(cuentaRaw)
+      ? (cuentaRaw as CuentaId)
+      : "hola";
 
     const carpetaRaw = searchParams.get("carpeta") ?? "recibidos";
     const carpeta: Carpeta = (CARPETAS as string[]).includes(carpetaRaw)
@@ -29,7 +35,7 @@ export async function GET(request: Request) {
 
     const buscar = (searchParams.get("q") ?? "").slice(0, 200);
 
-    const resultado = await listarMensajes({ carpeta, limit, offset, buscar });
+    const resultado = await listarMensajes({ cuenta, carpeta, limit, offset, buscar });
     return NextResponse.json(resultado);
   } catch (e: any) {
     console.error("Error al listar correo:", e);

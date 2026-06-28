@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { getSuperAdmin } from "@/lib/auth";
-import { enviar } from "@/lib/correo";
+import { enviar, type CuentaId } from "@/lib/correo";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
 // Validación básica de email (la misma que usamos en el cliente).
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const CUENTAS: CuentaId[] = ["hola", "sergi"];
 
 export async function POST(request: Request) {
   try {
@@ -20,11 +21,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Cuerpo inválido" }, { status: 400 });
     }
 
-    const { to, subject, text } = body as {
+    const { to, subject, text, cuenta: cuentaRaw } = body as {
       to?: string;
       subject?: string;
       text?: string;
+      cuenta?: string;
     };
+
+    const cuenta: CuentaId = (CUENTAS as string[]).includes(cuentaRaw ?? "")
+      ? (cuentaRaw as CuentaId)
+      : "hola";
 
     const destinatario = to?.trim() ?? "";
     if (!EMAIL_RE.test(destinatario)) {
@@ -50,6 +56,7 @@ export async function POST(request: Request) {
       to: destinatario,
       subject: subject.trim(),
       text,
+      cuenta,
     });
 
     return NextResponse.json({ ok: true, messageId });

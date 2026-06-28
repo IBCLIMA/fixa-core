@@ -4,35 +4,147 @@ import { simpleParser } from "mailparser";
 import nodemailer from "nodemailer";
 
 /**
- * Cliente de correo para el buzón hola@fixataller.es (soporte FIXA).
+ * Cliente de correo multi-cuenta para los buzones de FIXA en Webempresa:
+ *   - "hola"  → hola@fixataller.es  (sistema / soporte)
+ *   - "sergi" → sergi@fixataller.es (personal del fundador)
  *
  * Pensado para entorno serverless (Vercel): cada función abre y CIERRA su
  * propia conexión IMAP/SMTP. NUNCA se reutiliza una conexión entre llamadas.
  *
  * Credenciales SOLO desde variables de entorno. Nada hardcodeado.
+ *
+ * Compatibilidad: toda función acepta `cuenta` con valor por defecto "hola",
+ * de modo que callers antiguos (p.ej. `responderFeedback`) siguen usando hola@.
  */
 
-const HOST = process.env.HOLA_MAIL_HOST;
-const USER = process.env.HOLA_MAIL_USER;
-const PASS = process.env.HOLA_IMAP_PASSWORD;
+/** Identificador de cuenta soportada (alcance cerrado). */
+export type CuentaId = "hola" | "sergi";
 
-const FROM = `Soporte FIXA <${USER ?? "hola@fixataller.es"}>`;
+export type ConfigCuenta = {
+  id: CuentaId;
+  /** Etiqueta legible para la UI. */
+  label: string;
+  /** Email de la cuenta. */
+  email: string;
+  host: string | undefined;
+  user: string | undefined;
+  pass: string | undefined;
+  /** Cabecera From completa ("Nombre <email>"). */
+  from: string;
+  /** Firma para correos NUEVOS (incluye aviso legal / RGPD). */
+  firmaNuevo: string;
+  /** Firma corta para RESPUESTAS. */
+  firmaRespuesta: string;
+  /** `true` si la cuenta tiene contraseña configurada (está activable). */
+  disponible: boolean;
+};
 
-function assertConfig() {
-  if (!HOST || !USER || !PASS) {
-    throw new Error(
-      "Correo no configurado: faltan HOLA_MAIL_HOST / HOLA_MAIL_USER / HOLA_IMAP_PASSWORD en el entorno.",
-    );
+const TEL = "630 726 364";
+
+/** Construye las dos firmas de una cuenta a partir de su nombre y email. */
+function construirFirmas(nombre: string, email: string): {
+  firmaNuevo: string;
+  firmaRespuesta: string;
+} {
+  // "-- " (guion-guion-espacio) es el delimitador estándar de firma (RFC 3676):
+  // muchos clientes lo reconocen y la ocultan al responder, para no acumularla.
+  //
+  // Correo NUEVO → firma profesional completa + aviso legal y RGPD.
+  const firmaNuevo = [
+    "",
+    "-- ",
+    nombre,
+    "FIXA · fixataller.es",
+    `${email} · ${TEL}`,
+    "",
+    "──────────",
+    "AVISO DE CONFIDENCIALIDAD: Este mensaje y sus archivos adjuntos son confidenciales y van dirigidos únicamente a su destinatario. Si lo ha recibido por error, le rogamos lo elimine y avise al remitente; queda prohibida su copia o difusión.",
+    `PROTECCIÓN DE DATOS (RGPD): Tratamos tus datos para atender tu consulta y gestionar nuestra relación. Puedes ejercer tus derechos de acceso, rectificación, supresión y oposición escribiendo a ${email}. Más información en fixataller.es/privacidad.`,
+  ].join("\n");
+
+  // RESPUESTA → firma corta, solo contacto (la parte legal ya viajó en el primer correo).
+  const firmaRespuesta = ["", "-- ", `${nombre} · FIXA`, `${email} · ${TEL}`].join("\n");
+
+  return { firmaNuevo, firmaRespuesta };
+}
+
+/**
+ * Registro de cuentas. Devuelve la config resuelta desde variables de entorno
+ * para la cuenta indicada. `disponible = !!pass`.
+ */
+export function getConfigCuenta(id: CuentaId): ConfigCuenta {
+  if (id === "sergi") {
+    // Mismo servidor que hola@ (Webempresa) salvo override explícito.
+    const host = process.env.SERGI_MAIL_HOST ?? process.env.HOLA_MAIL_HOST;
+    const user = process.env.SERGI_MAIL_USER ?? "sergi@fixataller.es";
+    const pass = process.env.SERGI_MAIL_PASSWORD;
+    const email = user;
+    const { firmaNuevo, firmaRespuesta } = construirFirmas("Sergi Ibañez", email);
+    return {
+      id: "sergi",
+      label: "Sergi",
+      email,
+      host,
+      user,
+      pass,
+      from: `Sergi Ibañez <${email}>`,
+      firmaNuevo,
+      firmaRespuesta,
+      disponible: !!pass,
+    };
+  }
+
+  // Cuenta hola@ (sistema / soporte) — la actual.
+  const host = process.env.HOLA_MAIL_HOST;
+  const user = process.env.HOLA_MAIL_USER;
+  const pass = process.env.HOLA_IMAP_PASSWORD;
+  const email = user ?? "hola@fixataller.es";
+  const { firmaNuevo, firmaRespuesta } = construirFirmas("Sergi Ibañez", email);
+  return {
+    id: "hola",
+    label: "Soporte",
+    email,
+    host,
+    user,
+    pass,
+    from: `Soporte FIXA <${email}>`,
+    firmaNuevo,
+    firmaRespuesta,
+    disponible: !!pass,
+  };
+}
+
+/** Lista de cuentas para la UI (id, label, email, disponible). */
+export function listarCuentas(): {
+  id: CuentaId;
+  label: string;
+  email: string;
+  disponible: boolean;
+}[] {
+  return (["hola", "sergi"] as CuentaId[]).map((id) => {
+    const c = getConfigCuenta(id);
+    return { id: c.id, label: c.label, email: c.email, disponible: c.disponible };
+  });
+}
+
+function assertConfig(cfg: ConfigCuenta) {
+  if (!cfg.host || !cfg.user || !cfg.pass) {
+    const sufijo =
+      cfg.id === "sergi"
+        ? "Configura SERGI_MAIL_PASSWORD (y opcionalmente SERGI_MAIL_HOST / SERGI_MAIL_USER)."
+        : "Faltan HOLA_MAIL_HOST / HOLA_MAIL_USER / HOLA_IMAP_PASSWORD.";
+    throw new Error(`Correo no configurado para la cuenta "${cfg.id}". ${sufijo}`);
   }
 }
 
-function nuevoClienteImap(): ImapFlow {
-  assertConfig();
+function nuevoClienteImap(cuenta: CuentaId = "hola"): ImapFlow {
+  const cfg = getConfigCuenta(cuenta);
+  assertConfig(cfg);
   return new ImapFlow({
-    host: HOST!,
+    host: cfg.host!,
     port: 993,
     secure: true,
-    auth: { user: USER!, pass: PASS! },
+    auth: { user: cfg.user!, pass: cfg.pass! },
     // Silenciar el logger ruidoso de imapflow en producción.
     logger: false,
   });
@@ -53,6 +165,8 @@ export type MensajeResumen = {
 };
 
 export type ListarParams = {
+  /** Cuenta sobre la que operar. Por defecto "hola". */
+  cuenta?: CuentaId;
   carpeta?: Carpeta;
   limit?: number;
   offset?: number;
@@ -190,8 +304,8 @@ function pathDeCarpeta(carpeta: Carpeta, buzones: Buzones): string | null {
  * Cuenta los correos NO LEÍDOS de la bandeja de entrada. Ligero: usa IMAP STATUS
  * (no abre el buzón ni descarga mensajes). Para el badge de "correos nuevos".
  */
-export async function contarNoLeidos(): Promise<number> {
-  const client = nuevoClienteImap();
+export async function contarNoLeidos(cuenta: CuentaId = "hola"): Promise<number> {
+  const client = nuevoClienteImap(cuenta);
   await client.connect();
   try {
     const status = await client.status("INBOX", { unseen: true });
@@ -204,6 +318,7 @@ export async function contarNoLeidos(): Promise<number> {
 export async function listarMensajes(
   params: ListarParams = {},
 ): Promise<ListarResultado> {
+  const cuenta: CuentaId = params.cuenta ?? "hola";
   const carpeta: Carpeta = params.carpeta ?? "recibidos";
   const limit = Math.min(Math.max(1, params.limit ?? 30), 50);
   const offset = Math.max(0, params.offset ?? 0);
@@ -216,7 +331,7 @@ export async function listarMensajes(
     carpetaDisponible: true,
   };
 
-  const client = nuevoClienteImap();
+  const client = nuevoClienteImap(cuenta);
   await client.connect();
 
   try {
@@ -319,8 +434,9 @@ export async function listarMensajes(
 export async function leerMensaje(
   uid: number,
   carpeta: Carpeta = "recibidos",
+  cuenta: CuentaId = "hola",
 ): Promise<MensajeCompleto | null> {
-  const client = nuevoClienteImap();
+  const client = nuevoClienteImap(cuenta);
   await client.connect();
 
   try {
@@ -374,30 +490,6 @@ export async function leerMensaje(
   }
 }
 
-// "-- " (guion-guion-espacio) es el delimitador estándar de firma (RFC 3676): muchos
-// clientes lo reconocen y la ocultan al responder, para no acumularla en el hilo.
-//
-// Correo NUEVO → firma profesional completa + aviso legal y de protección de datos (RGPD).
-const FIRMA_NUEVO = [
-  "",
-  "-- ",
-  "Sergi Ibañez",
-  "FIXA · fixataller.es",
-  "hola@fixataller.es · 630 726 364",
-  "",
-  "──────────",
-  "AVISO DE CONFIDENCIALIDAD: Este mensaje y sus archivos adjuntos son confidenciales y van dirigidos únicamente a su destinatario. Si lo ha recibido por error, le rogamos lo elimine y avise al remitente; queda prohibida su copia o difusión.",
-  "PROTECCIÓN DE DATOS (RGPD): Tratamos tus datos para atender tu consulta y gestionar nuestra relación. Puedes ejercer tus derechos de acceso, rectificación, supresión y oposición escribiendo a hola@fixataller.es. Más información en fixataller.es/privacidad.",
-].join("\n");
-
-// RESPUESTA → firma corta, solo contacto (la parte legal ya viajó en el primer correo).
-const FIRMA_RESPUESTA = [
-  "",
-  "-- ",
-  "Sergi Ibañez · FIXA",
-  "hola@fixataller.es · 630 726 364",
-].join("\n");
-
 /** Añade la firma indicada al final del cuerpo (sin espacios sobrantes). */
 function conFirma(text: string, firma: string): string {
   return `${text.replace(/\s+$/, "")}\n${firma}`;
@@ -409,6 +501,8 @@ export type ResponderParams = {
   text: string;
   inReplyTo?: string | null;
   references?: string | null;
+  /** Cuenta desde la que se responde. Por defecto "hola". */
+  cuenta?: CuentaId;
 };
 
 /**
@@ -422,8 +516,10 @@ export async function responder({
   text,
   inReplyTo,
   references,
+  cuenta = "hola",
 }: ResponderParams): Promise<{ messageId: string }> {
-  assertConfig();
+  const cfg = getConfigCuenta(cuenta);
+  assertConfig(cfg);
 
   if (!to || !to.includes("@")) {
     throw new Error("Destinatario inválido.");
@@ -433,19 +529,19 @@ export async function responder({
   }
 
   const transporter = nodemailer.createTransport({
-    host: HOST!,
+    host: cfg.host!,
     port: 465,
     secure: true,
-    auth: { user: USER!, pass: PASS! },
+    auth: { user: cfg.user!, pass: cfg.pass! },
   });
 
   const asunto = subject.toLowerCase().startsWith("re:") ? subject : `Re: ${subject}`;
 
   const info = await transporter.sendMail({
-    from: FROM,
+    from: cfg.from,
     to,
     subject: asunto,
-    text: conFirma(text, FIRMA_RESPUESTA),
+    text: conFirma(text, cfg.firmaRespuesta),
     inReplyTo: inReplyTo ?? undefined,
     references: references ?? inReplyTo ?? undefined,
   });
@@ -457,19 +553,23 @@ export type EnviarParams = {
   to: string;
   subject: string;
   text: string;
+  /** Cuenta desde la que se envía. Por defecto "hola". */
+  cuenta?: CuentaId;
 };
 
 /**
  * Envía un correo NUEVO (redactado desde cero) por SMTP (puerto 465, SSL).
  * No añade cabeceras de hilo: es un mensaje nuevo, no una respuesta.
- * From = "Soporte FIXA <hola@fixataller.es>".
+ * From = el de la cuenta indicada (por defecto "Soporte FIXA <hola@fixataller.es>").
  */
 export async function enviar({
   to,
   subject,
   text,
+  cuenta = "hola",
 }: EnviarParams): Promise<{ messageId: string }> {
-  assertConfig();
+  const cfg = getConfigCuenta(cuenta);
+  assertConfig(cfg);
 
   if (!to || !to.includes("@")) {
     throw new Error("Destinatario inválido.");
@@ -482,17 +582,17 @@ export async function enviar({
   }
 
   const transporter = nodemailer.createTransport({
-    host: HOST!,
+    host: cfg.host!,
     port: 465,
     secure: true,
-    auth: { user: USER!, pass: PASS! },
+    auth: { user: cfg.user!, pass: cfg.pass! },
   });
 
   const info = await transporter.sendMail({
-    from: FROM,
+    from: cfg.from,
     to,
     subject,
-    text: conFirma(text, FIRMA_NUEVO),
+    text: conFirma(text, cfg.firmaNuevo),
   });
 
   return { messageId: info.messageId };
