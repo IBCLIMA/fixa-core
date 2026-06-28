@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "FIXA — Software de gestión para talleres mecánicos";
+export const alt = "FIXA — Tu taller deja de depender de tu memoria";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -65,7 +65,7 @@ export default function OgImage() {
             display: "flex",
           }}
         >
-          El software de gestión hecho por mecánicos
+          Tu taller deja de depender de tu memoria
         </div>
         <div
           style={{
@@ -76,7 +76,7 @@ export default function OgImage() {
             display: "flex",
           }}
         >
-          Órdenes, presupuestos, citas y WhatsApp — desde el móvil, sin formación
+          FIXA te avisa de lo que cuesta dinero. Y tu cliente ve su coche en tiempo real.
         </div>
         <div
           style={{

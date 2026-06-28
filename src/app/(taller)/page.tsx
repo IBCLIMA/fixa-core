@@ -26,6 +26,7 @@ import { EntradaRapida } from "./entrada-rapida";
 import { TourGuiado } from "./tour-guiado";
 import { InstallBanner } from "@/components/install-banner";
 import { getTallerIdFromAuth } from "@/lib/auth";
+import { currentUser } from "@clerk/nextjs/server";
 import { getDb } from "@/db";
 import { ordenesTrabajo, clientes, citas, vehiculos, talleres, presupuestos, lineasOrden } from "@/db/schema";
 import { eq, and, count, sql, desc, sum, lt } from "drizzle-orm";
@@ -287,6 +288,59 @@ export default async function PanelDelDia() {
 
   const fechaHoy = new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
 
+  // ── Briefing: saludo humano + resumen derivado de los avisos reales ──────────
+  // Nombre de pila del usuario (Clerk) → nombre del taller → sin nombre.
+  let nombreSaludo = "";
+  try {
+    const user = await currentUser();
+    nombreSaludo = user?.firstName?.trim() || "";
+  } catch {
+    // Clerk no disponible: seguimos sin nombre, no rompemos la home.
+  }
+  if (!nombreSaludo) {
+    const t = taller?.nombre?.trim() || "";
+    if (t && t !== "Mi Taller") nombreSaludo = t;
+  }
+
+  // Hora real de Madrid para que el saludo sea honesto en producción (server UTC).
+  const horaMadrid = Number(
+    new Intl.DateTimeFormat("es-ES", { hour: "numeric", hour12: false, timeZone: "Europe/Madrid" }).format(new Date())
+  );
+  const franja = horaMadrid >= 6 && horaMadrid < 14
+    ? "Buenos días"
+    : horaMadrid >= 14 && horaMadrid < 21
+    ? "Buenas tardes"
+    : "Buenas noches";
+  const saludo = nombreSaludo ? `${franja}, ${nombreSaludo}` : franja;
+
+  // Resumen en lenguaje humano. Cuenta los avisos reales por categoría (sumando
+  // los agrupados por su `count`). Solo menciona categorías con count > 0.
+  const RESUMEN_LABEL: Record<string, { uno: string; varios: string }> = {
+    ventas: { uno: "oportunidad de venta", varios: "oportunidades de venta" },
+    entrega: { uno: "coche listo para entregar", varios: "coches listos para entregar" },
+    operativa: { uno: "coche parado", varios: "coches parados" },
+    comunicacion: { uno: "cliente esperando noticias", varios: "clientes esperando noticias" },
+    recurrencia: { uno: "revisión por recuperar", varios: "revisiones por recuperar" },
+  };
+  const ORDEN_RESUMEN = ["ventas", "entrega", "operativa", "comunicacion", "recurrencia"];
+  const conteo: Record<string, number> = {};
+  for (const it of torreItems) {
+    conteo[it.categoria] = (conteo[it.categoria] ?? 0) + (it.count ?? 1);
+  }
+  const partes = ORDEN_RESUMEN.filter((c) => (conteo[c] ?? 0) > 0).map((c) => {
+    const n = conteo[c];
+    const label = RESUMEN_LABEL[c];
+    return `${n} ${n === 1 ? label.uno : label.varios}`;
+  });
+  let resumen = "";
+  if (partes.length > 0) {
+    const lista =
+      partes.length === 1
+        ? partes[0]
+        : `${partes.slice(0, -1).join(", ")} y ${partes[partes.length - 1]}`;
+    resumen = `Hoy tienes ${lista}. Todo lo demás, bajo control.`;
+  }
+
   const appUrl =
     process.env.NEXT_PUBLIC_APP_URL ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
@@ -298,7 +352,10 @@ export default async function PanelDelDia() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <p className="text-sm font-medium text-muted-foreground capitalize">{fechaHoy}</p>
-          <h1 className="text-2xl font-extrabold tracking-tight mt-0.5">Panel del día</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight mt-0.5">{saludo}</h1>
+          {resumen && (
+            <p className="text-sm text-muted-foreground mt-1 max-w-xl">{resumen}</p>
+          )}
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <TourGuiado />

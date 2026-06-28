@@ -1,15 +1,16 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import Link from "next/link";
-import { Car, Clock, CheckCircle2, CalendarCheck, FileText, AlertTriangle, Receipt, ArrowRight, Phone, MessageSquare, CalendarClock, Stethoscope, ThumbsUp, Wrench, Package, PackageCheck, KeyRound, XCircle } from "lucide-react";
+import { Car, Clock, CheckCircle2, CalendarCheck, FileText, AlertTriangle, Receipt, ArrowRight, Phone, MessageSquare, CalendarClock, Stethoscope, ThumbsUp, Wrench, Package, PackageCheck, KeyRound, XCircle, Camera } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { PortalClienteHeader } from "@/components/portal-cliente-header";
 import { TimelineReparacion, type HitoTimeline } from "@/components/portal/timeline-reparacion";
+import { MediaGallery } from "@/components/media-lightbox";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { getDb } from "@/db";
-import { ordenesTrabajo, vehiculos, clientes, talleres, historialEstados, presupuestos, averiasOcultas, documentosCobro, lineasOrden } from "@/db/schema";
-import { eq, desc, and, inArray } from "drizzle-orm";
+import { ordenesTrabajo, vehiculos, clientes, talleres, historialEstados, presupuestos, averiasOcultas, documentosCobro, lineasOrden, fotosOrden } from "@/db/schema";
+import { eq, desc, asc, and, inArray } from "drizzle-orm";
 import { registrarApertura } from "@/lib/portal-views";
 
 // Página privada de cliente (acceso por token): no indexable
@@ -25,7 +26,7 @@ const ordenIdx = (estado: string) => PIPELINE.indexOf(estado as (typeof PIPELINE
 const HITO_COPY: Record<string, { titulo: string; descripcion: string }> = {
   recibido: { titulo: "Recibido en el taller", descripcion: "Tenemos tu coche y lo hemos registrado." },
   diagnostico: { titulo: "En diagnóstico", descripcion: "Estamos revisando qué necesita exactamente." },
-  presupuestado: { titulo: "Presupuesto preparado", descripcion: "Te hemos preparado el presupuesto de la reparación." },
+  presupuestado: { titulo: "Presupuesto preparado", descripcion: "Te hemos preparado una propuesta para que puedas decidir." },
   aprobado: { titulo: "Presupuesto aprobado", descripcion: "Nos diste el visto bueno. ¡Manos a la obra!" },
   en_reparacion: { titulo: "En reparación", descripcion: "Nuestros mecánicos están trabajando en tu coche." },
   esperando_recambio: { titulo: "Esperando una pieza", descripcion: "Hemos pedido la pieza que falta. En cuanto llegue, seguimos." },
@@ -37,15 +38,15 @@ const HITO_COPY: Record<string, { titulo: string; descripcion: string }> = {
 // Hero: estado actual en lenguaje humano + frase tranquilizadora + próximo paso.
 type Tono = "marca" | "exito" | "espera" | "cancelado";
 const HERO_COPY: Record<string, { tono: Tono; icon: LucideIcon; titulo: string; sub: string; siguiente: string | null }> = {
-  recibido: { tono: "marca", icon: Car, titulo: "Tu coche ya está con nosotros", sub: "Lo hemos recibido y registrado. Nos ponemos en marcha.", siguiente: "Lo revisaremos para ver qué necesita." },
-  diagnostico: { tono: "marca", icon: Stethoscope, titulo: "Estamos revisando tu coche", sub: "Nuestros mecánicos están viendo qué necesita exactamente.", siguiente: "Te enviaremos un presupuesto." },
-  presupuestado: { tono: "marca", icon: FileText, titulo: "Tienes un presupuesto listo", sub: "Hemos preparado el presupuesto de la reparación.", siguiente: "Revísalo y apruébalo cuando quieras." },
-  aprobado: { tono: "marca", icon: ThumbsUp, titulo: "Presupuesto aprobado, ¡gracias!", sub: "Ya tenemos todo lo necesario para empezar.", siguiente: "Empezamos con la reparación." },
-  en_reparacion: { tono: "marca", icon: Wrench, titulo: "Estamos con tu coche", sub: "Nuestros mecánicos están manos a la obra.", siguiente: "Te avisaremos en cuanto esté listo." },
-  esperando_recambio: { tono: "espera", icon: Package, titulo: "Estamos esperando una pieza", sub: "Tu reparación está en marcha; solo falta que llegue una pieza.", siguiente: "En cuanto llegue, retomamos el trabajo." },
-  pieza_recibida: { tono: "marca", icon: PackageCheck, titulo: "La pieza ya ha llegado", sub: "Tenemos lo que faltaba. Retomamos la reparación.", siguiente: "Terminamos el trabajo y te avisamos." },
-  listo: { tono: "exito", icon: CheckCircle2, titulo: "¡Tu coche está listo!", sub: "Hemos terminado. Puedes pasar a recogerlo cuando quieras.", siguiente: "Ven a buscarlo. ¡Te esperamos!" },
-  entregado: { tono: "exito", icon: KeyRound, titulo: "¡Gracias por confiar en nosotros!", sub: "Te hemos entregado tu coche reparado.", siguiente: null },
+  recibido: { tono: "marca", icon: Car, titulo: "Hemos recibido tu coche", sub: "Lo tenemos con nosotros y registrado. Nos ponemos en marcha.", siguiente: "No tienes que hacer nada ahora, te avisaremos." },
+  diagnostico: { tono: "marca", icon: Stethoscope, titulo: "Estamos revisando qué le ocurre", sub: "Nuestros mecánicos están viendo qué necesita exactamente.", siguiente: "No tienes que hacer nada ahora, te avisaremos." },
+  presupuestado: { tono: "marca", icon: FileText, titulo: "Te hemos preparado una propuesta", sub: "Hemos preparado un presupuesto para que puedas decidir.", siguiente: "Estamos esperando tu aprobación." },
+  aprobado: { tono: "marca", icon: ThumbsUp, titulo: "Presupuesto aprobado, ¡gracias!", sub: "Ya tenemos todo lo necesario para empezar.", siguiente: "No tienes que hacer nada ahora, te avisaremos." },
+  en_reparacion: { tono: "marca", icon: Wrench, titulo: "Tu coche ya está en reparación", sub: "Nuestros mecánicos están manos a la obra.", siguiente: "No tienes que hacer nada ahora, te avisaremos." },
+  esperando_recambio: { tono: "espera", icon: Package, titulo: "Hemos pedido la pieza que falta", sub: "Tu reparación está en marcha; solo falta que llegue una pieza.", siguiente: "Te avisaremos cuando llegue la pieza." },
+  pieza_recibida: { tono: "marca", icon: PackageCheck, titulo: "Ya tenemos la pieza", sub: "Tenemos lo que faltaba. Retomamos la reparación.", siguiente: "No tienes que hacer nada ahora, te avisaremos." },
+  listo: { tono: "exito", icon: CheckCircle2, titulo: "Tu coche está listo para recoger", sub: "Hemos terminado. Puedes pasar a recogerlo cuando quieras.", siguiente: "Puedes pasar a recogerlo cuando quieras." },
+  entregado: { tono: "exito", icon: KeyRound, titulo: "¡Gracias por confiar en nosotros!", sub: "Te hemos devuelto tu coche reparado.", siguiente: null },
   cancelado: { tono: "cancelado", icon: XCircle, titulo: "Esta orden se ha cancelado", sub: "Si tienes cualquier duda, estamos a un mensaje.", siguiente: null },
 };
 
@@ -101,7 +102,7 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
 
   // Historial + acciones pendientes del cliente (hub: todo desde un solo link)
   // + líneas de recambio (para derivar el sub-estado "pieza recibida" sin más input del mecánico)
-  const [historial, [presupuestoPendiente], averiasPendientes, [documento], lineasRecambio] = await Promise.all([
+  const [historial, [presupuestoPendiente], averiasPendientes, [documento], lineasRecambio, fotos] = await Promise.all([
     db
       .select()
       .from(historialEstados)
@@ -138,6 +139,13 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
       .select({ estadoRecambio: lineasOrden.estadoRecambio, recibidoAt: lineasOrden.recibidoAt })
       .from(lineasOrden)
       .where(eq(lineasOrden.ordenId, o.id)),
+    // Fotos/vídeos que el taller ya ha tomado (SOLO LECTURA: el cliente no sube nada).
+    // Orden cronológico → cuentan la historia de la reparación.
+    db
+      .select({ id: fotosOrden.id, url: fotosOrden.url, descripcion: fotosOrden.descripcion, esVideo: fotosOrden.esVideo })
+      .from(fotosOrden)
+      .where(eq(fotosOrden.ordenId, o.id))
+      .orderBy(asc(fotosOrden.createdAt)),
   ]);
 
   const informeDisponible = o.estado === "listo" || o.estado === "entregado";
@@ -338,6 +346,33 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
             <TimelineReparacion hitos={hitos} />
           </CardContent>
         </Card>
+
+        {/* ── Fotos de la reparación: prueba de transparencia (SOLO LECTURA) ── */}
+        {fotos.length > 0 && (
+          <Card>
+            <CardContent className="p-5">
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-violet-50">
+                  <Camera className="h-5 w-5 text-violet-600" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-extrabold leading-tight text-foreground">Así está tu coche</p>
+                  <p className="text-xs text-muted-foreground">
+                    Fotos que ha tomado el taller durante la reparación
+                  </p>
+                </div>
+              </div>
+              <MediaGallery
+                items={fotos.map((f) => ({
+                  id: f.id,
+                  url: f.url,
+                  descripcion: f.descripcion,
+                  esVideo: f.esVideo ?? false,
+                }))}
+              />
+            </CardContent>
+          </Card>
+        )}
 
         {/* Info vehículo */}
         <Card>

@@ -38,15 +38,15 @@ export function HowItWorksSection() {
       <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16 relative z-10">
         <AnimatedSection className="text-center mb-16">
           <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-brand-500/10 px-4 py-1.5 text-xs font-semibold text-brand-400 mb-4">
-            La torre de control
+            Tu panel inteligente
           </span>
           <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-5xl">
-            Cada mañana sabes
+            FIXA te dice
             <br />
-            <span className="text-stone-500">qué necesita tu atención.</span>
+            <span className="text-stone-500">qué hacer hoy.</span>
           </h2>
           <p className="text-stone-400 mt-5 text-lg max-w-xl mx-auto">
-            FIXA no es una pantalla más. Es quien te avisa.
+            No te muestra datos para que los interpretes tú. Cada mañana sabes qué necesita atención, sin buscar nada.
           </p>
         </AnimatedSection>
 

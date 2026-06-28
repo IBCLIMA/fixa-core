@@ -19,17 +19,17 @@ import { faqs } from "@/components/landing/faq-data";
 
 export const metadata: Metadata = {
   // absolute evita que el template "%s | FIXA" duplique la marca al final
-  title: { absolute: "FIXA | Torre de control para talleres modernos" },
+  title: { absolute: "FIXA | Tu taller deja de depender de tu memoria" },
   description:
-    "Controla vehículos, presupuestos, avisos y clientes desde una plataforma que te dice qué necesita atención y mantiene informado al cliente en tiempo real.",
+    "FIXA te avisa de los coches parados, los presupuestos sin respuesta, los clientes que esperan noticias y las revisiones que puedes recuperar. Y tus clientes ven el estado de su coche en tiempo real, sin llamarte.",
   keywords: [
-    "torre de control taller", "control de taller mecánico", "gestión taller",
-    "estado reparación cliente", "avisos taller", "portal del cliente taller",
+    "gestión taller mecánico", "control de taller mecánico", "avisos ITV taller",
+    "estado reparación cliente", "presupuestos taller", "portal del cliente taller",
   ],
   alternates: { canonical: "/" },
   openGraph: {
-    title: "FIXA | Torre de control para talleres modernos",
-    description: "FIXA te dice qué coche está bloqueado, qué cliente llamar y qué presupuesto perseguir. Y tus clientes ven el estado de su coche en tiempo real.",
+    title: "FIXA | Tu taller deja de depender de tu memoria",
+    description: "FIXA te dice qué hacer hoy: coches parados, presupuestos sin respuesta, clientes que esperan y revisiones que puedes recuperar. Y tus clientes ven el estado de su coche en tiempo real.",
     url: "/",
     siteName: "FIXA",
     type: "website",

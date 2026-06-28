@@ -40,12 +40,12 @@ export function HeroSection() {
             </motion.div>
 
             <h1 className="text-4xl font-extrabold tracking-tight text-stone-900 md:text-5xl lg:text-[3.5rem] leading-[1.05]">
-              La torre de control
+              Tu taller deja de
               <br />
-              para talleres
+              depender de
               <br />
               <span className="hero-shimmer bg-gradient-to-r from-brand-500 via-amber-400 to-brand-600 bg-clip-text text-transparent bg-[length:200%_100%]">
-                modernos.
+                tu memoria.
               </span>
             </h1>
 
@@ -56,9 +56,10 @@ export function HeroSection() {
               transition={{ ...TRANSITION_DEFAULT, delay: 0.2 }}
               className="text-lg text-stone-500 mt-6 leading-relaxed max-w-[480px]"
             >
-              FIXA te dice qué coche está bloqueado, qué cliente debes llamar y
-              qué presupuesto no puedes dejar escapar. Y tus clientes ven el
-              estado de su coche en tiempo real, sin llamarte.
+              FIXA te avisa de los coches parados, los presupuestos sin
+              respuesta, los clientes que esperan noticias y las revisiones que
+              puedes recuperar. Además, tus clientes ven el estado de su coche
+              en tiempo real y dejan de llamar para preguntar.
             </motion.p>
 
             <motion.p
@@ -68,7 +69,7 @@ export function HeroSection() {
               transition={{ ...TRANSITION_DEFAULT, delay: 0.25 }}
               className="text-base font-bold text-stone-900 mt-4 max-w-[480px]"
             >
-              FIXA no es una pantalla más. Es quien te avisa.
+              No te muestra datos. Te dice qué hacer hoy.
             </motion.p>
 
             <motion.div
@@ -93,7 +94,7 @@ export function HeroSection() {
                   variant="outline"
                   className="rounded-full h-14 px-8 text-base font-semibold border-stone-200/80 hover:bg-stone-50 cursor-pointer"
                 >
-                  Ver demo
+                  Ver cómo funciona
                 </Button>
               </a>
             </motion.div>

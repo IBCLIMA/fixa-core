@@ -209,8 +209,8 @@ export async function getTorreDeControl(tallerId: string): Promise<TorreItem[]> 
           candidatos.push({
             key: `entrega:${o.id}`,
             categoria: "entrega",
-            titulo: `Avisa a ${corto}`,
-            motivo: "Su coche está listo y aún no lo sabe.",
+            titulo: `El coche de ${corto} ya puede recogerse`,
+            motivo: "Avísale antes de que llame. Esa plaza la necesitas para el siguiente.",
             entidadTipo: "orden",
             entidadId: o.id,
             urgencia: "alta",
@@ -241,11 +241,11 @@ export async function getTorreDeControl(tallerId: string): Promise<TorreItem[]> 
           candidatos.push({
             key: `operativa:${o.id}`,
             categoria: "operativa",
-            titulo: `Revisa OR-${o.numero}`,
+            titulo: "Este coche lleva demasiado tiempo parado",
             motivo:
               o.estado === "esperando_recambio"
-                ? `Lleva ${antiguedad(desde)} esperando recambio sin avanzar.`
-                : `Lleva ${antiguedad(desde)} en diagnóstico sin avanzar.`,
+                ? `OR-${o.numero}: ${antiguedad(desde)} esperando recambio. Coche parado = dinero parado.`
+                : `OR-${o.numero}: ${antiguedad(desde)} en diagnóstico. Coche parado = dinero parado.`,
             entidadTipo: "orden",
             entidadId: o.id,
             urgencia: "alta",
@@ -276,8 +276,8 @@ export async function getTorreDeControl(tallerId: string): Promise<TorreItem[]> 
         candidatos.push({
           key: `comunicacion:${o.id}`,
           categoria: "comunicacion",
-          titulo: `Avisa a ${corto}`,
-          motivo: `Su ${veh} lleva ${antiguedad(desde)} sin novedad visible.`,
+          titulo: `${corto} lleva ${antiguedad(desde)} sin saber de su coche`,
+          motivo: "Sin noticias, acaba llamando… o dejando una mala reseña.",
           entidadTipo: "orden",
           entidadId: o.id,
           urgencia: "media",
@@ -344,10 +344,10 @@ export async function getTorreDeControl(tallerId: string): Promise<TorreItem[]> 
       candidatos.push({
         key: `ventas:${p.id}`,
         categoria: "ventas",
-        titulo: `Persigue a ${corto}`,
-        motivo: `Presupuesto de ${formatMoney(importe)} sin respuesta hace ${antiguedad(
+        titulo: "Presupuesto caliente sin cerrar",
+        motivo: `${corto} lo recibió hace ${antiguedad(
           p.createdAt
-        )}.`,
+        )} y no ha contestado. Si no lo persigues hoy, se enfría.`,
         importe,
         entidadTipo: "presupuesto",
         entidadId: p.id,
@@ -413,10 +413,10 @@ export async function getTorreDeControl(tallerId: string): Promise<TorreItem[]> 
       candidatos.push({
         key: `recurrencia:${v.id}`,
         categoria: "recurrencia",
-        titulo: `Llama a ${corto}`,
-        motivo: `ITV caduca el ${fechaFmt} — ${formatMoney(
+        titulo: "Puedes recuperar una ITV este mes",
+        motivo: `A ${corto} le caduca la ITV el ${fechaFmt}. Si no le avisas tú, se la hace otro — y ahí se van ≈${formatMoney(
           PRE_ITV_ESTIMADO
-        )} recuperables si la haces tú.`,
+        )} estimados.`,
         importe: PRE_ITV_ESTIMADO,
         entidadTipo: "vehiculo",
         entidadId: v.id,
@@ -467,36 +467,36 @@ function construirGrupo(cat: TorreCategoria, count: number, sumImporte: number):
     { titulo: string; motivo: string; href: string; urgencia: "alta" | "media"; conImporte: boolean }
   > = {
     ventas: {
-      titulo: `${count} presupuestos sin respuesta`,
-      motivo: `${formatMoney(sumImporte)} esperando respuesta del cliente.`,
+      titulo: `${count} presupuestos calientes sin cerrar`,
+      motivo: `${formatMoney(sumImporte)} esperando respuesta. Cada día que pasa, se enfrían.`,
       href: "/presupuestos",
       urgencia: "alta",
       conImporte: true,
     },
     entrega: {
-      titulo: `${count} coches listos sin avisar`,
-      motivo: "Llevan más de 2h listos y los clientes aún no lo saben.",
+      titulo: `${count} coches listos para recoger`,
+      motivo: "Avisa a sus dueños antes de que llamen y libera plazas para los siguientes.",
       href: "/ordenes?filtro=listo",
       urgencia: "alta",
       conImporte: false,
     },
     operativa: {
-      titulo: `${count} órdenes sin avanzar`,
-      motivo: "Paradas demasiado tiempo. Reactívalas antes de que se quejen.",
+      titulo: `${count} coches llevan demasiado parados`,
+      motivo: "Coche parado = dinero parado. Reactívalos antes de que el cliente se queje.",
       href: "/ordenes",
       urgencia: "alta",
       conImporte: false,
     },
     comunicacion: {
-      titulo: `${count} clientes sin novedades`,
-      motivo: "Llevan +24h sin novedad visible de su coche.",
+      titulo: `${count} clientes sin saber de su coche`,
+      motivo: "Llevan +24h sin noticias. Acaban llamando… o dejando una mala reseña.",
       href: "/ordenes",
       urgencia: "media",
       conImporte: false,
     },
     recurrencia: {
-      titulo: `${count} ITV a punto de caducar`,
-      motivo: `${formatMoney(sumImporte)} recuperables si las haces tú.`,
+      titulo: `${count} ITV que puedes recuperar este mes`,
+      motivo: `Si no avisas tú, se las hacen en otro taller. ≈${formatMoney(sumImporte)} estimados.`,
       href: "/avisos",
       urgencia: "media",
       conImporte: true,

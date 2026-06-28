@@ -89,7 +89,11 @@ function TorreFila({ item }: { item: TorreItem }) {
       try {
         await gestionarAlerta({ alertaKey: item.key, estado });
         if (estado === "gestionada") setHecha(true);
-        toast.success(estado === "gestionada" ? "Marcado como hecho" : "Pospuesto a mañana");
+        toast.success(
+          estado === "gestionada"
+            ? "1 tarea resuelta. Bien."
+            : "Pospuesto para mañana. Te lo recuerdo."
+        );
         router.refresh();
       } catch {
         toast.error("No se pudo guardar. Inténtalo de nuevo.");
@@ -161,7 +165,7 @@ export function TorreDeControl({ items }: { items: TorreItem[] }) {
           </div>
           <div>
             <p className="text-sm font-bold text-emerald-900">Todo bajo control</p>
-            <p className="text-xs text-emerald-700">Nada urgente ahora mismo. Sigue a lo tuyo.</p>
+            <p className="text-xs text-emerald-700">No tienes presupuestos olvidados, coches parados ni clientes esperando noticias.</p>
           </div>
         </CardContent>
       </Card>
@@ -175,7 +179,7 @@ export function TorreDeControl({ items }: { items: TorreItem[] }) {
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-xs font-bold text-white tabular-nums">
             {items.length}
           </span>
-          Hoy requiere tu atención
+          Hoy no dejes escapar esto
         </CardTitle>
       </CardHeader>
       <CardContent>

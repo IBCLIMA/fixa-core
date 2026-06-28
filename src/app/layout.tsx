@@ -21,11 +21,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "FIXA | Torre de control para talleres modernos",
+    default: "FIXA | Tu taller deja de depender de tu memoria",
     template: "%s | FIXA",
   },
   description:
-    "Controla vehículos, presupuestos, avisos y clientes desde una plataforma que te dice qué necesita atención y mantiene informado al cliente en tiempo real.",
+    "FIXA te avisa de los coches parados, los presupuestos sin respuesta, los clientes que esperan noticias y las revisiones que puedes recuperar. Y tus clientes ven el estado de su coche en tiempo real, sin llamarte.",
   metadataBase: new URL(SITE_URL),
   manifest: "/manifest.json",
   appleWebApp: {
@@ -35,16 +35,16 @@ export const metadata: Metadata = {
   },
   // og:image y twitter:image se generan en src/app/opengraph-image.tsx (convención de archivo)
   openGraph: {
-    title: "FIXA | Torre de control para talleres modernos",
-    description: "FIXA te dice qué coche está bloqueado, qué cliente llamar y qué presupuesto perseguir. Y tus clientes ven el estado de su coche en tiempo real.",
+    title: "FIXA | Tu taller deja de depender de tu memoria",
+    description: "FIXA te dice qué hacer hoy: coches parados, presupuestos sin respuesta, clientes que esperan y revisiones que puedes recuperar. Y tus clientes ven el estado de su coche en tiempo real.",
     siteName: "FIXA",
     type: "website",
     locale: "es_ES",
   },
   twitter: {
     card: "summary_large_image",
-    title: "FIXA | Torre de control para talleres modernos",
-    description: "Sabes qué necesita atención y tus clientes ven su coche en tiempo real. Desde 29€/mes. 14 días gratis.",
+    title: "FIXA | Tu taller deja de depender de tu memoria",
+    description: "FIXA te avisa de lo que cuesta dinero y tus clientes ven su coche en tiempo real. Desde 29€/mes. 14 días gratis.",
   },
   robots: {
     index: true,

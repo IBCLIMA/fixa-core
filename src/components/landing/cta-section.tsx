@@ -17,7 +17,7 @@ export function CtaSection() {
 
       <div className="mx-auto max-w-6xl px-6 py-14 lg:py-20 text-center relative z-10">
         <BlurText
-          text="Mañana abres el taller. ¿A ciegas o con la torre de control?"
+          text="Mañana abres el taller. ¿De memoria o con FIXA avisándote?"
           className="text-4xl font-extrabold tracking-tight text-white md:text-6xl leading-[1.1] justify-center"
           delay={40}
           animateBy="words"
