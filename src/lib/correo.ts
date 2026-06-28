@@ -192,6 +192,35 @@ export async function leerMensaje(uid: number): Promise<MensajeCompleto | null> 
   }
 }
 
+// "-- " (guion-guion-espacio) es el delimitador estándar de firma (RFC 3676): muchos
+// clientes lo reconocen y la ocultan al responder, para no acumularla en el hilo.
+//
+// Correo NUEVO → firma profesional completa + aviso legal y de protección de datos (RGPD).
+const FIRMA_NUEVO = [
+  "",
+  "-- ",
+  "Sergi Ibañez",
+  "FIXA · fixataller.es",
+  "hola@fixataller.es · 630 726 364",
+  "",
+  "──────────",
+  "AVISO DE CONFIDENCIALIDAD: Este mensaje y sus archivos adjuntos son confidenciales y van dirigidos únicamente a su destinatario. Si lo ha recibido por error, le rogamos lo elimine y avise al remitente; queda prohibida su copia o difusión.",
+  "PROTECCIÓN DE DATOS (RGPD): Tratamos tus datos para atender tu consulta y gestionar nuestra relación. Puedes ejercer tus derechos de acceso, rectificación, supresión y oposición escribiendo a hola@fixataller.es. Más información en fixataller.es/privacidad.",
+].join("\n");
+
+// RESPUESTA → firma corta, solo contacto (la parte legal ya viajó en el primer correo).
+const FIRMA_RESPUESTA = [
+  "",
+  "-- ",
+  "Sergi Ibañez · FIXA",
+  "hola@fixataller.es · 630 726 364",
+].join("\n");
+
+/** Añade la firma indicada al final del cuerpo (sin espacios sobrantes). */
+function conFirma(text: string, firma: string): string {
+  return `${text.replace(/\s+$/, "")}\n${firma}`;
+}
+
 export type ResponderParams = {
   to: string;
   subject: string;
@@ -234,7 +263,7 @@ export async function responder({
     from: FROM,
     to,
     subject: asunto,
-    text,
+    text: conFirma(text, FIRMA_RESPUESTA),
     inReplyTo: inReplyTo ?? undefined,
     references: references ?? inReplyTo ?? undefined,
   });
@@ -281,7 +310,7 @@ export async function enviar({
     from: FROM,
     to,
     subject,
-    text,
+    text: conFirma(text, FIRMA_NUEVO),
   });
 
   return { messageId: info.messageId };
