@@ -59,7 +59,7 @@ export default function DemoPage() {
 
       <div className="mx-auto max-w-5xl px-6 py-20">
         <AnimatedSection className="text-center mb-16">
-          <span className="inline-flex items-center gap-2 rounded-full border border-orange-200/80 bg-orange-50/80 px-4 py-1.5 text-xs font-semibold text-orange-700 mb-4">
+          <span className="inline-flex items-center gap-2 rounded-full border border-brand-200/80 bg-brand-50/80 px-4 py-1.5 text-xs font-semibold text-brand-700 mb-4">
             <Play className="h-3 w-3" /> Demo
           </span>
           <h1 className="text-4xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
@@ -81,7 +81,7 @@ export default function DemoPage() {
                 {/* Texto */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white text-sm font-extrabold">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white text-sm font-extrabold">
                       {i + 1}
                     </span>
                     <h2 className="text-xl font-extrabold text-stone-900">{paso.titulo}</h2>
@@ -120,7 +120,7 @@ export default function DemoPage() {
                 "Averías ocultas: foto, precio, y el cliente aprueba desde el sofá",
               ].map((item) => (
                 <div key={item} className="flex items-start gap-2.5 text-sm">
-                  <CheckCircle2 className="h-4 w-4 text-orange-400 mt-0.5 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-brand-400 mt-0.5 shrink-0" />
                   <span className="text-stone-300">{item}</span>
                 </div>
               ))}
@@ -136,7 +136,7 @@ export default function DemoPage() {
           <Link href="/sign-up">
             <Button
               size="lg"
-              className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-14 px-10 text-base shadow-2xl shadow-orange-500/25 cursor-pointer group"
+              className="rounded-full bg-brand-500 text-white hover:bg-brand-400 font-bold h-14 px-10 text-base shadow-2xl shadow-brand cursor-pointer group"
             >
               Empezar 14 días gratis — sin tarjeta
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />

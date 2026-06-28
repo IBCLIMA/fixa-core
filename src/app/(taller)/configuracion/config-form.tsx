@@ -107,7 +107,7 @@ export function ConfigForm({ taller }: { taller: Taller }) {
               <p className="text-xs font-bold text-stone-500">Logo del taller</p>
               <p className="text-[10px] text-stone-400">Aparece en presupuestos, ORs y documentos que envías a clientes.</p>
               <p className="text-[10px] text-stone-300">Recomendado: PNG con fondo transparente, mín. 200x200px. Formatos: PNG, JPG, WebP, SVG. Máx 2MB.</p>
-              <label className="inline-flex items-center gap-1 text-xs font-medium text-orange-600 hover:text-orange-700 cursor-pointer">
+              <label className="inline-flex items-center gap-1 text-xs font-medium text-brand-600 hover:text-brand-700 cursor-pointer">
                 {uploadingLogo ? "Subiendo..." : logoUrl ? "Cambiar" : "Subir logo"}
                 <input
                   type="file"
@@ -188,7 +188,7 @@ export function ConfigForm({ taller }: { taller: Taller }) {
                   type="checkbox"
                   checked={sabados}
                   onChange={(e) => setSabados(e.target.checked)}
-                  className="accent-orange-500 h-5 w-5"
+                  className="accent-brand-500 h-5 w-5"
                 />
                 <span className="text-sm font-medium">Abrimos los sábados</span>
               </label>
@@ -216,7 +216,7 @@ export function ConfigForm({ taller }: { taller: Taller }) {
                 type="checkbox"
                 checked={recordatorioCitas}
                 onChange={(e) => setRecordatorioCitas(e.target.checked)}
-                className="accent-orange-500 h-5 w-5 mt-0.5 shrink-0"
+                className="accent-brand-500 h-5 w-5 mt-0.5 shrink-0"
               />
               <div>
                 <span className="text-sm font-bold">Avisarme cada tarde de las citas de mañana</span>
@@ -241,7 +241,7 @@ export function ConfigForm({ taller }: { taller: Taller }) {
                   type="checkbox"
                   checked={ramas.includes(rama.value)}
                   onChange={() => toggleRama(rama.value)}
-                  className="accent-orange-500 h-5 w-5"
+                  className="accent-brand-500 h-5 w-5"
                 />
                 <span className="text-sm font-medium">{rama.label}</span>
               </label>
@@ -263,7 +263,7 @@ export function ConfigForm({ taller }: { taller: Taller }) {
                 <a
                   href="https://support.google.com/business/answer/7035772"
                   target="_blank"
-                  className="text-[11px] font-medium text-orange-600 hover:underline"
+                  className="text-[11px] font-medium text-brand-600 hover:underline"
                 >
                   ¿Cómo lo consigo?
                 </a>

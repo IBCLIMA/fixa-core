@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Camera, Plus, X, Image as ImageIcon, Video } from "lucide-react";
+import { Plus, X, Image as ImageIcon, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { MediaGallery } from "@/components/media-lightbox";
@@ -57,22 +57,9 @@ export function FotosOrden({ ordenId, fotos: initialFotos }: { ordenId: string; 
     }
   }
 
-  const mediaCount = fotos.length;
-  const videoCount = fotos.filter((f) => f.esVideo).length;
-  const photoCount = mediaCount - videoCount;
-
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-          <Camera className="h-3.5 w-3.5" />
-          Fotos y vídeos ({mediaCount})
-          {videoCount > 0 && (
-            <span className="text-muted-foreground font-normal normal-case">
-              {photoCount} foto{photoCount !== 1 ? "s" : ""}, {videoCount} video{videoCount !== 1 ? "s" : ""}
-            </span>
-          )}
-        </p>
+      <div className="flex items-center justify-end">
         <div className="flex gap-1.5">
           <Button
             size="sm"

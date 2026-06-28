@@ -157,7 +157,7 @@ export function MediaGallery({ items }: { items: MediaItem[] }) {
             key={m.id}
             type="button"
             onClick={() => setOpenIndex(i)}
-            className="relative aspect-square rounded-xl overflow-hidden bg-muted cursor-pointer group focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+            className="relative aspect-square rounded-xl overflow-hidden bg-muted cursor-pointer group focus:outline-none focus:ring-2 focus:ring-brand-500/50"
             aria-label={m.esVideo ? "Ver vídeo" : "Ver foto"}
           >
             {m.esVideo ? (

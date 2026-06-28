@@ -90,8 +90,8 @@ export function CookieBanner() {
             {/* Header */}
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50 shrink-0">
-                  <Cookie className="h-5 w-5 text-orange-600" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 shrink-0">
+                  <Cookie className="h-5 w-5 text-brand-600" />
                 </div>
                 <div>
                   <h3 className="font-bold text-stone-900 text-sm">Cookies</h3>
@@ -106,12 +106,12 @@ export function CookieBanner() {
               Puedes aceptar todas, rechazar las opcionales, o{" "}
               <button
                 onClick={() => setShowDetails(!showDetails)}
-                className="text-orange-600 font-medium underline underline-offset-2 cursor-pointer"
+                className="text-brand-600 font-medium underline underline-offset-2 cursor-pointer"
               >
                 personalizar tu elección
               </button>
               . Más info en nuestra{" "}
-              <Link href="/cookies" className="text-orange-600 font-medium underline underline-offset-2">
+              <Link href="/cookies" className="text-brand-600 font-medium underline underline-offset-2">
                 política de cookies
               </Link>
               .
@@ -134,7 +134,7 @@ export function CookieBanner() {
                         <span className="text-xs font-bold text-stone-900">Esenciales</span>
                         <p className="text-[10px] text-stone-400">Necesarias para el funcionamiento básico</p>
                       </div>
-                      <div className="h-5 w-9 rounded-full bg-orange-500 flex items-center justify-end px-0.5 cursor-not-allowed">
+                      <div className="h-5 w-9 rounded-full bg-brand-500 flex items-center justify-end px-0.5 cursor-not-allowed">
                         <div className="h-4 w-4 rounded-full bg-white" />
                       </div>
                     </label>
@@ -148,7 +148,7 @@ export function CookieBanner() {
                       <button
                         onClick={() => setAnalytics(!analytics)}
                         className={`h-5 w-9 rounded-full flex items-center px-0.5 transition-colors cursor-pointer ${
-                          analytics ? "bg-orange-500 justify-end" : "bg-stone-200 justify-start"
+                          analytics ? "bg-brand-500 justify-end" : "bg-stone-200 justify-start"
                         }`}
                       >
                         <div className="h-4 w-4 rounded-full bg-white shadow-sm" />
@@ -164,7 +164,7 @@ export function CookieBanner() {
                       <button
                         onClick={() => setMarketing(!marketing)}
                         className={`h-5 w-9 rounded-full flex items-center px-0.5 transition-colors cursor-pointer ${
-                          marketing ? "bg-orange-500 justify-end" : "bg-stone-200 justify-start"
+                          marketing ? "bg-brand-500 justify-end" : "bg-stone-200 justify-start"
                         }`}
                       >
                         <div className="h-4 w-4 rounded-full bg-white shadow-sm" />
@@ -194,7 +194,7 @@ export function CookieBanner() {
               ) : (
                 <Button
                   onClick={acceptAll}
-                  className="flex-1 rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs h-9 font-semibold cursor-pointer"
+                  className="flex-1 rounded-full bg-brand-500 text-white hover:bg-brand-600 text-xs h-9 font-semibold cursor-pointer"
                 >
                   Aceptar todas
                 </Button>

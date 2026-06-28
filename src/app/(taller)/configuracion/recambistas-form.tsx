@@ -100,8 +100,8 @@ export function RecambistasForm({ recambistas }: { recambistas: Recambista[] }) 
         )}
         {recambistas.map((r) => (
           <div key={r.id} className="flex items-center gap-3 rounded-xl bg-muted/50 p-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50">
-              <Phone className="h-4 w-4 text-orange-600" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50">
+              <Phone className="h-4 w-4 text-brand-600" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold truncate">{r.nombre}</p>
@@ -120,7 +120,7 @@ export function RecambistasForm({ recambistas }: { recambistas: Recambista[] }) 
 
         {/* Formulario */}
         {showForm && (
-          <div className="rounded-xl border border-orange-200 bg-orange-50/30 p-4 space-y-3">
+          <div className="rounded-xl border border-brand-200 bg-brand-50/30 p-4 space-y-3">
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
                 <Label className="text-xs font-bold">Nombre *</Label>

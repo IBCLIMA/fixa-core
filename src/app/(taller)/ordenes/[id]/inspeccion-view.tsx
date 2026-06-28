@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -138,14 +137,7 @@ export function InspeccionView({
   }
 
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base flex items-center gap-2">
-          <ClipboardCheck className="h-4 w-4 text-muted-foreground" />
-          Inspección del vehículo
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+    <>
         {!hasInspection ? (
           <div className="text-center py-6">
             <ClipboardCheck className="h-10 w-10 text-muted-foreground/20 mx-auto mb-3" />
@@ -253,8 +245,7 @@ export function InspeccionView({
             ))}
           </div>
         )}
-      </CardContent>
-    </Card>
+    </>
   );
 }
 

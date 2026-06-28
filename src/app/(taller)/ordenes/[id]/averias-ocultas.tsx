@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -89,18 +88,8 @@ export function AveriasOcultas({
   const rechazadas = averias.filter((a) => a.estado === "rechazada");
 
   return (
-    <Card className="no-print border-amber-200">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-base flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-amber-600" />
-            Averías ocultas
-            {pendientes.length > 0 && (
-              <Badge className="bg-amber-100 text-amber-800 text-[10px]">
-                {pendientes.length} pendiente{pendientes.length > 1 ? "s" : ""}
-              </Badge>
-            )}
-          </CardTitle>
+    <div className="space-y-3">
+        <div className="flex items-center justify-end gap-2">
           <Button size="sm" variant="outline" className="rounded-full text-amber-700 border-amber-300 hover:bg-amber-50" onClick={() => setOpen(true)}>
             <Plus className="mr-1 h-3.5 w-3.5" />
             Registrar avería
@@ -151,10 +140,9 @@ export function AveriasOcultas({
             </DialogContent>
           </Dialog>
         </div>
-      </CardHeader>
 
       {averias.length > 0 && (
-        <CardContent className="space-y-2">
+        <div className="space-y-2">
           {averias.map((averia) => (
             <div
               key={averia.id}
@@ -226,16 +214,14 @@ export function AveriasOcultas({
               )}
             </div>
           ))}
-        </CardContent>
+        </div>
       )}
 
       {averias.length === 0 && (
-        <CardContent>
-          <p className="text-sm text-muted-foreground text-center py-2">
-            No se han encontrado averías adicionales
-          </p>
-        </CardContent>
+        <p className="text-sm text-muted-foreground text-center py-2">
+          No se han encontrado averías adicionales
+        </p>
       )}
-    </Card>
+    </div>
   );
 }

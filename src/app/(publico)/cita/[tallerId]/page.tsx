@@ -17,6 +17,7 @@ export default async function CitaPublicaPage({ params }: { params: Promise<{ ta
     .select({
       id: talleres.id,
       nombre: talleres.nombre,
+      telefono: talleres.telefono,
       trabajaSabados: talleres.trabajaSabados,
       horarioApertura: talleres.horarioApertura,
       horarioCierre: talleres.horarioCierre,
@@ -97,6 +98,8 @@ export default async function CitaPublicaPage({ params }: { params: Promise<{ ta
 
         <BookingForm
           tallerId={t.id}
+          tallerNombre={t.nombre}
+          tallerTelefono={t.telefono}
           trabajaSabados={t.trabajaSabados ?? false}
           horarioApertura={t.horarioApertura ?? "08:00"}
           horarioCierre={t.horarioCierre ?? "18:00"}

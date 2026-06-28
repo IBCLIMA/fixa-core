@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { AlertTriangle, Check, X, Phone, Car, Wrench, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, Check, X, Phone, Car, Wrench, CheckCircle2, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { responderAveria } from "@/app/(taller)/actions/averias-ocultas";
 import { formatMoney } from "@/lib/format";
+import { formatWhatsAppUrl } from "@/lib/utils";
 
 export function AprobarAveriaClient({
   token,
@@ -45,30 +46,24 @@ export function AprobarAveriaClient({
   }
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-4 py-12"
-      style={{
-        background:
-          "radial-gradient(ellipse 80% 60% at 50% 0%, #fff7ed 0%, #faf9f7 40%, #f5f3f0 100%)",
-      }}
-    >
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-b from-brand-50 via-background to-muted">
       <div className="max-w-md w-full space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
           <FixaLogo size="md" variant="icon" />
-          <h1 className="text-xl font-extrabold tracking-tight text-stone-900">
+          <h1 className="text-xl font-extrabold tracking-tight text-foreground">
             {taller.nombre}
           </h1>
-          <p className="text-sm text-stone-500">
+          <p className="text-sm text-muted-foreground">
             Orden de trabajo OR-{orden.numero}
           </p>
         </div>
 
         {/* Vehicle info */}
-        <div className="flex items-center justify-center gap-2 text-sm text-stone-600">
+        <div className="flex items-center justify-center gap-2 text-sm text-foreground">
           <Car className="h-4 w-4" />
           <span className="font-bold tracking-wider">{vehiculo.matricula}</span>
-          <span className="text-stone-400">
+          <span className="text-muted-foreground">
             {[vehiculo.marca, vehiculo.modelo].filter(Boolean).join(" ")}
           </span>
         </div>
@@ -92,18 +87,18 @@ export function AprobarAveriaClient({
                 )}
               </div>
               <div>
-                <h2 className="text-lg font-bold text-stone-900">
+                <h2 className="text-lg font-bold text-foreground">
                   {resultado === "aprobada"
                     ? "Reparación aprobada"
                     : "Reparación rechazada"}
                 </h2>
-                <p className="text-sm text-stone-500 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   {resultado === "aprobada"
                     ? "El taller procederá con la reparación adicional."
                     : "El taller no realizará esta reparación adicional."}
                 </p>
               </div>
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-muted-foreground">
                 Tu respuesta ha sido registrada. {taller.nombre} ha sido notificado.
               </p>
             </CardContent>
@@ -118,22 +113,22 @@ export function AprobarAveriaClient({
                   <AlertTriangle className="h-5 w-5 text-amber-600" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-stone-900">
-                    Avería adicional encontrada
+                  <h2 className="font-bold text-foreground">
+                    Hemos encontrado algo más
                   </h2>
-                  <p className="text-xs text-stone-500 mt-0.5">
-                    Durante la revisión de tu vehículo, hemos detectado un problema adicional que requiere tu aprobación.
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Mientras revisábamos tu vehículo hemos detectado un problema adicional. Antes de tocarlo, necesitamos tu visto bueno.
                   </p>
                 </div>
               </div>
 
               {/* Description */}
-              <div className="rounded-xl bg-stone-50 p-4 space-y-2">
-                <div className="flex items-center gap-2 text-xs font-bold text-stone-500 uppercase tracking-wider">
+              <div className="rounded-xl bg-muted p-4 space-y-2">
+                <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
                   <Wrench className="h-3.5 w-3.5" />
                   Descripción
                 </div>
-                <p className="text-sm text-stone-800 font-medium leading-relaxed">
+                <p className="text-sm text-foreground font-medium leading-relaxed">
                   {averia.descripcion}
                 </p>
               </div>
@@ -155,7 +150,7 @@ export function AprobarAveriaClient({
                   <p className="text-xs text-amber-700 font-bold uppercase tracking-wider">
                     Coste estimado
                   </p>
-                  <p className="text-2xl font-extrabold text-stone-900 mt-1">
+                  <p className="text-2xl font-extrabold text-foreground mt-1">
                     {formatMoney(Number(averia.importeEstimado))}
                   </p>
                   <p className="text-[10px] text-amber-600 mt-1">IVA no incluido</p>
@@ -163,7 +158,7 @@ export function AprobarAveriaClient({
               )}
 
               {/* Legal note */}
-              <p className="text-[11px] text-stone-400 leading-snug">
+              <p className="text-[11px] text-muted-foreground leading-snug">
                 Según el RD 1457/1986, el taller debe informarte de averías encontradas durante la reparación y obtener tu conformidad antes de proceder.
               </p>
 
@@ -193,19 +188,29 @@ export function AprobarAveriaClient({
 
         {/* Contact */}
         {taller.telefono && (
-          <div className="text-center">
-            <a
-              href={`tel:${taller.telefono}`}
-              className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-stone-700 transition-colors"
-            >
-              <Phone className="h-4 w-4" />
-              ¿Dudas? Llama al {taller.telefono}
-            </a>
+          <div className="space-y-2">
+            <p className="text-center text-xs text-muted-foreground">¿Tienes dudas antes de decidir?</p>
+            <div className="flex gap-2">
+              <a
+                href={`tel:${taller.telefono}`}
+                className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+              >
+                <Phone className="h-4 w-4" /> Llamar
+              </a>
+              <a
+                href={formatWhatsAppUrl(taller.telefono, `Hola, tengo una duda sobre la avería de la orden OR-${orden.numero}`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-500 text-sm font-semibold text-white transition-colors hover:bg-emerald-600"
+              >
+                <MessageSquare className="h-4 w-4" /> WhatsApp
+              </a>
+            </div>
           </div>
         )}
 
         {/* Footer */}
-        <p className="text-center text-[10px] text-stone-300">
+        <p className="text-center text-[10px] text-muted-foreground/60">
           Gestionado con FIXA
         </p>
       </div>

@@ -201,15 +201,15 @@ export default function BrandPage() {
         </div>
 
         {/* ── Variantes de B: La Tuerca a fondo ── */}
-        <div className="rounded-2xl bg-orange-50 border-2 border-orange-200 p-6">
-          <h2 className="text-xl font-extrabold text-orange-900">Variantes de B — La Tuerca</h2>
-          <p className="text-sm text-orange-700 mt-1">Seis formas de la misma idea. Fíjate en los 16px y en cuál querrías ver cada mañana en tu móvil.</p>
+        <div className="rounded-2xl bg-brand-50 border-2 border-brand-200 p-6">
+          <h2 className="text-xl font-extrabold text-brand-900">Variantes de B — La Tuerca</h2>
+          <p className="text-sm text-brand-700 mt-1">Seis formas de la misma idea. Fíjate en los 16px y en cuál querrías ver cada mañana en tu móvil.</p>
         </div>
 
         {variantesB.map(({ id, nombre, desc, Logo }) => (
           <div key={id} className="rounded-2xl bg-white border border-stone-200 p-6">
             <div className="flex items-baseline gap-3 mb-1">
-              <span className="text-2xl font-extrabold text-orange-600">{id}</span>
+              <span className="text-2xl font-extrabold text-brand-600">{id}</span>
               <h2 className="text-lg font-bold">{nombre}</h2>
             </div>
             <p className="text-sm text-stone-500 mb-6">{desc}</p>
@@ -244,7 +244,7 @@ export default function BrandPage() {
         {candidatos.map(({ id, nombre, desc, Logo }) => (
           <div key={id} className="rounded-2xl bg-white border border-stone-200 p-6">
             <div className="flex items-baseline gap-3 mb-1">
-              <span className="text-2xl font-extrabold text-orange-600">{id}</span>
+              <span className="text-2xl font-extrabold text-brand-600">{id}</span>
               <h2 className="text-lg font-bold">{nombre}</h2>
             </div>
             <p className="text-sm text-stone-500 mb-6">{desc}</p>

@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Car, Clock, CheckCircle2, CalendarCheck, FileText, AlertTriangle, Receipt, ArrowRight } from "lucide-react";
+import { Car, Clock, CheckCircle2, CalendarCheck, FileText, AlertTriangle, Receipt, ArrowRight, Phone, MessageSquare } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
+import { formatWhatsAppUrl } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getDb } from "@/db";
@@ -14,6 +15,15 @@ export const metadata = { robots: { index: false, follow: false } };
 
 
 const estadoSteps = ["recibido", "diagnostico", "presupuestado", "aprobado", "en_reparacion", "listo", "entregado"];
+// Etiquetas cortas del stepper (para que quepan en móvil bajo cada punto).
+const stepLabels: Record<string, string> = {
+  recibido: "Recibido",
+  diagnostico: "Diagnóstico",
+  presupuestado: "Presupuesto",
+  aprobado: "Aprobado",
+  en_reparacion: "Reparación",
+  listo: "Listo",
+};
 
 export default async function PortalClientePage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
@@ -115,17 +125,17 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
         {/* ── Acciones pendientes (hub) ── */}
         {presupuestoPendiente?.tokenPublico && (
           <Link href={`/presupuesto/${presupuestoPendiente.tokenPublico}`} className="block">
-            <Card className="border-orange-300 bg-gradient-to-br from-orange-50 to-amber-50/50 hover:border-orange-400 transition-colors shadow-sm">
+            <Card className="border-brand-300 bg-gradient-to-br from-brand-50 to-amber-50/50 hover:border-brand-400 transition-colors shadow-brand">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-500 shadow-sm shadow-orange-500/30">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 shadow-brand">
                     <FileText className="h-5 w-5 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-extrabold text-orange-900">Tienes un presupuesto pendiente</p>
-                    <p className="text-xs text-orange-700 mt-0.5">Revísalo y acéptalo online en un minuto</p>
+                    <p className="text-sm font-extrabold text-brand-900">Tienes un presupuesto pendiente</p>
+                    <p className="text-xs text-brand-700 mt-0.5">Revísalo y acéptalo online en un minuto</p>
                   </div>
-                  <ArrowRight className="h-5 w-5 text-orange-500 shrink-0" />
+                  <ArrowRight className="h-5 w-5 text-brand-500 shrink-0" />
                 </div>
               </CardContent>
             </Card>
@@ -191,19 +201,23 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
           </Link>
         )}
 
-        {/* Progreso */}
+        {/* Progreso — con etiquetas para que el cliente entienda en qué punto está */}
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              {estadoSteps.slice(0, -1).map((step, i) => {
+            <div className="flex items-start justify-between">
+              {estadoSteps.slice(0, -1).map((step, i, arr) => {
                 const isActive = i <= currentStepIndex;
                 const isCurrent = step === o.estado;
                 return (
-                  <div key={step} className="flex flex-col items-center gap-1 flex-1">
-                    <div className={`h-3 w-3 rounded-full ${isActive ? (isCurrent ? "bg-brand ring-4 ring-brand/20" : "bg-brand") : "bg-muted"}`} />
-                    {i < estadoSteps.length - 2 && (
-                      <div className={`h-0.5 w-full ${i < currentStepIndex ? "bg-brand" : "bg-muted"}`} />
-                    )}
+                  <div key={step} className="flex flex-1 flex-col items-center gap-1.5">
+                    <div className="flex w-full items-center">
+                      <div className={`h-0.5 flex-1 ${i === 0 ? "opacity-0" : i <= currentStepIndex ? "bg-brand" : "bg-muted"}`} />
+                      <div className={`h-3 w-3 shrink-0 rounded-full ${isActive ? (isCurrent ? "bg-brand ring-4 ring-brand/20" : "bg-brand") : "bg-muted"}`} />
+                      <div className={`h-0.5 flex-1 ${i === arr.length - 1 ? "opacity-0" : i < currentStepIndex ? "bg-brand" : "bg-muted"}`} />
+                    </div>
+                    <span className={`text-center text-[9px] leading-tight ${isCurrent ? "font-bold text-brand" : isActive ? "text-foreground" : "text-muted-foreground"}`}>
+                      {stepLabels[step]}
+                    </span>
                   </div>
                 );
               })}
@@ -256,14 +270,27 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
           </Card>
         )}
 
-        {/* Contacto taller */}
+        {/* Contacto taller — un toque para llamar o escribir por WhatsApp */}
         <Card>
-          <CardContent className="p-4 text-center space-y-2">
+          <CardContent className="p-4 text-center space-y-3">
             <p className="text-sm font-bold">{o.tallerNombre}</p>
             {o.tallerTelefono && (
-              <a href={`tel:${o.tallerTelefono}`} className="text-sm text-brand font-semibold hover:underline">
-                {o.tallerTelefono}
-              </a>
+              <div className="flex gap-2">
+                <a
+                  href={`tel:${o.tallerTelefono}`}
+                  className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card text-sm font-semibold transition-colors hover:bg-muted"
+                >
+                  <Phone className="h-4 w-4" /> Llamar
+                </a>
+                <a
+                  href={formatWhatsAppUrl(o.tallerTelefono)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-500 text-sm font-semibold text-white transition-colors hover:bg-emerald-600"
+                >
+                  <MessageSquare className="h-4 w-4" /> WhatsApp
+                </a>
+              </div>
             )}
             <p className="text-xs text-muted-foreground">Powered by FIXA</p>
           </CardContent>
@@ -273,10 +300,10 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
         <div className="text-center">
           <Link
             href={`/cita/${o.tallerId}`}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-orange-600 hover:text-orange-500 transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-brand-600 hover:text-brand-500 transition-colors"
           >
             <CalendarCheck className="h-4 w-4" />
-            Necesitas otra cita? Solicita online
+            ¿Necesitas otra cita? Solicita online
           </Link>
         </div>
       </main>

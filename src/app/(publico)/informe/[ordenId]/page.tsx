@@ -14,7 +14,8 @@ import {
   inspeccionesOrden,
 } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { Car, Wrench, Camera, AlertTriangle, CheckCircle2, AlertCircle, Info } from "lucide-react";
+import { Car, Wrench, Camera, AlertTriangle, CheckCircle2, AlertCircle, Info, Phone, MessageSquare } from "lucide-react";
+import { formatWhatsAppUrl } from "@/lib/utils";
 
 // Página privada de cliente (acceso por token): no indexable
 export const metadata = { robots: { index: false, follow: false } };
@@ -31,7 +32,7 @@ const estadoInspeccionColor: Record<string, string> = {
   bien: "bg-emerald-100 text-emerald-800",
   atencion: "bg-amber-100 text-amber-800",
   urgente: "bg-red-100 text-red-800",
-  no_aplica: "bg-gray-100 text-gray-600",
+  no_aplica: "bg-muted text-muted-foreground",
 };
 
 const estadoInspeccionIcon: Record<string, typeof CheckCircle2> = {
@@ -192,8 +193,8 @@ export default async function InformePublicoPage({
           <Card>
             <CardContent className="p-5">
               <div className="flex items-center gap-3 mb-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
-                  <Wrench className="h-5 w-5 text-orange-600" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50">
+                  <Wrench className="h-5 w-5 text-brand-600" />
                 </div>
                 <p className="text-xs font-bold text-muted-foreground uppercase">
                   Trabajos realizados
@@ -365,6 +366,29 @@ export default async function InformePublicoPage({
             </p>
           </CardContent>
         </Card>
+
+        {/* Contact — un toque para llamar o escribir por WhatsApp */}
+        {orden.tallerTelefono && (
+          <div className="space-y-2 print:hidden">
+            <p className="text-center text-sm font-semibold">{orden.tallerNombre}</p>
+            <div className="flex gap-2 max-w-sm mx-auto">
+              <a
+                href={`tel:${orden.tallerTelefono}`}
+                className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card text-sm font-semibold transition-colors hover:bg-muted"
+              >
+                <Phone className="h-4 w-4" /> Llamar
+              </a>
+              <a
+                href={formatWhatsAppUrl(orden.tallerTelefono, `Hola, tengo una consulta sobre el informe de mi ${[orden.marca, orden.modelo].filter(Boolean).join(" ")}`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-500 text-sm font-semibold text-white transition-colors hover:bg-emerald-600"
+              >
+                <MessageSquare className="h-4 w-4" /> WhatsApp
+              </a>
+            </div>
+          </div>
+        )}
 
         {/* Footer */}
         <div className="text-center space-y-2 pt-4 print:pt-2">

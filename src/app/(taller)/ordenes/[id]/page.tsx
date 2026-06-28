@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Car, Clock, Hash, FileText, Printer, Send, AlertTriangle, CircleAlert } from "lucide-react";
+import { ArrowLeft, Car, Clock, Hash, FileText, Printer, Send, AlertTriangle, CircleAlert, ClipboardList, Shield, Camera, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +30,7 @@ import { EntregarDialog } from "./entregar-dialog";
 import { ItvAlert } from "./itv-alert";
 import { PedirRecambiosBtn } from "./pedir-recambios-btn";
 import { BarraAccionOrden } from "./barra-accion";
+import { SeccionColapsable } from "./seccion-colapsable";
 import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { formatMoney } from "@/lib/format";
@@ -100,6 +101,31 @@ export default async function OrdenDetallePage({
     return sum + base * (iva / 100);
   }, 0);
   const totalFinal = totalBase + totalIva;
+
+  // ── Estado por defecto de las secciones colapsables (abrir solo si hay datos
+  // relevantes, para que lo importante quede a la vista sin alargar el scroll).
+  const tipos = orden.tipoIntervencion || [];
+  const esChapaPintura = tipos.includes("chapa") || tipos.includes("pintura");
+  const tieneDatosLegales = !!(
+    orden.fechaEstimada ||
+    orden.observacionesEntrada ||
+    orden.renunciaPresupuesto ||
+    orden.renunciaPiezas
+  );
+  const tieneDatosSeguro = !!(
+    orden.aseguradora ||
+    orden.numPoliza ||
+    orden.numSiniestro ||
+    orden.numPeritaje ||
+    orden.nombrePerito
+  );
+  const fotos = orden.fotos || [];
+  const averias = orden.averias || [];
+  const averiasPendientes = averias.filter((a: any) => a.estado === "pendiente").length;
+  const inspeccionActiva = inspecciones.filter((i: any) => i.estado !== "no_aplica").length;
+  const inspeccionAlertas = inspecciones.filter(
+    (i: any) => i.estado === "atencion" || i.estado === "urgente"
+  ).length;
 
   // URL de WhatsApp para avisar del estado al cliente (reutilizada en la barra
   // sticky y en el bloque de cambio de estado — se construye una sola vez).
@@ -372,47 +398,103 @@ export default async function OrdenDetallePage({
         </CardContent>
       </Card>
 
-      {/* ── Secciones secundarias: datos legales, seguro, fotos, inspección, averías ── */}
+      {/* ── Secciones secundarias: colapsadas por defecto para acortar el scroll.
+           Se abren solas cuando ya tienen datos relevantes. ── */}
 
       {/* Datos legales (RD 1457/1986) */}
-      <DatosLegales
-        ordenId={orden.id}
-        fechaEstimada={orden.fechaEstimada}
-        observacionesEntrada={orden.observacionesEntrada}
-        renunciaPresupuesto={orden.renunciaPresupuesto}
-        renunciaPiezas={orden.renunciaPiezas}
-      />
+      <SeccionColapsable
+        title="Datos legales"
+        icon={ClipboardList}
+        defaultOpen={tieneDatosLegales}
+      >
+        <DatosLegales
+          ordenId={orden.id}
+          fechaEstimada={orden.fechaEstimada}
+          observacionesEntrada={orden.observacionesEntrada}
+          renunciaPresupuesto={orden.renunciaPresupuesto}
+          renunciaPiezas={orden.renunciaPiezas}
+        />
+      </SeccionColapsable>
 
-      {/* Datos del seguro (chapa/pintura) */}
-      <SeguroChapa
-        ordenId={orden.id}
-        tipoIntervencion={orden.tipoIntervencion}
-        aseguradora={orden.aseguradora}
-        numPoliza={orden.numPoliza}
-        numSiniestro={orden.numSiniestro}
-        numPeritaje={orden.numPeritaje}
-        nombrePerito={orden.nombrePerito}
-      />
+      {/* Datos del seguro (chapa/pintura) — solo cuando aplica */}
+      {esChapaPintura && (
+        <SeccionColapsable
+          title="Datos del seguro"
+          icon={Shield}
+          defaultOpen={tieneDatosSeguro}
+        >
+          <SeguroChapa
+            ordenId={orden.id}
+            tipoIntervencion={orden.tipoIntervencion}
+            aseguradora={orden.aseguradora}
+            numPoliza={orden.numPoliza}
+            numSiniestro={orden.numSiniestro}
+            numPeritaje={orden.numPeritaje}
+            nombrePerito={orden.nombrePerito}
+          />
+        </SeccionColapsable>
+      )}
 
-      {/* Fotos */}
-      <Card>
-        <CardContent className="p-4">
-          <FotosOrden ordenId={orden.id} fotos={orden.fotos || []} />
-        </CardContent>
-      </Card>
+      {/* Fotos y vídeos */}
+      <SeccionColapsable
+        title="Fotos y vídeos"
+        icon={Camera}
+        defaultOpen={fotos.length > 0}
+        badge={
+          fotos.length > 0 ? (
+            <Badge variant="outline" className="text-[10px]">
+              {fotos.length}
+            </Badge>
+          ) : undefined
+        }
+      >
+        <FotosOrden ordenId={orden.id} fotos={fotos} />
+      </SeccionColapsable>
 
       {/* Inspección — solo mostrar si ya tiene datos */}
       {inspecciones.length > 0 && (
-        <InspeccionView ordenId={orden.id} inspecciones={inspecciones} />
+        <SeccionColapsable
+          title="Inspección del vehículo"
+          icon={ClipboardCheck}
+          defaultOpen={inspeccionAlertas > 0}
+          badge={
+            inspeccionAlertas > 0 ? (
+              <Badge className="bg-amber-100 text-amber-800 text-[10px]">
+                {inspeccionAlertas} aviso{inspeccionAlertas !== 1 ? "s" : ""}
+              </Badge>
+            ) : inspeccionActiva > 0 ? (
+              <Badge variant="outline" className="text-[10px]">
+                {inspeccionActiva}
+              </Badge>
+            ) : undefined
+          }
+        >
+          <InspeccionView ordenId={orden.id} inspecciones={inspecciones} />
+        </SeccionColapsable>
       )}
 
       {/* Averías ocultas */}
       {orden.estado !== "entregado" && orden.estado !== "cancelado" && (
-        <AveriasOcultas
-          ordenId={orden.id}
-          averias={orden.averias || []}
-          clienteTelefono={orden.cliente?.telefono}
-        />
+        <SeccionColapsable
+          title="Averías ocultas"
+          icon={AlertTriangle}
+          tone="amber"
+          className="no-print"
+          defaultOpen={averias.length > 0}
+          badge={
+            averiasPendientes > 0 ? (
+              <Badge className="bg-amber-100 text-amber-800 text-[10px]">
+                {averiasPendientes} pendiente{averiasPendientes !== 1 ? "s" : ""}
+              </Badge>
+            ) : undefined
+          }
+        >
+          <AveriasOcultas
+            ordenId={orden.id}
+            averias={averias}
+            clienteTelefono={orden.cliente?.telefono}
+          />
+        </SeccionColapsable>
       )}
 
       {/* Historial */}

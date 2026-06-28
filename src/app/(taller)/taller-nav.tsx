@@ -136,7 +136,7 @@ export function TallerNav({ children, rol, switcher, esSuperAdmin }: { children:
               <div className="my-3 h-px bg-stone-200/30" />
               {!collapsed && (
                 <div className="flex items-center gap-1.5 px-3 mb-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-orange-400" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
                   <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Gestion</p>
                 </div>
               )}
@@ -283,7 +283,7 @@ function SidebarLink({
     >
       {/* Left accent bar for active state */}
       {active && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-orange-500" />
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-brand-500" />
       )}
 
       {/* Icon with optional active background */}
@@ -291,7 +291,7 @@ function SidebarLink({
         className={cn(
           "flex h-7 w-7 items-center justify-center rounded-lg transition-colors duration-200 shrink-0",
           active
-            ? "bg-orange-500/10 text-orange-600"
+            ? "bg-brand-500/10 text-brand-600"
             : "text-stone-400 group-hover:text-stone-600"
         )}
       >

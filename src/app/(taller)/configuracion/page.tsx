@@ -82,7 +82,7 @@ export default async function ConfiguracionPage() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <CalendarCheck className="h-4 w-4 text-orange-600" />
+            <CalendarCheck className="h-4 w-4 text-brand-600" />
             Cita online
           </CardTitle>
         </CardHeader>

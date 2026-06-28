@@ -16,11 +16,11 @@ export default function Page() {
 
           <div className="space-y-10 -mt-8">
             <div>
-              <p className="text-orange-400 font-bold text-sm tracking-wider uppercase mb-4">Empieza gratis hoy</p>
+              <p className="text-brand-400 font-bold text-sm tracking-wider uppercase mb-4">Empieza gratis hoy</p>
               <h1 className="text-5xl font-extrabold text-white tracking-tight leading-[1.1]">
                 Deja de perder
                 <br />
-                <span className="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">2 horas al día</span>
+                <span className="bg-gradient-to-r from-brand-400 via-amber-300 to-brand-500 bg-clip-text text-transparent">2 horas al día</span>
                 <br />
                 al teléfono.
               </h1>
@@ -33,7 +33,7 @@ export default function Page() {
                 { number: "29€", label: "Al mes", icon: Star },
               ].map((stat) => (
                 <div key={stat.label} className="rounded-xl bg-white/[0.04] border border-white/[0.06] p-4">
-                  <stat.icon className="h-5 w-5 text-orange-400 mb-2" />
+                  <stat.icon className="h-5 w-5 text-brand-400 mb-2" />
                   <p className="text-2xl font-extrabold text-white">{stat.number}</p>
                   <p className="text-xs text-stone-400 mt-1">{stat.label}</p>
                 </div>
@@ -46,7 +46,7 @@ export default function Page() {
                 Cada función se prueba aquí, con las manos manchadas, antes de llegar a la tuya.&rdquo;
               </p>
               <div className="flex items-center gap-3 mt-4">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-white font-bold text-sm">IC</div>
+                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-brand-400 to-brand-500 flex items-center justify-center text-white font-bold text-sm">IC</div>
                 <div>
                   <p className="text-sm font-bold text-white">Ibañez Clima</p>
                   <p className="text-xs text-stone-500">El taller donde nació FIXA · desde 2010</p>
@@ -86,10 +86,10 @@ export default function Page() {
           {/* Desktop header */}
           <div className="hidden lg:block w-full max-w-md mb-8">
             <div className="flex items-center gap-2 mb-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center">
                 <Zap className="h-4 w-4 text-white" />
               </div>
-              <span className="text-xs font-bold text-orange-600 tracking-wider uppercase">Registro gratuito</span>
+              <span className="text-xs font-bold text-brand-600 tracking-wider uppercase">Registro gratuito</span>
             </div>
             <h2 className="text-3xl font-extrabold text-stone-900 tracking-tight">Crea tu cuenta</h2>
             <p className="text-stone-500 mt-2">En 30 segundos. Sin tarjeta. Sin compromiso.</p>
@@ -105,11 +105,11 @@ export default function Page() {
                     card: "shadow-none border-0 bg-transparent p-0",
                     headerTitle: "text-xl font-extrabold text-stone-900 lg:hidden",
                     headerSubtitle: "text-sm text-stone-500 lg:hidden",
-                    formButtonPrimary: "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-xl h-13 font-bold text-base shadow-lg shadow-orange-500/25 transition-all hover:shadow-orange-500/40",
-                    formFieldInput: "rounded-xl border-stone-200/80 bg-white h-12 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-500/20 transition-all",
+                    formButtonPrimary: "bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 rounded-xl h-13 font-bold text-base shadow-lg shadow-brand transition-all hover:shadow-brand",
+                    formFieldInput: "rounded-xl border-stone-200/80 bg-white h-12 text-sm focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 transition-all",
                     formFieldLabel: "text-sm font-semibold text-stone-700",
-                    footerActionLink: "text-orange-600 font-bold hover:text-orange-500 text-sm",
-                    socialButtonsBlockButton: "rounded-xl border-stone-200/80 bg-white h-12 font-semibold text-sm hover:bg-orange-50 hover:border-orange-200 transition-all shadow-sm",
+                    footerActionLink: "text-brand-600 font-bold hover:text-brand-500 text-sm",
+                    socialButtonsBlockButton: "rounded-xl border-stone-200/80 bg-white h-12 font-semibold text-sm hover:bg-brand-50 hover:border-brand-200 transition-all shadow-sm",
                     dividerLine: "bg-stone-200/60",
                     dividerText: "text-stone-400 text-xs",
                     alert: "rounded-xl",
@@ -122,7 +122,7 @@ export default function Page() {
             {/* Trust signals */}
             <div className="mt-6 flex items-center justify-center gap-6 text-xs text-stone-400">
               <span className="flex items-center gap-1.5"><Shield className="h-3.5 w-3.5 text-emerald-500" />Datos cifrados</span>
-              <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-orange-500" />Setup 2 min</span>
+              <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-brand-500" />Setup 2 min</span>
               <span className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-blue-500" />RGPD</span>
             </div>
 

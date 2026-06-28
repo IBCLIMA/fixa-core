@@ -42,9 +42,9 @@ export function LeadMagnetBox() {
   }
 
   return (
-    <div className="my-10 rounded-2xl border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50/50 p-6 not-prose">
+    <div className="my-10 rounded-2xl border-2 border-brand-200 bg-gradient-to-br from-brand-50 to-amber-50/50 p-6 not-prose">
       <div className="flex items-start gap-4">
-        <div className="hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-500 shadow-lg shadow-orange-500/25">
+        <div className="hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-500 shadow-lg shadow-brand">
           <FileText className="h-6 w-6 text-white" />
         </div>
         <div className="flex-1 min-w-0">
@@ -71,12 +71,12 @@ export function LeadMagnetBox() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="tu@email.com"
-                  className="flex-1 h-11 rounded-xl border border-orange-200 bg-white px-4 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30"
+                  className="flex-1 h-11 rounded-xl border border-brand-200 bg-white px-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30"
                 />
                 <Button
                   type="submit"
                   disabled={loading || !consent}
-                  className="h-11 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-bold px-6 cursor-pointer"
+                  className="h-11 rounded-xl bg-brand-500 hover:bg-brand-400 text-white font-bold px-6 cursor-pointer"
                 >
                   {loading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -94,11 +94,11 @@ export function LeadMagnetBox() {
                   required
                   checked={consent}
                   onChange={(e) => setConsent(e.target.checked)}
-                  className="mt-0.5 h-4 w-4 accent-orange-600 cursor-pointer"
+                  className="mt-0.5 h-4 w-4 accent-brand-600 cursor-pointer"
                 />
                 <span className="text-xs text-stone-500 leading-relaxed">
                   Acepto recibir la plantilla y consejos para talleres por email, según la{" "}
-                  <a href="/privacidad" target="_blank" rel="noopener noreferrer" className="underline text-orange-600">
+                  <a href="/privacidad" target="_blank" rel="noopener noreferrer" className="underline text-brand-600">
                     política de privacidad
                   </a>
                   . Date de baja cuando quieras.

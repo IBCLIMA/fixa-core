@@ -277,7 +277,7 @@ export function PlantillasForm({ plantillasIniciales }: { plantillasIniciales: P
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-xs text-orange-600 hover:text-orange-700"
+                className="text-xs text-brand-600 hover:text-brand-700"
                 onClick={() => {
                   setNombre(t.name);
                   setLineas(t.lines.map(l => ({ ...l })));

@@ -46,7 +46,7 @@ export function WebServicesBanner() {
         >
           <div className="rounded-2xl bg-stone-950 border border-stone-800 shadow-2xl shadow-black/30 p-5 relative overflow-hidden">
             {/* Ambient glow */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-orange-500/10 to-transparent rounded-bl-full" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-brand-500/10 to-transparent rounded-bl-full" />
 
             {/* Close button */}
             <button
@@ -59,13 +59,13 @@ export function WebServicesBanner() {
             {/* Content */}
             <div className="relative z-10">
               <div className="flex items-center gap-2.5 mb-3">
-                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
+                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center">
                   <Globe className="h-4 w-4 text-white" />
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
                     <p className="text-sm font-bold text-white">¿Te gusta esta web?</p>
-                    <Sparkles className="h-3.5 w-3.5 text-orange-400" />
+                    <Sparkles className="h-3.5 w-3.5 text-brand-400" />
                   </div>
                   <p className="text-[11px] text-stone-400">Creamos webs para talleres</p>
                 </div>
@@ -78,7 +78,7 @@ export function WebServicesBanner() {
               <Link
                 href="/web-para-talleres"
                 onClick={dismiss}
-                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-white text-sm font-bold transition-colors cursor-pointer group"
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-white text-sm font-bold transition-colors cursor-pointer group"
               >
                 Saber más
                 <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />

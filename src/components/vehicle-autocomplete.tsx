@@ -96,7 +96,7 @@ export function MarcaAutocomplete({
         aria-expanded={open}
       />
       {open && filtered.length > 0 && (
-        <div className="absolute z-50 top-full left-0 right-0 mt-1 rounded-xl border bg-white shadow-lg max-h-40 overflow-y-auto" role="listbox">
+        <div className="absolute z-50 top-full left-0 right-0 mt-1 rounded-xl border bg-popover text-popover-foreground shadow-lg max-h-[min(18rem,55vh)] overflow-y-auto overscroll-contain" role="listbox">
           {filtered.map((brand, i) => (
             <button
               key={brand}
@@ -105,8 +105,10 @@ export function MarcaAutocomplete({
               aria-selected={i === highlighted}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => select(brand)}
-              className={`w-full text-left px-3 py-2 text-sm transition-colors first:rounded-t-xl last:rounded-b-xl ${
-                i === highlighted ? "bg-orange-50 text-orange-700" : "hover:bg-stone-50"
+              className={`flex w-full min-h-11 items-center text-left px-3.5 py-2.5 text-sm transition-colors first:rounded-t-xl last:rounded-b-xl ${
+                i === highlighted
+                  ? "bg-brand-50 text-brand-700"
+                  : "hover:bg-muted active:bg-brand-50 active:text-brand-700"
               }`}
             >
               {brand}
@@ -156,7 +158,7 @@ export function ModeloAutocomplete({
         aria-expanded={open}
       />
       {open && filtered.length > 0 && (
-        <div className="absolute z-50 top-full left-0 right-0 mt-1 rounded-xl border bg-white shadow-lg max-h-40 overflow-y-auto" role="listbox">
+        <div className="absolute z-50 top-full left-0 right-0 mt-1 rounded-xl border bg-popover text-popover-foreground shadow-lg max-h-[min(18rem,55vh)] overflow-y-auto overscroll-contain" role="listbox">
           {filtered.map((modelo, i) => (
             <button
               key={modelo}
@@ -165,8 +167,10 @@ export function ModeloAutocomplete({
               aria-selected={i === highlighted}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => select(modelo)}
-              className={`w-full text-left px-3 py-2 text-sm transition-colors first:rounded-t-xl last:rounded-b-xl ${
-                i === highlighted ? "bg-orange-50 text-orange-700" : "hover:bg-stone-50"
+              className={`flex w-full min-h-11 items-center text-left px-3.5 py-2.5 text-sm transition-colors first:rounded-t-xl last:rounded-b-xl ${
+                i === highlighted
+                  ? "bg-brand-50 text-brand-700"
+                  : "hover:bg-muted active:bg-brand-50 active:text-brand-700"
               }`}
             >
               {modelo}

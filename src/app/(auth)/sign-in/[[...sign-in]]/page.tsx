@@ -19,7 +19,7 @@ export default function Page() {
               <h1 className="text-5xl font-extrabold text-white tracking-tight leading-[1.1]">
                 Bienvenido
                 <br />
-                <span className="text-orange-400">de vuelta.</span>
+                <span className="text-brand-400">de vuelta.</span>
               </h1>
               <p className="text-stone-400 mt-4 text-lg">Tu taller te está esperando.</p>
             </div>
@@ -32,17 +32,17 @@ export default function Page() {
               ].map((item) => (
                 <div key={item.text} className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center shrink-0">
-                    <item.icon className="h-5 w-5 text-orange-400" />
+                    <item.icon className="h-5 w-5 text-brand-400" />
                   </div>
                   <span className="text-sm text-stone-300">{item.text}</span>
                 </div>
               ))}
             </div>
 
-            <div className="rounded-2xl bg-gradient-to-r from-orange-500/10 to-orange-600/5 border border-orange-500/20 p-5">
+            <div className="rounded-2xl bg-gradient-to-r from-brand-500/10 to-brand-600/5 border border-brand-500/20 p-5">
               <p className="text-white font-bold text-sm mb-1">¿Aún no tienes cuenta?</p>
               <p className="text-stone-400 text-xs mb-3">14 días gratis. Sin tarjeta. Sin compromiso.</p>
-              <Link href="/sign-up" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-orange-500 text-white text-sm font-bold hover:bg-orange-400 transition-colors">
+              <Link href="/sign-up" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-500 text-white text-sm font-bold hover:bg-brand-400 transition-colors">
                 Crear cuenta gratis <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -83,14 +83,14 @@ export default function Page() {
                     card: "shadow-none border-0 bg-transparent p-0",
                     headerTitle: "text-xl font-extrabold text-stone-900 lg:hidden",
                     headerSubtitle: "text-sm text-stone-500 lg:hidden",
-                    formButtonPrimary: "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-xl h-13 font-bold text-base shadow-lg shadow-orange-500/25 transition-all",
-                    formFieldInput: "rounded-xl border-stone-200/80 bg-white h-12 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-500/20 transition-all",
+                    formButtonPrimary: "bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 rounded-xl h-13 font-bold text-base shadow-lg shadow-brand transition-all",
+                    formFieldInput: "rounded-xl border-stone-200/80 bg-white h-12 text-sm focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 transition-all",
                     formFieldLabel: "text-sm font-semibold text-stone-700",
-                    footerActionLink: "text-orange-600 font-bold hover:text-orange-500 text-sm",
-                    socialButtonsBlockButton: "rounded-xl border-stone-200/80 bg-white h-12 font-semibold text-sm hover:bg-orange-50 hover:border-orange-200 transition-all shadow-sm",
+                    footerActionLink: "text-brand-600 font-bold hover:text-brand-500 text-sm",
+                    socialButtonsBlockButton: "rounded-xl border-stone-200/80 bg-white h-12 font-semibold text-sm hover:bg-brand-50 hover:border-brand-200 transition-all shadow-sm",
                     dividerLine: "bg-stone-200/60",
                     dividerText: "text-stone-400 text-xs",
-                    identityPreviewEditButton: "text-orange-600",
+                    identityPreviewEditButton: "text-brand-600",
                     alert: "rounded-xl",
                   },
                 }}
@@ -107,7 +107,7 @@ export default function Page() {
             <div className="mt-6 lg:hidden rounded-xl bg-stone-900 p-5 text-center">
               <p className="text-white font-bold">¿No tienes cuenta?</p>
               <p className="text-stone-400 text-xs mt-1 mb-3">14 días gratis. Sin compromiso.</p>
-              <Link href="/sign-up" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-orange-500 text-white text-sm font-bold">
+              <Link href="/sign-up" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-brand-500 text-white text-sm font-bold">
                 Crear cuenta gratis <ArrowRight className="h-4 w-4" />
               </Link>
             </div>

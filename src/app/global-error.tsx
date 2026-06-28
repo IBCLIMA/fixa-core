@@ -32,7 +32,7 @@ export default function GlobalError({
           <div className="flex flex-col gap-3">
             <button
               onClick={reset}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 transition-colors"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-600 transition-colors"
             >
               <RotateCcw className="h-4 w-4" />
               Reintentar

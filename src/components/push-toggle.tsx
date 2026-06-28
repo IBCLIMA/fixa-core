@@ -89,7 +89,7 @@ export function PushToggle() {
       ) : enabled ? (
         <BellOff className="h-3.5 w-3.5" />
       ) : (
-        <BellRing className="h-3.5 w-3.5 text-orange-500" />
+        <BellRing className="h-3.5 w-3.5 text-brand-500" />
       )}
       {enabled
         ? "Desactivar avisos en este dispositivo"

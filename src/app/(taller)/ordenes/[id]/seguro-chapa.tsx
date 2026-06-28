@@ -1,8 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Shield } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { actualizarDatosSeguro } from "../../actions/orden-legal";
@@ -67,29 +65,19 @@ export function SeguroChapa({
   ];
 
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base flex items-center gap-2">
-          <Shield className="h-4 w-4 text-muted-foreground" />
-          Datos del seguro
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {fields.map(({ key, label }) => (
-            <div key={key} className="space-y-1">
-              <p className="text-xs font-bold text-stone-500">{label}</p>
-              <Input
-                value={datos[key]}
-                onChange={(e) => updateField(key, e.target.value)}
-                onBlur={guardarOnBlur}
-                placeholder={label}
-                className="h-11 rounded-xl"
-              />
-            </div>
-          ))}
+    <div className="grid gap-3 sm:grid-cols-2">
+      {fields.map(({ key, label }) => (
+        <div key={key} className="space-y-1">
+          <p className="text-xs font-bold text-stone-500">{label}</p>
+          <Input
+            value={datos[key]}
+            onChange={(e) => updateField(key, e.target.value)}
+            onBlur={guardarOnBlur}
+            placeholder={label}
+            className="h-11 rounded-xl"
+          />
         </div>
-      </CardContent>
-    </Card>
+      ))}
+    </div>
   );
 }

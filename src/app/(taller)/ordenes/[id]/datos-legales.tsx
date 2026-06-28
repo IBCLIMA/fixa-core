@@ -1,8 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ClipboardList } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -73,14 +71,7 @@ export function DatosLegales({
   }, [fecha, observaciones, rPresupuesto, rPiezas]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base flex items-center gap-2">
-          <ClipboardList className="h-4 w-4 text-muted-foreground" />
-          Datos legales
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-5">
+    <div className="space-y-5">
         {/* Fecha estimada de entrega */}
         <div>
           <p className="text-xs font-bold text-stone-500 mb-2">Fecha estimada de entrega</p>
@@ -128,7 +119,6 @@ export function DatosLegales({
             </label>
           </div>
         </div>
-      </CardContent>
-    </Card>
+    </div>
   );
 }

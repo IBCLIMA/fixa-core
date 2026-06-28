@@ -3,10 +3,13 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CalendarCheck, CheckCircle2, Clock } from "lucide-react";
+import { CalendarCheck, CheckCircle2, Clock, Phone, MessageSquare } from "lucide-react";
+import { formatWhatsAppUrl } from "@/lib/utils";
 
 interface BookingFormProps {
   tallerId: string;
+  tallerNombre: string;
+  tallerTelefono: string | null;
   trabajaSabados: boolean;
   horarioApertura: string;
   horarioCierre: string;
@@ -17,6 +20,8 @@ interface BookingFormProps {
 
 export function BookingForm({
   tallerId,
+  tallerNombre,
+  tallerTelefono,
   trabajaSabados,
   horarioApertura,
   horarioCierre,
@@ -109,6 +114,25 @@ export function BookingForm({
     }
   }
 
+  const contactButtons = tallerTelefono ? (
+    <div className="flex gap-2">
+      <a
+        href={`tel:${tallerTelefono}`}
+        className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card text-sm font-semibold transition-colors hover:bg-muted"
+      >
+        <Phone className="h-4 w-4" /> Llamar
+      </a>
+      <a
+        href={formatWhatsAppUrl(tallerTelefono)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-500 text-sm font-semibold text-white transition-colors hover:bg-emerald-600"
+      >
+        <MessageSquare className="h-4 w-4" /> WhatsApp
+      </a>
+    </div>
+  ) : null;
+
   if (success) {
     return (
       <Card className="border-emerald-200 bg-emerald-50/30">
@@ -116,10 +140,16 @@ export function BookingForm({
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 mx-auto">
             <CheckCircle2 className="h-8 w-8 text-emerald-600" />
           </div>
-          <h2 className="text-xl font-extrabold tracking-tight">Solicitud enviada</h2>
+          <h2 className="text-xl font-extrabold tracking-tight">¡Solicitud enviada!</h2>
           <p className="text-sm text-muted-foreground">
-            Tu solicitud será confirmada por el taller. Te contactaremos por WhatsApp lo antes posible.
+            Hemos recibido tu solicitud. {tallerNombre} la revisará y te confirmará la cita por WhatsApp lo antes posible.
           </p>
+          {contactButtons && (
+            <div className="pt-2">
+              <p className="text-xs text-muted-foreground mb-2">¿Necesitas algo urgente?</p>
+              {contactButtons}
+            </div>
+          )}
         </CardContent>
       </Card>
     );
@@ -164,7 +194,7 @@ export function BookingForm({
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
                 placeholder="Tu nombre completo"
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500"
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500"
               />
             </div>
 
@@ -179,7 +209,7 @@ export function BookingForm({
                 value={telefono}
                 onChange={(e) => setTelefono(e.target.value)}
                 placeholder="612 345 678"
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500"
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500"
               />
             </div>
 
@@ -193,7 +223,7 @@ export function BookingForm({
                 value={matricula}
                 onChange={(e) => setMatricula(e.target.value.toUpperCase())}
                 placeholder="1234 ABC"
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500"
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500"
               />
             </div>
 
@@ -208,7 +238,7 @@ export function BookingForm({
                 onChange={(e) => setMotivo(e.target.value)}
                 placeholder="Describe brevemente qué necesitas (ej: revisión de frenos, cambio de aceite...)"
                 rows={3}
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 resize-none"
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 resize-none"
               />
             </div>
 
@@ -233,7 +263,7 @@ export function BookingForm({
                 }}
                 min={minDate}
                 max={maxDate}
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500"
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500"
               />
             </div>
 
@@ -243,7 +273,7 @@ export function BookingForm({
               <select
                 value={horaPreferida}
                 onChange={(e) => setHoraPreferida(e.target.value)}
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500"
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500"
               >
                 <option value="manana">Mañana ({horarioApertura} - 13:00)</option>
                 <option value="tarde">Tarde (15:00 - {horarioCierre})</option>
@@ -259,12 +289,12 @@ export function BookingForm({
                 id="consentimiento-rgpd"
                 checked={consentimiento}
                 onChange={(e) => setConsentimiento(e.target.checked)}
-                className="mt-0.5 h-4 w-4 shrink-0 accent-orange-600 cursor-pointer"
+                className="mt-0.5 h-4 w-4 shrink-0 accent-brand-600 cursor-pointer"
               />
               <label htmlFor="consentimiento-rgpd" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
                 Acepto que el taller trate mis datos (nombre, teléfono y matrícula) para
                 gestionar esta solicitud de cita, según la{" "}
-                <a href="/privacidad" target="_blank" rel="noopener noreferrer" className="text-orange-600 underline underline-offset-2">
+                <a href="/privacidad" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline underline-offset-2">
                   política de privacidad
                 </a>
                 . <span className="text-red-500">*</span>
@@ -278,7 +308,7 @@ export function BookingForm({
             <Button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold py-3"
+              className="w-full h-12 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold shadow-brand"
             >
               {loading ? (
                 "Enviando solicitud..."
@@ -291,9 +321,16 @@ export function BookingForm({
             </Button>
 
             <p className="text-xs text-center text-muted-foreground">
-              Tu solicitud será confirmada por el taller. Te contactaremos por WhatsApp.
+              No es una reserva en firme: el taller revisará tu solicitud y te confirmará la cita por WhatsApp.
             </p>
           </form>
+
+          {contactButtons && (
+            <div className="mt-5 pt-5 border-t border-border">
+              <p className="text-xs text-center text-muted-foreground mb-2">¿Prefieres hablar directamente?</p>
+              {contactButtons}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

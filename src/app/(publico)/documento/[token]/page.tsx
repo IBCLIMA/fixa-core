@@ -74,8 +74,16 @@ export default async function DocumentoPublicoPage({
             <p className="text-xs text-muted-foreground">{doc.tallerDireccion}</p>
           )}
           <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
-            {doc.tallerTelefono && <span>Tel: {doc.tallerTelefono}</span>}
-            {doc.tallerEmail && <span>{doc.tallerEmail}</span>}
+            {doc.tallerTelefono && (
+              <a href={`tel:${doc.tallerTelefono}`} className="hover:text-brand-600 transition-colors print:text-muted-foreground">
+                Tel: {doc.tallerTelefono}
+              </a>
+            )}
+            {doc.tallerEmail && (
+              <a href={`mailto:${doc.tallerEmail}`} className="hover:text-brand-600 transition-colors print:text-muted-foreground">
+                {doc.tallerEmail}
+              </a>
+            )}
           </div>
 
           <h1 className="text-2xl font-extrabold tracking-tight">{docNumero}</h1>
