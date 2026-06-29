@@ -35,6 +35,7 @@ export async function POST(
     return NextResponse.json({ error: "Estado no válido" }, { status: 400 });
   }
 
+  try {
   const db = getDb();
 
   const [presupuesto] = await db
@@ -205,4 +206,11 @@ export async function POST(
   }
 
   return NextResponse.json({ ok: true, estado });
+  } catch (err) {
+    console.error(`[presupuesto-publico] token=${token}:`, err);
+    return NextResponse.json(
+      { error: "No se pudo registrar tu respuesta. Inténtalo de nuevo en un momento." },
+      { status: 500 },
+    );
+  }
 }

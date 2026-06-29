@@ -1,15 +1,39 @@
 "use client";
 
 import { useId, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import {
+  ChevronDown,
+  ClipboardList,
+  Shield,
+  Camera,
+  ClipboardCheck,
+  AlertTriangle,
+} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+
+/**
+ * Mapa de iconos disponibles. El icono se pasa como STRING (no como componente)
+ * porque esta sección es un Client Component: pasar la función de un icono de
+ * lucide desde un Server Component cruza la frontera servidor→cliente y Next.js
+ * no puede serializar funciones ("Functions cannot be passed to Client
+ * Components"). Resolver el string aquí dentro mantiene el icono del lado cliente.
+ */
+const ICONOS = {
+  "clipboard-list": ClipboardList,
+  shield: Shield,
+  camera: Camera,
+  "clipboard-check": ClipboardCheck,
+  "alert-triangle": AlertTriangle,
+} as const;
+
+export type SeccionIcono = keyof typeof ICONOS;
 
 interface SeccionColapsableProps {
   /** Título visible en la cabecera. */
   title: string;
-  /** Icono (componente de lucide-react), ej: `icon={Camera}`. */
-  icon: React.ElementType;
+  /** Clave del icono a mostrar, ej: `icon="camera"`. Ver `ICONOS`. */
+  icon: SeccionIcono;
   /** Por defecto colapsada. Pasar `true` para arrancar abierta. */
   defaultOpen?: boolean;
   /** Pista a la derecha del título (ej: contador o nº de pendientes). */
@@ -33,7 +57,7 @@ interface SeccionColapsableProps {
  */
 export function SeccionColapsable({
   title,
-  icon: Icon,
+  icon,
   defaultOpen = false,
   badge,
   tone = "default",
@@ -42,6 +66,7 @@ export function SeccionColapsable({
 }: SeccionColapsableProps) {
   const [open, setOpen] = useState(defaultOpen);
   const contentId = useId();
+  const Icon = ICONOS[icon];
 
   return (
     <Card

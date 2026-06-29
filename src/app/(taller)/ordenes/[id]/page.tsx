@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Car, Clock, Hash, FileText, Printer, Send, AlertTriangle, CircleAlert, ClipboardList, Shield, Camera, ClipboardCheck } from "lucide-react";
+import { ArrowLeft, Car, Clock, Hash, FileText, Printer, Send, AlertTriangle, CircleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -417,7 +417,7 @@ export default async function OrdenDetallePage({
       {/* Datos legales (RD 1457/1986) */}
       <SeccionColapsable
         title="Datos legales"
-        icon={ClipboardList}
+        icon="clipboard-list"
         defaultOpen={tieneDatosLegales}
       >
         <DatosLegales
@@ -433,7 +433,7 @@ export default async function OrdenDetallePage({
       {esChapaPintura && (
         <SeccionColapsable
           title="Datos del seguro"
-          icon={Shield}
+          icon="shield"
           defaultOpen={tieneDatosSeguro}
         >
           <SeguroChapa
@@ -451,7 +451,7 @@ export default async function OrdenDetallePage({
       {/* Fotos y vídeos */}
       <SeccionColapsable
         title="Fotos y vídeos"
-        icon={Camera}
+        icon="camera"
         defaultOpen={fotos.length > 0}
         badge={
           fotos.length > 0 ? (
@@ -468,7 +468,7 @@ export default async function OrdenDetallePage({
       {inspecciones.length > 0 && (
         <SeccionColapsable
           title="Inspección del vehículo"
-          icon={ClipboardCheck}
+          icon="clipboard-check"
           defaultOpen={inspeccionAlertas > 0}
           badge={
             inspeccionAlertas > 0 ? (
@@ -490,7 +490,7 @@ export default async function OrdenDetallePage({
       {orden.estado !== "entregado" && orden.estado !== "cancelado" && (
         <SeccionColapsable
           title="Averías ocultas"
-          icon={AlertTriangle}
+          icon="alert-triangle"
           tone="amber"
           className="no-print"
           defaultOpen={averias.length > 0}

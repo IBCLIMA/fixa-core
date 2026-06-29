@@ -37,6 +37,28 @@ function splitVeh(v?: string | null): [string | null, string | null] {
   return [title(p[0]), p.slice(1).join(" ") || null];
 }
 
+/**
+ * Parser de fecha tolerante. El Taller Manager puede mandar ISO
+ * (`2026-06-29T...`) o formato español (`29/06/2026`, `29-06-2026`, con hora
+ * opcional). Devuelve un `Date` válido o `null` — NUNCA un `Invalid Date`, que
+ * al insertarse en un `timestamp` haría que Postgres rechazara la fila y el
+ * coche no se sincronizara. Si la fecha no se entiende, devolvemos null y la
+ * orden entra igual (mejor un coche sin fecha que un coche perdido).
+ */
+function parseFecha(s?: string | null): Date | null {
+  const t = (s || "").trim();
+  if (!t) return null;
+  // dd/mm/yyyy o dd-mm-yyyy (con hora opcional)
+  const m = t.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})(?:[ T](\d{1,2}):(\d{2}))?/);
+  if (m) {
+    const [, d, mo, y, h = "0", mi = "0"] = m;
+    const dt = new Date(Number(y), Number(mo) - 1, Number(d), Number(h), Number(mi));
+    return isNaN(dt.getTime()) ? null : dt;
+  }
+  const dt = new Date(t);
+  return isNaN(dt.getTime()) ? null : dt;
+}
+
 export async function POST(request: Request) {
   const auth = request.headers.get("authorization");
   if (!process.env.IBCLIMA_INGEST_SECRET || auth !== `Bearer ${process.env.IBCLIMA_INGEST_SECRET}`) {
@@ -70,6 +92,7 @@ export async function POST(request: Request) {
   const origenId = String(e.id);
   const cliKey = norm(e.cliente) || `veh:${mat}`;
 
+  try {
   // 1) Cliente (upsert por origen)
   let [cli] = await db.select({ id: clientes.id }).from(clientes)
     .where(and(eq(clientes.tallerId, tallerId), eq(clientes.origenExterno, ORIG), eq(clientes.origenExternoId, cliKey)));
@@ -104,15 +127,15 @@ export async function POST(request: Request) {
     ordenId = existente.id;
     await db.update(ordenesTrabajo).set({
       estado, descripcionCliente, kmEntrada: e.kms ?? null,
-      fechaEntrega: e.fecha_salida ? new Date(e.fecha_salida) : null, updatedAt: new Date(),
+      fechaEntrega: parseFecha(e.fecha_salida), updatedAt: new Date(),
     }).where(eq(ordenesTrabajo.id, ordenId));
     await db.delete(lineasOrden).where(eq(lineasOrden.ordenId, ordenId));
   } else {
     [{ id: ordenId }] = await db.insert(ordenesTrabajo).values({
       tallerId, vehiculoId: veh.id, clienteId: cli.id, numero: Number(e.id) || Math.floor(Date.now() / 1000),
       estado, descripcionCliente, kmEntrada: e.kms ?? null,
-      fechaEntrada: e.fecha_entrada ? new Date(e.fecha_entrada) : new Date(),
-      fechaEntrega: e.fecha_salida ? new Date(e.fecha_salida) : null,
+      fechaEntrada: parseFecha(e.fecha_entrada) ?? new Date(),
+      fechaEntrega: parseFecha(e.fecha_salida),
       origenExterno: ORIG, origenExternoId: origenId,
     }).returning({ id: ordenesTrabajo.id });
   }
@@ -126,4 +149,13 @@ export async function POST(request: Request) {
   if (lineas.length) await db.insert(lineasOrden).values(lineas);
 
   return NextResponse.json({ ok: true, ordenId, accion: existente ? "actualizado" : "creado" });
+  } catch (err) {
+    // No fallar en silencio: devolvemos el error para que el Taller Manager lo
+    // registre y pueda reintentar. Así un coche nunca "desaparece" sin rastro.
+    console.error(`[ingest/coche] id=${origenId} mat=${mat}:`, err);
+    return NextResponse.json(
+      { error: "Error al sincronizar el coche", detalle: err instanceof Error ? err.message : String(err), id: origenId },
+      { status: 500 },
+    );
+  }
 }

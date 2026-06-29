@@ -84,7 +84,7 @@ export default async function AvisosPage() {
           </p>
           <div className="space-y-2">
             {clientesInactivos.map((c) => {
-              const meses = Math.floor((Date.now() - new Date(c.ultimaVisita).getTime()) / (30 * 86400000));
+              const meses = c.ultimaVisita ? Math.floor((Date.now() - new Date(c.ultimaVisita).getTime()) / (30 * 86400000)) : 0;
               return (
                 <Card key={c.clienteId} className="border-violet-200 bg-violet-50/30">
                   <CardContent className="p-4">
