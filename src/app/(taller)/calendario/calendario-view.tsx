@@ -53,9 +53,7 @@ interface CalendarioViewProps {
   days: string[];
   citas: Cita[];
   totalCitas: number;
-  capacidadDiaria: number;
   trabajaSabados: boolean;
-  ordenesPorDia: Record<string, number>;
   entregas: Entrega[];
   diasBloqueados: DiaBloqueado[];
 }
@@ -75,7 +73,7 @@ const citaColorPorEstado: Record<string, CitaColor> = {
 };
 const colorCita = (estado: string): CitaColor => citaColorPorEstado[estado] ?? citaColorPorEstado.programada;
 
-export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, trabajaSabados, ordenesPorDia, entregas, diasBloqueados }: CalendarioViewProps) {
+export function CalendarioView({ days, citas, totalCitas, trabajaSabados, entregas, diasBloqueados }: CalendarioViewProps) {
   const [showForm, setShowForm] = useState(false);
   const [showDayMenu, setShowDayMenu] = useState(false);
   const [showBlockForm, setShowBlockForm] = useState(false);
@@ -94,10 +92,6 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
 
   function getDayEntregas(dateStr: string) {
     return entregas.filter((e) => e.fechaEstimadaStr === dateStr);
-  }
-
-  function getDayCapacity(dateStr: string) {
-    return ordenesPorDia[dateStr] || 0;
   }
 
   function openDayMenu(date: string) {
@@ -186,38 +180,10 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
     }
   }
 
-  // ── Feature 5: Today section data ────────────────────────────────────
+  // ── Today section data ───────────────────────────────────────────────
   const todayCitas = citas.filter((c) => c.fecha === hoy);
   const todayEntregas = getDayEntregas(hoy);
-  const todayCapacity = getDayCapacity(hoy);
   const todayBlocked = getBlockedDay(hoy);
-  const capacityPct = Math.min((todayCapacity / capacidadDiaria) * 100, 100);
-  const isFull = todayCapacity >= capacidadDiaria;
-
-  // ── Capacity bar component ──────────────────────────────────────────
-  function CapacityBar({ count, className }: { count: number; className?: string }) {
-    const pct = Math.min((count / capacidadDiaria) * 100, 100);
-    const full = count >= capacidadDiaria;
-    return (
-      <div className={cn("flex items-center gap-1.5", className)}>
-        <span className={cn(
-          "text-[10px] font-bold",
-          full ? "text-red-600" : "text-stone-500"
-        )}>
-          {count}/{capacidadDiaria}
-        </span>
-        <div className="flex-1 h-1 rounded-full bg-stone-200 overflow-hidden">
-          <div
-            className={cn(
-              "h-full rounded-full transition-all",
-              full ? "bg-red-500" : pct > 70 ? "bg-brand-400" : "bg-emerald-400"
-            )}
-            style={{ width: `${pct}%` }}
-          />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -247,28 +213,6 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
               Nueva cita
             </Button>
             <EntradaRapida />
-          </div>
-        </div>
-
-        {/* Capacity bar */}
-        <div className="mb-3">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-bold text-stone-500">Capacidad del taller</span>
-            <span className={cn(
-              "text-xs font-bold",
-              isFull ? "text-red-600" : "text-emerald-600"
-            )}>
-              {todayCapacity}/{capacidadDiaria} ordenes activas
-            </span>
-          </div>
-          <div className="h-2 rounded-full bg-stone-200 overflow-hidden">
-            <div
-              className={cn(
-                "h-full rounded-full transition-all",
-                isFull ? "bg-red-500" : capacityPct > 70 ? "bg-brand-400" : "bg-emerald-400"
-              )}
-              style={{ width: `${capacityPct}%` }}
-            />
           </div>
         </div>
 
@@ -396,7 +340,6 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
           const blocked = isNonWorkingDay
             ? { id: isSunday ? "sunday" : "saturday", fecha: dateStr, motivo: isSunday ? "Domingo" : "Sábado no laborable" }
             : getBlockedDay(dateStr);
-          const dayOrdenes = getDayCapacity(dateStr);
 
           return (
             <div
@@ -437,10 +380,6 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
                 )}>
                   {date.getDate()}
                 </p>
-                {/* Capacity bar in header */}
-                {!blocked && (
-                  <CapacityBar count={dayOrdenes} className="px-2 mt-1" />
-                )}
               </div>
 
               {/* Blocked overlay */}

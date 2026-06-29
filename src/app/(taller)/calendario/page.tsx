@@ -1,6 +1,6 @@
 import { CalendarDays, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import Link from "next/link";
-import { getCitasSemana, getCapacidadTaller, getOrdenesPorDiaSemana, getEntregasSemana, getDiasBloqueadosSemana } from "../actions/citas";
+import { getCitasSemana, getCapacidadTaller, getEntregasSemana, getDiasBloqueadosSemana } from "../actions/citas";
 import { CalendarioView } from "./calendario-view";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { CopyLinkBox } from "../configuracion/copy-link-box";
@@ -40,10 +40,9 @@ export default async function CalendarioPage({
   const params = await searchParams;
   const { tallerId } = await getTallerIdFromAuth();
   const week = getWeekDates(params.semana);
-  const [citas, tallerConfig, ordenesPorDia, entregas, diasBloqueados] = await Promise.all([
+  const [citas, tallerConfig, entregas, diasBloqueados] = await Promise.all([
     getCitasSemana(week.start, week.end),
     getCapacidadTaller(),
-    getOrdenesPorDiaSemana(week.start, week.end),
     getEntregasSemana(week.start, week.end),
     getDiasBloqueadosSemana(week.start, week.end),
   ]);
@@ -107,9 +106,7 @@ export default async function CalendarioPage({
         days={week.days.map((d) => d.toISOString())}
         citas={citas}
         totalCitas={totalCitas}
-        capacidadDiaria={tallerConfig.capacidadDiaria}
         trabajaSabados={tallerConfig.trabajaSabados}
-        ordenesPorDia={ordenesPorDia}
         entregas={entregas}
         diasBloqueados={diasBloqueados}
       />

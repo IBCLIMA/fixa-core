@@ -1,11 +1,9 @@
-import { ClipboardList, FileText, Bell, Clock, TrendingUp } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { ClipboardList, FileText, Bell, TrendingUp } from "lucide-react";
 import { StatCard, type StatAccent } from "@/components/stat-card";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
-import { ordenesTrabajo, presupuestos, lineasOrden, avisos } from "@/db/schema";
+import { ordenesTrabajo, presupuestos, avisos } from "@/db/schema";
 import { eq, and, count, sql, gte } from "drizzle-orm";
-import { formatMoneyShort } from "@/lib/format";
 
 export const metadata = { title: "Tu taller en números" };
 
@@ -15,7 +13,6 @@ export default async function MetricasPage() {
 
   const ahora = new Date();
   const inicioMes = new Date(ahora.getFullYear(), ahora.getMonth(), 1).toISOString();
-  const hace30Dias = new Date(ahora.getTime() - 30 * 86400000).toISOString();
 
   const [
     [ordenesTotal],
@@ -23,16 +20,12 @@ export default async function MetricasPage() {
     [presupuestosEnviados],
     [presupuestosAceptados],
     [itvAvisadas],
-    [lineasMes],
   ] = await Promise.all([
     db.select({ total: count() }).from(ordenesTrabajo).where(eq(ordenesTrabajo.tallerId, tallerId)),
     db.select({ total: count() }).from(ordenesTrabajo).where(and(eq(ordenesTrabajo.tallerId, tallerId), gte(ordenesTrabajo.createdAt, new Date(inicioMes)))),
     db.select({ total: count() }).from(presupuestos).where(and(eq(presupuestos.tallerId, tallerId), sql`${presupuestos.estado} IN ('enviado','aceptado','rechazado')`)),
     db.select({ total: count() }).from(presupuestos).where(and(eq(presupuestos.tallerId, tallerId), eq(presupuestos.estado, "aceptado"))),
     db.select({ total: count() }).from(avisos).where(and(eq(avisos.tallerId, tallerId), eq(avisos.tipo, "itv"))),
-    db.select({ total: count() }).from(lineasOrden)
-      .innerJoin(ordenesTrabajo, eq(lineasOrden.ordenId, ordenesTrabajo.id))
-      .where(and(eq(ordenesTrabajo.tallerId, tallerId), gte(ordenesTrabajo.createdAt, new Date(inicioMes)))),
   ]);
 
   const totalOrdenes = Number(ordenesTotal?.total ?? 0);
@@ -40,14 +33,10 @@ export default async function MetricasPage() {
   const totalPresEnviados = Number(presupuestosEnviados?.total ?? 0);
   const totalPresAceptados = Number(presupuestosAceptados?.total ?? 0);
   const totalItv = Number(itvAvisadas?.total ?? 0);
-  const totalLineas = Number(lineasMes?.total ?? 0);
-
-  // Estimación de horas ahorradas: 3 min por orden + 10 min por presupuesto + 2 min por ITV avisada
-  const minutosAhorrados = (totalOrdenes * 3) + (totalPresEnviados * 10) + (totalItv * 2);
-  const horasAhorradas = Math.round(minutosAhorrados / 60);
 
   const tasaAceptacion = totalPresEnviados > 0 ? Math.round((totalPresAceptados / totalPresEnviados) * 100) : 0;
 
+  // Solo números reales, calculados desde la BD. Nada estimado ni inventado.
   const kpis: {
     icon: typeof ClipboardList;
     valor: React.ReactNode;
@@ -66,8 +55,15 @@ export default async function MetricasPage() {
       icon: FileText,
       valor: totalPresEnviados,
       label: "Presupuestos enviados",
-      sub: `${totalPresAceptados} aceptados (${tasaAceptacion}%)`,
+      sub: `${totalPresAceptados} aceptados`,
       accent: "emerald",
+    },
+    {
+      icon: TrendingUp,
+      valor: `${tasaAceptacion}%`,
+      label: "Tasa de aceptación",
+      sub: "de los presupuestos que envías",
+      accent: "violet",
     },
     {
       icon: Bell,
@@ -76,13 +72,6 @@ export default async function MetricasPage() {
       sub: "Trabajo que antes se escapaba",
       accent: "amber",
     },
-    {
-      icon: Clock,
-      valor: `${horasAhorradas}h`,
-      label: "Horas ahorradas (estimado)",
-      sub: `${minutosAhorrados} min en tareas que antes hacías a mano`,
-      accent: "violet",
-    },
   ];
 
   return (
@@ -90,7 +79,7 @@ export default async function MetricasPage() {
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight">Tu taller en números</h1>
         <p className="text-sm text-muted-foreground mt-0.5">
-          Lo que FIXA ha hecho por ti desde que empezaste. Si estos números te ahorran más de 29€/mes, ya se paga solo.
+          Lo que ha pasado en tu taller desde que empezaste con FIXA.
         </p>
       </div>
 
@@ -106,21 +95,6 @@ export default async function MetricasPage() {
           />
         ))}
       </div>
-
-      {/* Valor económico estimado */}
-      <Card className="border-brand-200 bg-gradient-to-br from-brand-50 to-amber-50/50">
-        <CardContent className="p-6 text-center">
-          <TrendingUp className="h-8 w-8 text-brand-500 mx-auto mb-3" />
-          <p className="text-sm font-bold text-brand-900">Valor estimado de lo que FIXA te ha ahorrado</p>
-          <p className="text-4xl font-extrabold text-brand-600 mt-2">
-            {formatMoneyShort(horasAhorradas * 35)}
-          </p>
-          <p className="text-xs text-brand-700 mt-2">
-            Basado en {horasAhorradas}h × 35€/hora de mano de obra.
-            FIXA cuesta {mesTotalOrdenes > 0 ? "29€/mes" : "nada (estás en prueba gratuita)"}.
-          </p>
-        </CardContent>
-      </Card>
 
       {totalOrdenes === 0 && (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-12 text-center">

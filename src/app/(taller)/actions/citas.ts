@@ -152,34 +152,6 @@ export async function getCapacidadTaller() {
   };
 }
 
-export async function getOrdenesPorDiaSemana(fechaInicio: string, fechaFin: string) {
-  const { tallerId } = await getTallerIdFromAuth();
-  const db = getDb();
-
-  const ordenes = await db
-    .select({
-      fechaEntrada: ordenesTrabajo.fechaEntrada,
-      estado: ordenesTrabajo.estado,
-    })
-    .from(ordenesTrabajo)
-    .where(
-      and(
-        eq(ordenesTrabajo.tallerId, tallerId),
-        gte(ordenesTrabajo.fechaEntrada, new Date(fechaInicio + "T00:00:00")),
-        lte(ordenesTrabajo.fechaEntrada, new Date(fechaFin + "T23:59:59")),
-        notInArray(ordenesTrabajo.estado, ["entregado", "cancelado"])
-      )
-    );
-
-  // Count per date
-  const counts: Record<string, number> = {};
-  for (const o of ordenes) {
-    const dateStr = o.fechaEntrada.toISOString().split("T")[0];
-    counts[dateStr] = (counts[dateStr] || 0) + 1;
-  }
-  return counts;
-}
-
 // ── Feature 2: "Ha llegado" → Create OR from appointment ──────────────────
 
 export async function crearOrdenDesdeCita(citaId: string) {
