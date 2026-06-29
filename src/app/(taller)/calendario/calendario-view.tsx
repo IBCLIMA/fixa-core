@@ -62,13 +62,18 @@ interface CalendarioViewProps {
 
 const dayNames = ["lun", "mar", "mie", "jue", "vie", "sab", "dom"];
 
-const citaColors = [
-  { border: "border-l-brand-500", bg: "bg-brand-50", text: "text-brand-700", time: "text-brand-600" },
-  { border: "border-l-blue-500", bg: "bg-blue-50", text: "text-blue-700", time: "text-blue-600" },
-  { border: "border-l-emerald-500", bg: "bg-emerald-50", text: "text-emerald-700", time: "text-emerald-600" },
-  { border: "border-l-violet-500", bg: "bg-violet-50", text: "text-violet-700", time: "text-violet-600" },
-  { border: "border-l-rose-500", bg: "bg-rose-50", text: "text-rose-700", time: "text-rose-600" },
-];
+// El color de una cita comunica su ESTADO, no su posición en la lista.
+// Por defecto neutro: el gerente solo ve color cuando significa algo
+// (verde = ya llegó, rojo = no se presentó). Nada de arcoíris decorativo.
+type CitaColor = { border: string; bg: string; text: string; time: string };
+const citaColorPorEstado: Record<string, CitaColor> = {
+  programada: { border: "border-l-stone-300", bg: "bg-white", text: "text-stone-800", time: "text-stone-500" },
+  confirmada: { border: "border-l-blue-400", bg: "bg-blue-50/50", text: "text-stone-800", time: "text-blue-600" },
+  completada: { border: "border-l-emerald-300", bg: "bg-emerald-50/40", text: "text-stone-600", time: "text-emerald-600" },
+  no_presentado: { border: "border-l-rose-400", bg: "bg-rose-50", text: "text-rose-800", time: "text-rose-600" },
+  cancelada: { border: "border-l-stone-200", bg: "bg-stone-50", text: "text-stone-400 line-through", time: "text-stone-400" },
+};
+const colorCita = (estado: string): CitaColor => citaColorPorEstado[estado] ?? citaColorPorEstado.programada;
 
 export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, trabajaSabados, ordenesPorDia, entregas, diasBloqueados }: CalendarioViewProps) {
   const [showForm, setShowForm] = useState(false);
@@ -289,7 +294,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
               ) : (
                 <div className="space-y-1.5">
                   {todayCitas.map((cita, idx) => {
-                    const color = citaColors[idx % citaColors.length];
+                    const color = colorCita(cita.estado);
                     return (
                       <div key={cita.id} className={cn(
                         "rounded-lg border-l-[3px] p-2.5 text-[11px]",
@@ -459,7 +464,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
                   )}
 
                   {dayCitas.map((cita, citaIdx) => {
-                    const color = citaColors[citaIdx % citaColors.length];
+                    const color = colorCita(cita.estado);
                     return (
                       <div
                         key={cita.id}
@@ -609,7 +614,7 @@ export function CalendarioView({ days, citas, totalCitas, capacidadDiaria, traba
         ) : (
           <div className="space-y-2">
             {citas.map((cita, idx) => {
-              const color = citaColors[idx % citaColors.length];
+              const color = colorCita(cita.estado);
               const citaDate = new Date(cita.fecha + "T12:00:00");
               const isDateToday = cita.fecha === hoy;
 
