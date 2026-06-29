@@ -5,11 +5,12 @@ import { Car, Clock, CheckCircle2, CalendarCheck, FileText, AlertTriangle, Recei
 import type { LucideIcon } from "lucide-react";
 import { PortalClienteHeader } from "@/components/portal-cliente-header";
 import { TimelineReparacion, type HitoTimeline } from "@/components/portal/timeline-reparacion";
+import { PortalLive } from "@/components/portal/portal-live";
 import { MediaGallery } from "@/components/media-lightbox";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { getDb } from "@/db";
-import { ordenesTrabajo, vehiculos, clientes, talleres, historialEstados, presupuestos, averiasOcultas, documentosCobro, lineasOrden, fotosOrden } from "@/db/schema";
+import { ordenesTrabajo, vehiculos, clientes, talleres, usuarios, historialEstados, presupuestos, averiasOcultas, documentosCobro, lineasOrden, fotosOrden } from "@/db/schema";
 import { eq, desc, asc, and, inArray } from "drizzle-orm";
 import { registrarApertura } from "@/lib/portal-views";
 
@@ -104,11 +105,13 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
       tallerTelefono: talleres.telefono,
       tallerId: ordenesTrabajo.tallerId,
       clienteId: ordenesTrabajo.clienteId,
+      mecanicoNombre: usuarios.nombre,
     })
     .from(ordenesTrabajo)
     .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
     .leftJoin(clientes, eq(ordenesTrabajo.clienteId, clientes.id))
     .leftJoin(talleres, eq(ordenesTrabajo.tallerId, talleres.id))
+    .leftJoin(usuarios, eq(ordenesTrabajo.asignadoA, usuarios.id))
     .where(eq(ordenesTrabajo.tokenPublico, token))
     .limit(1);
 
@@ -167,7 +170,7 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
     // Fotos/vídeos que el taller ya ha tomado (SOLO LECTURA: el cliente no sube nada).
     // Orden cronológico → cuentan la historia de la reparación.
     db
-      .select({ id: fotosOrden.id, url: fotosOrden.url, descripcion: fotosOrden.descripcion, esVideo: fotosOrden.esVideo })
+      .select({ id: fotosOrden.id, url: fotosOrden.url, descripcion: fotosOrden.descripcion, esVideo: fotosOrden.esVideo, createdAt: fotosOrden.createdAt })
       .from(fotosOrden)
       .where(eq(fotosOrden.ordenId, o.id))
       .orderBy(asc(fotosOrden.createdAt)),
@@ -232,13 +235,33 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
   const mostrarPrevisto = !!o.fechaEstimada && !["listo", "entregado", "cancelado"].includes(o.estado);
   const HeroIcon = hero.icon;
 
+  // ── Toques "la leche": personal + en directo + progreso (todo dato real) ──
+  const primerNombre = o.clienteNombre?.trim().split(" ")[0] || null;
+  // Mostrar quién lleva el coche genera confianza; solo mientras está en taller.
+  const mecanico = o.mecanicoNombre?.trim().split(" ")[0] || null;
+  const mostrarMecanico = !!mecanico && !["listo", "entregado", "cancelado"].includes(o.estado);
+  // "Actualizado hace X": el cambio real más reciente (estado o foto).
+  const ultimaFoto = fotos.length ? fotos[fotos.length - 1].createdAt : null;
+  const ultimaActualizacion = new Date(
+    Math.max(
+      historial[0]?.createdAt ? new Date(historial[0].createdAt).getTime() : 0,
+      ultimaFoto ? new Date(ultimaFoto).getTime() : 0,
+      new Date(o.fechaEntrada).getTime(),
+    ),
+  );
+  // Progreso: pasos alcanzados sobre el total visible (no en cancelado).
+  const pasosHechos = hitos.filter((h) => h.status !== "pendiente").length;
+  const totalPasos = hitos.length;
+  const mostrarProgreso = o.estado !== "cancelado" && totalPasos > 0;
+  const progresoPct = mostrarProgreso ? Math.round((pasosHechos / totalPasos) * 100) : 0;
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header — identidad del taller (white-label) */}
       <PortalClienteHeader
         nombre={o.tallerNombre}
         logoUrl={o.tallerLogoUrl}
-        subtitle="Estado de tu vehículo"
+        right={<PortalLive desde={ultimaActualizacion.toISOString()} />}
       />
 
       <main className="mx-auto max-w-lg px-4 py-8 space-y-6">
@@ -246,6 +269,9 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
         <section
           className={`relative overflow-hidden rounded-2xl border bg-gradient-to-b p-6 text-center shadow-sm ${tono.wrap}`}
         >
+          {primerNombre && (
+            <p className="mb-3 text-base font-extrabold text-foreground">Hola, {primerNombre} 👋</p>
+          )}
           <span className="inline-flex items-center gap-1.5 rounded-full bg-card/70 px-3 py-1 text-xs font-bold tabular-nums text-muted-foreground ring-1 ring-border">
             <Car className="h-3.5 w-3.5" /> OR-{o.numero}
             <span className="text-border">·</span>
@@ -268,12 +294,20 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
           </h1>
           <p className="mx-auto mt-1.5 max-w-sm text-sm text-muted-foreground">{hero.sub}</p>
 
-          {mostrarPrevisto && (
-            <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-foreground ring-1 ring-border">
-              <CalendarClock className="h-3.5 w-3.5 text-brand-600" />
-              Previsto: {new Date(o.fechaEstimada!).toLocaleDateString("es-ES", { day: "numeric", month: "long" })}
-            </div>
-          )}
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+            {mostrarMecanico && (
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-foreground ring-1 ring-border">
+                <Wrench className="h-3.5 w-3.5 text-brand-600" />
+                Lo lleva {mecanico}
+              </div>
+            )}
+            {mostrarPrevisto && (
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-xs font-semibold text-foreground ring-1 ring-border">
+                <CalendarClock className="h-3.5 w-3.5 text-brand-600" />
+                Previsto: {new Date(o.fechaEstimada!).toLocaleDateString("es-ES", { day: "numeric", month: "long" })}
+              </div>
+            )}
+          </div>
 
           {hero.siguiente && (
             <div className={`mt-4 flex items-center justify-center gap-1.5 text-sm font-semibold ${tono.siguiente}`}>
@@ -365,9 +399,24 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
         {/* ── Seguimiento de la reparación: línea de tiempo vertical (tipo tracking de pedido) ── */}
         <Card>
           <CardContent className="p-5">
-            <p className="mb-5 text-xs font-bold uppercase tracking-wide text-muted-foreground">
-              Seguimiento de la reparación
-            </p>
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                Seguimiento de la reparación
+              </p>
+              {mostrarProgreso && (
+                <span className="shrink-0 text-xs font-bold text-brand-600">
+                  Paso {pasosHechos} de {totalPasos}
+                </span>
+              )}
+            </div>
+            {mostrarProgreso && (
+              <div className="mb-5 h-1.5 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-brand-500 to-brand-600 transition-all duration-500"
+                  style={{ width: `${progresoPct}%` }}
+                />
+              </div>
+            )}
             <TimelineReparacion hitos={hitos} />
           </CardContent>
         </Card>
