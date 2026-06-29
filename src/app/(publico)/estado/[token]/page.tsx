@@ -13,8 +13,33 @@ import { ordenesTrabajo, vehiculos, clientes, talleres, historialEstados, presup
 import { eq, desc, asc, and, inArray } from "drizzle-orm";
 import { registrarApertura } from "@/lib/portal-views";
 
-// Página privada de cliente (acceso por token): no indexable
-export const metadata = { robots: { index: false, follow: false } };
+// Página privada de cliente (acceso por token): no indexable por buscadores,
+// pero SÍ con tarjeta de previsualización (OG) para que al compartir el enlace
+// por WhatsApp salga una tarjeta bonita con el coche, no una URL pelada.
+export async function generateMetadata({ params }: { params: Promise<{ token: string }> }) {
+  const { token } = await params;
+  try {
+    const db = getDb();
+    const [row] = await db
+      .select({ marca: vehiculos.marca, modelo: vehiculos.modelo, taller: talleres.nombre })
+      .from(ordenesTrabajo)
+      .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
+      .leftJoin(talleres, eq(ordenesTrabajo.tallerId, talleres.id))
+      .where(eq(ordenesTrabajo.tokenPublico, token));
+    const coche = [row?.marca, row?.modelo].filter(Boolean).join(" ") || "tu coche";
+    const taller = row?.taller || "tu taller";
+    const title = `Estado de ${coche}`;
+    const description = `Sigue la reparación en ${taller}, paso a paso y en directo. Sin tener que llamar.`;
+    return {
+      title,
+      description,
+      robots: { index: false, follow: false },
+      openGraph: { title, description, type: "website" as const, siteName: taller },
+    };
+  } catch {
+    return { title: "Estado de tu coche", robots: { index: false, follow: false } };
+  }
+}
 
 // ─── Secuencia canónica del seguimiento (lo que ve el cliente) ───
 // esperando_recambio y entregado se insertan solo cuando son relevantes.

@@ -508,15 +508,15 @@ export async function entregarOrden(
     const vehiculoDesc = [vehiculo?.marca, vehiculo?.modelo].filter(Boolean).join(" ");
 
     const mensaje = [
-      `Hola ${nombreCliente},`,
+      `Hola ${nombreCliente} 👋`,
       ``,
-      `¡Gracias por confiar en *${taller.nombre}*! Aquí tienes el informe de todo lo que le hemos hecho a tu ${vehiculoDesc} (${vehiculo?.matricula || ""}):`,
-      informeUrl,
+      `Ya está todo listo con tu ${vehiculoDesc} (${vehiculo?.matricula || ""}). Aquí tienes el informe de lo que le hemos hecho, con fotos y detalle. Sin letra pequeña:`,
+      `👉 ${informeUrl}`,
       ``,
       ...(taller.googleReviewLink
-        ? [`Si has quedado contento con el servicio, nos ayudarías muchísimo con una reseña en Google:`, taller.googleReviewLink, ``]
+        ? [`Y si te has quedado a gusto, ¿nos echas un cable con una reseña? Te cuesta un minuto y a nosotros nos cambia el día:`, `👉 ${taller.googleReviewLink}`, ``]
         : []),
-      `Cualquier cosa, aquí nos tienes. ¡Un saludo!`,
+      `Cualquier cosa, aquí nos tienes. Gracias por confiar en *${taller.nombre}*.`,
     ].join("\n");
 
     whatsappUrl = formatWhatsAppUrl(cliente.telefono, mensaje);
@@ -548,12 +548,12 @@ export async function enviarSolicitudResena(ordenId: string) {
   const tallerNombre = taller.nombre;
   const googleReviewLink = taller.googleReviewLink;
 
-  let mensaje = `Hola ${nombreCliente},\n\n¡Gracias por confiar en *${tallerNombre}*! Esperamos que todo esté perfecto con tu vehículo.\n\nSi estás contento con el servicio, nos ayudaría mucho una reseña en Google.`;
+  let mensaje = `Hola ${nombreCliente} 👋\n\nHa sido un placer cuidar de tu coche. Si te has quedado a gusto, ¿nos echas un cable con una reseña? A ti te cuesta un minuto y a nosotros nos cambia el día.`;
   if (googleReviewLink) {
-    mensaje += `\n\n${googleReviewLink}`;
+    mensaje += `\n\n👉 ${googleReviewLink}`;
   }
 
-  mensaje += `\n\n¡Un saludo del equipo de ${tallerNombre}!`;
+  mensaje += `\n\n¡Gracias de parte de todo el equipo de *${tallerNombre}*!`;
 
   return formatWhatsAppUrl(cliente.telefono, mensaje);
 }
@@ -692,17 +692,15 @@ export async function enviarInformeCliente(ordenId: string) {
   const matricula = vehiculo?.matricula || "";
 
   const mensaje = [
-    `Hola ${nombreCliente},`,
+    `Hola ${nombreCliente} 👋`,
     ``,
-    `Te escribimos de *${taller.nombre}*. Ya tienes disponible el informe de tu ${vehiculoDesc} (${matricula}).`,
+    `Ya está listo el informe de tu ${vehiculoDesc} (${matricula}): todo lo que le hemos hecho, con fotos y detalle. Sin letra pequeña.`,
     ``,
-    `Puedes consultarlo aquí:`,
+    `👉 Échale un vistazo aquí:`,
     reportUrl,
     ``,
-    `Si tienes alguna duda, no dudes en contactarnos.`,
-    taller.telefono ? `Tel: ${taller.telefono}` : "",
-    ``,
-    `¡Gracias por confiar en nosotros!`,
+    taller.telefono ? `Cualquier duda, llámanos: ${taller.telefono}` : `Cualquier duda, nos dices.`,
+    `Gracias por confiar en *${taller.nombre}*.`,
   ].filter(Boolean).join("\n");
 
   return formatWhatsAppUrl(cliente.telefono, mensaje);

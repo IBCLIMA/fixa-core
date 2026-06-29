@@ -20,7 +20,32 @@ import { formatWhatsAppUrl } from "@/lib/utils";
 import { registrarApertura } from "@/lib/portal-views";
 
 // Página privada de cliente (acceso por token): no indexable
-export const metadata = { robots: { index: false, follow: false } };
+// Privada por token, pero con tarjeta de previsualización (OG) para que el
+// enlace por WhatsApp se vea como una tarjeta y no como una URL pelada.
+export async function generateMetadata({ params }: { params: Promise<{ ordenId: string }> }) {
+  const { ordenId } = await params;
+  try {
+    const db = getDb();
+    const [row] = await db
+      .select({ marca: vehiculos.marca, modelo: vehiculos.modelo, taller: talleres.nombre })
+      .from(ordenesTrabajo)
+      .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
+      .leftJoin(talleres, eq(ordenesTrabajo.tallerId, talleres.id))
+      .where(eq(ordenesTrabajo.tokenPublico, ordenId));
+    const coche = [row?.marca, row?.modelo].filter(Boolean).join(" ") || "tu coche";
+    const taller = row?.taller || "tu taller";
+    const title = `Informe de ${coche}`;
+    const description = `Todo lo que ${taller} le ha hecho a tu coche, con fotos y detalle. Sin letra pequeña.`;
+    return {
+      title,
+      description,
+      robots: { index: false, follow: false },
+      openGraph: { title, description, type: "website" as const, siteName: taller },
+    };
+  } catch {
+    return { title: "Informe de tu coche", robots: { index: false, follow: false } };
+  }
+}
 
 
 const estadoInspeccionLabel: Record<string, string> = {

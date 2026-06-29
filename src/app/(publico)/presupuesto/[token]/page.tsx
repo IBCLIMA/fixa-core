@@ -36,15 +36,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const marca = vehiculo?.marca || "tu vehículo";
   const modelo = vehiculo?.modelo || "";
-  const title = `Presupuesto para tu ${marca} ${modelo}`.trim();
+  const title = `Presupuesto de tu ${marca} ${modelo}`.trim();
+  const description = "Míralo y, si te encaja, acéptalo desde el móvil. Sin sorpresas.";
 
   return {
     title,
-    description: "Revisa y aprueba el presupuesto de reparación de tu vehículo.",
+    description,
     robots: { index: false, follow: false },
     openGraph: {
       title,
-      description: "Revisa y aprueba el presupuesto de reparación de tu vehículo.",
+      description,
       type: "website",
     },
   };
