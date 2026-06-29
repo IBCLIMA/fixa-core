@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import Link from "next/link";
-import { Car, Clock, CheckCircle2, CalendarCheck, FileText, AlertTriangle, Receipt, ArrowRight, Phone, MessageSquare, CalendarClock, Stethoscope, ThumbsUp, Wrench, Package, PackageCheck, KeyRound, XCircle, Camera } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { Car, Clock, CheckCircle2, CalendarCheck, FileText, AlertTriangle, Receipt, ArrowRight, Phone, MessageSquare, CalendarClock, Wrench, Camera, BellRing, ListChecks } from "lucide-react";
+import { getPortalStatusCopy, HITO_COPY, type PortalTono } from "@/lib/portal-copy";
 import { PortalClienteHeader } from "@/components/portal-cliente-header";
 import { TimelineReparacion, type HitoTimeline } from "@/components/portal/timeline-reparacion";
 import { PortalLive } from "@/components/portal/portal-live";
@@ -10,7 +10,8 @@ import { MediaGallery } from "@/components/media-lightbox";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { getDb } from "@/db";
-import { ordenesTrabajo, vehiculos, clientes, talleres, usuarios, historialEstados, presupuestos, averiasOcultas, documentosCobro, lineasOrden, fotosOrden } from "@/db/schema";
+import { ordenesTrabajo, vehiculos, clientes, talleres, usuarios, historialEstados, presupuestos, lineasPresupuesto, averiasOcultas, documentosCobro, lineasOrden, fotosOrden } from "@/db/schema";
+import { formatMoney } from "@/lib/format";
 import { eq, desc, asc, and, inArray } from "drizzle-orm";
 import { registrarApertura } from "@/lib/portal-views";
 
@@ -47,36 +48,7 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
 const PIPELINE = ["recibido", "diagnostico", "presupuestado", "aprobado", "en_reparacion", "esperando_recambio", "listo", "entregado"] as const;
 const ordenIdx = (estado: string) => PIPELINE.indexOf(estado as (typeof PIPELINE)[number]);
 
-// Título corto + frase humana por estado para cada hito del timeline.
-// CERO datos inventados: solo describe el proceso, nunca precios/piezas/plazos.
-const HITO_COPY: Record<string, { titulo: string; descripcion: string }> = {
-  recibido: { titulo: "Recibido en el taller", descripcion: "Tenemos tu coche y lo hemos registrado." },
-  diagnostico: { titulo: "En diagnóstico", descripcion: "Estamos revisando qué necesita exactamente." },
-  presupuestado: { titulo: "Presupuesto preparado", descripcion: "Te hemos preparado una propuesta para que puedas decidir." },
-  aprobado: { titulo: "Presupuesto aprobado", descripcion: "Nos diste el visto bueno. ¡Manos a la obra!" },
-  en_reparacion: { titulo: "En reparación", descripcion: "Nuestros mecánicos están trabajando en tu coche." },
-  esperando_recambio: { titulo: "Esperando una pieza", descripcion: "Hemos pedido la pieza que falta. En cuanto llegue, seguimos." },
-  pieza_recibida: { titulo: "Pieza recibida", descripcion: "Ya tenemos la pieza que faltaba. Retomamos la reparación." },
-  listo: { titulo: "Listo para recoger", descripcion: "Tu coche está reparado y a punto." },
-  entregado: { titulo: "Entregado", descripcion: "Te hemos devuelto tu coche. ¡Gracias por confiar en nosotros!" },
-};
-
-// Hero: estado actual en lenguaje humano + frase tranquilizadora + próximo paso.
-type Tono = "marca" | "exito" | "espera" | "cancelado";
-const HERO_COPY: Record<string, { tono: Tono; icon: LucideIcon; titulo: string; sub: string; siguiente: string | null }> = {
-  recibido: { tono: "marca", icon: Car, titulo: "Hemos recibido tu coche", sub: "Lo tenemos con nosotros y registrado. Nos ponemos en marcha.", siguiente: "No tienes que hacer nada ahora, te avisaremos." },
-  diagnostico: { tono: "marca", icon: Stethoscope, titulo: "Estamos revisando qué le ocurre", sub: "Nuestros mecánicos están viendo qué necesita exactamente.", siguiente: "No tienes que hacer nada ahora, te avisaremos." },
-  presupuestado: { tono: "marca", icon: FileText, titulo: "Te hemos preparado una propuesta", sub: "Hemos preparado un presupuesto para que puedas decidir.", siguiente: "Estamos esperando tu aprobación." },
-  aprobado: { tono: "marca", icon: ThumbsUp, titulo: "Presupuesto aprobado, ¡gracias!", sub: "Ya tenemos todo lo necesario para empezar.", siguiente: "No tienes que hacer nada ahora, te avisaremos." },
-  en_reparacion: { tono: "marca", icon: Wrench, titulo: "Tu coche ya está en reparación", sub: "Nuestros mecánicos están manos a la obra.", siguiente: "No tienes que hacer nada ahora, te avisaremos." },
-  esperando_recambio: { tono: "espera", icon: Package, titulo: "Hemos pedido la pieza que falta", sub: "Tu reparación está en marcha; solo falta que llegue una pieza.", siguiente: "Te avisaremos cuando llegue la pieza." },
-  pieza_recibida: { tono: "marca", icon: PackageCheck, titulo: "Ya tenemos la pieza", sub: "Tenemos lo que faltaba. Retomamos la reparación.", siguiente: "No tienes que hacer nada ahora, te avisaremos." },
-  listo: { tono: "exito", icon: CheckCircle2, titulo: "Tu coche está listo para recoger", sub: "Hemos terminado. Puedes pasar a recogerlo cuando quieras.", siguiente: "Puedes pasar a recogerlo cuando quieras." },
-  entregado: { tono: "exito", icon: KeyRound, titulo: "¡Gracias por confiar en nosotros!", sub: "Te hemos devuelto tu coche reparado.", siguiente: null },
-  cancelado: { tono: "cancelado", icon: XCircle, titulo: "Esta orden se ha cancelado", sub: "Si tienes cualquier duda, estamos a un mensaje.", siguiente: null },
-};
-
-const TONO_CLASSES: Record<Tono, { wrap: string; icon: string; ping: string; siguiente: string }> = {
+const TONO_CLASSES: Record<PortalTono, { wrap: string; icon: string; ping: string; siguiente: string }> = {
   marca: { wrap: "from-brand-50 to-card border-brand-200", icon: "from-brand-500 to-brand-600 text-white shadow-brand", ping: "bg-brand/30", siguiente: "text-brand-700" },
   exito: { wrap: "from-emerald-50 to-card border-emerald-200", icon: "from-emerald-500 to-emerald-600 text-white shadow-sm shadow-emerald-500/30", ping: "bg-emerald-400/30", siguiente: "text-emerald-700" },
   espera: { wrap: "from-amber-50 to-card border-amber-200", icon: "from-amber-500 to-amber-600 text-white shadow-sm shadow-amber-500/30", ping: "bg-amber-400/30", siguiente: "text-amber-700" },
@@ -229,11 +201,43 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
         };
       });
 
-  const hero = HERO_COPY[copyKey] ?? HERO_COPY[o.estado] ?? HERO_COPY.recibido;
-  const tono = TONO_CLASSES[hero.tono];
+  const copy = getPortalStatusCopy(copyKey);
+  const tono = TONO_CLASSES[copy.tono];
   const heroLatido = o.estado === "diagnostico" || o.estado === "en_reparacion" || o.estado === "esperando_recambio";
   const mostrarPrevisto = !!o.fechaEstimada && !["listo", "entregado", "cancelado"].includes(o.estado);
-  const HeroIcon = hero.icon;
+  const HeroIcon = copy.icon;
+
+  // ── "¿Tengo que hacer algo?" (siempre) — refleja la realidad de la orden ──
+  const hayPresupuesto = !!presupuestoPendiente?.tokenPublico;
+  const hayAveria = averiasPendientes.some((a) => a.tokenAprobacion);
+  let accionCliente = copy.accionCliente;
+  let accionUrgente = false;
+  if (hayPresupuesto) {
+    accionCliente = "Necesitamos que revises y aceptes el presupuesto para continuar.";
+    accionUrgente = true;
+  } else if (hayAveria) {
+    accionCliente = "Hemos encontrado algo más y necesitamos tu aprobación para seguir.";
+    accionUrgente = true;
+  }
+
+  // Importe del presupuesto pendiente (para mostrarlo en el portal, sin que el
+  // cliente tenga que abrir otra pantalla). Se calcula de las líneas, IVA incl.
+  let presupuestoTotal: number | null = null;
+  if (presupuestoPendiente?.id) {
+    const lineasP = await db
+      .select({
+        cantidad: lineasPresupuesto.cantidad,
+        precioUnitario: lineasPresupuesto.precioUnitario,
+        descuentoPct: lineasPresupuesto.descuentoPct,
+        ivaPct: lineasPresupuesto.ivaPct,
+      })
+      .from(lineasPresupuesto)
+      .where(eq(lineasPresupuesto.presupuestoId, presupuestoPendiente.id));
+    presupuestoTotal = lineasP.reduce((sum, l) => {
+      const base = Number(l.cantidad) * Number(l.precioUnitario) * (1 - Number(l.descuentoPct || 0) / 100);
+      return sum + base * (1 + Number(l.ivaPct || 21) / 100);
+    }, 0);
+  }
 
   // ── Toques "la leche": personal + en directo + progreso (todo dato real) ──
   const primerNombre = o.clienteNombre?.trim().split(" ")[0] || null;
@@ -289,10 +293,12 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
             </div>
           </div>
 
-          <h1 className="mt-4 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
-            {hero.titulo}
+          <p className="mt-4 text-sm font-semibold text-muted-foreground">Tu {o.marca} {o.modelo}</p>
+          <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
+            {copy.titulo}
           </h1>
-          <p className="mx-auto mt-1.5 max-w-sm text-sm text-muted-foreground">{hero.sub}</p>
+          {/* B. Qué está pasando ahora — el bloque más importante */}
+          <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">{copy.descripcion}</p>
 
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
             {mostrarMecanico && (
@@ -308,29 +314,56 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
               </div>
             )}
           </div>
-
-          {hero.siguiente && (
-            <div className={`mt-4 flex items-center justify-center gap-1.5 text-sm font-semibold ${tono.siguiente}`}>
-              <ArrowRight className="h-4 w-4 shrink-0" />
-              <span>{hero.siguiente}</span>
-            </div>
-          )}
         </section>
+
+        {/* ── C + G: ¿Tengo que hacer algo? + ¿Cuándo tendré noticias? (SIEMPRE) ── */}
+        <Card className={accionUrgente ? "border-brand-300 bg-brand-50/40" : undefined}>
+          <CardContent className="p-4 space-y-3">
+            <div className="flex items-start gap-3">
+              <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${accionUrgente ? "bg-brand-100 text-brand-700" : "bg-emerald-50 text-emerald-600"}`}>
+                <ListChecks className="h-5 w-5" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Qué tienes que hacer</p>
+                <p className={`text-sm font-semibold ${accionUrgente ? "text-brand-900" : "text-foreground"}`}>{accionCliente}</p>
+              </div>
+            </div>
+            {copy.proximaActualizacion && (
+              <div className="flex items-start gap-3 border-t border-border/60 pt-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+                  <BellRing className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Próxima novedad</p>
+                  <p className="text-sm text-foreground">{copy.proximaActualizacion}</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* ── Acciones pendientes (hub) ── */}
         {presupuestoPendiente?.tokenPublico && (
           <Link href={`/presupuesto/${presupuestoPendiente.tokenPublico}`} className="block">
             <Card className="border-brand-300 bg-gradient-to-br from-brand-50 to-amber-50/50 hover:border-brand-400 transition-colors shadow-brand">
-              <CardContent className="p-4">
+              <CardContent className="p-4 space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 shadow-brand">
                     <FileText className="h-5 w-5 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-extrabold text-brand-900">Tienes un presupuesto pendiente</p>
-                    <p className="text-xs text-brand-700 mt-0.5">Revísalo y acéptalo online en un minuto</p>
+                    <p className="text-sm font-extrabold text-brand-900">Tu presupuesto está listo</p>
+                    <p className="text-xs text-brand-700 mt-0.5">Para continuar necesitamos tu aprobación.</p>
                   </div>
-                  <ArrowRight className="h-5 w-5 text-brand-500 shrink-0" />
+                  {presupuestoTotal != null && (
+                    <div className="shrink-0 text-right">
+                      <p className="text-lg font-extrabold leading-none text-brand-900">{formatMoney(presupuestoTotal)}</p>
+                      <p className="text-[10px] text-brand-700/70">IVA incl.</p>
+                    </div>
+                  )}
+                </div>
+                <div className="flex h-10 items-center justify-center gap-2 rounded-xl bg-brand-500 text-sm font-bold text-white">
+                  Ver y aceptar <ArrowRight className="h-4 w-4" />
                 </div>
               </CardContent>
             </Card>
