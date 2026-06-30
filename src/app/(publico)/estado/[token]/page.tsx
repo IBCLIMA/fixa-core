@@ -6,6 +6,7 @@ import { getPortalStatusCopy, HITO_COPY, type PortalTono } from "@/lib/portal-co
 import { PortalClienteHeader } from "@/components/portal-cliente-header";
 import { TimelineReparacion, type HitoTimeline } from "@/components/portal/timeline-reparacion";
 import { PortalLive } from "@/components/portal/portal-live";
+import { CelebracionListo } from "@/components/portal/celebracion-listo";
 import { MediaGallery } from "@/components/media-lightbox";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
@@ -273,6 +274,7 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
         <section
           className={`relative overflow-hidden rounded-2xl border bg-gradient-to-b p-6 text-center shadow-sm ${tono.wrap}`}
         >
+          {o.estado === "listo" && <CelebracionListo />}
           {primerNombre && (
             <p className="mb-3 text-base font-extrabold text-foreground">Hola, {primerNombre} 👋</p>
           )}
