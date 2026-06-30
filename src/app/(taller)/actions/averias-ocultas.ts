@@ -7,7 +7,7 @@ import { getTallerIdFromAuth } from "@/lib/auth";
 import { logAudit } from "@/lib/audit";
 import { createNotification } from "@/lib/notify";
 import { revalidatePath } from "next/cache";
-import { formatWhatsAppUrl } from "@/lib/utils";
+import { formatWhatsAppUrl, appUrl } from "@/lib/utils";
 import { formatMoney } from "@/lib/format";
 
 export async function getAveriasOcultas(ordenId: string) {
@@ -97,8 +97,7 @@ export async function getAveriaWhatsAppUrl(averiaId: string) {
 
   if (!cliente?.telefono) throw new Error("El cliente no tiene teléfono");
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://fixataller.es";
-  const approvalUrl = `${appUrl}/aprobar/${averia.tokenAprobacion}`;
+  const approvalUrl = appUrl(`aprobar/${averia.tokenAprobacion}`);
 
   const mensaje = [
     `Hola ${cliente.nombre?.split(" ")[0] || ""},`,

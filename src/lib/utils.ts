@@ -6,6 +6,21 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * URL absoluta de la app, robusta. Lee la URL base de la env, le quita espacios
+ * y saltos de línea (una env con "\n" al final rompía los enlaces que se
+ * mandaban al cliente: el enlace quedaba partido en dos) y normaliza la barra.
+ * Úsalo SIEMPRE para construir enlaces públicos (estado, informe, presupuesto…).
+ */
+export function appUrl(path = ""): string {
+  const raw =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://fixataller.es");
+  const base = raw.trim().replace(/\s+/g, "").replace(/\/+$/, "");
+  if (!path) return base;
+  return `${base}/${String(path).replace(/^\/+/, "")}`;
+}
+
+/**
  * Genera una URL de WhatsApp con el número formateado correctamente.
  * Si el teléfono ya empieza con "+", se usa tal cual.
  * Si empieza con un dígito (sin +), se antepone "+34".

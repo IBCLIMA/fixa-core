@@ -19,7 +19,7 @@ import { checkMaintenanceAlerts, type MaintenanceAlert } from "@/lib/maintenance
 import { revalidatePath } from "next/cache";
 import { logAudit } from "@/lib/audit";
 import { createNotification } from "@/lib/notify";
-import { formatWhatsAppUrl } from "@/lib/utils";
+import { formatWhatsAppUrl, appUrl } from "@/lib/utils";
 
 type EstadoOrden =
   | "recibido"
@@ -567,8 +567,7 @@ export async function getInformeUrl(ordenId: string) {
     .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
 
   const token = orden?.tokenPublico || ordenId;
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-  return `${baseUrl}/informe/${token}`;
+  return appUrl(`informe/${token}`);
 }
 
 export async function getEstadoUrl(ordenId: string) {
@@ -580,8 +579,7 @@ export async function getEstadoUrl(ordenId: string) {
     .where(and(eq(ordenesTrabajo.id, ordenId), eq(ordenesTrabajo.tallerId, tallerId)));
 
   const token = orden?.tokenPublico || ordenId;
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-  return `${baseUrl}/estado/${token}`;
+  return appUrl(`estado/${token}`);
 }
 
 export async function getMecanicos() {
