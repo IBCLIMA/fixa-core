@@ -2,401 +2,324 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>FIXA — Programa de talleres fundadores</title>
+<title>FIXA — Talleres Fundadores</title>
 <style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   @page { size: A4; margin: 0; }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { background: #faf9f7; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: #1c1917;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-  .page {
-    width: 210mm;
-    height: 297mm;
-    padding: 20mm 18mm;
-    background: #faf9f7;
-    position: relative;
-    overflow: hidden;
-    page-break-after: always;
-    display: flex;
-    flex-direction: column;
-  }
-  .page:last-child { page-break-after: auto; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color:#1c1917; background:#faf9f7; }
+  .page { width:210mm; height:296.5mm; page-break-after:always; overflow:hidden; position:relative; padding:16mm 15mm; }
+  .page:last-child { page-break-after:auto; }
+  .dark { background:#1c1917; color:#fafaf9; }
 
-  /* ---------- brand ---------- */
-  .brand { display: flex; align-items: center; gap: 10px; }
-  .hex {
-    width: 30px; height: 34px;
-    background: linear-gradient(145deg, #f97316, #ea580c);
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    box-shadow: 0 4px 12px rgba(234, 88, 12, .25);
-  }
-  .wordmark { font-size: 26px; font-weight: 800; letter-spacing: 0.06em; }
-  .kicker {
-    font-size: 12px; font-weight: 800; letter-spacing: 0.16em;
-    text-transform: uppercase; color: #ea580c; margin-bottom: 10px;
-  }
-  .muted { color: #78716c; }
+  /* ───────── utilidades ───────── */
+  .chip { display:inline-flex; align-items:center; gap:7px; border-radius:999px; font-weight:700; }
+  .eyebrow { font-size:12px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:#f97316; }
 
-  /* ---------- page 1: cover ---------- */
-  .cover {
-    background:
-      radial-gradient(ellipse 420px 420px at 82% 14%, rgba(249,115,22,.10), transparent 70%),
-      radial-gradient(ellipse 520px 380px at 8% 96%, rgba(249,115,22,.06), transparent 70%),
-      #faf9f7;
-    justify-content: space-between;
-  }
-  .cover-mid { margin-top: -30mm; }
-  .cover h1 {
-    font-size: 56px; font-weight: 800; letter-spacing: -0.03em;
-    line-height: 1.04; max-width: 165mm; margin-bottom: 26px;
-  }
-  .cover h1 .accent { color: #ea580c; }
-  .cover-sub { font-size: 19px; color: #57534e; line-height: 1.5; max-width: 130mm; margin-bottom: 30px; }
-  .pill-row { display: flex; gap: 10px; align-items: center; }
-  .pill {
-    display: inline-block; padding: 9px 18px; border-radius: 999px;
-    font-size: 14px; font-weight: 700; letter-spacing: .01em;
-    border: 1.5px solid #e7e5e4; background: #ffffff; color: #44403c;
-    box-shadow: 0 2px 6px rgba(28,25,23,.04);
-  }
-  .pill.orange {
-    background: linear-gradient(135deg, #f97316, #ea580c);
-    color: #fff; border-color: transparent;
-    box-shadow: 0 6px 16px rgba(234,88,12,.28);
-  }
-  .cover-foot { display: flex; justify-content: space-between; align-items: flex-end; font-size: 13px; color: #78716c; }
+  /* ───────── PORTADA ───────── */
+  .cover { display:flex; flex-direction:column; justify-content:space-between; }
+  .glow1 { position:absolute; top:-160px; right:-140px; width:520px; height:520px; border-radius:50%;
+           background:radial-gradient(circle, rgba(249,115,22,.38) 0%, rgba(249,115,22,0) 68%); }
+  .glow2 { position:absolute; bottom:-220px; left:-160px; width:560px; height:560px; border-radius:50%;
+           background:radial-gradient(circle, rgba(249,115,22,.16) 0%, rgba(249,115,22,0) 70%); }
+  .brand { display:flex; align-items:center; gap:14px; }
+  .brand .word { font-size:34px; font-weight:800; letter-spacing:-.02em; color:#fff; }
+  .cover h1 { font-size:64px; line-height:1.02; font-weight:800; letter-spacing:-.03em; color:#fff; max-width:165mm; }
+  .cover h1 .grad { background:linear-gradient(92deg,#fb923c 0%, #f97316 45%, #fbbf24 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .cover .sub { margin-top:22px; font-size:19px; line-height:1.5; color:#d6d3d1; max-width:132mm; }
+  .cover-chips { display:flex; gap:10px; margin-top:30px; }
+  .chip-light { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16); color:#e7e5e4; padding:10px 18px; font-size:13.5px; }
+  .chip-fire  { background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; padding:10px 18px; font-size:13.5px; box-shadow:0 6px 18px rgba(249,115,22,.4); }
+  .cover-foot { display:flex; justify-content:space-between; align-items:flex-end; color:#a8a29e; font-size:13px; }
 
-  /* ---------- shared blocks ---------- */
-  h2 { font-size: 27px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 12px; }
-  .lead { font-size: 15.5px; line-height: 1.55; color: #44403c; max-width: 158mm; }
+  /* ───────── PÁGINA DOLOR ───────── */
+  h2.sec { font-size:36px; font-weight:800; letter-spacing:-.02em; line-height:1.08; margin-top:6px; }
+  .pain-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:13px; margin-top:30px; }
+  .pain { padding:26px 20px; border-radius:18px; background:#fff; border:1px solid #e7e5e4; box-shadow:0 2px 10px rgba(28,25,23,.05); }
+  .pain .n { font-size:36px; }
+  .pain h3 { font-size:16.5px; font-weight:800; margin-top:10px; }
+  .pain p { font-size:13px; line-height:1.55; color:#78716c; margin-top:6px; }
+  .quote { margin-top:26px; display:flex; gap:16px; align-items:flex-start; background:#1c1917; border-radius:20px; padding:30px 30px; color:#fafaf9; }
+  .quote .avatar { width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,#f97316,#ea580c); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:19px; color:#fff; flex-shrink:0; }
+  .quote p.t { font-size:17px; line-height:1.55; font-weight:600; }
+  .quote p.a { margin-top:10px; font-size:13px; color:#a8a29e; }
+  .banner { margin-top:26px; border-radius:16px; padding:16px 20px; text-align:center; font-size:17px; font-weight:800; color:#fff;
+            background:linear-gradient(92deg,#f97316,#ea580c); box-shadow:0 10px 26px rgba(249,115,22,.35); }
 
-  .pain-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
-  .pain {
-    display: flex; align-items: baseline; gap: 12px;
-    background: #fff; border: 1px solid #eeece9; border-radius: 14px;
-    padding: 11px 16px; box-shadow: 0 2px 6px rgba(28,25,23,.04);
-    font-size: 14.5px; line-height: 1.45; color: #292524;
-  }
-  .pain b { font-weight: 700; }
-  .pain-dot { flex: none; width: 8px; height: 8px; border-radius: 99px; background: #f97316; position: relative; top: -1px; }
+  /* ───────── PÁGINA SOLUCIÓN ───────── */
+  .sol-grid { display:grid; grid-template-columns:86mm 1fr; gap:10mm; align-items:start; margin-top:16px; }
+  .phone { width:80mm; border-radius:36px; background:#0c0a09; padding:8px; box-shadow:0 24px 60px rgba(28,25,23,.35); margin:0 auto; }
+  .screen { border-radius:29px; background:#faf9f7; overflow:hidden; }
+  .notch { width:84px; height:20px; background:#0c0a09; border-radius:0 0 13px 13px; margin:0 auto; }
+  .p-head { display:flex; justify-content:space-between; align-items:center; padding:9px 13px 8px; border-bottom:1px solid #e7e5e4; background:#fff; }
+  .p-head .t { font-weight:800; font-size:12px; }
+  .live { display:inline-flex; align-items:center; gap:5px; background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; border-radius:999px; padding:3px 8px; font-size:8.5px; font-weight:700; }
+  .dot { width:6px; height:6px; border-radius:50%; background:#10b981; }
+  .p-hero { margin:9px 9px 7px; border-radius:15px; padding:14px 12px; text-align:center;
+            background:linear-gradient(180deg,#fff7ed, #ffffff); border:1px solid #fed7aa; }
+  .p-hero .ic { width:38px; height:38px; margin:0 auto; border-radius:12px; background:linear-gradient(135deg,#f97316,#ea580c); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 14px rgba(249,115,22,.35); font-size:17px; }
+  .p-hero h4 { font-size:14px; font-weight:800; margin-top:8px; letter-spacing:-.01em; }
+  .p-hero p { font-size:9.5px; color:#78716c; margin-top:3px; line-height:1.45; }
+  .p-box { margin:0 9px 7px; border-radius:13px; background:#fff; border:1px solid #e7e5e4; padding:9px 12px; }
+  .p-box .lab { font-size:7.5px; font-weight:800; letter-spacing:.12em; color:#a8a29e; text-transform:uppercase; }
+  .p-box .val { font-size:10.5px; font-weight:700; margin-top:2px; }
+  .tl { margin:0 9px 11px; border-radius:13px; background:#fff; border:1px solid #e7e5e4; padding:11px 12px; }
+  .tl-row { display:flex; gap:9px; align-items:flex-start; padding:4.5px 0; }
+  .tl-ic { width:19px; height:19px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:9.5px; font-weight:800; }
+  .done { background:#10b981; color:#fff; }
+  .curr { background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; box-shadow:0 0 0 4px rgba(249,115,22,.18); }
+  .pend { background:#f5f5f4; color:#a8a29e; border:1px solid #e7e5e4; }
+  .tl-row .tt { font-size:10px; font-weight:700; }
+  .tl-row .ts { font-size:8.5px; color:#a8a29e; }
+  .caption { text-align:center; font-size:11px; color:#78716c; margin-top:9px; font-weight:600; line-height:1.45; }
+  .brief { border-radius:20px; background:#1c1917; color:#fafaf9; padding:18px 20px; box-shadow:0 18px 44px rgba(28,25,23,.3); }
+  .brief .hi { font-size:16px; font-weight:800; }
+  .brief .sub { font-size:10.5px; color:#a8a29e; margin-top:2px; }
+  .b-row { display:flex; gap:10px; align-items:center; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.09); border-radius:13px; padding:9px 12px; margin-top:8px; }
+  .b-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+  .b-row .bt { font-size:11.5px; font-weight:700; }
+  .b-row .bs { font-size:9.5px; color:#a8a29e; }
+  .b-act { margin-left:auto; font-size:8.5px; font-weight:800; color:#fdba74; white-space:nowrap; }
+  .step { background:#fff; border:1px solid #e7e5e4; border-radius:14px; padding:11px 14px; margin-top:9px; display:flex; gap:11px; align-items:flex-start; }
+  .step .num { display:inline-flex; width:24px; height:24px; border-radius:8px; background:#ffedd5; color:#c2410c; font-weight:800; font-size:12.5px; align-items:center; justify-content:center; flex-shrink:0; }
+  .step p { font-size:11.5px; line-height:1.45; color:#44403c; font-weight:600; }
 
-  .quote {
-    margin-top: 14px; padding: 13px 18px;
-    border-left: 3px solid #f97316; background: #fff7f0;
-    border-radius: 0 14px 14px 0; font-size: 14.5px; line-height: 1.5; color: #44403c;
-  }
-  .quote .sig { display: block; margin-top: 5px; font-size: 12.5px; font-weight: 700; color: #78716c; font-style: normal; }
+  /* ───────── PÁGINA FUNDADORES ───────── */
+  .ben-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:26px; }
+  .ben { display:flex; gap:14px; align-items:flex-start; background:#fff; border:1px solid #e7e5e4; border-radius:16px; padding:19px 18px; box-shadow:0 2px 10px rgba(28,25,23,.05); }
+  .ben .ic { width:38px; height:38px; border-radius:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#fff7ed,#ffedd5); border:1px solid #fed7aa; font-size:17px; }
+  .ben h3 { font-size:14px; font-weight:800; letter-spacing:-.01em; }
+  .ben p { font-size:11px; line-height:1.5; color:#78716c; margin-top:3px; }
+  .price-strip > div:first-child { white-space:nowrap; flex-shrink:0; }
+  .price-strip { margin-top:16px; border-radius:18px; background:#1c1917; color:#fff; padding:20px 26px; display:flex; align-items:center; gap:22px; }
+  .price-strip .big { font-size:32px; font-weight:800; letter-spacing:-.02em; }
+  .price-strip .big small { font-size:14px; font-weight:700; color:#a8a29e; }
+  .price-strip .tach { text-decoration:line-through; color:#78716c; font-size:16px; font-weight:700; }
+  .price-strip p { font-size:12px; color:#d6d3d1; line-height:1.5; }
+  .ask { margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .askbox { border-radius:16px; padding:17px 18px; font-size:11.5px; line-height:1.55; }
+  .ask-si { background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; }
+  .ask-no { background:#fff; border:1.5px dashed #d6d3d1; color:#57534e; }
+  .askbox b { display:block; font-size:12.5px; margin-bottom:4px; }
 
-  /* ---------- mockups ---------- */
-  .mockups { display: flex; gap: 16px; margin-top: 14px; align-items: stretch; }
-  .mock-col { flex: 1; display: flex; flex-direction: column; }
-  .mock-caption { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #a8a29e; margin-bottom: 8px; }
-
-  .phone {
-    background: #fff; border: 1px solid #ebe8e4; border-radius: 22px;
-    padding: 16px 16px 14px; box-shadow: 0 10px 26px rgba(28,25,23,.08);
-    flex: 1;
-  }
-  .phone-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-  .phone-car { font-size: 15.5px; font-weight: 800; letter-spacing: -0.01em; }
-  .phone-plate { font-size: 10.5px; font-weight: 700; color: #78716c; background: #f5f5f4; border-radius: 6px; padding: 3px 7px; }
-  .status-chip {
-    display: inline-block; margin: 6px 0 12px;
-    background: linear-gradient(135deg, #f97316, #ea580c); color: #fff;
-    font-size: 11.5px; font-weight: 800; letter-spacing: .04em;
-    padding: 5px 12px; border-radius: 999px;
-  }
-  .tl { list-style: none; }
-  .tl li { display: flex; gap: 10px; align-items: flex-start; padding-bottom: 12px; position: relative; }
-  .tl li::before {
-    content: ""; position: absolute; left: 5.5px; top: 15px; bottom: -1px; width: 2px; background: #e7e5e4;
-  }
-  .tl li:last-child::before { display: none; }
-  .tl .dot {
-    flex: none; width: 13px; height: 13px; border-radius: 99px; margin-top: 2px;
-    background: #fff; border: 2.5px solid #d6d3d1;
-  }
-  .tl .done .dot { background: #f97316; border-color: #f97316; }
-  .tl .now .dot { background: #fff; border-color: #ea580c; box-shadow: 0 0 0 3.5px rgba(249,115,22,.22); }
-  .tl .txt { font-size: 12.5px; line-height: 1.35; color: #78716c; }
-  .tl .done .txt, .tl .now .txt { color: #1c1917; font-weight: 600; }
-  .tl .now .txt b { color: #ea580c; }
-  .phone-note { font-size: 12.5px; color: #57534e; background: #faf9f7; border-radius: 10px; padding: 8px 11px; margin-top: 2px; line-height: 1.4; }
-  .phone-btns { display: flex; gap: 8px; margin-top: 10px; }
-  .pbtn {
-    flex: 1; text-align: center; font-size: 12px; font-weight: 700;
-    border-radius: 10px; padding: 8px 0;
-  }
-  .pbtn.ghost { border: 1.5px solid #e7e5e4; color: #44403c; background: #fff; }
-  .pbtn.solid { background: #1c1917; color: #fff; }
-
-  .brief {
-    background: #1c1917; color: #fafaf9; border-radius: 22px;
-    padding: 18px 18px 16px; box-shadow: 0 10px 26px rgba(28,25,23,.18); flex: 1;
-  }
-  .brief-title { font-size: 15.5px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 3px; }
-  .brief-sub { font-size: 11.5px; color: #a8a29e; margin-bottom: 13px; }
-  .brief-item {
-    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.09);
-    border-radius: 12px; padding: 10px 12px; margin-bottom: 8px;
-  }
-  .brief-item .bt { font-size: 12.5px; font-weight: 700; color: #fff; margin-bottom: 2px; }
-  .brief-item .bd { font-size: 11.5px; color: #d6d3d1; line-height: 1.4; }
-  .brief-item .tag {
-    display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: .05em;
-    color: #fdba74; margin-bottom: 4px; text-transform: uppercase;
-  }
-
-  .keyphrase {
-    margin-top: 14px; background: #1c1917; color: #fafaf9;
-    border-radius: 16px; padding: 15px 20px;
-    font-size: 16px; font-weight: 700; line-height: 1.45; letter-spacing: -0.01em;
-  }
-  .keyphrase .accent { color: #fb923c; }
-
-  /* ---------- page 3 ---------- */
-  .notbox {
-    border: 1.5px dashed #d6d3d1; border-radius: 16px; background: #fff;
-    padding: 15px 18px; margin-bottom: 20px;
-  }
-  .notbox h3 { font-size: 15px; font-weight: 800; margin-bottom: 8px; }
-  .not-items { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; }
-  .not-item { display: flex; gap: 9px; font-size: 13.5px; color: #44403c; line-height: 1.4; align-items: baseline; }
-  .not-item .x { color: #a8a29e; font-weight: 800; font-size: 12px; flex: none; }
-  .notbox .punch { margin-top: 10px; font-size: 14px; font-weight: 700; color: #1c1917; }
-  .notbox .punch .accent { color: #ea580c; }
-
-  .offer-cols { display: flex; gap: 16px; margin-top: 14px; }
-  .offer-card {
-    flex: 1.35; background: #fff; border: 1px solid #eeece9; border-radius: 18px;
-    padding: 17px 19px; box-shadow: 0 6px 18px rgba(28,25,23,.05);
-  }
-  .ask-card {
-    flex: 1; background: #fff7f0; border: 1.5px solid #fed7aa; border-radius: 18px;
-    padding: 17px 19px;
-  }
-  .card-title { font-size: 13px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
-  .offer-card .card-title { color: #ea580c; }
-  .ask-card .card-title { color: #9a3412; }
-  .check-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
-  .check-item:last-child { margin-bottom: 0; }
-  .check {
-    flex: none; width: 17px; height: 17px; border-radius: 99px; margin-top: 1px;
-    background: linear-gradient(135deg, #f97316, #ea580c); color: #fff;
-    font-size: 10.5px; font-weight: 800; display: flex; align-items: center; justify-content: center;
-  }
-  .check-item .ct { font-size: 13.5px; line-height: 1.4; color: #292524; }
-  .check-item .ct b { font-weight: 800; }
-  .ask-card p { font-size: 13.5px; line-height: 1.5; color: #57534e; }
-  .ask-card p + p { margin-top: 9px; }
-  .ask-card .big { font-size: 14.5px; font-weight: 800; color: #1c1917; }
-
-  .price-strip {
-    margin-top: 16px; display: flex; align-items: center; gap: 16px;
-    background: linear-gradient(135deg, #f97316, #ea580c); color: #fff;
-    border-radius: 18px; padding: 15px 22px; box-shadow: 0 10px 24px rgba(234,88,12,.25);
-  }
-  .price-big { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
-  .price-big small { font-size: 15px; font-weight: 700; }
-  .price-txt { font-size: 13.5px; line-height: 1.45; font-weight: 600; color: #ffedd5; }
-  .price-txt b { color: #fff; }
-
-  .banner {
-    margin-top: 16px; text-align: center;
-    font-size: 19px; font-weight: 800; letter-spacing: -0.015em; line-height: 1.35;
-  }
-  .banner .accent { color: #ea580c; }
-
-  /* ---------- page 4 ---------- */
-  .close-page {
-    background:
-      radial-gradient(ellipse 460px 420px at 50% 30%, rgba(249,115,22,.09), transparent 70%),
-      #faf9f7;
-    justify-content: space-between; text-align: center; align-items: center;
-  }
-  .close-mid { margin-top: 34mm; display: flex; flex-direction: column; align-items: center; }
-  .close-mid h2 { font-size: 58px; letter-spacing: -0.03em; margin-bottom: 16px; }
-  .close-mid .accent { color: #ea580c; }
-  .close-sub { font-size: 20px; color: #57534e; line-height: 1.5; max-width: 130mm; margin-bottom: 34px; }
-  .contact-card {
-    background: #fff; border: 1px solid #eeece9; border-radius: 22px;
-    padding: 24px 40px; box-shadow: 0 12px 32px rgba(28,25,23,.08);
-    display: inline-flex; flex-direction: column; gap: 12px; text-align: left;
-  }
-  .contact-row { display: flex; align-items: center; gap: 14px; font-size: 16.5px; font-weight: 700; color: #1c1917; }
-  .contact-row .lbl {
-    flex: none; width: 92px; font-size: 11px; font-weight: 800; letter-spacing: .12em;
-    text-transform: uppercase; color: #a8a29e;
-  }
-  .contact-row .accent { color: #ea580c; }
-  .close-note { margin-top: 26px; font-size: 14px; color: #78716c; max-width: 120mm; line-height: 1.5; }
-  .close-foot { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12.5px; color: #a8a29e; }
-
-  .spacer { flex: 1; }
+  /* ───────── CIERRE ───────── */
+  .close { display:flex; flex-direction:column; justify-content:space-between; }
+  .close h2 { font-size:62px; font-weight:800; letter-spacing:-.03em; color:#fff; line-height:1.05; }
+  .close .sub { font-size:19px; color:#d6d3d1; margin-top:16px; max-width:132mm; line-height:1.55; }
+  .contact { margin-top:32px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:22px; padding:24px 28px; display:flex; align-items:center; gap:22px; }
+  .contact .avatar { width:62px; height:62px; border-radius:50%; background:linear-gradient(135deg,#f97316,#ea580c); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:24px; color:#fff; flex-shrink:0; }
+  .contact .name { font-size:19px; font-weight:800; color:#fff; }
+  .contact .rol { font-size:12.5px; color:#a8a29e; }
+  .c-lines { margin-left:auto; text-align:right; }
+  .c-lines .ph { font-size:26px; font-weight:800; color:#fdba74; }
+  .c-lines .em { font-size:13.5px; color:#d6d3d1; margin-top:4px; }
+  .pfoot { position:absolute; bottom:11mm; left:15mm; right:15mm; display:flex; justify-content:space-between; font-size:10.5px; color:#a8a29e; font-weight:600; }
+  .pfoot b { color:#f97316; font-weight:800; }
+  .scarcity { margin-top:18px; display:inline-flex; align-items:center; gap:10px; background:rgba(249,115,22,.12); border:1px solid rgba(249,115,22,.35); color:#fdba74; border-radius:999px; padding:12px 22px; font-size:14px; font-weight:700; }
 </style>
 </head>
 <body>
 
-<!-- ============ PÁGINA 1 · PORTADA ============ -->
-<div class="page cover">
-  <div class="brand">
-    <div class="hex"></div>
-    <div class="wordmark">FIXA</div>
-  </div>
-
-  <div class="cover-mid">
-    <h1>Deja de llevar<br>el taller <span class="accent">en la cabeza.</span></h1>
-    <p class="cover-sub">Tus clientes ven su coche en tiempo real por un link de WhatsApp. Y tú, cada mañana, ves lo que no se te puede escapar hoy.</p>
-    <div class="pill-row">
-      <span class="pill">Programa de talleres fundadores</span>
-      <span class="pill orange">Solo 5 plazas</span>
+<!-- ══════════ 1 · PORTADA ══════════ -->
+<div class="page dark cover">
+  <div class="glow1"></div><div class="glow2"></div>
+  <div style="position:relative;">
+    <div class="brand">
+      <svg width="46" height="46" viewBox="0 0 40 40">
+        <defs><linearGradient id="g1" x1="0" y1="0" x2="40" y2="40"><stop offset="0" stop-color="#f97316"/><stop offset="1" stop-color="#ea580c"/></linearGradient></defs>
+        <path d="M20 2.5l14.5 8.4v18.2L20 37.5 5.5 29.1V10.9L20 2.5z" fill="url(#g1)"/>
+        <path d="M14.5 11h11.5v4h-7v4h6v4h-6v6h-4.5V11z" fill="#fff"/>
+      </svg>
+      <span class="word">FIXA</span>
     </div>
   </div>
 
-  <div class="cover-foot">
-    <span>Hecho por gente de taller, para gente de taller.</span>
-    <span><b>fixataller.es</b></span>
+  <div style="position:relative;">
+    <p class="eyebrow" style="margin-bottom:16px;">Programa Talleres Fundadores</p>
+    <h1>Deja de llevar<br>el taller <span class="grad">en la cabeza.</span></h1>
+    <p class="sub">Tus clientes ven su coche en tiempo real y dejan de llamarte. Y tú, cada mañana, ves lo único que importa: lo que no se te puede escapar hoy.</p>
+    <div class="cover-chips">
+      <span class="chip chip-fire">Solo 5 plazas</span>
+      <span class="chip chip-light">2 meses gratis · todo incluido</span>
+      <span class="chip chip-light">Te lo dejamos funcionando</span>
+    </div>
+  </div>
+
+  <div class="cover-foot" style="position:relative;">
+    <span>Hecho en un taller de verdad — Ibañez Clima, desde 2010</span>
+    <span style="font-weight:700; color:#d6d3d1;">fixataller.es</span>
   </div>
 </div>
 
-<!-- ============ PÁGINA 2 · DOLOR + SOLUCIÓN ============ -->
+<!-- ══════════ 2 · EL DOLOR ══════════ -->
 <div class="page">
-  <div class="kicker">Te sonará</div>
-  <h2>¿Cuántas veces al día sueltas la herramienta para coger el teléfono?</h2>
-  <p class="lead">Porque un cliente pregunta cómo va su coche. Otra vez. Y mientras tanto:</p>
+  <p class="eyebrow">Te sonará</p>
+  <h2 class="sec">Tu día ya es bastante duro.<br>Esto lo hace peor:</h2>
 
-  <div class="pain-list">
-    <div class="pain"><span class="pain-dot"></span><span><b>Presupuestos que se enfrían.</b> Lo mandaste hace dos días, nadie ha contestado, y ya ni te acuerdas.</span></div>
-    <div class="pain"><span class="pain-dot"></span><span><b>Coches listos que nadie recoge.</b> Ocupan elevador, ocupan patio, y el aviso se te pasó.</span></div>
-    <div class="pain"><span class="pain-dot"></span><span><b>ITV que se escapan.</b> Trabajo que era tuyo y se lo lleva otro porque nadie avisó al cliente.</span></div>
+  <div class="pain-grid">
+    <div class="pain">
+      <div class="n">📞</div>
+      <h3>«¿Cómo va mi coche?»</h3>
+      <p>Cada llamada te saca de debajo de un capó. Sueltas la herramienta, te limpias las manos, contestas… y pierdes el hilo. Varias veces al día. Todos los días.</p>
+    </div>
+    <div class="pain">
+      <div class="n">💶</div>
+      <h3>Presupuestos que se enfrían</h3>
+      <p>Lo enviaste hace dos días. El cliente no contesta. Tú no tienes tiempo de perseguirlo. Ese dinero se acaba yendo a otro taller.</p>
+    </div>
+    <div class="pain">
+      <div class="n">🚗</div>
+      <h3>Coches listos que estorban</h3>
+      <p>Reparado desde el martes, ocupando plaza. Nadie avisó al cliente. Y las ITV de tus clientes, caducando sin que nadie las pille a tiempo.</p>
+    </div>
   </div>
 
   <div class="quote">
-    "Te entiendo. Yo también tengo un taller. Todo esto lo he vivido con las manos ocupadas y el teléfono sonando."
-    <span class="sig">— Sergi Ibañez · Ibañez Clima, taller real desde 2010</span>
-  </div>
-
-  <div class="spacer"></div>
-
-  <div class="kicker" style="margin-top:16px;">La solución, en dos pantallas</div>
-  <div class="mockups">
-    <div class="mock-col">
-      <div class="mock-caption">Lo que ve tu cliente</div>
-      <div class="phone">
-        <div class="phone-top">
-          <div class="phone-car">Tu Mercedes GLC</div>
-          <div class="phone-plate">4827 KZT</div>
-        </div>
-        <div class="status-chip">EN REPARACIÓN</div>
-        <ul class="tl">
-          <li class="done"><span class="dot"></span><span class="txt">Recibido en el taller</span></li>
-          <li class="done"><span class="dot"></span><span class="txt">Diagnóstico hecho</span></li>
-          <li class="now"><span class="dot"></span><span class="txt"><b>En reparación</b> — ahora mismo</span></li>
-          <li><span class="dot"></span><span class="txt">Listo para recoger</span></li>
-        </ul>
-        <div class="phone-note">Te avisaremos cuando esté listo. No hace falta que llames.</div>
-        <div class="phone-btns">
-          <div class="pbtn ghost">Llamar al taller</div>
-          <div class="pbtn solid">WhatsApp</div>
-        </div>
-      </div>
-    </div>
-    <div class="mock-col">
-      <div class="mock-caption">Lo que ves tú al abrir</div>
-      <div class="brief">
-        <div class="brief-title">Buenos días. Hoy no dejes escapar esto:</div>
-        <div class="brief-sub">Tu briefing de la mañana</div>
-        <div class="brief-item">
-          <span class="tag">Presupuesto sin respuesta</span>
-          <div class="bt">Llama a Antonio</div>
-          <div class="bd">Presupuesto de 740 € · 2 días sin responder</div>
-        </div>
-        <div class="brief-item">
-          <span class="tag">Coche listo</span>
-          <div class="bt">Avisa a María</div>
-          <div class="bd">Su coche está listo desde ayer y ocupa sitio</div>
-        </div>
-        <div class="brief-item">
-          <span class="tag">ITV este mes</span>
-          <div class="bt">El Golf de Joan pasa la ITV</div>
-          <div class="bd">Un WhatsApp y ese trabajo es tuyo, no de otro</div>
-        </div>
-      </div>
+    <div class="avatar">S</div>
+    <div>
+      <p class="t">«Yo también tengo un taller. Sé lo que es soltar la llave seis veces en una mañana para decir "sí, mañana está". FIXA nació ahí: de la rabia de perder tiempo y dinero por cosas que una máquina puede vigilar sola.»</p>
+      <p class="a">Sergi Ibañez · Fundador de FIXA · Ibañez Clima (taller real, desde 2010)</p>
     </div>
   </div>
 
-  <div class="keyphrase">El cliente deja de llamar. Y tú no cambias nada de cómo trabajas: <span class="accent">le mandas un link, como un WhatsApp más.</span></div>
+  <div class="banner">Los programas de gestión no arreglan esto. Por eso FIXA no es uno.</div>
+  <div class="pfoot"><span><b>FIXA</b> · Programa Talleres Fundadores</span><span>02 — El problema</span></div>
 </div>
 
-<!-- ============ PÁGINA 3 · QUÉ NO ES + OFERTA ============ -->
+<!-- ══════════ 3 · LA SOLUCIÓN ══════════ -->
 <div class="page">
-  <div class="notbox">
-    <h3>Antes de que lo pienses: qué NO es</h3>
-    <div class="not-items">
-      <div class="not-item"><span class="x">✕</span><span>No es un programa de gestión de esos.</span></div>
-      <div class="not-item"><span class="x">✕</span><span>No lleva contabilidad ni almacén.</span></div>
-      <div class="not-item"><span class="x">✕</span><span>No tienes que migrar nada.</span></div>
-      <div class="not-item"><span class="x">✕</span><span>No hay nada que aprender ni instalar.</span></div>
+  <p class="eyebrow">Así funciona</p>
+  <h2 class="sec">Tú mandas un link.<br>El cliente deja de llamar.</h2>
+
+  <div class="sol-grid">
+    <!-- iPhone: lo que ve SU cliente -->
+    <div>
+      <div class="phone">
+        <div class="screen">
+          <div class="notch"></div>
+          <div class="p-head">
+            <span class="t">Taller García</span>
+            <span class="live"><span class="dot"></span> En directo</span>
+          </div>
+          <div class="p-hero">
+            <div class="ic">🔧</div>
+            <h4>Tu coche ya está en reparación</h4>
+            <p>Nuestros mecánicos están manos a la obra.<br>No tienes que hacer nada: te avisaremos.</p>
+          </div>
+          <div class="p-box">
+            <span class="lab">Qué tienes que hacer</span>
+            <p class="val">Nada por ahora ✅</p>
+          </div>
+          <div class="tl">
+            <div class="tl-row"><span class="tl-ic done">✓</span><div><p class="tt">Recibido en el taller</p><p class="ts">lun · 9:12</p></div></div>
+            <div class="tl-row"><span class="tl-ic done">✓</span><div><p class="tt">Presupuesto aceptado — desde el móvil</p><p class="ts">lun · 13:40</p></div></div>
+            <div class="tl-row"><span class="tl-ic curr">●</span><div><p class="tt">En reparación</p><p class="ts">ahora mismo</p></div></div>
+            <div class="tl-row"><span class="tl-ic pend">·</span><div><p class="tt" style="color:#a8a29e;">Listo para recoger</p><p class="ts">te avisaremos</p></div></div>
+          </div>
+        </div>
+      </div>
+      <p class="caption">Lo que ve tu cliente — sin apps, sin contraseñas.<br>Un link de WhatsApp y ya.</p>
     </div>
-    <div class="punch">Si usas WhatsApp, <span class="accent">ya sabes usarlo.</span></div>
+
+    <!-- Briefing + 3 pasos -->
+    <div>
+      <div class="brief">
+        <p class="hi">Buenos días 👋</p>
+        <p class="sub">Esto es lo que no se te puede escapar hoy:</p>
+        <div class="b-row"><span class="b-dot" style="background:#ef4444;"></span><div><p class="bt">Llama a Antonio</p><p class="bs">Presupuesto de 740 € · 2 días sin respuesta</p></div><span class="b-act">LLAMAR →</span></div>
+        <div class="b-row"><span class="b-dot" style="background:#f59e0b;"></span><div><p class="bt">Avisa a María</p><p class="bs">Su coche está listo desde ayer y no lo sabe</p></div><span class="b-act">WHATSAPP →</span></div>
+        <div class="b-row"><span class="b-dot" style="background:#10b981;"></span><div><p class="bt">4 ITV caducan este mes</p><p class="bs">Trabajo que puedes recuperar antes que nadie</p></div><span class="b-act">VER →</span></div>
+      </div>
+      <p class="caption">Lo que ves tú al abrir FIXA por la mañana.<br>No datos: decisiones.</p>
+
+      <div class="step"><span class="num">1</span><p>El coche entra. Matrícula y listo — 30 segundos, hasta con las manos sucias.</p></div>
+      <div class="step"><span class="num">2</span><p>Le mandas el link por WhatsApp, como un mensaje más. Se acabaron las llamadas de «¿cómo va?».</p></div>
+      <div class="step"><span class="num">3</span><p>El cliente acepta el presupuesto desde el sofá. FIXA avanza solo y te avisa a ti.</p></div>
+    </div>
   </div>
 
-  <div class="kicker">La oferta de fundador</div>
-  <h2>Solo 5 talleres. Ni uno más.</h2>
-  <p class="lead">Buscamos 5 talleres fundadores que lo usen con coches reales antes de abrirlo al resto. A cambio, condiciones que no volverán a existir.</p>
+  <div class="banner">Tú no cambias nada de cómo trabajas. Si usas WhatsApp, ya sabes usar FIXA.</div>
+  <div class="pfoot"><span><b>FIXA</b> · Programa Talleres Fundadores</span><span>03 — Cómo funciona</span></div>
+</div>
 
-  <div class="offer-cols">
-    <div class="offer-card">
-      <div class="card-title">Qué recibes</div>
-      <div class="check-item"><span class="check">✓</span><span class="ct"><b>2 meses gratis, todo incluido.</b> Sin tarjeta, sin permanencia, sin letra pequeña.</span></div>
-      <div class="check-item"><span class="check">✓</span><span class="ct"><b>Te lo dejamos funcionando nosotros.</b> Alta hecha, cero papeleo. Tú no montas nada.</span></div>
-      <div class="check-item"><span class="check">✓</span><span class="ct"><b>Soporte directo por WhatsApp con el fundador.</b> Le escribes a Sergi, no a un buzón.</span></div>
-      <div class="check-item"><span class="check">✓</span><span class="ct"><b>Tu opinión moldea el producto.</b> Lo que pidas de verdad, se construye.</span></div>
+<!-- ══════════ 4 · SER FUNDADOR ══════════ -->
+<div class="page">
+  <p class="eyebrow">La oferta — solo 5 talleres</p>
+  <h2 class="sec">Lo que ganas siendo<br>Taller Fundador</h2>
+
+  <div class="ben-grid">
+    <div class="ben">
+      <div class="ic">🎁</div>
+      <div><h3>2 meses gratis, todo incluido</h3><p>Sin tarjeta, sin permanencia, sin letra pequeña. Todo el producto, no una demo capada.</p></div>
     </div>
-    <div class="ask-card">
-      <div class="card-title">Qué te pedimos</div>
-      <p class="big">Que lo uses con coches reales.</p>
-      <p>Los próximos que entren por la puerta. No hace falta migrar el taller: empieza con tres.</p>
-      <p class="big">Y que nos digas la verdad.</p>
-      <p>Sin filtros. Qué sobra, qué falta, qué es una castaña. Eso es lo que vale.</p>
+    <div class="ben">
+      <div class="ic">🔑</div>
+      <div><h3>Alta hecha por nosotros</h3><p>Te lo dejamos funcionando: cuenta creada, taller configurado y tus primeros coches dentro. Tú solo mandas el primer link.</p></div>
+    </div>
+    <div class="ben">
+      <div class="ic">📲</div>
+      <div><h3>Línea directa con el fundador</h3><p>Mi WhatsApp personal, no un chatbot ni un ticket. Algo no te cuadra → me escribes → se arregla.</p></div>
+    </div>
+    <div class="ben">
+      <div class="ic">🛠️</div>
+      <div><h3>FIXA se moldea a TU taller</h3><p>Tus sugerencias van las primeras de la lista. Los fundadores decidís hacia dónde crece el producto.</p></div>
+    </div>
+    <div class="ben">
+      <div class="ic">🔒</div>
+      <div><h3>Precio fundador, congelado de por vida</h3><p>Cuando acabe el piloto, si te quedas: 29 €/mes para siempre. Suba lo que suba para los demás.</p></div>
+    </div>
+    <div class="ben">
+      <div class="ic">🏅</div>
+      <div><h3>Sello de Taller Fundador</h3><p>De los 5 que estuvieron antes que nadie. Cada novedad, primero en tu taller. Y tu nombre, si quieres, en nuestra web.</p></div>
     </div>
   </div>
 
   <div class="price-strip">
-    <div class="price-big">29 €<small>/mes</small></div>
-    <div class="price-txt"><b>Precio de fundador congelado para siempre</b> cuando acabe el piloto. Aunque suba para los demás, para ti no sube nunca. Y si no te convence, lo dejas y tan amigos.</div>
+    <div>
+      <div class="big">0&nbsp;€ <small>/ 2&nbsp;meses</small></div>
+      <div style="margin-top:2px;"><span class="tach">después 29&nbsp;€/mes</span> <span style="color:#fdba74; font-size:13px; font-weight:800;">→ congelado</span></div>
+    </div>
+    <p>Después, tú decides: te quedas al precio de fundador congelado para siempre… o te vas y tan amigos. <b style="color:#fff;">Sin permanencia. Sin tarjeta. Sin riesgo.</b></p>
   </div>
 
-  <div class="spacer"></div>
-
-  <div class="banner">No te pedimos tiempo. <span class="accent">Te pedimos que mandes un link.</span></div>
+  <div class="ask">
+    <div class="askbox ask-si">
+      <b>✓ Lo único que te pedimos</b>
+      Que lo uses con coches de verdad y nos digas la verdad sin filtros. Si algo no sirve, queremos oírlo crudo. No buscamos palmaditas: buscamos que funcione.
+    </div>
+    <div class="askbox ask-no">
+      <b>✗ Lo que NO es FIXA</b>
+      No es un programa de gestión de esos. Ni contabilidad, ni almacén, ni mil pantallas, ni cursillos. No migras nada. No te pedimos tiempo: te pedimos que mandes un link.
+    </div>
+  </div>
+  <div class="pfoot"><span><b>FIXA</b> · Programa Talleres Fundadores</span><span>04 — La oferta</span></div>
 </div>
 
-<!-- ============ PÁGINA 4 · CIERRE ============ -->
-<div class="page close-page">
-  <div class="brand" style="align-self: flex-start;">
-    <div class="hex"></div>
-    <div class="wordmark">FIXA</div>
-  </div>
-
-  <div class="close-mid">
+<!-- ══════════ 5 · CIERRE ══════════ -->
+<div class="page dark close">
+  <div class="glow1"></div>
+  <div style="position:relative; margin-top:18mm;">
+    <p class="eyebrow" style="margin-bottom:14px;">El siguiente paso</p>
     <h2>¿Hablamos?</h2>
-    <p class="close-sub">10 minutos y te lo enseño funcionando <b>en tu propio taller</b>. Si no te sirve, me lo dices y tan amigos.</p>
-    <div class="contact-card">
-      <div class="contact-row"><span class="lbl">Quién</span><span>Sergi · Ibañez Clima</span></div>
-      <div class="contact-row"><span class="lbl">WhatsApp</span><span class="accent">611 433 218</span></div>
-      <div class="contact-row"><span class="lbl">Correo</span><span>hola@fixataller.es</span></div>
-      <div class="contact-row"><span class="lbl">Web</span><span>fixataller.es</span></div>
+    <p class="sub">10 minutos, en tu taller y con tu móvil. Te enseño el portal con un coche tuyo de verdad — y decides viéndolo, no leyendo un PDF.</p>
+
+    <div class="contact">
+      <div class="avatar">S</div>
+      <div>
+        <p class="name">Sergi Ibañez</p>
+        <p class="rol">Fundador de FIXA · Ibañez Clima</p>
+      </div>
+      <div class="c-lines">
+        <p class="ph">611 433 218</p>
+        <p class="em">WhatsApp o llamada · hola@fixataller.es</p>
+      </div>
     </div>
-    <p class="close-note">Recuerda: solo hay 5 plazas de taller fundador. Cuando se llenen, el precio congelado de 29 €/mes desaparece con ellas.</p>
+
+    <div class="scarcity">⏳ &nbsp;Solo 5 plazas de fundador. Cuando se llenen, se cierra el programa.</div>
   </div>
 
-  <div class="close-foot">
-    <span>FIXA — Deja de llevar el taller en la cabeza.</span>
+  <div class="cover-foot" style="position:relative;">
+    <span>FIXA — nacido en un taller de verdad</span>
+    <span style="font-weight:700; color:#d6d3d1;">fixataller.es</span>
   </div>
 </div>
 
