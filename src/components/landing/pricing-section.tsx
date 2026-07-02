@@ -141,7 +141,7 @@ export function PricingSection() {
                     <span className={`text-5xl font-extrabold tracking-tight ${p.popular ? "text-white" : "text-stone-900"}`}>
                       {formatMoneyShort(precio)}
                     </span>
-                    <span className={`text-sm ${p.popular ? "text-stone-400" : "text-stone-400"}`}>/mes</span>
+                    <span className={`text-sm ${p.popular ? "text-stone-400" : "text-stone-400"}`}>/mes <span style={{fontSize:"11px"}}>+ IVA</span></span>
                   </div>
 
                   {anual && (

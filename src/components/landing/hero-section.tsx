@@ -34,7 +34,7 @@ export function HeroSection() {
                 <Zap className="h-3 w-3 text-white" />
               </span>
               <span className="text-xs font-semibold text-brand-700 tracking-wide">
-                Nacida en un taller de verdad · desde 29€/mes
+                Nacida en un taller de verdad · desde 29€/mes + IVA
               </span>
             </motion.div>
 

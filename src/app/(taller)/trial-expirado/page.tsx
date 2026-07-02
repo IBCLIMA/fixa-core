@@ -26,15 +26,15 @@ export default function TrialExpiradoPage() {
             <div className="space-y-2 text-sm text-left">
               <div className="flex justify-between rounded-lg bg-stone-50 p-3">
                 <span className="font-medium">Básico</span>
-                <span className="font-bold">29€/mes</span>
+                <span className="font-bold">29€/mes + IVA</span>
               </div>
               <div className="flex justify-between rounded-lg bg-brand-50 border border-brand-200 p-3">
                 <span className="font-medium">Taller <span className="text-xs text-brand-600">(recomendado)</span></span>
-                <span className="font-bold">49€/mes</span>
+                <span className="font-bold">49€/mes + IVA</span>
               </div>
               <div className="flex justify-between rounded-lg bg-stone-50 p-3">
                 <span className="font-medium">Pro</span>
-                <span className="font-bold">79€/mes</span>
+                <span className="font-bold">79€/mes + IVA</span>
               </div>
             </div>
             <p className="text-xs text-muted-foreground">Sin permanencia. IVA no incluido.</p>
