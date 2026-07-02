@@ -77,7 +77,7 @@ export function emailDia7(nombre: string) {
 
   <p>Llevas una semana con FIXA. Te quedan 7 días de prueba gratis.</p>
 
-  <p>Déjame ser directo: <strong>si FIXA no te ha ahorrado ni media hora esta semana, no la pagues.</strong> En serio. 29€ al mes es poco, pero si no te aporta, es dinero tirado.</p>
+  <p>Déjame ser directo: <strong>si FIXA no te ha ahorrado ni media hora esta semana, no la pagues.</strong> En serio. 49€ al mes es menos que una hora tuya, pero si no te aporta, es dinero tirado.</p>
 
   <p>Pero si esta semana...</p>
 

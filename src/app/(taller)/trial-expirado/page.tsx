@@ -22,22 +22,18 @@ export default function TrialExpiradoPage() {
 
         <Card>
           <CardContent className="p-5 space-y-3">
-            <p className="text-sm font-bold">Planes disponibles</p>
+            <p className="text-sm font-bold">Tu plan</p>
             <div className="space-y-2 text-sm text-left">
-              <div className="flex justify-between rounded-lg bg-stone-50 p-3">
-                <span className="font-medium">Básico</span>
-                <span className="font-bold">29€/mes + IVA</span>
-              </div>
               <div className="flex justify-between rounded-lg bg-brand-50 border border-brand-200 p-3">
-                <span className="font-medium">Taller <span className="text-xs text-brand-600">(recomendado)</span></span>
+                <span className="font-medium">FIXA · todo incluido</span>
                 <span className="font-bold">49€/mes + IVA</span>
               </div>
               <div className="flex justify-between rounded-lg bg-stone-50 p-3">
-                <span className="font-medium">Pro</span>
-                <span className="font-bold">79€/mes + IVA</span>
+                <span className="font-medium">Anual <span className="text-xs text-emerald-600">(2 meses gratis)</span></span>
+                <span className="font-bold">490€/año + IVA</span>
               </div>
             </div>
-            <p className="text-xs text-muted-foreground">Sin permanencia. IVA no incluido.</p>
+            <p className="text-xs text-muted-foreground">Sin permanencia. Un solo plan, sin recortes.</p>
           </CardContent>
         </Card>
 

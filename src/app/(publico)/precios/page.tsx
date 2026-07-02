@@ -8,11 +8,11 @@ import { Footer } from "@/components/landing/footer";
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Precios — Software para talleres desde 29€/mes, sin permanencia",
-  description: "Planes y precios de FIXA: Básico 29€, Taller 49€ y Pro 79€ al mes. 14 días gratis sin tarjeta, sin permanencia y con el setup incluido.",
+  title: "Precio — Software para talleres: 49€/mes todo incluido, sin permanencia",
+  description: "FIXA cuesta 49€/mes + IVA, todo incluido: portal del cliente, presupuestos online, avisos ITV. 14 días gratis sin tarjeta y sin permanencia.",
   alternates: { canonical: `${SITE_URL}/precios` },
   openGraph: {
-    title: "Precios de FIXA — Desde 29€/mes, sin permanencia",
+    title: "Precio de FIXA — 49€/mes todo incluido, sin permanencia",
     description: "Planes claros, sin sorpresas. 14 días gratis para tu taller mecánico.",
     url: `${SITE_URL}/precios`,
   },
@@ -25,9 +25,8 @@ const jsonLd = [
     name: "FIXA",
     description: "Software de gestión para talleres mecánicos",
     offers: [
-      { "@type": "Offer", name: "Básico", price: "29", priceCurrency: "EUR", billingDuration: "P1M" },
-      { "@type": "Offer", name: "Taller", price: "49", priceCurrency: "EUR", billingDuration: "P1M" },
-      { "@type": "Offer", name: "Pro", price: "79", priceCurrency: "EUR", billingDuration: "P1M" },
+      { "@type": "Offer", name: "FIXA", price: "49", priceCurrency: "EUR", billingDuration: "P1M" },
+      { "@type": "Offer", name: "FIXA Anual", price: "490", priceCurrency: "EUR", billingDuration: "P1Y" },
     ],
   },
   {
@@ -47,7 +46,7 @@ export default function PreciosPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Navbar />
       <div className="pt-12">
-        <h1 className="sr-only">Precios de FIXA: software de gestión para talleres mecánicos desde 29€/mes</h1>
+        <h1 className="sr-only">Precios de FIXA: software para talleres mecánicos: 49€/mes todo incluido</h1>
         <PricingSection />
       </div>
       <FaqSection />

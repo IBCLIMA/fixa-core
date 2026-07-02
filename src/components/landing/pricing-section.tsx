@@ -3,67 +3,36 @@
 import { useState } from "react";
 import { LandingBadge } from "./landing-badge";
 import Link from "next/link";
-import { Check, X, ArrowRight, Sparkles } from "lucide-react";
+import { Check, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { track } from "@vercel/analytics";
 import { motion, useReducedMotion } from "framer-motion";
 import { AnimatedSection } from "./animated-section";
 import { TRANSITION_DEFAULT } from "./animation-config";
 import { cn } from "@/lib/utils";
-import { formatMoneyShort } from "@/lib/format";
 
-const precios = [
-  {
-    nombre: "Básico",
-    precio: 29,
-    precioAnual: 24,
-    desc: "Para arrancar tú solo",
-    features: ["1 usuario", "Clientes ilimitados", "Órdenes de trabajo legales (RD 1457/1986)", "Calendario y citas online", "WhatsApp integrado", "Portal del cliente"],
-    popular: false,
-  },
-  {
-    nombre: "Taller",
-    precio: 49,
-    precioAnual: 39,
-    desc: "El taller entero bajo control",
-    features: ["Hasta 5 usuarios", "Todo lo del plan Básico", "Avisos ITV automáticos", "Presupuestos que se aceptan online", "Envío masivo de ofertas", "Importar datos CSV", "Soporte prioritario"],
-    popular: true,
-  },
-  {
-    nombre: "Pro",
-    precio: 79,
-    precioAnual: 65,
-    desc: "Para equipos y varios talleres",
-    features: ["Usuarios ilimitados", "Todo lo del plan Taller", "Multi-taller", "Los números de tu taller", "Con tu logo y tus textos", "Soporte dedicado"],
-    popular: false,
-  },
+// UN solo plan, todo incluido. Decidir entre planes es fricción, y la fricción
+// mata ventas a talleres. El precio (49€) viene del estudio de mercado 07/2026:
+// la competencia solo da portal+presupuestos online en planes de 99-159€/mes,
+// y la franja que ya paga un taller de 2-8 mecánicos es 35-60€/mes.
+const PRECIO_MES = 49;
+const PRECIO_MES_ANUAL = 41; // 490€/año ≈ 2 meses gratis
+
+const FEATURES = [
+  "Portal del cliente en tiempo real (deja de recibir llamadas)",
+  "Presupuestos que se aceptan online, con validez legal",
+  "Avisos de ITV y mantenimientos automáticos",
+  "Órdenes de trabajo legales (RD 1457/1986)",
+  "Agenda del taller y citas online",
+  "WhatsApp integrado en cada paso",
+  "Todo tu equipo, sin pagar por usuario",
+  "Tus datos importados y soporte directo",
 ];
-
-// Tabla de comparación (skill: Comparison Table Focus pattern)
-const comparacionFeatures = [
-  { feature: "Órdenes de trabajo legales", basico: true, taller: true, pro: true },
-  { feature: "Presupuestos online", basico: false, taller: true, pro: true },
-  { feature: "WhatsApp integrado", basico: true, taller: true, pro: true },
-  { feature: "Portal del cliente", basico: true, taller: true, pro: true },
-  { feature: "Calendario y citas online", basico: true, taller: true, pro: true },
-  { feature: "Avisos ITV automáticos", basico: false, taller: true, pro: true },
-  { feature: "Envío de ofertas masivo", basico: false, taller: true, pro: true },
-  { feature: "Importar datos CSV", basico: false, taller: true, pro: true },
-  { feature: "Multi-taller", basico: false, taller: false, pro: true },
-  { feature: "Los números de tu taller", basico: false, taller: false, pro: true },
-  { feature: "Usuarios", basico: "1", taller: "5", pro: "Sin límite" },
-  { feature: "Soporte", basico: "Email", taller: "Prioritario", pro: "Dedicado" },
-];
-
-function CellValue({ value }: { value: boolean | string }) {
-  if (value === true) return <Check className="h-4 w-4 text-emerald-500 mx-auto" />;
-  if (value === false) return <X className="h-4 w-4 text-stone-300 mx-auto" />;
-  return <span className="text-xs font-medium text-stone-600">{value}</span>;
-}
 
 export function PricingSection() {
   const prefersReducedMotion = useReducedMotion();
   const [anual, setAnual] = useState(false);
+  const precio = anual ? PRECIO_MES_ANUAL : PRECIO_MES;
 
   return (
     <section id="precios" className="relative overflow-hidden">
@@ -71,12 +40,13 @@ export function PricingSection() {
 
       <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16 relative z-10">
         <AnimatedSection className="text-center mb-10">
-          <LandingBadge>Precios</LandingBadge>
+          <LandingBadge>Precio</LandingBadge>
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 md:text-5xl">
-            Recupera un presupuesto al mes y se paga solo.
+            Un precio. Todo dentro. Sin sorpresas.
           </h2>
           <p className="text-stone-500 mt-4 text-lg max-w-xl mx-auto">
-            Una revisión que no se escapa, un cliente que vuelve, un presupuesto que persigues a tiempo. Con eso ya cubres el mes. 14 días gratis en todos los planes.
+            Nada de planes, ni «funciones premium», ni calculadoras. Recupera un
+            presupuesto al mes y FIXA se paga sola.
           </p>
         </AnimatedSection>
 
@@ -101,122 +71,67 @@ export function PricingSection() {
           </span>
           {anual && (
             <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-700">
-              Ahorra ~20%
+              2 meses gratis
             </span>
           )}
         </AnimatedSection>
 
-        {/* Cards */}
-        <div className="grid gap-6 md:grid-cols-3 max-w-4xl mx-auto">
-          {precios.map((p, i) => {
-            const precio = anual ? p.precioAnual : p.precio;
-            return (
-              <motion.div
-                key={p.nombre}
-                initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ ...TRANSITION_DEFAULT, delay: i * 0.1 }}
-                className={`relative rounded-2xl overflow-hidden hover:-translate-y-1 transition-all duration-300 ${
-                  p.popular
-                    ? "bg-stone-950 text-white shadow-2xl shadow-stone-900/20 md:scale-[1.03]"
-                    : "bg-white/70 backdrop-blur-sm border border-stone-200/50 shadow-sm"
-                }`}
-              >
-                {p.popular && (
-                  <>
-                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-brand-500/20 via-transparent to-blue-500/10" />
-                    <div className="absolute top-0 left-0 right-0 flex items-center justify-center gap-1.5 py-2 bg-gradient-to-r from-brand-500 to-brand-600 text-xs font-bold">
-                      <Sparkles className="h-3 w-3" />
-                      El que recomendamos
-                    </div>
-                  </>
-                )}
+        {/* La card única */}
+        <motion.div
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={TRANSITION_DEFAULT}
+          className="relative mx-auto max-w-lg rounded-2xl overflow-hidden bg-stone-950 text-white shadow-2xl shadow-stone-900/20"
+        >
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-brand-500/20 via-transparent to-blue-500/10" />
+          <div className="absolute top-0 left-0 right-0 flex items-center justify-center gap-1.5 py-2 bg-gradient-to-r from-brand-500 to-brand-600 text-xs font-bold">
+            <Sparkles className="h-3 w-3" />
+            Todo incluido
+          </div>
 
-                <div className={`p-6 relative ${p.popular ? "pt-12" : ""}`}>
-                  <h3 className={`font-bold text-lg ${p.popular ? "text-white" : "text-stone-900"}`}>{p.nombre}</h3>
-                  <p className={`text-sm mt-1 ${p.popular ? "text-stone-400" : "text-stone-500"}`}>{p.desc}</p>
+          <div className="p-8 pt-14 relative">
+            <h3 className="font-bold text-lg text-white">FIXA</h3>
+            <p className="text-sm mt-1 text-stone-400">El taller entero bajo control. Sin recortes.</p>
 
-                  <div className="flex items-baseline gap-1 mt-6 mb-3">
-                    <span className={`text-5xl font-extrabold tracking-tight ${p.popular ? "text-white" : "text-stone-900"}`}>
-                      {formatMoneyShort(precio)}
-                    </span>
-                    <span className={`text-sm ${p.popular ? "text-stone-400" : "text-stone-400"}`}>/mes <span style={{fontSize:"11px"}}>+ IVA</span></span>
-                  </div>
+            <div className="flex items-baseline gap-1.5 mt-6 mb-3">
+              <span className="text-6xl font-extrabold tracking-tight text-white">{precio}€</span>
+              <span className="text-sm text-stone-400">/mes <span className="text-[11px]">+ IVA</span></span>
+            </div>
 
-                  {anual && (
-                    <p className={`text-xs mb-3 ${p.popular ? "text-stone-400" : "text-stone-400"}`}>
-                      <span className="line-through">{formatMoneyShort(p.precio)}</span> · Facturado anualmente ({formatMoneyShort(precio * 12)}/año)
-                    </p>
-                  )}
+            {anual && (
+              <p className="text-xs mb-3 text-stone-400">
+                <span className="line-through">{PRECIO_MES}€</span> · Facturado anualmente (490€/año + IVA)
+              </p>
+            )}
 
-                  <div className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold mb-6 ${
-                    p.popular ? "bg-emerald-500/15 text-emerald-400" : "bg-emerald-50 text-emerald-700"
-                  }`}>
-                    <Check className="h-3 w-3" />
-                    14 días gratis · sin tarjeta
-                  </div>
+            <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold mb-6 bg-emerald-500/15 text-emerald-400">
+              <Check className="h-3 w-3" />
+              14 días gratis · sin tarjeta
+            </div>
 
-                  <div className="space-y-3 mb-8">
-                    {p.features.map((f) => (
-                      <div key={f} className="flex items-center gap-2.5 text-sm">
-                        <Check className={`h-4 w-4 shrink-0 ${p.popular ? "text-brand-400" : "text-emerald-500"}`} />
-                        <span className={p.popular ? "text-stone-300" : "text-stone-600"}>{f}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <Link href="/sign-up" onClick={() => track("cta_precios", { plan: p.nombre, ciclo: anual ? "anual" : "mensual" })}>
-                    <Button
-                      className={`w-full rounded-full font-bold h-12 cursor-pointer group ${
-                        p.popular
-                          ? "bg-brand-500 text-white hover:bg-brand-400 shadow-brand"
-                          : "bg-stone-100 text-stone-700 hover:bg-stone-200"
-                      }`}
-                    >
-                      Empezar gratis
-                      <ArrowRight className="ml-1.5 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-                    </Button>
-                  </Link>
+            <div className="space-y-3 mb-8">
+              {FEATURES.map((f) => (
+                <div key={f} className="flex items-center gap-2.5 text-sm">
+                  <Check className="h-4 w-4 shrink-0 text-brand-400" />
+                  <span className="text-stone-300">{f}</span>
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
+              ))}
+            </div>
+
+            <Link href="/sign-up" onClick={() => track("cta_precios", { plan: "unico", ciclo: anual ? "anual" : "mensual" })}>
+              <Button className="w-full rounded-full font-bold h-12 cursor-pointer group bg-brand-500 text-white hover:bg-brand-400 shadow-brand">
+                Empezar gratis
+                <ArrowRight className="ml-1.5 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+              </Button>
+            </Link>
+          </div>
+        </motion.div>
 
         <AnimatedSection delay={0.3} className="text-center mt-8">
           <p className="text-sm text-stone-400">
             Sin permanencia: cancela el mes que quieras · Precios sin IVA
           </p>
-        </AnimatedSection>
-
-        {/* Tabla comparativa (skill: Comparison Table Focus) */}
-        <AnimatedSection delay={0.4} className="mt-16">
-          <h3 className="text-xl font-extrabold text-stone-900 text-center mb-6">
-            Para los que quieren verlo con lupa
-          </h3>
-          <div className="overflow-x-auto rounded-2xl border border-stone-200/60 bg-white/70 backdrop-blur-sm">
-            <table className="w-full min-w-[500px] text-sm">
-              <thead>
-                <tr className="border-b border-stone-200/60">
-                  <th className="text-left py-3 px-4 font-bold text-stone-500 text-xs uppercase tracking-wider">Función</th>
-                  <th className="py-3 px-4 font-bold text-stone-500 text-xs uppercase tracking-wider text-center">Básico</th>
-                  <th className="py-3 px-4 font-bold text-xs uppercase tracking-wider text-center bg-brand-50/50 text-brand-700">Taller</th>
-                  <th className="py-3 px-4 font-bold text-stone-500 text-xs uppercase tracking-wider text-center">Pro</th>
-                </tr>
-              </thead>
-              <tbody>
-                {comparacionFeatures.map((row, i) => (
-                  <tr key={row.feature} className={i % 2 === 0 ? "" : "bg-stone-50/50"}>
-                    <td className="py-2.5 px-4 text-stone-700 font-medium">{row.feature}</td>
-                    <td className="py-2.5 px-4 text-center"><CellValue value={row.basico} /></td>
-                    <td className="py-2.5 px-4 text-center bg-brand-50/30"><CellValue value={row.taller} /></td>
-                    <td className="py-2.5 px-4 text-center"><CellValue value={row.pro} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         </AnimatedSection>
       </div>
     </section>

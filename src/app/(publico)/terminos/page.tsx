@@ -26,9 +26,8 @@ export default function TerminosPage() {
 
         <h2>4. Planes y precios</h2>
         <ul>
-          <li><strong>Plan Básico:</strong> 29€/mes + IVA — 1 usuario</li>
-          <li><strong>Plan Taller:</strong> 49€/mes + IVA — hasta 5 usuarios</li>
-          <li><strong>Plan Pro:</strong> 79€/mes + IVA — usuarios ilimitados</li>
+          <li><strong>Plan FIXA (único):</strong> 49€/mes + IVA — todas las funciones y usuarios de tu equipo incluidos</li>
+          <li><strong>Modalidad anual:</strong> 490€/año + IVA (equivale a 2 meses gratis)</li>
         </ul>
         <p>Los precios pueden ser actualizados con un preaviso mínimo de 30 días.</p>
 
