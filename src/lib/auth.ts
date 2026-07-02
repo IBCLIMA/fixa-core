@@ -189,17 +189,17 @@ export async function getSuperAdmin(): Promise<boolean> {
   // Check against allowed super admin emails from env
   const allowedEmails = (process.env.SUPER_ADMIN_EMAILS || "sergi@ibclima.com").split(",").map(e => e.trim());
 
-  // Get user email from Clerk
+  // Emails de Clerk — SOLO los VERIFICADOS. Sin este filtro, alguien podría
+  // registrar una cuenta con el email del admin sin llegar a verificarlo y
+  // colarse en el panel con acceso total.
   const { clerkClient } = await import("@clerk/nextjs/server");
   const client = await clerkClient();
   const user = await client.users.getUser(userId);
-  const userEmail = user.emailAddresses[0]?.emailAddress;
+  const verificados = user.emailAddresses
+    .filter((e) => e.verification?.status === "verified")
+    .map((e) => e.emailAddress);
 
-  if (!userEmail || !allowedEmails.includes(userEmail)) {
-    return false;
-  }
-
-  return true;
+  return verificados.some((email) => allowedEmails.includes(email));
 }
 
 /**

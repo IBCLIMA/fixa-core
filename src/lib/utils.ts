@@ -21,6 +21,20 @@ export function appUrl(path = ""): string {
 }
 
 /**
+ * Escapa texto para interpolarlo en HTML (emails construidos con template
+ * strings). Sin esto, un nombre de taller como "<img onerror=...>" se
+ * ejecutaría en el cliente de correo del admin.
+ */
+export function escapeHtml(s: unknown): string {
+  return String(s ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+/**
  * Genera una URL de WhatsApp con el número formateado correctamente.
  * Si el teléfono ya empieza con "+", se usa tal cual.
  * Si empieza con un dígito (sin +), se antepone "+34".

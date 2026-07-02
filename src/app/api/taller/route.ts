@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { Resend } from "resend";
 import { EMAIL_FROM } from "@/lib/constants";
+import { escapeHtml } from "@/lib/utils";
 
 export async function PUT(request: Request) {
   try {
@@ -93,11 +94,11 @@ export async function PUT(request: Request) {
             <p>Un taller ha configurado sus datos y est\u00e1 listo para usar FIXA.</p>
             <div style="background: #f5f5f4; border-radius: 12px; padding: 16px; margin: 16px 0;">
               <p style="margin: 0; font-size: 14px; color: #57534e;">
-                <strong>Nombre:</strong> ${body.nombre || "—"}<br/>
-                <strong>Email:</strong> ${body.email || "—"}<br/>
-                <strong>Tel\u00e9fono:</strong> ${body.telefono || "—"}<br/>
-                <strong>Ciudad:</strong> ${body.ciudad || "—"}<br/>
-                <strong>Provincia:</strong> ${body.provincia || "—"}<br/>
+                <strong>Nombre:</strong> ${escapeHtml(body.nombre) || "—"}<br/>
+                <strong>Email:</strong> ${escapeHtml(body.email) || "—"}<br/>
+                <strong>Tel\u00e9fono:</strong> ${escapeHtml(body.telefono) || "—"}<br/>
+                <strong>Ciudad:</strong> ${escapeHtml(body.ciudad) || "—"}<br/>
+                <strong>Provincia:</strong> ${escapeHtml(body.provincia) || "—"}<br/>
                 <strong>ID Taller:</strong> ${tallerId}<br/>
                 <strong>Fecha:</strong> ${new Date().toLocaleString("es-ES")}
               </p>

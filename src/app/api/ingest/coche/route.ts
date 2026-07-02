@@ -154,7 +154,7 @@ export async function POST(request: Request) {
     // registre y pueda reintentar. Así un coche nunca "desaparece" sin rastro.
     console.error(`[ingest/coche] id=${origenId} mat=${mat}:`, err);
     return NextResponse.json(
-      { error: "Error al sincronizar el coche", detalle: err instanceof Error ? err.message : String(err), id: origenId },
+      { error: "Error al sincronizar el coche", id: origenId },
       { status: 500 },
     );
   }
