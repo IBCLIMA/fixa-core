@@ -73,6 +73,8 @@ export async function explicarAlCliente(
         system: SISTEMA,
         messages: [{ role: "user", content: userContent }],
       }),
+      // Corta la petición si la API tarda más de 15s (evita colgar la serverless function).
+      signal: AbortSignal.timeout(15000),
     });
   } catch {
     // Errores de red / DNS / timeout antes de obtener respuesta.

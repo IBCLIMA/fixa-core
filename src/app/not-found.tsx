@@ -1,3 +1,4 @@
+import { CONTACT_PHONE } from "@/lib/constants";
 import Link from "next/link";
 import { ArrowLeft, Home, BookOpen, MessageCircle } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
@@ -30,7 +31,7 @@ export default function NotFound() {
               </Button>
             </Link>
             <a
-              href="https://wa.me/34611433218?text=Hola%2C%20necesito%20ayuda%20con%20FIXA"
+              href={`https://wa.me/${CONTACT_PHONE}?text=Hola%2C%20necesito%20ayuda%20con%20FIXA`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1"

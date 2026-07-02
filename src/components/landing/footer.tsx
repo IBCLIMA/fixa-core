@@ -1,3 +1,4 @@
+import { CONTACT_PHONE } from "@/lib/constants";
 import Link from "next/link";
 import { ArrowRight, MessageSquare, Phone, Mail } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
@@ -39,7 +40,7 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-3 mt-5">
               <a
-                href="https://wa.me/34611433218"
+                href={`https://wa.me/${CONTACT_PHONE}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-9 w-9 items-center justify-center rounded-xl bg-stone-800 hover:bg-emerald-600 transition-colors"
@@ -48,7 +49,7 @@ export function Footer() {
                 <MessageSquare className="h-4 w-4 text-stone-400 hover:text-white" />
               </a>
               <a
-                href="tel:+34611433218"
+                href={`tel:+${CONTACT_PHONE}`}
                 className="flex h-9 w-9 items-center justify-center rounded-xl bg-stone-800 hover:bg-brand-600 transition-colors"
                 aria-label="Teléfono"
               >

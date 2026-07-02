@@ -4,6 +4,9 @@ import { presupuestos, vehiculos, clientes } from "@/db/schema";
 import { and, eq, sql } from "drizzle-orm";
 import { createNotification } from "@/lib/notify";
 
+// Los crons pueden tardar (BD + emails/notificaciones en bucle); ampliamos el limite de Vercel.
+export const maxDuration = 60;
+
 // Cron diario: presupuestos enviados hace exactamente 3 días sin respuesta
 // → notificación al taller para reenviarlo por WhatsApp (cada presupuesto se notifica una sola vez).
 export async function GET(request: Request) {

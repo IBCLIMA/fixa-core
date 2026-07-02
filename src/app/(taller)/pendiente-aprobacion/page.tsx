@@ -1,3 +1,4 @@
+import { CONTACT_PHONE } from "@/lib/constants";
 import { Clock, MessageSquare, Phone, CheckCircle2 } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { Button } from "@/components/ui/button";
@@ -38,12 +39,12 @@ export default function PendienteAprobacionPage() {
 
         <div className="space-y-2">
           <p className="text-sm font-bold text-stone-700">¿Quieres acelerar la activación?</p>
-          <a href="https://wa.me/34611433218?text=Hola%2C%20acabo%20de%20registrarme%20en%20FIXA%20y%20quiero%20activar%20mi%20cuenta" target="_blank" className="block">
+          <a href={`https://wa.me/${CONTACT_PHONE}?text=Hola%2C%20acabo%20de%20registrarme%20en%20FIXA%20y%20quiero%20activar%20mi%20cuenta`} target="_blank" className="block">
             <Button size="lg" className="w-full rounded-full bg-emerald-600 hover:bg-emerald-500 font-bold h-12">
               <MessageSquare className="mr-2 h-4 w-4" />Escríbenos por WhatsApp
             </Button>
           </a>
-          <a href="tel:+34611433218" className="block">
+          <a href={`tel:+${CONTACT_PHONE}`} className="block">
             <Button size="lg" variant="outline" className="w-full rounded-full h-12 font-bold">
               <Phone className="mr-2 h-4 w-4" />Llamar al 611 433 218
             </Button>

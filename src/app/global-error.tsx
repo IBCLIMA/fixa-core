@@ -1,5 +1,6 @@
 "use client";
 
+import { CONTACT_PHONE } from "@/lib/constants";
 import { AlertTriangle, RotateCcw, MessageCircle } from "lucide-react";
 
 export default function GlobalError({
@@ -38,7 +39,7 @@ export default function GlobalError({
               Reintentar
             </button>
             <a
-              href="https://wa.me/34611433218?text=Hola%2C%20tengo%20un%20problema%20con%20FIXA"
+              href={`https://wa.me/${CONTACT_PHONE}?text=Hola%2C%20tengo%20un%20problema%20con%20FIXA`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-stone-200 bg-white px-6 py-2.5 text-sm font-medium text-stone-700 hover:bg-stone-50 transition-colors"

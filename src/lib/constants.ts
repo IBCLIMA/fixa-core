@@ -5,6 +5,14 @@
 // fixataller.es en Resend. Cambiar a "FIXA <hola@fixataller.es>" cuando el dominio esté verified.
 export const EMAIL_FROM = "FIXA <onboarding@resend.dev>";
 
+// ─── Contacto ───
+
+// Teléfono de contacto de FIXA en formato internacional sin "+" (listo para wa.me).
+// Único punto de verdad: si cambia el número, se cambia solo aquí.
+export const CONTACT_PHONE = "34611433218";
+// Versión legible para mostrar en pantalla.
+export const CONTACT_PHONE_DISPLAY = "611 433 218";
+
 // ─── Estado de órdenes de trabajo ───
 
 export const estadoLabels: Record<string, string> = {

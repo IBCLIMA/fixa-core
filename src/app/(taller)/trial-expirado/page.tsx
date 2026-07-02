@@ -1,3 +1,4 @@
+import { CONTACT_PHONE } from "@/lib/constants";
 import { AlertTriangle, Phone, MessageSquare } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
 import { Button } from "@/components/ui/button";
@@ -41,12 +42,12 @@ export default function TrialExpiradoPage() {
         </Card>
 
         <div className="space-y-3">
-          <a href="https://wa.me/34611433218?text=Hola%2C%20quiero%20activar%20mi%20plan%20de%20FIXA" target="_blank" className="block">
+          <a href={`https://wa.me/${CONTACT_PHONE}?text=Hola%2C%20quiero%20activar%20mi%20plan%20de%20FIXA`} target="_blank" className="block">
             <Button size="lg" className="w-full rounded-full bg-emerald-600 hover:bg-emerald-500 font-bold h-12">
               <MessageSquare className="mr-2 h-4 w-4" />Activar por WhatsApp
             </Button>
           </a>
-          <a href="tel:+34611433218" className="block">
+          <a href={`tel:+${CONTACT_PHONE}`} className="block">
             <Button size="lg" variant="outline" className="w-full rounded-full h-12 font-bold">
               <Phone className="mr-2 h-4 w-4" />Llamar al 611 433 218
             </Button>

@@ -5,6 +5,9 @@ import { eq, and, sql, count } from "drizzle-orm";
 import { Resend } from "resend";
 import { EMAIL_FROM } from "@/lib/constants";
 
+// Los crons pueden tardar (BD + emails/notificaciones en bucle); ampliamos el limite de Vercel.
+export const maxDuration = 60;
+
 /**
  * Cron diario: detecta talleres en el día 5 de trial y notifica a Sergi
  * con un resumen + enlace de WhatsApp para cada uno.

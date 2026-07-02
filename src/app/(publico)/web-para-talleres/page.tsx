@@ -1,3 +1,4 @@
+import { CONTACT_PHONE } from "@/lib/constants";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/seo";
 import Link from "next/link";
@@ -107,7 +108,7 @@ export default function WebParaTalleresPage() {
           </p>
         </div>
         <div className="flex flex-col gap-3 mt-10 sm:flex-row">
-          <a href="https://wa.me/34611433218?text=Hola%2C%20me%20interesa%20una%20web%20para%20mi%20taller" target="_blank" rel="noopener noreferrer">
+          <a href={`https://wa.me/${CONTACT_PHONE}?text=Hola%2C%20me%20interesa%20una%20web%20para%20mi%20taller`} target="_blank" rel="noopener noreferrer">
             <Button size="lg" className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-14 px-8 text-base shadow-xl shadow-orange-500/20 cursor-pointer group">
               Cuéntame más por WhatsApp
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -214,7 +215,7 @@ export default function WebParaTalleresPage() {
                     </div>
                   ))}
                 </div>
-                <a href="https://wa.me/34611433218?text=Hola%2C%20me%20interesa%20el%20plan%20de%20web%20para%20talleres" target="_blank" rel="noopener noreferrer">
+                <a href={`https://wa.me/${CONTACT_PHONE}?text=Hola%2C%20me%20interesa%20el%20plan%20de%20web%20para%20talleres`} target="_blank" rel="noopener noreferrer">
                   <Button className={`w-full rounded-full font-bold h-12 cursor-pointer ${
                     p.popular
                       ? "bg-orange-500 text-white hover:bg-orange-400 shadow-lg shadow-orange-500/20"
@@ -243,13 +244,13 @@ export default function WebParaTalleresPage() {
             ni contratos de 40 páginas. Así de simple.
           </p>
           <div className="flex flex-col items-center gap-4 mt-8 sm:flex-row sm:justify-center">
-            <a href="https://wa.me/34611433218?text=Hola%2C%20quiero%20una%20web%20para%20mi%20taller" target="_blank" rel="noopener noreferrer">
+            <a href={`https://wa.me/${CONTACT_PHONE}?text=Hola%2C%20quiero%20una%20web%20para%20mi%20taller`} target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="rounded-full bg-orange-500 text-white hover:bg-orange-400 font-bold h-14 px-10 text-base shadow-xl shadow-orange-500/30 cursor-pointer group">
                 Escríbeme por WhatsApp
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
               </Button>
             </a>
-            <a href="tel:+34611433218">
+            <a href={`tel:+${CONTACT_PHONE}`}>
               <Button size="lg" className="rounded-full h-14 px-8 text-base font-semibold bg-[#25D366] hover:bg-[#1fb959] text-white border-0 cursor-pointer">
                 <Phone className="mr-2 h-4 w-4" />
                 611 433 218

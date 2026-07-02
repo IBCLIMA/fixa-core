@@ -4,6 +4,9 @@ import { ordenesTrabajo, vehiculos, clientes } from "@/db/schema";
 import { eq, and, lt, sql } from "drizzle-orm";
 import { createNotification } from "@/lib/notify";
 
+// Los crons pueden tardar (BD + emails/notificaciones en bucle); ampliamos el limite de Vercel.
+export const maxDuration = 60;
+
 // Runs daily via Vercel Cron - creates notifications for overdue payments
 // (delivered > 7 days ago, still unpaid)
 

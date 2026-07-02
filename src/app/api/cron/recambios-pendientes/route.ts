@@ -4,6 +4,9 @@ import { lineasOrden, ordenesTrabajo, vehiculos } from "@/db/schema";
 import { eq, and, sql, isNotNull } from "drizzle-orm";
 import { createNotification } from "@/lib/notify";
 
+// Los crons pueden tardar (BD + emails/notificaciones en bucle); ampliamos el limite de Vercel.
+export const maxDuration = 60;
+
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {

@@ -4,6 +4,9 @@ import { vehiculos, avisos } from "@/db/schema";
 import { and, lte, gte, isNotNull, inArray, eq } from "drizzle-orm";
 import { createNotification } from "@/lib/notify";
 
+// Los crons pueden tardar (BD + emails/notificaciones en bucle); ampliamos el limite de Vercel.
+export const maxDuration = 60;
+
 // Cron diario: genera avisos de ITV (próxima en 30 días o caducada hace <60 días)
 // para TODOS los talleres y notifica a cada taller los nuevos.
 export async function GET(request: Request) {

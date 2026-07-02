@@ -5,13 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { getTallerIdFromAuth } from "@/lib/auth";
 import { getDb } from "@/db";
-import { clientes, vehiculos } from "@/db/schema";
-import { eq, and, ilike, or, desc, count, sql } from "drizzle-orm";
+import { clientes, vehiculos, ordenesTrabajo } from "@/db/schema";
+import { eq, and, ilike, or, desc, sql, countDistinct, max } from "drizzle-orm";
 import { NuevoClienteDialog } from "./nuevo-cliente-dialog";
 
 const PER_PAGE = 20;
 
-function formatUltimaVisita(value: string | null): string | null {
+function formatUltimaVisita(value: string | Date | null): string | null {
   if (!value) return null;
   const fecha = new Date(value);
   if (Number.isNaN(fecha.getTime())) return null;
@@ -55,7 +55,9 @@ export default async function ClientesPage({
   const safePage = Math.min(page, Math.max(1, totalPages));
   const safeOffset = (safePage - 1) * PER_PAGE;
 
-  // Clientes con conteo de vehículos
+  // Clientes con conteo de vehículos y última visita en UNA sola pasada
+  // (antes: 2 subqueries correladas por fila = N+1). Dos left joins a la vez
+  // producen producto cartesiano → countDistinct para no inflar el conteo.
   const clientesList = await db
     .select({
       id: clientes.id,
@@ -63,11 +65,14 @@ export default async function ClientesPage({
       telefono: clientes.telefono,
       email: clientes.email,
       createdAt: clientes.createdAt,
-      vehiculoCount: sql<number>`(SELECT COUNT(*) FROM vehiculos WHERE vehiculos.cliente_id = ${clientes.id})`,
-      ultimaVisita: sql<string | null>`(SELECT MAX(created_at) FROM ordenes_trabajo WHERE ordenes_trabajo.cliente_id = ${clientes.id})`,
+      vehiculoCount: countDistinct(vehiculos.id),
+      ultimaVisita: max(ordenesTrabajo.createdAt),
     })
     .from(clientes)
+    .leftJoin(vehiculos, eq(vehiculos.clienteId, clientes.id))
+    .leftJoin(ordenesTrabajo, eq(ordenesTrabajo.clienteId, clientes.id))
     .where(whereCondition)
+    .groupBy(clientes.id)
     .orderBy(desc(clientes.createdAt))
     .limit(PER_PAGE)
     .offset(safeOffset);

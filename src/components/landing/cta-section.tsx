@@ -1,5 +1,6 @@
 "use client";
 
+import { CONTACT_PHONE } from "@/lib/constants";
 import Link from "next/link";
 import { ArrowRight, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,7 +42,7 @@ export function CtaSection() {
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
               </Button>
             </Link>
-            <a href="https://wa.me/34611433218?text=Hola%2C%20quiero%20información%20sobre%20FIXA" target="_blank" rel="noopener noreferrer">
+            <a href={`https://wa.me/${CONTACT_PHONE}?text=Hola%2C%20quiero%20información%20sobre%20FIXA`} target="_blank" rel="noopener noreferrer">
               <Button
                 size="lg"
                 variant="outline"

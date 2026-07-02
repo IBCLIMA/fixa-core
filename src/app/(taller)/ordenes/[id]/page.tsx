@@ -34,7 +34,7 @@ import { BarraAccionOrden } from "./barra-accion";
 import { SeccionColapsable } from "./seccion-colapsable";
 import { estadoLabelsDetalle as estadoLabels, estadoColors } from "@/lib/constants";
 import { formatWhatsAppUrl, appUrl } from "@/lib/utils";
-import { formatMoney } from "@/lib/format";
+import { formatMoney, totalLineas } from "@/lib/format";
 import { getUserRole, getTallerIdFromAuth } from "@/lib/auth";
 import { getInspeccion } from "../../actions/inspecciones";
 import { getActivePhases } from "@/lib/workflow";
@@ -87,21 +87,8 @@ export default async function OrdenDetallePage({
   const canAssign = rol === "admin" || rol === "recepcion";
 
   const lineas = orden.lineas || [];
-  const totalBase = lineas.reduce((sum, l) => {
-    const qty = Number(l.cantidad);
-    const price = Number(l.precioUnitario);
-    const disc = Number(l.descuentoPct || 0);
-    return sum + qty * price * (1 - disc / 100);
-  }, 0);
-  const totalIva = lineas.reduce((sum, l) => {
-    const qty = Number(l.cantidad);
-    const price = Number(l.precioUnitario);
-    const disc = Number(l.descuentoPct || 0);
-    const iva = Number(l.ivaPct || 21);
-    const base = qty * price * (1 - disc / 100);
-    return sum + base * (iva / 100);
-  }, 0);
-  const totalFinal = totalBase + totalIva;
+  // Totales con redondeo por línea, unificado con presupuestos (src/lib/format.ts).
+  const { base: totalBase, iva: totalIva, total: totalFinal } = totalLineas(lineas);
 
   // ── Estado por defecto de las secciones colapsables (abrir solo si hay datos
   // relevantes, para que lo importante quede a la vista sin alargar el scroll).

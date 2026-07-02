@@ -6,6 +6,9 @@ import { Resend } from "resend";
 import { emailRescateDia2, emailDia7 } from "@/lib/email-templates";
 import { EMAIL_FROM } from "@/lib/constants";
 
+// Los crons pueden tardar (BD + emails/notificaciones en bucle); ampliamos el limite de Vercel.
+export const maxDuration = 60;
+
 /**
  * Cron diario 10:00 — emails de ciclo de vida del trial:
  * 1) Día 2 sin actividad: email de rescate ("¿el coche sigue en la puerta?")

@@ -4,6 +4,9 @@ import { citas, talleres } from "@/db/schema";
 import { and, eq, inArray, count } from "drizzle-orm";
 import { createNotification } from "@/lib/notify";
 
+// Los crons pueden tardar (BD + emails/notificaciones en bucle); ampliamos el limite de Vercel.
+export const maxDuration = 60;
+
 // Cron de la tarde: a los talleres con recordatorios activados se les avisa
 // de las citas de mañana para que envíen el recordatorio por WhatsApp.
 export async function GET(request: Request) {

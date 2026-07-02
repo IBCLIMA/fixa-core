@@ -12,7 +12,7 @@ import { formatWhatsAppUrl } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { getDb } from "@/db";
 import { ordenesTrabajo, vehiculos, clientes, talleres, usuarios, historialEstados, presupuestos, lineasPresupuesto, averiasOcultas, documentosCobro, lineasOrden, fotosOrden } from "@/db/schema";
-import { formatMoney } from "@/lib/format";
+import { formatMoney, totalLineas } from "@/lib/format";
 import { eq, desc, asc, and, inArray } from "drizzle-orm";
 import { registrarApertura } from "@/lib/portal-views";
 
@@ -234,10 +234,8 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
       })
       .from(lineasPresupuesto)
       .where(eq(lineasPresupuesto.presupuestoId, presupuestoPendiente.id));
-    presupuestoTotal = lineasP.reduce((sum, l) => {
-      const base = Number(l.cantidad) * Number(l.precioUnitario) * (1 - Number(l.descuentoPct || 0) / 100);
-      return sum + base * (1 + Number(l.ivaPct || 21) / 100);
-    }, 0);
+    // Mismo cálculo (redondeo por línea) que el presupuesto público y el snapshot legal.
+    presupuestoTotal = totalLineas(lineasP).total;
   }
 
   // ── Toques "la leche": personal + en directo + progreso (todo dato real) ──

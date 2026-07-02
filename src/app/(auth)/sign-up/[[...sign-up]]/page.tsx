@@ -1,3 +1,4 @@
+import { CONTACT_PHONE } from "@/lib/constants";
 import { SignUp } from "@clerk/nextjs";
 import Link from "next/link";
 import { FixaLogo } from "@/components/ui/fixa-logo";
@@ -149,7 +150,7 @@ export default function Page() {
             {/* WhatsApp help */}
             <div className="mt-6">
               <a
-                href="https://wa.me/34611433218?text=Hola%2C%20quiero%20registrarme%20en%20FIXA"
+                href={`https://wa.me/${CONTACT_PHONE}?text=Hola%2C%20quiero%20registrarme%20en%20FIXA`}
                 target="_blank"
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-emerald-50/80 border border-emerald-200/40 text-emerald-700 text-sm font-semibold hover:bg-emerald-100 transition-colors"
               >

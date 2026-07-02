@@ -4,6 +4,9 @@ import { getDb } from "@/db";
 import { fotosOrden } from "@/db/schema";
 import { eq, and, lt, sql } from "drizzle-orm";
 
+// Los crons pueden tardar (BD + emails/notificaciones en bucle); ampliamos el limite de Vercel.
+export const maxDuration = 60;
+
 // Runs daily via Vercel Cron - deletes videos older than 60 days
 // Photos are kept permanently (useful for claims/disputes)
 

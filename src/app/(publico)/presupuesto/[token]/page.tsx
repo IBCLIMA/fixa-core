@@ -12,6 +12,7 @@ import {
 import { eq, and } from "drizzle-orm";
 import { PresupuestoClient } from "./presupuesto-client";
 import { registrarApertura } from "@/lib/portal-views";
+import { lineaBase, totalLineas } from "@/lib/format";
 
 interface PageProps {
   params: Promise<{ token: string }>;
@@ -114,24 +115,9 @@ export default async function PresupuestoPublicoPage({ params }: PageProps) {
     .from(lineasPresupuesto)
     .where(eq(lineasPresupuesto.presupuestoId, presupuesto.id));
 
-  // Calculate totals server-side
-  const totalBase = lineas.reduce((sum, l) => {
-    const qty = Number(l.cantidad);
-    const price = Number(l.precioUnitario);
-    const disc = Number(l.descuentoPct || 0);
-    return sum + qty * price * (1 - disc / 100);
-  }, 0);
-
-  const totalIva = lineas.reduce((sum, l) => {
-    const qty = Number(l.cantidad);
-    const price = Number(l.precioUnitario);
-    const disc = Number(l.descuentoPct || 0);
-    const iva = Number(l.ivaPct || 21);
-    const base = qty * price * (1 - disc / 100);
-    return sum + base * (iva / 100);
-  }, 0);
-
-  const totalFinal = totalBase + totalIva;
+  // Totales en servidor con el MISMO redondeo por línea que el snapshot legal
+  // de aceptación (lo que ve el cliente = lo que acepta, céntimo a céntimo).
+  const { base: totalBase, iva: totalIva, total: totalFinal } = totalLineas(lineas);
 
   // Calculate validity date
   let validezFecha: string | null = null;
@@ -154,10 +140,7 @@ export default async function PresupuestoPublicoPage({ params }: PageProps) {
     precioUnitario: Number(l.precioUnitario),
     descuentoPct: Number(l.descuentoPct || 0),
     ivaPct: Number(l.ivaPct || 21),
-    subtotal:
-      Number(l.cantidad) *
-      Number(l.precioUnitario) *
-      (1 - Number(l.descuentoPct || 0) / 100),
+    subtotal: lineaBase(l),
   }));
 
   return (

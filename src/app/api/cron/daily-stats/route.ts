@@ -3,6 +3,9 @@ import { getDb } from "@/db";
 import { talleres, ordenesTrabajo, citas, dailyStats } from "@/db/schema";
 import { sql } from "drizzle-orm";
 
+// Los crons pueden tardar (BD + emails/notificaciones en bucle); ampliamos el limite de Vercel.
+export const maxDuration = 60;
+
 /**
  * Cron diario (00:05) — snapshot de métricas a la tabla `daily_stats`.
  *

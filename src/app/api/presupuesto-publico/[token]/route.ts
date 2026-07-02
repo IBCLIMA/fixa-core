@@ -5,7 +5,7 @@ import { eq, and, inArray, sql } from "drizzle-orm";
 import { createNotification } from "@/lib/notify";
 import { rateLimit } from "@/lib/rate-limit";
 import { randomBytes } from "crypto";
-import { formatMoney } from "@/lib/format";
+import { formatMoney, totalLineas } from "@/lib/format";
 
 export async function POST(
   request: Request,
@@ -73,18 +73,9 @@ export async function POST(
     }
   }
 
-  // Get presupuesto lines for the acceptance record (rounded per line, in cents, to avoid float drift)
+  // Get presupuesto lines for the acceptance record (redondeo por línea, en céntimos, para evitar deriva de floats)
   const lineas = await db.select().from(lineasPresupuesto).where(eq(lineasPresupuesto.presupuestoId, presupuesto.id));
-  const round2 = (n: number) => Math.round(n * 100) / 100;
-  const totalBase = round2(lineas.reduce((sum, l) => {
-    const base = round2(Number(l.cantidad) * Number(l.precioUnitario) * (1 - Number(l.descuentoPct || 0) / 100));
-    return sum + base;
-  }, 0));
-  const totalIva = round2(lineas.reduce((sum, l) => {
-    const base = round2(Number(l.cantidad) * Number(l.precioUnitario) * (1 - Number(l.descuentoPct || 0) / 100));
-    return sum + round2(base * (Number(l.ivaPct || 21) / 100));
-  }, 0));
-  const totalFinal = round2(totalBase + totalIva);
+  const { base: totalBase, iva: totalIva, total: totalFinal } = totalLineas(lineas);
 
   // Build acceptance text (legal snapshot of what was accepted)
   const acceptanceText = estado === "aceptado"

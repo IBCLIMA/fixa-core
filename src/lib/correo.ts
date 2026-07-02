@@ -145,6 +145,9 @@ function nuevoClienteImap(cuenta: CuentaId = "hola"): ImapFlow {
     port: 993,
     secure: true,
     auth: { user: cfg.user!, pass: cfg.pass! },
+    // Timeouts: si el servidor IMAP no responde, fallar rápido en vez de colgar la función.
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
     // Silenciar el logger ruidoso de imapflow en producción.
     logger: false,
   });

@@ -68,7 +68,7 @@ export default async function FacturacionPage() {
       gte(ordenesTrabajo.fechaEntrega, new Date(primerDiaMes))
     ));
 
-  // Últimas completadas
+  // Últimas completadas (total por orden con left join + group by, sin subquery correlada por fila)
   const ultimasEntregadas = await db
     .select({
       id: ordenesTrabajo.id,
@@ -76,16 +76,18 @@ export default async function FacturacionPage() {
       fechaEntrega: ordenesTrabajo.fechaEntrega,
       matricula: vehiculos.matricula,
       clienteNombre: clientes.nombre,
-      total: sql<number>`COALESCE((SELECT SUM(CAST(cantidad AS NUMERIC) * CAST(precio_unitario AS NUMERIC) * (1 + CAST(iva_pct AS NUMERIC) / 100)) FROM lineas_orden WHERE lineas_orden.orden_id = ${ordenesTrabajo.id}), 0)`,
+      total: sql<number>`COALESCE(SUM(CAST(${lineasOrden.cantidad} AS NUMERIC) * CAST(${lineasOrden.precioUnitario} AS NUMERIC) * (1 + CAST(${lineasOrden.ivaPct} AS NUMERIC) / 100)), 0)`,
     })
     .from(ordenesTrabajo)
     .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
     .leftJoin(clientes, eq(ordenesTrabajo.clienteId, clientes.id))
+    .leftJoin(lineasOrden, eq(lineasOrden.ordenId, ordenesTrabajo.id))
     .where(and(eq(ordenesTrabajo.tallerId, tallerId), eq(ordenesTrabajo.estado, "entregado")))
+    .groupBy(ordenesTrabajo.id, ordenesTrabajo.numero, ordenesTrabajo.fechaEntrega, vehiculos.matricula, clientes.nombre)
     .orderBy(desc(ordenesTrabajo.fechaEntrega))
     .limit(10);
 
-  // Cobros pendientes: entregadas y no pagadas
+  // Cobros pendientes: entregadas y no pagadas (mismo patrón join + group by)
   const ordenesPendientesCobro = await db
     .select({
       id: ordenesTrabajo.id,
@@ -93,16 +95,18 @@ export default async function FacturacionPage() {
       fechaEntrega: ordenesTrabajo.fechaEntrega,
       matricula: vehiculos.matricula,
       clienteNombre: clientes.nombre,
-      total: sql<number>`COALESCE((SELECT SUM(CAST(cantidad AS NUMERIC) * CAST(precio_unitario AS NUMERIC) * (1 + CAST(iva_pct AS NUMERIC) / 100)) FROM lineas_orden WHERE lineas_orden.orden_id = ${ordenesTrabajo.id}), 0)`,
+      total: sql<number>`COALESCE(SUM(CAST(${lineasOrden.cantidad} AS NUMERIC) * CAST(${lineasOrden.precioUnitario} AS NUMERIC) * (1 + CAST(${lineasOrden.ivaPct} AS NUMERIC) / 100)), 0)`,
     })
     .from(ordenesTrabajo)
     .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
     .leftJoin(clientes, eq(ordenesTrabajo.clienteId, clientes.id))
+    .leftJoin(lineasOrden, eq(lineasOrden.ordenId, ordenesTrabajo.id))
     .where(and(
       eq(ordenesTrabajo.tallerId, tallerId),
       eq(ordenesTrabajo.estado, "entregado"),
       eq(ordenesTrabajo.pagado, false)
     ))
+    .groupBy(ordenesTrabajo.id, ordenesTrabajo.numero, ordenesTrabajo.fechaEntrega, vehiculos.matricula, clientes.nombre)
     .orderBy(desc(ordenesTrabajo.fechaEntrega));
 
   // Comisiones: mecánicos con sus órdenes entregadas+pagadas este mes

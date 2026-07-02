@@ -1,5 +1,6 @@
 "use client";
 
+import { CONTACT_PHONE } from "@/lib/constants";
 import { useState } from "react";
 import { MessageSquare, Mail, Phone, BookOpen, Send, CheckCircle2, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -36,7 +37,7 @@ export default function AyudaPage() {
       {/* Contacto rápido */}
       <div className="grid gap-3 sm:grid-cols-2">
         <a
-          href="https://wa.me/34611433218?text=Hola%2C%20necesito%20ayuda%20con%20FIXA"
+          href={`https://wa.me/${CONTACT_PHONE}?text=Hola%2C%20necesito%20ayuda%20con%20FIXA`}
           target="_blank"
           className="block"
         >
@@ -69,7 +70,7 @@ export default function AyudaPage() {
           </Card>
         </a>
 
-        <a href="tel:+34611433218" className="block">
+        <a href={`tel:+${CONTACT_PHONE}`} className="block">
           <Card className="hover:border-brand-300 hover:shadow-md transition-all duration-300 cursor-pointer h-full">
             <CardContent className="p-5 flex items-start gap-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-50">

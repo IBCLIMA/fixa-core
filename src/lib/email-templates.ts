@@ -1,3 +1,4 @@
+import { CONTACT_PHONE } from "@/lib/constants";
 import { SITE_URL } from "@/lib/seo";
 
 /**
@@ -27,7 +28,7 @@ export function emailBienvenida(nombre: string) {
     <li><strong>Activa los avisos</strong> — pulsa la campana 🔔 y te vibra el móvil cuando pase algo</li>
   </ol>
 
-  <p>Si te atascas en algo, responde a este email o escríbenos por <a href="https://wa.me/34611433218" style="color: #f97316;">WhatsApp</a>. Somos personas reales y sabemos lo que es un taller — porque FIXA nació dentro de uno.</p>
+  <p>Si te atascas en algo, responde a este email o escríbenos por <a href="https://wa.me/${CONTACT_PHONE}" style="color: #f97316;">WhatsApp</a>. Somos personas reales y sabemos lo que es un taller — porque FIXA nació dentro de uno.</p>
 
   <p>Un saludo,<br><strong>Sergi</strong><br><span style="color: #a8a29e;">Ibañez Clima · FIXA</span></p>
 
@@ -58,7 +59,7 @@ export function emailRescateDia2(nombre: string) {
 
   <p><a href="${SITE_URL}" style="display: inline-block; background: #f97316; color: white; padding: 12px 28px; border-radius: 9999px; text-decoration: none; font-weight: 700;">Crear mi primera orden →</a></p>
 
-  <p>¿Problema técnico? ¿No te aclaras? <a href="https://wa.me/34611433218" style="color: #f97316;">Escríbeme por WhatsApp</a> y te lo dejo montado yo en 5 minutos.</p>
+  <p>¿Problema técnico? ¿No te aclaras? <a href="https://wa.me/${CONTACT_PHONE}" style="color: #f97316;">Escríbeme por WhatsApp</a> y te lo dejo montado yo en 5 minutos.</p>
 
   <p>Sergi<br><span style="color: #a8a29e;">FIXA · Ibañez Clima</span></p>
 </div>`,
@@ -91,7 +92,7 @@ export function emailDia7(nombre: string) {
 
   <p>Para seguir después del trial, escríbenos y lo activamos. Sin contratos, sin permanencia, sin sorpresas.</p>
 
-  <p><a href="https://wa.me/34611433218?text=Hola%2C%20quiero%20activar%20FIXA%20para%20mi%20taller" style="display: inline-block; background: #f97316; color: white; padding: 12px 28px; border-radius: 9999px; text-decoration: none; font-weight: 700;">Activar FIXA por WhatsApp →</a></p>
+  <p><a href="https://wa.me/${CONTACT_PHONE}?text=Hola%2C%20quiero%20activar%20FIXA%20para%20mi%20taller" style="display: inline-block; background: #f97316; color: white; padding: 12px 28px; border-radius: 9999px; text-decoration: none; font-weight: 700;">Activar FIXA por WhatsApp →</a></p>
 
   <p>Y si no te convence, no pasa nada. Cancela y tus datos se borran. Sin preguntas, sin llamadas comerciales, sin "¿estás seguro?".</p>
 

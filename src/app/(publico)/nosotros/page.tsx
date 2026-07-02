@@ -1,3 +1,4 @@
+import { CONTACT_PHONE } from "@/lib/constants";
 import type { Metadata } from "next";
 import { Navbar } from "@/components/landing/navbar";
 import { AboutSection } from "@/components/landing/about-section";
@@ -28,7 +29,7 @@ const jsonLd = {
   url: SITE_URL,
   description: "Software de gestión para talleres mecánicos",
   founder: { "@type": "Organization", name: "Ibañez Clima", foundingDate: "2010" },
-  contactPoint: { "@type": "ContactPoint", telephone: "+34611433218", contactType: "customer service", availableLanguage: "Spanish" },
+  contactPoint: { "@type": "ContactPoint", telephone: `+${CONTACT_PHONE}`, contactType: "customer service", availableLanguage: "Spanish" },
 };
 
 export default function NosotrosPage() {
