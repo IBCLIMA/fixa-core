@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/db";
 import { clientes, vehiculos, ordenesTrabajo, lineasOrden } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
+import { randomBytes } from "crypto";
 
 /**
  * INGESTA TIEMPO REAL — Ibañez Clima (integración de testeo).
@@ -136,6 +137,8 @@ export async function POST(request: Request) {
       estado, descripcionCliente, kmEntrada: e.kms ?? null,
       fechaEntrada: parseFecha(e.fecha_entrada) ?? new Date(),
       fechaEntrega: parseFecha(e.fecha_salida),
+      // Sin token no hay enlace de portal para el cliente (el WOW nº1).
+      tokenPublico: randomBytes(16).toString("hex"),
       origenExterno: ORIG, origenExternoId: origenId,
     }).returning({ id: ordenesTrabajo.id });
   }
