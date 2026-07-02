@@ -141,6 +141,12 @@ export async function checkTrialStatus(): Promise<{
 
   if (!taller) return { activo: false, plan: "none", daysLeft: 0, bloqueado: true };
 
+  // Taller piloto/fundador: acceso completo, gratis, sin trial que expire y sin
+  // pantallas de pago. Se marca desde el panel de admin.
+  if (taller.esPiloto) {
+    return { activo: true, plan: "piloto", daysLeft: 999, bloqueado: false };
+  }
+
   // Si tiene plan activo, no bloquear
   if (["basico", "taller", "pro"].includes(taller.plan)) {
     return { activo: true, plan: taller.plan, daysLeft: 999, bloqueado: false };

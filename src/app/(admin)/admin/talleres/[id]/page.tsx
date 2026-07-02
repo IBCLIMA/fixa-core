@@ -222,6 +222,7 @@ export default async function TallerDetallePage({ params }: { params: Promise<{ 
               nombre={taller.nombre}
               plan={taller.plan as Plan}
               activo={taller.activo}
+              esPiloto={taller.esPiloto}
             />
           </div>
         </div>

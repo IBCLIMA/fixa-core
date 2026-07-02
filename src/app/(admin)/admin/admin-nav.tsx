@@ -4,13 +4,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard, Building2, Receipt, BarChart3, Activity, LifeBuoy, Mail, ScrollText, Shield, ArrowLeft,
-} from "lucide-react";
+  LayoutDashboard, Building2, Receipt, BarChart3, Activity, LifeBuoy, Mail, ScrollText, Shield, ArrowLeft, Rocket } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { name: "Resumen", href: "/admin", icon: LayoutDashboard, exact: true },
   { name: "Talleres", href: "/admin/talleres", icon: Building2 },
+  { name: "Pilotos", href: "/admin/pilotos", icon: Rocket },
   { name: "Cobros", href: "/admin/cobros", icon: Receipt },
   { name: "Métricas", href: "/admin/metricas", icon: BarChart3 },
   { name: "Actividad", href: "/admin/actividad", icon: Activity },

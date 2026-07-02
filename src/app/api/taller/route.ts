@@ -15,13 +15,19 @@ export async function PUT(request: Request) {
 
     // Check if this is a new workshop (first time setting dpaAceptado)
     let isNewWorkshop = false;
+    let autoAprobar = false;
     if (body.dpaAceptado) {
       const [existing] = await db
-        .select({ dpaAcceptedAt: talleres.dpaAcceptedAt })
+        .select({ dpaAcceptedAt: talleres.dpaAcceptedAt, plan: talleres.plan })
         .from(talleres)
         .where(eq(talleres.id, tallerId));
       if (existing && !existing.dpaAcceptedAt) {
         isNewWorkshop = true;
+        // Auto-aprobación: completar el onboarding activa el trial al instante.
+        // La espera manual mataba pilotos (el taller se registraba y se quedaba
+        // mirando una pantalla de "estamos preparando tu cuenta" sin fecha).
+        // El email de aviso al admin se mantiene para vigilar registros basura.
+        autoAprobar = existing.plan === "pendiente";
       }
     }
 
@@ -50,6 +56,11 @@ export async function PUT(request: Request) {
 
     if (body.dpaAceptado) {
       updateData.dpaAcceptedAt = new Date();
+    }
+
+    if (autoAprobar) {
+      updateData.plan = "trial";
+      updateData.trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
     }
 
     if (body.newsletterConsent) {

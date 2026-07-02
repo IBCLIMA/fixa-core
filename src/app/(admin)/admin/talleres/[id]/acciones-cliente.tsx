@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Check, X, Clock, LogIn, AlertTriangle } from "lucide-react";
+import { Check, X, Clock, LogIn, AlertTriangle, Rocket } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +12,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { cambiarPlan, setActivo, aprobarRegistro, entrarComoTaller, type Plan } from "../acciones";
+import { cambiarPlan, setActivo, aprobarRegistro, entrarComoTaller, type Plan, setPiloto} from "../acciones";
 
 const PLAN_OPTIONS: { value: Plan; label: string }[] = [
   { value: "pendiente", label: "Pendiente" },
@@ -28,9 +28,10 @@ interface Props {
   nombre: string;
   plan: Plan;
   activo: boolean;
+  esPiloto: boolean;
 }
 
-export function TallerAcciones({ tallerId, nombre, plan, activo }: Props) {
+export function TallerAcciones({ tallerId, nombre, plan, activo, esPiloto }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [planSel, setPlanSel] = useState<Plan>(plan);
@@ -67,6 +68,26 @@ export function TallerAcciones({ tallerId, nombre, plan, activo }: Props) {
           </Button>
         </div>
       )}
+
+      {/* Taller piloto/fundador */}
+      <div className={`rounded-xl border p-4 ${esPiloto ? "border-violet-300 bg-violet-50" : "border-border"}`}>
+        <p className="text-sm font-bold">{esPiloto ? "Taller piloto (fundador)" : "Programa de pilotos"}</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">
+          {esPiloto
+            ? "Acceso completo gratis: sin trial que expire ni pantallas de pago."
+            : "Marcar como piloto: gratis, sin trial ni pantallas de pago."}
+        </p>
+        <Button
+          onClick={() => run(() => setPiloto(tallerId, !esPiloto), esPiloto ? "Ya no es piloto" : "Marcado como piloto 🚀")}
+          disabled={pending}
+          variant={esPiloto ? "outline" : "default"}
+          className={esPiloto ? "mt-3" : "mt-3 bg-violet-600 text-white hover:bg-violet-700"}
+          size="sm"
+        >
+          <Rocket className="mr-1.5 h-4 w-4" />
+          {esPiloto ? "Quitar condición de piloto" : "Marcar como piloto"}
+        </Button>
+      </div>
 
       {/* Cambiar plan */}
       <div className="rounded-xl border border-stone-200 bg-white p-4">

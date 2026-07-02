@@ -74,6 +74,25 @@ export async function setActivo(tallerId: string, activo: boolean) {
 }
 
 /**
+ * Marca/desmarca un taller como PILOTO (fundador): acceso completo gratis,
+ * sin trial que expire ni pantallas de pago. Ver checkTrialStatus en lib/auth.
+ */
+export async function setPiloto(tallerId: string, esPiloto: boolean) {
+  await requireSuperAdmin();
+  const db = getDb();
+
+  await db.update(talleres).set({ esPiloto }).where(eq(talleres.id, tallerId));
+
+  await registrarAdminAudit({
+    accion: esPiloto ? "marcar_piloto" : "quitar_piloto",
+    tallerId,
+    detalles: { esPiloto },
+  });
+
+  revalidarTaller(tallerId);
+}
+
+/**
  * Aprueba un registro pendiente: plan 'pendiente' → 'trial' con 14 días.
  * Deja constancia activando el taller también.
  */

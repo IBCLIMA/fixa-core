@@ -150,6 +150,8 @@ export const talleres = pgTable("talleres", {
   // Cobro SEPA manual (Ibañez Clima gira el recibo; se marca a mano).
   estadoCobro: estadoCobroEnum("estado_cobro").default("al_corriente"),
   notaCobro: text("nota_cobro"),
+  // Taller fundador/piloto: acceso gratis sin trial que expire ni pantallas de pago.
+  esPiloto: boolean("es_piloto").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -454,7 +456,10 @@ export const historialEstados = pgTable("historial_estados", {
   estadoNuevo: estadoOrdenEnum("estado_nuevo").notNull(),
   usuarioId: uuid("usuario_id").references(() => usuarios.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => [
+  // Timeline del portal del cliente y torre de control: consulta caliente por orden.
+  index("idx_historial_orden").on(table.ordenId),
+]);
 
 export const auditLogs = pgTable(
   "audit_logs",
