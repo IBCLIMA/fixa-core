@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>FIXA — Programa de talleres fundadores</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #faf9f7; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1c1917;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .page {
+    width: 210mm;
+    height: 297mm;
+    padding: 20mm 18mm;
+    background: #faf9f7;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  /* ---------- brand ---------- */
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .hex {
+    width: 30px; height: 34px;
+    background: linear-gradient(145deg, #f97316, #ea580c);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    box-shadow: 0 4px 12px rgba(234, 88, 12, .25);
+  }
+  .wordmark { font-size: 26px; font-weight: 800; letter-spacing: 0.06em; }
+  .kicker {
+    font-size: 12px; font-weight: 800; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #ea580c; margin-bottom: 10px;
+  }
+  .muted { color: #78716c; }
+
+  /* ---------- page 1: cover ---------- */
+  .cover {
+    background:
+      radial-gradient(ellipse 420px 420px at 82% 14%, rgba(249,115,22,.10), transparent 70%),
+      radial-gradient(ellipse 520px 380px at 8% 96%, rgba(249,115,22,.06), transparent 70%),
+      #faf9f7;
+    justify-content: space-between;
+  }
+  .cover-mid { margin-top: -30mm; }
+  .cover h1 {
+    font-size: 56px; font-weight: 800; letter-spacing: -0.03em;
+    line-height: 1.04; max-width: 165mm; margin-bottom: 26px;
+  }
+  .cover h1 .accent { color: #ea580c; }
+  .cover-sub { font-size: 19px; color: #57534e; line-height: 1.5; max-width: 130mm; margin-bottom: 30px; }
+  .pill-row { display: flex; gap: 10px; align-items: center; }
+  .pill {
+    display: inline-block; padding: 9px 18px; border-radius: 999px;
+    font-size: 14px; font-weight: 700; letter-spacing: .01em;
+    border: 1.5px solid #e7e5e4; background: #ffffff; color: #44403c;
+    box-shadow: 0 2px 6px rgba(28,25,23,.04);
+  }
+  .pill.orange {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: #fff; border-color: transparent;
+    box-shadow: 0 6px 16px rgba(234,88,12,.28);
+  }
+  .cover-foot { display: flex; justify-content: space-between; align-items: flex-end; font-size: 13px; color: #78716c; }
+
+  /* ---------- shared blocks ---------- */
+  h2 { font-size: 27px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 12px; }
+  .lead { font-size: 15.5px; line-height: 1.55; color: #44403c; max-width: 158mm; }
+
+  .pain-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .pain {
+    display: flex; align-items: baseline; gap: 12px;
+    background: #fff; border: 1px solid #eeece9; border-radius: 14px;
+    padding: 11px 16px; box-shadow: 0 2px 6px rgba(28,25,23,.04);
+    font-size: 14.5px; line-height: 1.45; color: #292524;
+  }
+  .pain b { font-weight: 700; }
+  .pain-dot { flex: none; width: 8px; height: 8px; border-radius: 99px; background: #f97316; position: relative; top: -1px; }
+
+  .quote {
+    margin-top: 14px; padding: 13px 18px;
+    border-left: 3px solid #f97316; background: #fff7f0;
+    border-radius: 0 14px 14px 0; font-size: 14.5px; line-height: 1.5; color: #44403c;
+  }
+  .quote .sig { display: block; margin-top: 5px; font-size: 12.5px; font-weight: 700; color: #78716c; font-style: normal; }
+
+  /* ---------- mockups ---------- */
+  .mockups { display: flex; gap: 16px; margin-top: 14px; align-items: stretch; }
+  .mock-col { flex: 1; display: flex; flex-direction: column; }
+  .mock-caption { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #a8a29e; margin-bottom: 8px; }
+
+  .phone {
+    background: #fff; border: 1px solid #ebe8e4; border-radius: 22px;
+    padding: 16px 16px 14px; box-shadow: 0 10px 26px rgba(28,25,23,.08);
+    flex: 1;
+  }
+  .phone-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .phone-car { font-size: 15.5px; font-weight: 800; letter-spacing: -0.01em; }
+  .phone-plate { font-size: 10.5px; font-weight: 700; color: #78716c; background: #f5f5f4; border-radius: 6px; padding: 3px 7px; }
+  .status-chip {
+    display: inline-block; margin: 6px 0 12px;
+    background: linear-gradient(135deg, #f97316, #ea580c); color: #fff;
+    font-size: 11.5px; font-weight: 800; letter-spacing: .04em;
+    padding: 5px 12px; border-radius: 999px;
+  }
+  .tl { list-style: none; }
+  .tl li { display: flex; gap: 10px; align-items: flex-start; padding-bottom: 12px; position: relative; }
+  .tl li::before {
+    content: ""; position: absolute; left: 5.5px; top: 15px; bottom: -1px; width: 2px; background: #e7e5e4;
+  }
+  .tl li:last-child::before { display: none; }
+  .tl .dot {
+    flex: none; width: 13px; height: 13px; border-radius: 99px; margin-top: 2px;
+    background: #fff; border: 2.5px solid #d6d3d1;
+  }
+  .tl .done .dot { background: #f97316; border-color: #f97316; }
+  .tl .now .dot { background: #fff; border-color: #ea580c; box-shadow: 0 0 0 3.5px rgba(249,115,22,.22); }
+  .tl .txt { font-size: 12.5px; line-height: 1.35; color: #78716c; }
+  .tl .done .txt, .tl .now .txt { color: #1c1917; font-weight: 600; }
+  .tl .now .txt b { color: #ea580c; }
+  .phone-note { font-size: 12.5px; color: #57534e; background: #faf9f7; border-radius: 10px; padding: 8px 11px; margin-top: 2px; line-height: 1.4; }
+  .phone-btns { display: flex; gap: 8px; margin-top: 10px; }
+  .pbtn {
+    flex: 1; text-align: center; font-size: 12px; font-weight: 700;
+    border-radius: 10px; padding: 8px 0;
+  }
+  .pbtn.ghost { border: 1.5px solid #e7e5e4; color: #44403c; background: #fff; }
+  .pbtn.solid { background: #1c1917; color: #fff; }
+
+  .brief {
+    background: #1c1917; color: #fafaf9; border-radius: 22px;
+    padding: 18px 18px 16px; box-shadow: 0 10px 26px rgba(28,25,23,.18); flex: 1;
+  }
+  .brief-title { font-size: 15.5px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 3px; }
+  .brief-sub { font-size: 11.5px; color: #a8a29e; margin-bottom: 13px; }
+  .brief-item {
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.09);
+    border-radius: 12px; padding: 10px 12px; margin-bottom: 8px;
+  }
+  .brief-item .bt { font-size: 12.5px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+  .brief-item .bd { font-size: 11.5px; color: #d6d3d1; line-height: 1.4; }
+  .brief-item .tag {
+    display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: .05em;
+    color: #fdba74; margin-bottom: 4px; text-transform: uppercase;
+  }
+
+  .keyphrase {
+    margin-top: 14px; background: #1c1917; color: #fafaf9;
+    border-radius: 16px; padding: 15px 20px;
+    font-size: 16px; font-weight: 700; line-height: 1.45; letter-spacing: -0.01em;
+  }
+  .keyphrase .accent { color: #fb923c; }
+
+  /* ---------- page 3 ---------- */
+  .notbox {
+    border: 1.5px dashed #d6d3d1; border-radius: 16px; background: #fff;
+    padding: 15px 18px; margin-bottom: 20px;
+  }
+  .notbox h3 { font-size: 15px; font-weight: 800; margin-bottom: 8px; }
+  .not-items { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; }
+  .not-item { display: flex; gap: 9px; font-size: 13.5px; color: #44403c; line-height: 1.4; align-items: baseline; }
+  .not-item .x { color: #a8a29e; font-weight: 800; font-size: 12px; flex: none; }
+  .notbox .punch { margin-top: 10px; font-size: 14px; font-weight: 700; color: #1c1917; }
+  .notbox .punch .accent { color: #ea580c; }
+
+  .offer-cols { display: flex; gap: 16px; margin-top: 14px; }
+  .offer-card {
+    flex: 1.35; background: #fff; border: 1px solid #eeece9; border-radius: 18px;
+    padding: 17px 19px; box-shadow: 0 6px 18px rgba(28,25,23,.05);
+  }
+  .ask-card {
+    flex: 1; background: #fff7f0; border: 1.5px solid #fed7aa; border-radius: 18px;
+    padding: 17px 19px;
+  }
+  .card-title { font-size: 13px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+  .offer-card .card-title { color: #ea580c; }
+  .ask-card .card-title { color: #9a3412; }
+  .check-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
+  .check-item:last-child { margin-bottom: 0; }
+  .check {
+    flex: none; width: 17px; height: 17px; border-radius: 99px; margin-top: 1px;
+    background: linear-gradient(135deg, #f97316, #ea580c); color: #fff;
+    font-size: 10.5px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  }
+  .check-item .ct { font-size: 13.5px; line-height: 1.4; color: #292524; }
+  .check-item .ct b { font-weight: 800; }
+  .ask-card p { font-size: 13.5px; line-height: 1.5; color: #57534e; }
+  .ask-card p + p { margin-top: 9px; }
+  .ask-card .big { font-size: 14.5px; font-weight: 800; color: #1c1917; }
+
+  .price-strip {
+    margin-top: 16px; display: flex; align-items: center; gap: 16px;
+    background: linear-gradient(135deg, #f97316, #ea580c); color: #fff;
+    border-radius: 18px; padding: 15px 22px; box-shadow: 0 10px 24px rgba(234,88,12,.25);
+  }
+  .price-big { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
+  .price-big small { font-size: 15px; font-weight: 700; }
+  .price-txt { font-size: 13.5px; line-height: 1.45; font-weight: 600; color: #ffedd5; }
+  .price-txt b { color: #fff; }
+
+  .banner {
+    margin-top: 16px; text-align: center;
+    font-size: 19px; font-weight: 800; letter-spacing: -0.015em; line-height: 1.35;
+  }
+  .banner .accent { color: #ea580c; }
+
+  /* ---------- page 4 ---------- */
+  .close-page {
+    background:
+      radial-gradient(ellipse 460px 420px at 50% 30%, rgba(249,115,22,.09), transparent 70%),
+      #faf9f7;
+    justify-content: space-between; text-align: center; align-items: center;
+  }
+  .close-mid { margin-top: 34mm; display: flex; flex-direction: column; align-items: center; }
+  .close-mid h2 { font-size: 58px; letter-spacing: -0.03em; margin-bottom: 16px; }
+  .close-mid .accent { color: #ea580c; }
+  .close-sub { font-size: 20px; color: #57534e; line-height: 1.5; max-width: 130mm; margin-bottom: 34px; }
+  .contact-card {
+    background: #fff; border: 1px solid #eeece9; border-radius: 22px;
+    padding: 24px 40px; box-shadow: 0 12px 32px rgba(28,25,23,.08);
+    display: inline-flex; flex-direction: column; gap: 12px; text-align: left;
+  }
+  .contact-row { display: flex; align-items: center; gap: 14px; font-size: 16.5px; font-weight: 700; color: #1c1917; }
+  .contact-row .lbl {
+    flex: none; width: 92px; font-size: 11px; font-weight: 800; letter-spacing: .12em;
+    text-transform: uppercase; color: #a8a29e;
+  }
+  .contact-row .accent { color: #ea580c; }
+  .close-note { margin-top: 26px; font-size: 14px; color: #78716c; max-width: 120mm; line-height: 1.5; }
+  .close-foot { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12.5px; color: #a8a29e; }
+
+  .spacer { flex: 1; }
+</style>
+</head>
+<body>
+
+<!-- ============ PÁGINA 1 · PORTADA ============ -->
+<div class="page cover">
+  <div class="brand">
+    <div class="hex"></div>
+    <div class="wordmark">FIXA</div>
+  </div>
+
+  <div class="cover-mid">
+    <h1>Deja de llevar<br>el taller <span class="accent">en la cabeza.</span></h1>
+    <p class="cover-sub">Tus clientes ven su coche en tiempo real por un link de WhatsApp. Y tú, cada mañana, ves lo que no se te puede escapar hoy.</p>
+    <div class="pill-row">
+      <span class="pill">Programa de talleres fundadores</span>
+      <span class="pill orange">Solo 5 plazas</span>
+    </div>
+  </div>
+
+  <div class="cover-foot">
+    <span>Hecho por gente de taller, para gente de taller.</span>
+    <span><b>fixataller.es</b></span>
+  </div>
+</div>
+
+<!-- ============ PÁGINA 2 · DOLOR + SOLUCIÓN ============ -->
+<div class="page">
+  <div class="kicker">Te sonará</div>
+  <h2>¿Cuántas veces al día sueltas la herramienta para coger el teléfono?</h2>
+  <p class="lead">Porque un cliente pregunta cómo va su coche. Otra vez. Y mientras tanto:</p>
+
+  <div class="pain-list">
+    <div class="pain"><span class="pain-dot"></span><span><b>Presupuestos que se enfrían.</b> Lo mandaste hace dos días, nadie ha contestado, y ya ni te acuerdas.</span></div>
+    <div class="pain"><span class="pain-dot"></span><span><b>Coches listos que nadie recoge.</b> Ocupan elevador, ocupan patio, y el aviso se te pasó.</span></div>
+    <div class="pain"><span class="pain-dot"></span><span><b>ITV que se escapan.</b> Trabajo que era tuyo y se lo lleva otro porque nadie avisó al cliente.</span></div>
+  </div>
+
+  <div class="quote">
+    "Te entiendo. Yo también tengo un taller. Todo esto lo he vivido con las manos ocupadas y el teléfono sonando."
+    <span class="sig">— Sergi Ibañez · Ibañez Clima, taller real desde 2010</span>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="kicker" style="margin-top:16px;">La solución, en dos pantallas</div>
+  <div class="mockups">
+    <div class="mock-col">
+      <div class="mock-caption">Lo que ve tu cliente</div>
+      <div class="phone">
+        <div class="phone-top">
+          <div class="phone-car">Tu Mercedes GLC</div>
+          <div class="phone-plate">4827 KZT</div>
+        </div>
+        <div class="status-chip">EN REPARACIÓN</div>
+        <ul class="tl">
+          <li class="done"><span class="dot"></span><span class="txt">Recibido en el taller</span></li>
+          <li class="done"><span class="dot"></span><span class="txt">Diagnóstico hecho</span></li>
+          <li class="now"><span class="dot"></span><span class="txt"><b>En reparación</b> — ahora mismo</span></li>
+          <li><span class="dot"></span><span class="txt">Listo para recoger</span></li>
+        </ul>
+        <div class="phone-note">Te avisaremos cuando esté listo. No hace falta que llames.</div>
+        <div class="phone-btns">
+          <div class="pbtn ghost">Llamar al taller</div>
+          <div class="pbtn solid">WhatsApp</div>
+        </div>
+      </div>
+    </div>
+    <div class="mock-col">
+      <div class="mock-caption">Lo que ves tú al abrir</div>
+      <div class="brief">
+        <div class="brief-title">Buenos días. Hoy no dejes escapar esto:</div>
+        <div class="brief-sub">Tu briefing de la mañana</div>
+        <div class="brief-item">
+          <span class="tag">Presupuesto sin respuesta</span>
+          <div class="bt">Llama a Antonio</div>
+          <div class="bd">Presupuesto de 740 € · 2 días sin responder</div>
+        </div>
+        <div class="brief-item">
+          <span class="tag">Coche listo</span>
+          <div class="bt">Avisa a María</div>
+          <div class="bd">Su coche está listo desde ayer y ocupa sitio</div>
+        </div>
+        <div class="brief-item">
+          <span class="tag">ITV este mes</span>
+          <div class="bt">El Golf de Joan pasa la ITV</div>
+          <div class="bd">Un WhatsApp y ese trabajo es tuyo, no de otro</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="keyphrase">El cliente deja de llamar. Y tú no cambias nada de cómo trabajas: <span class="accent">le mandas un link, como un WhatsApp más.</span></div>
+</div>
+
+<!-- ============ PÁGINA 3 · QUÉ NO ES + OFERTA ============ -->
+<div class="page">
+  <div class="notbox">
+    <h3>Antes de que lo pienses: qué NO es</h3>
+    <div class="not-items">
+      <div class="not-item"><span class="x">✕</span><span>No es un programa de gestión de esos.</span></div>
+      <div class="not-item"><span class="x">✕</span><span>No lleva contabilidad ni almacén.</span></div>
+      <div class="not-item"><span class="x">✕</span><span>No tienes que migrar nada.</span></div>
+      <div class="not-item"><span class="x">✕</span><span>No hay nada que aprender ni instalar.</span></div>
+    </div>
+    <div class="punch">Si usas WhatsApp, <span class="accent">ya sabes usarlo.</span></div>
+  </div>
+
+  <div class="kicker">La oferta de fundador</div>
+  <h2>Solo 5 talleres. Ni uno más.</h2>
+  <p class="lead">Buscamos 5 talleres fundadores que lo usen con coches reales antes de abrirlo al resto. A cambio, condiciones que no volverán a existir.</p>
+
+  <div class="offer-cols">
+    <div class="offer-card">
+      <div class="card-title">Qué recibes</div>
+      <div class="check-item"><span class="check">✓</span><span class="ct"><b>2 meses gratis, todo incluido.</b> Sin tarjeta, sin permanencia, sin letra pequeña.</span></div>
+      <div class="check-item"><span class="check">✓</span><span class="ct"><b>Te lo dejamos funcionando nosotros.</b> Alta hecha, cero papeleo. Tú no montas nada.</span></div>
+      <div class="check-item"><span class="check">✓</span><span class="ct"><b>Soporte directo por WhatsApp con el fundador.</b> Le escribes a Sergi, no a un buzón.</span></div>
+      <div class="check-item"><span class="check">✓</span><span class="ct"><b>Tu opinión moldea el producto.</b> Lo que pidas de verdad, se construye.</span></div>
+    </div>
+    <div class="ask-card">
+      <div class="card-title">Qué te pedimos</div>
+      <p class="big">Que lo uses con coches reales.</p>
+      <p>Los próximos que entren por la puerta. No hace falta migrar el taller: empieza con tres.</p>
+      <p class="big">Y que nos digas la verdad.</p>
+      <p>Sin filtros. Qué sobra, qué falta, qué es una castaña. Eso es lo que vale.</p>
+    </div>
+  </div>
+
+  <div class="price-strip">
+    <div class="price-big">29 €<small>/mes</small></div>
+    <div class="price-txt"><b>Precio de fundador congelado para siempre</b> cuando acabe el piloto. Aunque suba para los demás, para ti no sube nunca. Y si no te convence, lo dejas y tan amigos.</div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="banner">No te pedimos tiempo. <span class="accent">Te pedimos que mandes un link.</span></div>
+</div>
+
+<!-- ============ PÁGINA 4 · CIERRE ============ -->
+<div class="page close-page">
+  <div class="brand" style="align-self: flex-start;">
+    <div class="hex"></div>
+    <div class="wordmark">FIXA</div>
+  </div>
+
+  <div class="close-mid">
+    <h2>¿Hablamos?</h2>
+    <p class="close-sub">10 minutos y te lo enseño funcionando <b>en tu propio taller</b>. Si no te sirve, me lo dices y tan amigos.</p>
+    <div class="contact-card">
+      <div class="contact-row"><span class="lbl">Quién</span><span>Sergi · Ibañez Clima</span></div>
+      <div class="contact-row"><span class="lbl">WhatsApp</span><span class="accent">611 433 218</span></div>
+      <div class="contact-row"><span class="lbl">Correo</span><span>hola@fixataller.es</span></div>
+      <div class="contact-row"><span class="lbl">Web</span><span>fixataller.es</span></div>
+    </div>
+    <p class="close-note">Recuerda: solo hay 5 plazas de taller fundador. Cuando se llenen, el precio congelado de 29 €/mes desaparece con ellas.</p>
+  </div>
+
+  <div class="close-foot">
+    <span>FIXA — Deja de llevar el taller en la cabeza.</span>
+  </div>
+</div>
+
+</body>
+</html>
