@@ -40,7 +40,6 @@ export default function NuevaOrdenPage() {
   const [loading, setLoading] = useState(false);
   const [loadingClientes, setLoadingClientes] = useState(true);
   const [descripcion, setDescripcion] = useState("");
-  const [tipoIntervencion, setTipoIntervencion] = useState<string[]>([]);
   const [clienteOpen, setClienteOpen] = useState(false);
   const [vehiculoOpen, setVehiculoOpen] = useState(false);
 
@@ -81,9 +80,10 @@ export default function NuevaOrdenPage() {
           (formData.get("descripcion") as string) || undefined,
         fechaEstimada:
           (formData.get("fechaEstimada") as string) || undefined,
-        motivoDeposito:
-          (formData.get("motivoDeposito") as string) || "reparacion",
-        tipoIntervencion: tipoIntervencion.length > 0 ? tipoIntervencion : undefined,
+        // Sin preguntas de papeleo en la entrada: motivo por defecto
+        // "reparacion" (editable en Datos legales) y tipo de intervención se
+        // marca después solo cuando aporta (p.ej. chapa/pintura → seguro).
+        motivoDeposito: "reparacion",
         observacionesEntrada:
           (formData.get("observacionesEntrada") as string) || undefined,
       });
@@ -311,50 +311,6 @@ export default function NuevaOrdenPage() {
                 required
                 className="h-11 rounded-xl"
               />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-stone-500">Motivo del depósito</Label>
-              <div className="flex gap-4">
-                <label className="flex items-center gap-2 text-sm">
-                  <input type="radio" name="motivoDeposito" value="reparacion" defaultChecked className="accent-brand-500" />
-                  Reparación
-                </label>
-                <label className="flex items-center gap-2 text-sm">
-                  <input type="radio" name="motivoDeposito" value="presupuesto" className="accent-brand-500" />
-                  Presupuesto
-                </label>
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-stone-500">Tipo de intervención</Label>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { value: "mecanica", label: "Mecánica" },
-                  { value: "chapa", label: "Chapa" },
-                  { value: "pintura", label: "Pintura" },
-                  { value: "electricidad", label: "Electricidad" },
-                  { value: "diagnostico", label: "Diagnóstico" },
-                  { value: "mantenimiento", label: "Mantenimiento" },
-                  { value: "pre_itv", label: "Pre-ITV" },
-                  { value: "otro", label: "Otro" },
-                ].map((tipo) => (
-                  <label key={tipo.value} className="flex items-center gap-2 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={tipoIntervencion.includes(tipo.value)}
-                      onChange={(e) => {
-                        setTipoIntervencion((prev) =>
-                          e.target.checked
-                            ? [...prev, tipo.value]
-                            : prev.filter((t) => t !== tipo.value)
-                        );
-                      }}
-                      className="accent-brand-500"
-                    />
-                    {tipo.label}
-                  </label>
-                ))}
-              </div>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="observacionesEntrada" className="text-xs font-bold text-stone-500">Observaciones de entrada</Label>

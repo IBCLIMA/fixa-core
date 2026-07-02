@@ -6,7 +6,7 @@ import { UserButton } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import {
   LayoutDashboard, ClipboardList, CalendarDays, Users, MoreHorizontal,
-  FileText, Receipt, Bell, Settings, Megaphone, Upload, HelpCircle, Shield, FileCheck,
+  FileText, Receipt, Bell, Settings, Upload, HelpCircle, Shield, FileCheck,
   ChevronLeft, Columns3, BarChart3,
 } from "lucide-react";
 import { FixaLogo } from "@/components/ui/fixa-logo";
@@ -29,18 +29,17 @@ const mainNav = [
   { name: "Ordenes", href: "/ordenes", icon: ClipboardList },
   { name: "Agenda", href: "/calendario", icon: CalendarDays },
   { name: "Clientes", href: "/clientes", icon: Users },
+  { name: "Avisos", href: "/avisos", icon: Bell },
 ];
 
 const gestionNav = [
   { name: "Presupuestos", href: "/presupuestos", icon: FileText, roles: ["admin", "mecanico", "recepcion"] },
+  { name: "Cobros", href: "/facturacion", icon: Receipt, roles: ["admin", "recepcion"] },
   { name: "Documentos", href: "/documentos", icon: FileCheck, roles: ["admin", "recepcion"] },
-  { name: "Facturacion", href: "/facturacion", icon: Receipt, roles: ["admin", "recepcion"] },
-  { name: "Avisos", href: "/avisos", icon: Bell, roles: ["admin", "mecanico", "recepcion"] },
-  { name: "Ofertas", href: "/ofertas", icon: Megaphone, roles: ["admin", "recepcion"] },
-  { name: "Métricas", href: "/metricas", icon: BarChart3, roles: ["admin"] },
 ];
 
 const adminNav = [
+  { name: "Métricas", href: "/metricas", icon: BarChart3, roles: ["admin"] },
   { name: "Equipo", href: "/equipo", icon: Users, roles: ["admin"] },
   { name: "Importar", href: "/importar", icon: Upload, roles: ["admin", "recepcion"] },
   { name: "Configuracion", href: "/configuracion", icon: Settings, roles: ["admin"] },
@@ -137,7 +136,7 @@ export function TallerNav({ children, rol, switcher, esSuperAdmin }: { children:
               {!collapsed && (
                 <div className="flex items-center gap-1.5 px-3 mb-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
-                  <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Gestion</p>
+                  <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Dinero</p>
                 </div>
               )}
               <div className="space-y-0.5">

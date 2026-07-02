@@ -159,39 +159,51 @@ export default function BienvenidaPage() {
                 <Label className="text-xs font-bold text-stone-500">Nombre del taller *</Label>
                 <Input value={datos.nombre} onChange={(e) => setDatos({ ...datos, nombre: e.target.value })} placeholder="Ej: Taller García Automoción" className="h-12 rounded-xl text-base" autoFocus />
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5 col-span-2">
-                  <Label className="text-xs font-bold text-stone-500">Teléfono (WhatsApp)</Label>
-                  <Input value={datos.telefono} onChange={(e) => setDatos({ ...datos, telefono: e.target.value })} placeholder="612 345 678" type="tel" className="h-11 rounded-xl" />
-                  <TelefonoTallerHint telefono={datos.telefono} />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-stone-500">Correo electrónico</Label>
-                  <Input value={datos.email} onChange={(e) => setDatos({ ...datos, email: e.target.value })} placeholder="info@taller.com" type="email" className="h-11 rounded-xl" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-stone-500">CIF / NIF</Label>
-                  <Input value={datos.cif} onChange={(e) => setDatos({ ...datos, cif: e.target.value })} placeholder="B12345678" className="h-11 rounded-xl" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-stone-500">Dirección</Label>
-                  <Input value={datos.direccion} onChange={(e) => setDatos({ ...datos, direccion: e.target.value })} placeholder="Calle Mayor, 1" className="h-11 rounded-xl" />
-                </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-stone-500">Teléfono (WhatsApp)</Label>
+                <Input value={datos.telefono} onChange={(e) => setDatos({ ...datos, telefono: e.target.value })} placeholder="612 345 678" type="tel" className="h-11 rounded-xl" />
+                <TelefonoTallerHint telefono={datos.telefono} />
               </div>
-              <div className="grid grid-cols-3 gap-3">
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-stone-500">Código postal</Label>
-                  <Input value={datos.codigoPostal} onChange={(e) => setDatos({ ...datos, codigoPostal: e.target.value })} placeholder="25001" className="h-11 rounded-xl" maxLength={5} />
+
+              {/* Datos fiscales COLAPSADOS: nadie debería rellenar papeleo antes
+                  de ver el producto. Todo esto se puede completar luego en
+                  Configuración; los documentos legales lo pedirán si falta. */}
+              <details className="group">
+                <summary className="cursor-pointer list-none text-xs font-semibold text-stone-500 hover:text-stone-700 transition-colors">
+                  <span className="underline decoration-dotted underline-offset-2">Datos fiscales (CIF, dirección…)</span>
+                  <span className="text-stone-400"> — opcional, puedes rellenarlos luego en Configuración</span>
+                </summary>
+                <div className="mt-3 space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-stone-500">Correo electrónico</Label>
+                      <Input value={datos.email} onChange={(e) => setDatos({ ...datos, email: e.target.value })} placeholder="info@taller.com" type="email" className="h-11 rounded-xl" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-stone-500">CIF / NIF</Label>
+                      <Input value={datos.cif} onChange={(e) => setDatos({ ...datos, cif: e.target.value })} placeholder="B12345678" className="h-11 rounded-xl" />
+                    </div>
+                    <div className="space-y-1.5 col-span-2">
+                      <Label className="text-xs font-bold text-stone-500">Dirección</Label>
+                      <Input value={datos.direccion} onChange={(e) => setDatos({ ...datos, direccion: e.target.value })} placeholder="Calle Mayor, 1" className="h-11 rounded-xl" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-stone-500">Código postal</Label>
+                      <Input value={datos.codigoPostal} onChange={(e) => setDatos({ ...datos, codigoPostal: e.target.value })} placeholder="25001" className="h-11 rounded-xl" maxLength={5} />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-stone-500">Ciudad</Label>
+                      <Input value={datos.ciudad} onChange={(e) => setDatos({ ...datos, ciudad: e.target.value })} placeholder="Lleida" className="h-11 rounded-xl" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-stone-500">Provincia</Label>
+                      <Input value={datos.provincia} onChange={(e) => setDatos({ ...datos, provincia: e.target.value })} placeholder="Lleida" className="h-11 rounded-xl" />
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-stone-500">Ciudad</Label>
-                  <Input value={datos.ciudad} onChange={(e) => setDatos({ ...datos, ciudad: e.target.value })} placeholder="Lleida" className="h-11 rounded-xl" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-stone-500">Provincia</Label>
-                  <Input value={datos.provincia} onChange={(e) => setDatos({ ...datos, provincia: e.target.value })} placeholder="Lleida" className="h-11 rounded-xl" />
-                </div>
-              </div>
+              </details>
             </div>
 
             {/* DPA */}
