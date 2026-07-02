@@ -38,6 +38,17 @@ export function PortalLive({ desde }: { desde: string }) {
     };
   }, [router, desde]);
 
+  // "En directo · hace 3 días" es una contradicción que mata la credibilidad.
+  // Si el último cambio tiene más de 24h, el badge se degrada a un neutro
+  // "Actualizado hace X" sin punto verde ni promesa de directo.
+  const esReciente = ahora - desdeMs < 24 * 60 * 60 * 1000;
+  if (!esReciente) {
+    return (
+      <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-stone-100 px-2.5 py-1 text-[11px] font-semibold text-stone-500 ring-1 ring-stone-200">
+        Actualizado {haceCuanto(desdeMs, ahora)}
+      </span>
+    );
+  }
   return (
     <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-200">
       <span className="relative flex h-2 w-2">

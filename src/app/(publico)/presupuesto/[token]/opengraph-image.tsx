@@ -2,6 +2,7 @@ import { getDb } from "@/db";
 import { presupuestos, vehiculos, talleres } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { ogCard, OG_SIZE } from "@/lib/og-card";
+import { formatVehiculo } from "@/lib/utils";
 
 export const alt = "Presupuesto de tu coche";
 export const size = OG_SIZE;
@@ -18,7 +19,7 @@ export default async function PresupuestoOgImage({ params }: { params: { token: 
       .leftJoin(vehiculos, eq(presupuestos.vehiculoId, vehiculos.id))
       .leftJoin(talleres, eq(presupuestos.tallerId, talleres.id))
       .where(eq(presupuestos.tokenPublico, params.token));
-    const desc = [row?.marca, row?.modelo].filter(Boolean).join(" ");
+    const desc = formatVehiculo(row?.marca, row?.modelo);
     if (desc) coche = desc;
     if (row?.taller) taller = row.taller;
   } catch {

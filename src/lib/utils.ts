@@ -21,6 +21,20 @@ export function appUrl(path = ""): string {
 }
 
 /**
+ * Presenta marca/modelo con dignidad: "mercedes glc amg 43" → "Mercedes GLC AMG 43".
+ * Los datos llegan en minúsculas desde el ETL; capitalizamos palabras y ponemos
+ * en mayúsculas los tokens cortos (siglas de modelo: GLC, AMG, GTI, TDI, X5...).
+ */
+export function formatVehiculo(...partes: (string | null | undefined)[]): string {
+  return partes
+    .filter(Boolean)
+    .join(" ")
+    .split(/\s+/)
+    .map((w) => (w.length <= 3 && !/^\d+$/.test(w) ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)))
+    .join(" ");
+}
+
+/**
  * Escapa texto para interpolarlo en HTML (emails construidos con template
  * strings). Sin esto, un nombre de taller como "<img onerror=...>" se
  * ejecutaría en el cliente de correo del admin.

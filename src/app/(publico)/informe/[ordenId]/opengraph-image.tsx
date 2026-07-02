@@ -2,6 +2,7 @@ import { getDb } from "@/db";
 import { ordenesTrabajo, vehiculos, talleres } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { ogCard, OG_SIZE } from "@/lib/og-card";
+import { formatVehiculo } from "@/lib/utils";
 
 export const alt = "Informe de tu coche";
 export const size = OG_SIZE;
@@ -19,7 +20,7 @@ export default async function InformeOgImage({ params }: { params: { ordenId: st
       .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
       .leftJoin(talleres, eq(ordenesTrabajo.tallerId, talleres.id))
       .where(eq(ordenesTrabajo.tokenPublico, params.ordenId));
-    const desc = [row?.marca, row?.modelo].filter(Boolean).join(" ");
+    const desc = formatVehiculo(row?.marca, row?.modelo);
     if (desc) coche = desc;
     if (row?.taller) taller = row.taller;
   } catch {

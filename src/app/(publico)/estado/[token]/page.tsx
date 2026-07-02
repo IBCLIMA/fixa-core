@@ -8,7 +8,7 @@ import { TimelineReparacion, type HitoTimeline } from "@/components/portal/timel
 import { PortalLive } from "@/components/portal/portal-live";
 import { CelebracionListo } from "@/components/portal/celebracion-listo";
 import { MediaGallery } from "@/components/media-lightbox";
-import { formatWhatsAppUrl } from "@/lib/utils";
+import { formatWhatsAppUrl, formatVehiculo } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { getDb } from "@/db";
 import { ordenesTrabajo, vehiculos, clientes, talleres, usuarios, historialEstados, presupuestos, lineasPresupuesto, averiasOcultas, documentosCobro, lineasOrden, fotosOrden } from "@/db/schema";
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
       .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
       .leftJoin(talleres, eq(ordenesTrabajo.tallerId, talleres.id))
       .where(eq(ordenesTrabajo.tokenPublico, token));
-    const coche = [row?.marca, row?.modelo].filter(Boolean).join(" ") || "tu coche";
+    const coche = formatVehiculo(row?.marca, row?.modelo) || "tu coche";
     const taller = row?.taller || "tu taller";
     const title = `Estado de ${coche}`;
     const description = `Sigue la reparación en ${taller}, paso a paso y en directo. Sin tener que llamar.`;
@@ -293,7 +293,7 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
             </div>
           </div>
 
-          <p className="mt-4 text-sm font-semibold text-muted-foreground">Tu {o.marca} {o.modelo}</p>
+          <p className="mt-4 text-sm font-semibold text-muted-foreground">Tu {formatVehiculo(o.marca, o.modelo)}</p>
           <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
             {copy.titulo}
           </h1>
@@ -488,7 +488,7 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
               <Car className="h-5 w-5 text-muted-foreground" />
               <div>
                 <p className="font-bold text-lg tracking-wider">{o.matricula}</p>
-                <p className="text-sm text-muted-foreground">{o.marca} {o.modelo}</p>
+                <p className="text-sm text-muted-foreground">{formatVehiculo(o.marca, o.modelo)}</p>
               </div>
             </div>
             {o.descripcionCliente && (

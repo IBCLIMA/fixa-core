@@ -2,6 +2,7 @@ import { getDb } from "@/db";
 import { ordenesTrabajo, vehiculos, talleres } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { ogCard, OG_SIZE } from "@/lib/og-card";
+import { formatVehiculo } from "@/lib/utils";
 
 export const alt = "Estado de tu coche en directo";
 export const size = OG_SIZE;
@@ -18,7 +19,7 @@ export default async function EstadoOgImage({ params }: { params: { token: strin
       .leftJoin(vehiculos, eq(ordenesTrabajo.vehiculoId, vehiculos.id))
       .leftJoin(talleres, eq(ordenesTrabajo.tallerId, talleres.id))
       .where(eq(ordenesTrabajo.tokenPublico, params.token));
-    const desc = [row?.marca, row?.modelo].filter(Boolean).join(" ");
+    const desc = formatVehiculo(row?.marca, row?.modelo);
     if (desc) coche = desc;
     if (row?.taller) taller = row.taller;
   } catch {
