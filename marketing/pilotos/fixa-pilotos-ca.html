@@ -10,6 +10,8 @@
   .page { width:210mm; height:296.5mm; page-break-after:always; overflow:hidden; position:relative; padding:16mm 15mm; }
   .page:last-child { page-break-after:auto; }
   .dark { background:#1c1917; color:#fafaf9; }
+  .fillcol { display:flex; flex-direction:column; padding-bottom:24mm; }
+  .sp { flex:1; }
 
   /* ───────── utilidades ───────── */
   .chip { display:inline-flex; align-items:center; gap:7px; border-radius:999px; font-weight:700; }
@@ -28,26 +30,26 @@
   .cover .sub { margin-top:22px; font-size:19px; line-height:1.5; color:#d6d3d1; max-width:132mm; }
   .cover-chips { display:flex; gap:10px; margin-top:30px; }
   .chip-light { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16); color:#e7e5e4; padding:10px 18px; font-size:13.5px; }
-  .chip-fire  { background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; padding:10px 18px; font-size:13.5px; box-shadow:0 6px 18px rgba(249,115,22,.4); }
+  .chip-fire  { background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; padding:10px 18px; font-size:13.5px; }
   .cover-foot { display:flex; justify-content:space-between; align-items:flex-end; color:#a8a29e; font-size:13px; }
 
   /* ───────── PÁGINA DOLOR ───────── */
-  h2.sec { font-size:36px; font-weight:800; letter-spacing:-.02em; line-height:1.08; margin-top:6px; }
+  h2.sec { font-size:41px; font-weight:800; letter-spacing:-.02em; line-height:1.08; margin-top:6px; }
   .pain-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:13px; margin-top:30px; }
-  .pain { padding:26px 20px; border-radius:18px; background:#fff; border:1px solid #e7e5e4; box-shadow:0 2px 10px rgba(28,25,23,.05); }
+  .pain { padding:32px 22px; border-radius:18px; background:#fff; border:1px solid #e7e5e4; }
   .pain .n { font-size:36px; }
   .pain h3 { font-size:16.5px; font-weight:800; margin-top:10px; }
   .pain p { font-size:13px; line-height:1.55; color:#78716c; margin-top:6px; }
   .quote { margin-top:26px; display:flex; gap:16px; align-items:flex-start; background:#1c1917; border-radius:20px; padding:30px 30px; color:#fafaf9; }
   .quote .avatar { width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,#f97316,#ea580c); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:19px; color:#fff; flex-shrink:0; }
-  .quote p.t { font-size:17px; line-height:1.55; font-weight:600; }
+  .quote p.t { font-size:18.5px; line-height:1.55; font-weight:600; }
   .quote p.a { margin-top:10px; font-size:13px; color:#a8a29e; }
-  .banner { margin-top:26px; border-radius:16px; padding:16px 20px; text-align:center; font-size:17px; font-weight:800; color:#fff;
-            background:linear-gradient(92deg,#f97316,#ea580c); box-shadow:0 10px 26px rgba(249,115,22,.35); }
+  .banner { border-radius:16px; padding:20px 22px; text-align:center; font-size:18px; font-weight:800; color:#fff;
+            background:linear-gradient(92deg,#f97316,#ea580c); }
 
   /* ───────── PÁGINA SOLUCIÓN ───────── */
   .sol-grid { display:grid; grid-template-columns:86mm 1fr; gap:10mm; align-items:start; margin-top:16px; }
-  .phone { width:80mm; border-radius:36px; background:#0c0a09; padding:8px; box-shadow:0 24px 60px rgba(28,25,23,.35); margin:0 auto; }
+  .phone { width:80mm; border-radius:36px; background:#0c0a09; padding:8px; border:1px solid #d6d3d1; margin:0 auto; }
   .screen { border-radius:29px; background:#faf9f7; overflow:hidden; }
   .notch { width:84px; height:20px; background:#0c0a09; border-radius:0 0 13px 13px; margin:0 auto; }
   .p-head { display:flex; justify-content:space-between; align-items:center; padding:9px 13px 8px; border-bottom:1px solid #e7e5e4; background:#fff; }
@@ -56,7 +58,7 @@
   .dot { width:6px; height:6px; border-radius:50%; background:#10b981; }
   .p-hero { margin:9px 9px 7px; border-radius:15px; padding:14px 12px; text-align:center;
             background:linear-gradient(180deg,#fff7ed, #ffffff); border:1px solid #fed7aa; }
-  .p-hero .ic { width:38px; height:38px; margin:0 auto; border-radius:12px; background:linear-gradient(135deg,#f97316,#ea580c); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 14px rgba(249,115,22,.35); font-size:17px; }
+  .p-hero .ic { width:38px; height:38px; margin:0 auto; border-radius:12px; background:linear-gradient(135deg,#f97316,#ea580c); display:flex; align-items:center; justify-content:center; font-size:17px; }
   .p-hero h4 { font-size:14px; font-weight:800; margin-top:8px; letter-spacing:-.01em; }
   .p-hero p { font-size:9.5px; color:#78716c; margin-top:3px; line-height:1.45; }
   .p-box { margin:0 9px 7px; border-radius:13px; background:#fff; border:1px solid #e7e5e4; padding:9px 12px; }
@@ -66,12 +68,12 @@
   .tl-row { display:flex; gap:9px; align-items:flex-start; padding:4.5px 0; }
   .tl-ic { width:19px; height:19px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:9.5px; font-weight:800; }
   .done { background:#10b981; color:#fff; }
-  .curr { background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; box-shadow:0 0 0 4px rgba(249,115,22,.18); }
+  .curr { background:linear-gradient(135deg,#f97316,#ea580c); color:#fff; }
   .pend { background:#f5f5f4; color:#a8a29e; border:1px solid #e7e5e4; }
   .tl-row .tt { font-size:10px; font-weight:700; }
   .tl-row .ts { font-size:8.5px; color:#a8a29e; }
   .caption { text-align:center; font-size:11px; color:#78716c; margin-top:9px; font-weight:600; line-height:1.45; }
-  .brief { border-radius:20px; background:#1c1917; color:#fafaf9; padding:18px 20px; box-shadow:0 18px 44px rgba(28,25,23,.3); }
+  .brief { border-radius:20px; background:#1c1917; color:#fafaf9; padding:18px 20px; }
   .brief .hi { font-size:16px; font-weight:800; }
   .brief .sub { font-size:10.5px; color:#a8a29e; margin-top:2px; }
   .b-row { display:flex; gap:10px; align-items:center; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.09); border-radius:13px; padding:9px 12px; margin-top:8px; }
@@ -79,13 +81,13 @@
   .b-row .bt { font-size:11.5px; font-weight:700; }
   .b-row .bs { font-size:9.5px; color:#a8a29e; }
   .b-act { margin-left:auto; font-size:8.5px; font-weight:800; color:#fdba74; white-space:nowrap; }
-  .step { background:#fff; border:1px solid #e7e5e4; border-radius:14px; padding:11px 14px; margin-top:9px; display:flex; gap:11px; align-items:flex-start; }
+  .step { background:#fff; border:1px solid #e7e5e4; border-radius:14px; padding:14px 16px; margin-top:9px; display:flex; gap:11px; align-items:flex-start; }
   .step .num { display:inline-flex; width:24px; height:24px; border-radius:8px; background:#ffedd5; color:#c2410c; font-weight:800; font-size:12.5px; align-items:center; justify-content:center; flex-shrink:0; }
-  .step p { font-size:11.5px; line-height:1.45; color:#44403c; font-weight:600; }
+  .step p { font-size:12.5px; line-height:1.45; color:#44403c; font-weight:600; }
 
   /* ───────── PÁGINA FUNDADORES ───────── */
   .ben-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:26px; }
-  .ben { display:flex; gap:14px; align-items:flex-start; background:#fff; border:1px solid #e7e5e4; border-radius:16px; padding:19px 18px; box-shadow:0 2px 10px rgba(28,25,23,.05); }
+  .ben { display:flex; gap:14px; align-items:flex-start; background:#fff; border:1px solid #e7e5e4; border-radius:16px; padding:19px 18px; }
   .ben .ic { width:38px; height:38px; border-radius:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#fff7ed,#ffedd5); border:1px solid #fed7aa; font-size:17px; }
   .ben h3 { font-size:14px; font-weight:800; letter-spacing:-.01em; }
   .ben p { font-size:11px; line-height:1.5; color:#78716c; margin-top:3px; }
@@ -151,10 +153,11 @@
 </div>
 
 <!-- ══════════ 2 · EL DOLOR ══════════ -->
-<div class="page">
+<div class="page fillcol">
   <p class="eyebrow">Et sonarà</p>
   <h2 class="sec">El teu dia ja és prou dur.<br>Això el fa pitjor:</h2>
 
+  <div class="sp"></div>
   <div class="pain-grid">
     <div class="pain">
       <div class="n">📞</div>
@@ -173,6 +176,7 @@
     </div>
   </div>
 
+  <div class="sp"></div>
   <div class="quote">
     <div class="avatar">S</div>
     <div>
@@ -181,15 +185,17 @@
     </div>
   </div>
 
+  <div class="sp"></div>
   <div class="banner">Els programes de gestió no arreglen això. Per això FIXA no n'és un.</div>
   <div class="pfoot"><span><b>FIXA</b> · Programa Tallers Fundadors</span><span>02 — El problema</span></div>
 </div>
 
 <!-- ══════════ 3 · LA SOLUCIÓN ══════════ -->
-<div class="page">
+<div class="page fillcol">
   <p class="eyebrow">Així funciona</p>
   <h2 class="sec">Tu envies un enllaç.<br>El client deixa de trucar.</h2>
 
+  <div class="sp"></div>
   <div class="sol-grid">
     <!-- iPhone: lo que ve SU cliente -->
     <div>
@@ -237,12 +243,13 @@
     </div>
   </div>
 
+  <div class="sp"></div>
   <div class="banner">Tu no canvies res de com treballes. Si fas servir WhatsApp, ja saps fer servir FIXA.</div>
   <div class="pfoot"><span><b>FIXA</b> · Programa Tallers Fundadors</span><span>03 — Com funciona</span></div>
 </div>
 
 <!-- ══════════ 4 · SER FUNDADOR ══════════ -->
-<div class="page">
+<div class="page fillcol">
   <p class="eyebrow">L'oferta — només 5 tallers</p>
   <h2 class="sec">El que hi guanyes sent<br>Taller Fundador</h2>
 
@@ -273,6 +280,7 @@
     </div>
   </div>
 
+  <div class="sp"></div>
   <div class="price-strip">
     <div>
       <div class="big">0&nbsp;€ <small>/ 2&nbsp;mesos</small></div>
@@ -281,6 +289,7 @@
     <p>Després, tu decideixes: et quedes al preu de fundador congelat per sempre… o marxes i tan amics. <b style="color:#fff;">Sense permanència. Sense targeta. Sense risc.</b></p>
   </div>
 
+  <div class="sp"></div>
   <div class="ask">
     <div class="askbox ask-si">
       <b>✓ L'únic que et demanem</b>
