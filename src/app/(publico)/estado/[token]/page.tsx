@@ -259,7 +259,9 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
   const progresoPct = mostrarProgreso ? Math.round((pasosHechos / totalPasos) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen bg-background">
+      {/* Atmósfera Warm Premium: glow suave de marca arriba, como la landing */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(249,115,22,0.10),transparent)]" />
       {/* Header — identidad del taller (white-label) */}
       <PortalClienteHeader
         nombre={o.tallerNombre}
@@ -267,7 +269,7 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
         right={<PortalLive desde={ultimaActualizacion.toISOString()} />}
       />
 
-      <main className="mx-auto max-w-lg px-4 py-8 space-y-6">
+      <main className="relative mx-auto max-w-lg px-4 py-8 space-y-6 pb-24 sm:pb-8">
         {/* ── Hero de estado: el momento actual en lenguaje humano ── */}
         <section
           className={`relative overflow-hidden rounded-2xl border bg-gradient-to-b p-6 text-center shadow-sm ${tono.wrap}`}
@@ -487,7 +489,7 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
             <div className="flex items-center gap-3">
               <Car className="h-5 w-5 text-muted-foreground" />
               <div>
-                <p className="font-bold text-lg tracking-wider">{o.matricula}</p>
+                <p className="inline-flex items-center rounded-md bg-card px-2.5 py-0.5 font-bold text-lg tracking-[0.18em] tabular-nums ring-1 ring-border shadow-2xs">{o.matricula}</p>
                 <p className="text-sm text-muted-foreground">{formatVehiculo(o.marca, o.modelo)}</p>
               </div>
             </div>
@@ -526,9 +528,23 @@ export default async function PortalClientePage({ params }: { params: Promise<{ 
                 </a>
               </div>
             )}
-            <p className="text-xs text-muted-foreground">Powered by FIXA</p>
+            <p className="text-[11px] text-muted-foreground/70">Impulsado por <span className="font-bold text-muted-foreground">FIXA</span></p>
           </CardContent>
         </Card>
+
+        {/* Contacto siempre a un toque en móvil (el cliente no busca: toca) */}
+        {o.tallerTelefono && (
+          <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-card/90 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 backdrop-blur sm:hidden">
+            <div className="mx-auto flex max-w-lg gap-2">
+              <a href={`tel:${o.tallerTelefono}`} className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card text-sm font-semibold">
+                <Phone className="h-4 w-4" /> Llamar
+              </a>
+              <a href={formatWhatsAppUrl(o.tallerTelefono)} target="_blank" rel="noopener noreferrer" className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-500 text-sm font-semibold text-white">
+                <MessageSquare className="h-4 w-4" /> WhatsApp
+              </a>
+            </div>
+          </div>
+        )}
 
         {/* Booking link */}
         <div className="text-center">

@@ -64,14 +64,19 @@ export function TimelineReparacion({ hitos }: { hitos: HitoTimeline[] }) {
         const actual = hito.status === "actual";
 
         return (
-          <li key={`${hito.estado}-${i}`} className="relative flex gap-4 pb-7 last:pb-0">
+          <li
+            key={`${hito.estado}-${i}`}
+            className={`relative flex gap-4 pb-7 last:pb-0 ${
+              actual ? "-mx-3 rounded-2xl bg-brand-50/60 px-3 pt-3 pb-4 ring-1 ring-brand-100" : ""
+            }`}
+          >
             {/* Conector vertical hasta el siguiente hito */}
             {!isLast && (
               <span
                 aria-hidden
-                className={`absolute left-[1.375rem] top-12 -bottom-0 w-0.5 ${
-                  completado ? "bg-emerald-400" : "bg-border"
-                }`}
+                className={`absolute top-12 -bottom-0 w-0.5 ${
+                  actual ? "left-[2.125rem]" : "left-[1.375rem]"
+                } ${completado ? "bg-emerald-400" : "bg-border"}`}
               />
             )}
 

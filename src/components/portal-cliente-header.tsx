@@ -46,8 +46,13 @@ export function PortalClienteHeader({
               className="h-8 w-auto max-w-[160px] object-contain sm:h-9"
             />
           ) : (
-            <span className="truncate font-bold tracking-tight text-foreground">
-              {nombre ?? "Taller"}
+            <span className="flex min-w-0 items-center gap-2.5">
+              <span aria-hidden className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 text-sm font-extrabold text-white shadow-brand">
+                {(nombre ?? "T").trim().charAt(0).toUpperCase()}
+              </span>
+              <span className="truncate font-bold tracking-tight text-foreground">
+                {nombre ?? "Taller"}
+              </span>
             </span>
           )}
           {subtitle && (
